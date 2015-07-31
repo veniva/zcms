@@ -5,6 +5,13 @@
     <?=$this->headTitle('ZCMS')."\n"?>
     <?=$this->headMeta()
         ->appendName('description', 'A CMS based on ZendFramework')."\n"?>
+    <?=$this->headLink()
+        ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
+        ->prependStylesheet($this->basePath() .'/css/bootstrap-theme.min.css')?>
+
+    <?=$this->headScript()
+        ->prependFile($this->basePath() . '/js/jquery-2.1.4.min.js')
+        ->prependFile($this->basePath() . '/js/bootstrap.min.js')?>
     <style type="text/css">
         body, html{
             height:100%;

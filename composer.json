@@ -2,7 +2,6 @@
   "require": {
     "php": ">=5.5",
     "zendframework/zendframework": "~2.5",
-    "twbs/bootstrap": "~3.3",
     "doctrine/common": ">=2.5",
     "doctrine/orm": ">=2.5"
   }
