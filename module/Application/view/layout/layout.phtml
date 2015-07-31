@@ -1,0 +1,32 @@
+<?php echo $this->doctype(); ?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <?=$this->headTitle('ZCMS')."\n"?>
+    <?=$this->headMeta()
+        ->appendName('description', 'A CMS based on ZendFramework')."\n"?>
+    <style type="text/css">
+        body, html{
+            height:100%;
+        }
+        body{
+            font-family: "Georgia", arial, sans-serif;
+            margin:0;
+        }
+    </style>
+
+</head>
+<body>
+<section class="body">
+    <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
+        $flashMessages = $this->flashmessenger()->render($namespace);
+        if (!empty($flashMessages)):?>
+            <div class="alert alert-<?= $namespace ?>">
+                <?= $flashMessages ?>
+            </div>
+        <?php endif;
+    endforeach; ?>
+    <?=$this->content?>
+</section>
+</body>
+</html>
