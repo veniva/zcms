@@ -2,16 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <?=$this->headTitle('ZCMS')."\n"?>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <?=$this->headTitle('Z-CMS')."\n"?>
     <?=$this->headMeta()
         ->appendName('description', 'A CMS based on ZendFramework')."\n"?>
+<!--<link rel="stylesheet" href="../../../../public/css/bootstrap.min.css" />--><!--V_TODO - remove--><!--V_TODO - remove--><!--V_TODO - remove-->
     <?=$this->headLink()
         ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
-        ->prependStylesheet($this->basePath() .'/css/bootstrap-theme.min.css')?>
+        ->prependStylesheet($this->basePath() .'/css/bootstrap-theme.min.css')
+        ->prependStylesheet($this->basePath() .'/css/style.css')?>
 
     <?=$this->headScript()
-        ->prependFile($this->basePath() . '/js/jquery-2.1.4.min.js')
-        ->prependFile($this->basePath() . '/js/bootstrap.min.js')?>
+        ->prependFile($this->basePath() . '/js/bootstrap.min.js')
+        ->prependFile($this->basePath() . '/js/jquery-2.1.4.min.js')?>
     <style type="text/css">
         body, html{
             height:100%;
@@ -24,7 +27,19 @@
 
 </head>
 <body>
-<section class="body">
+<div id="main">
+    <div id="header">
+        <div class="col-sm-2" style="padding:10px;"><a href="<?=$this->url('home')?>">Home</a></div>
+        <div class="col-sm-10" style="text-align: right;padding:10px;">
+        <?php foreach(\Application\Service\Invokable\Layout::getAllLangs() as $lang):?>
+            <a href="<?=$this->url('application/default', [
+                'controller' => $this->controller,
+                'action' => $this->action,
+                'lang' => $lang['iso_code']
+            ])?>"><img src="<?=$this->basePath().'/img/flags/'.$lang['iso_code']?>.png" /></a>
+        <?php endforeach; ?>
+        </div>
+    </div>
     <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
         $flashMessages = $this->flashmessenger()->render($namespace);
         if (!empty($flashMessages)):?>
@@ -33,7 +48,16 @@
             </div>
         <?php endif;
     endforeach; ?>
-    <?=$this->content?>
-</section>
+    <div class="row">
+        <div class="col-sm-2">
+            <?php foreach(\Application\Service\Invokable\Layout::getTopCategories() as $category):?>
+                <div class="left_head"><a href="<?=$this->url('category', ['alias' => $category->alias])?>"><?=$category->title?></a></div>
+            <?php endforeach; ?>
+        </div>
+        <div class="col-sm-8"><?=$this->content?></div>
+        <div class="col-sm-2">right</div>
+    </div>
+
+</div>
 </body>
 </html>

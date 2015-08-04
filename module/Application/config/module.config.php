@@ -27,11 +27,12 @@ return array(
             'application' => array(
                 'type'    => 'Literal',
                 'options' => array(
-                    'route'    => '/application',
+                    'route'    => '/app',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Application\Controller',
                         'controller'    => 'Index',
-                        'action'        => 'index',
+                        'action' => 'index',
+                        'lang'          => 'en',
                     ),
                 ),
                 'may_terminate' => true,
@@ -39,10 +40,11 @@ return array(
                     'default' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/[:controller[/:action]]',
+                            'route'    => '/[:controller[/:action[/:lang]]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'lang'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(
                             ),
@@ -50,11 +52,43 @@ return array(
                     ),
                 ),
             ),
+            //http://framework.zend.com/manual/current/en/modules/zend.mvc.routing.html
+            'category' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route' => '/category[/:alias]',
+                    'constraints' => array(
+                        'alias'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Category',
+                        'action' => 'show',
+                    ),
+                ),
+            ),
+            'page' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route' => '/page[/:alias]',
+                    'constraints' => array(
+                        'alias'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Page',
+                        'action' => 'show',
+                    ),
+                ),
+            ),
+
         ),
     ),
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+            'dbadapter' => 'Application\Service\Factory\DbAdapter',
+        ),
+        'invokables' => array(
+            'langs' => 'Application\Service\Invokable\Langs',
         ),
     ),
     'translator' => array(
@@ -69,7 +103,9 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Application\Controller\Index' => 'Application\Controller\IndexController'
+            'Application\Controller\Index' => 'Application\Controller\IndexController',
+            'Application\Controller\Category' => 'Application\Controller\CategoryController',
+            'Application\Controller\Page' => 'Application\Controller\PageController',
         ),
     ),
     'view_manager' => array(
