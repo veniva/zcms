@@ -8,9 +8,10 @@
         ->appendName('description', 'A CMS based on ZendFramework')."\n"?>
 <!--<link rel="stylesheet" href="../../../../public/css/bootstrap.min.css" />--><!--V_TODO - remove--><!--V_TODO - remove--><!--V_TODO - remove-->
     <?=$this->headLink()
-        ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
+        ->prependStylesheet($this->basePath() .'/css/style.css')
         ->prependStylesheet($this->basePath() .'/css/bootstrap-theme.min.css')
-        ->prependStylesheet($this->basePath() .'/css/style.css')?>
+        ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
+    ?>
 
     <?=$this->headScript()
         ->prependFile($this->basePath() . '/js/bootstrap.min.js')
@@ -51,7 +52,12 @@
     <div class="row">
         <div class="col-sm-2">
             <?php foreach(\Application\Service\Invokable\Layout::getTopCategories() as $category):?>
-                <div class="left_head"><a href="<?=$this->url('category', ['alias' => $category->alias])?>"><?=$category->title?></a></div>
+                <div class="left_head"><a href="<?=$this->url('category', ['alias' => $category['content']['alias']])?>"><?=$category['content']['title']?></a></div>
+                <div class="padded_text">
+                    <?php foreach($category['listings'] as $listing):?>
+                        <div class="page_link"><div class="bullet"></div><a href="<?=$this->url('page', ['alias' => $listing['content']['alias']])?>"><?=$listing['content']['link']?></a></div>
+                    <?php endforeach; ?>
+                </div>
             <?php endforeach; ?>
         </div>
         <div class="col-sm-8"><?=$this->content?></div>

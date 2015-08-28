@@ -9,6 +9,7 @@
 
 namespace Application;
 
+use Application\Service\Invokable\Layout;
 use Zend\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -24,6 +25,8 @@ class Module
         $eventManager->attach(MvcEvent::EVENT_RENDER, array($this, 'globalLayoutVars'));
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);
+
+        Layout::setStaticServiceLocator($serviceManager);
 
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);

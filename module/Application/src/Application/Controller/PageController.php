@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Ventsislav Ivanov
- * Date: 03/08/2015
- * Time: 16:16
- */
 
 namespace Application\Controller;
 
@@ -16,6 +10,15 @@ class PageController extends AbstractActionController
 {
     public function showAction()
     {
-        return new ViewModel();
+        $alias = $this->params()->fromRoute('alias', null);
+        $listingContentEntity = $this->serviceLocator->get('listing-content-entity');
+        $entityManager = $this->serviceLocator->get('entity-manager');
+
+        $repository = $entityManager->getRepository(get_class($listingContentEntity));
+        $listingContent = $repository->findOneByAlias($alias);
+
+        return new ViewModel([
+            'listing_content' => $listingContent
+        ]);
     }
 }

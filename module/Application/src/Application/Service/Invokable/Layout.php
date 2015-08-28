@@ -9,26 +9,24 @@
 namespace Application\Service\Invokable;
 
 
-use Application\Model\Category;
 use Application\Model\LangTable;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class Layout implements ServiceLocatorAwareInterface
+class Layout
 {
     /**
      * @var ServiceLocatorInterface
      */
-    protected $serviceLocator;
+    protected static $staticServiceLocator;
 
-    public function getServiceLocator()
+    public static function setStaticServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        return $this->serviceLocator;
+        self::$staticServiceLocator = $serviceLocator;
     }
 
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    public static function getStaticServiceLocator()
     {
-        $this->serviceLocator = $serviceLocator;
+        return self::$staticServiceLocator;
     }
 
     public static function getAllLangs()
@@ -39,7 +37,8 @@ class Layout implements ServiceLocatorAwareInterface
 
     public static function getTopCategories()
     {
-        $category = new Category();
-        return $category->getTopCategories();
+        $entityManager = self::getStaticServiceLocator()->get('entity-manager');
+        $categoryEntity = self::getStaticServiceLocator()->get('category-entity');
+        return $entityManager->getRepository(get_class($categoryEntity))->getAllTopCategories();
     }
 }

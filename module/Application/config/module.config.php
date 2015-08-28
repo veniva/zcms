@@ -86,9 +86,18 @@ return array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'dbadapter' => 'Application\Service\Factory\DbAdapter',
+            'entity-manager' => 'Application\Service\Factory\EntityManager'
         ),
         'invokables' => array(
             'langs' => 'Application\Service\Invokable\Langs',
+            'listing-entity' => 'Application\Model\Entity\Listing',
+            'listing-content-entity' => 'Application\Model\Entity\ListingContent',
+            'category-entity' => 'Application\Model\Entity\Category',
+            'category-content-entity' => 'Application\Model\Entity\CategoryContent',
+        ),
+        'shared' => array(
+            'listing-entity' => false,
+            'category-entity' => false,
         ),
     ),
     'translator' => array(
@@ -122,6 +131,11 @@ return array(
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
+        ),
+    ),
+    'doctrine' => array(
+        'entity_path' => array(
+            __DIR__.'/../src/Application/Model/Entity'
         ),
     ),
 );

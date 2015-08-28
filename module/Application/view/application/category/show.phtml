@@ -1,1 +1,12 @@
-show category content
+<h1><?=$this->category_content->getTitle()?></h1>
+
+<h2>Sub-categories:</h2>
+<?php foreach($this->sub_categories as $subCategory): ?>
+    <a href="<?=$this->url('category', ['alias' => $subCategory->getContent()->getAlias()])?>">
+        <?=$subCategory->getContent()->getTitle()?>
+    </a>
+<?php endforeach; ?>
+<h2>Pages:</h2>
+<?php foreach($this->category_content->getCategory()->getListings() as $listing): ?>
+    <a href="<?=$this->url('page', ['alias' => $listing->getContent()->getAlias()])?>"><?=$listing->getContent()->getLink(); ?></a>
+<?php endforeach; ?>

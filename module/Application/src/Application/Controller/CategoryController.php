@@ -14,13 +14,22 @@ use Zend\View\Model\ViewModel;
 
 class CategoryController extends AbstractActionController
 {
-    public function indexAction()
-    {
-        return new ViewModel();
-    }
-
     public function showAction()
     {
-        return new ViewModel();
+        $alias = $this->params()->fromRoute('alias');
+
+        $entityManager = $this->serviceLocator->get('entity-manager');
+        $categoryContentEntity = $this->serviceLocator->get('category-content-entity');
+        $categoryEntity = $this->serviceLocator->get('category-entity');
+
+        $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias($alias);
+        $categoryID = $categoryContent->getCategory()->getId();
+
+        $subCategories = $entityManager->getRepository(get_class($categoryEntity))->findByParentId($categoryID);
+
+        return new ViewModel([
+            'category_content' => $categoryContent,
+            'sub_categories' => $subCategories,
+        ]);
     }
 }
