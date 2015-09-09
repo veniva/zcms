@@ -7,6 +7,7 @@
  */
 
 namespace Application\Model\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class Category
@@ -22,7 +23,7 @@ class CategoryContent
     protected $id;
 
     /**
-     * @OneToOne(targetEntity="Category", inversedBy="content")
+     * @ManyToOne(targetEntity="Category", inversedBy="content")
      */
     protected $category;
 
@@ -40,6 +41,11 @@ class CategoryContent
      * @Column(type="string")
      */
     protected $title;
+
+    public function __construct()
+    {
+        $this->category = new ArrayCollection();
+    }
 
     public function getCategory()
     {

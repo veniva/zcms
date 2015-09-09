@@ -1,12 +1,34 @@
 <h1><?=$this->category_content->getTitle()?></h1>
 
 <h2>Sub-categories:</h2>
-<?php foreach($this->sub_categories as $subCategory): ?>
-    <a href="<?=$this->url('category', ['alias' => $subCategory->getContent()->getAlias()])?>">
-        <?=$subCategory->getContent()->getTitle()?>
-    </a>
-<?php endforeach; ?>
+<section id="sub-categories">
+    <?php foreach($this->sub_categories as $subCategory): ?>
+        <a href="<?=$this->url('category', ['alias' => $subCategory->getContent()->getAlias()])?>">
+            <?=$subCategory->getContent()->getTitle()?>
+        </a>
+    <?php endforeach; ?>
+</section>
+
 <h2>Pages:</h2>
-<?php foreach($this->category_content->getCategory()->getListings() as $listing): ?>
-    <a href="<?=$this->url('page', ['alias' => $listing->getContent()->getAlias()])?>"><?=$listing->getContent()->getLink(); ?></a>
-<?php endforeach; ?>
+<section id="category-pages">
+    <?php foreach($this->category_content->getCategory()->getListings() as $listing): ?>
+        <a href="<?=$this->url('page', ['alias' => $listing->getContent()->getAlias()])?>"><?=$listing->getContent()->getLink(); ?></a>
+    <?php endforeach; ?>
+</section>
+<script type="text/javascript">
+    function separate(selector){
+        var subCategories = selector;
+        var elements = subCategories.find('a');
+        subCategories.html('');
+        for(var index in elements){
+            if(elements[index].tagName != undefined && elements[index].tagName.toLowerCase() == 'a'){
+                subCategories.append(elements[index]);
+                if(index < (elements.length-1))
+                    subCategories.append('<span style="color:grey; font-size:0.8em"> | </span>');
+            }
+        }
+    }
+
+    separate($('#sub-categories'));//decorate the sub categories with a separator
+    separate($('#category-pages'));//decorate the pages with a separator
+</script>

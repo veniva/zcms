@@ -17,12 +17,20 @@ class CategoryController extends AbstractActionController
     public function showAction()
     {
         $alias = $this->params()->fromRoute('alias');
+        if(!$alias){
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
 
         $entityManager = $this->serviceLocator->get('entity-manager');
         $categoryContentEntity = $this->serviceLocator->get('category-content-entity');
         $categoryEntity = $this->serviceLocator->get('category-entity');
 
         $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias($alias);
+        if(!$categoryContent){
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
         $categoryID = $categoryContent->getCategory()->getId();
 
         $subCategories = $entityManager->getRepository(get_class($categoryEntity))->findByParentId($categoryID);

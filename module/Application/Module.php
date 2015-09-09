@@ -9,7 +9,7 @@
 
 namespace Application;
 
-use Application\Service\Invokable\Layout;
+use Application\Service\Invokable\Misc;
 use Zend\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -26,10 +26,15 @@ class Module
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);
 
-        Layout::setStaticServiceLocator($serviceManager);
+        Misc::setStaticServiceLocator($serviceManager);
 
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+
+        $serviceManager->get('ViewHelperManager')->setFactory('langUrl', function() use ($e) {
+            $viewHelper = new View\Helper\Url($e->getRouteMatch());
+            return $viewHelper;
+        });
     }
 
     public function getConfig()
@@ -54,10 +59,34 @@ class Module
             $viewModel = $e->getViewModel();
             if($viewModel instanceof ViewModel){
                 $routeMatch = $e->getRouteMatch();
+                if(!$routeMatch) {
+                    $routeMatch = new \Zend\Mvc\Router\RouteMatch(array('home'));
+                    $e->setRouteMatch($routeMatch);
+                    $routeMatch = $e->getRouteMatch();
+                }
+                Misc::setStaticRoute($routeMatch);
+
+                $serviceManager = $e->getApplication()->getServiceManager();
+                $translator = $serviceManager->get('translator');
+                $lang = $routeMatch->getParam('lang');
+                $locale = ($lang != 'en') ? $lang.'_'.strtoupper($lang) : 'en_US';
+                $translator->setLocale($locale);
+                $serviceManager->get('ViewHelperManager')->get('translate')
+                    ->setTranslator($translator);
+
                 $controller = $routeMatch->getParam('controller');
                 $controller = strtolower(substr($controller, strrpos($controller, '\\')+1));
                 $action = $routeMatch->getParam('action');
-                $viewModel->setVariables(['controller' => $controller, 'action' => $action]);
+                $route = $routeMatch->getMatchedRouteName();
+
+                $setArray = ['route' => $route, 'controller' => $controller, 'action' => $action];
+                $alias = $routeMatch->getParam('alias');
+                if($alias)
+                    $setArray['alias'] = $alias;
+
+                $setArray['lang'] = ($lang && $lang != 'en') ? $lang : '';
+
+                $viewModel->setVariables($setArray);
             }
         }
     }

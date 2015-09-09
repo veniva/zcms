@@ -1,0 +1,22 @@
+<h1><?=$this->translate('Contact form')?></h1>
+<?php $this->contact_form->prepare();?>
+<?=$this->form()->openTag($this->contact_form)?>
+<table>
+    <?php foreach($this->contact_form as $element): ?>
+        <tr>
+            <?php if(!$element instanceof \Zend\Form\Element\Submit): ?>
+                <td>
+                    <label for="<?=$element->getName()?>"><?=$this->translate($element->getLabel())?></label>
+                </td>
+                <td>
+                    <?=$this->formElement($element)?>
+                    <?=$this->formElementErrors($element)?>
+                </td>
+            <?php else: ?>
+                <td>&nbsp;</td>
+                <td><?=$this->formElement($element)?></td>
+            <?php endif; ?>
+        </tr>
+    <?php endforeach;?>
+</table>
+<?=$this->form()->closeTag()?>

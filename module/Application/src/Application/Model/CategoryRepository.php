@@ -33,6 +33,9 @@ AND lc.lang = $langId
 ORDER BY c.sort, l.sort, l.id
 TAG;
         $categories = $this->getEntityManager()->createQuery($dql)->getArrayResult();
+        foreach($categories as &$category){
+            $category['content'] = $category['content'][0];
+        }
         return $categories;
     }
 }

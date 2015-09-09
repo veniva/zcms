@@ -11,12 +11,16 @@ return array(
     'router' => array(
         'routes' => array(
             'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/',
+                    'route'    => '/[:lang]',
+                    'constraints' => array(
+                        'lang'     => '[a-zA-Z]{2}',
+                    ),
                     'defaults' => array(
                         'controller' => 'Application\Controller\Index',
                         'action'     => 'index',
+                        'lang'          => 'en',
                     ),
                 ),
             ),
@@ -40,11 +44,11 @@ return array(
                     'default' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/[:controller[/:action[/:lang]]]',
+                            'route'    => '/[:lang/][:controller[/:action]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'lang'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'lang'     => '[a-zA-Z]{2}',
                             ),
                             'defaults' => array(
                             ),
@@ -56,26 +60,31 @@ return array(
             'category' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route' => '/category[/:alias]',
+                    'route' => '/[:lang/]category[/][:alias]',
                     'constraints' => array(
                         'alias'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'lang'     => '[a-zA-Z]{2}',
                     ),
                     'defaults' => array(
                         'controller' => 'Application\Controller\Category',
                         'action' => 'show',
+                        'alias' => 'home',
+                        'lang' => 'en',
                     ),
                 ),
             ),
             'page' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route' => '/page[/:alias]',
+                    'route' => '/[:lang/]page[/][:alias]',
                     'constraints' => array(
                         'alias'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'lang'     => '[a-zA-Z]{2}',
                     ),
                     'defaults' => array(
                         'controller' => 'Application\Controller\Page',
                         'action' => 'show',
+                        'lang' => 'en',
                     ),
                 ),
             ),
@@ -89,11 +98,13 @@ return array(
             'entity-manager' => 'Application\Service\Factory\EntityManager'
         ),
         'invokables' => array(
-            'langs' => 'Application\Service\Invokable\Langs',
+            'misc' => 'Application\Service\Invokable\Misc',
             'listing-entity' => 'Application\Model\Entity\Listing',
             'listing-content-entity' => 'Application\Model\Entity\ListingContent',
             'category-entity' => 'Application\Model\Entity\Category',
             'category-content-entity' => 'Application\Model\Entity\CategoryContent',
+            'category-relations-entity' => 'Application\Model\Entity\CategoryRelations',
+            'user-entity' => 'Application\Model\Entity\User',
         ),
         'shared' => array(
             'listing-entity' => false,
@@ -115,6 +126,7 @@ return array(
             'Application\Controller\Index' => 'Application\Controller\IndexController',
             'Application\Controller\Category' => 'Application\Controller\CategoryController',
             'Application\Controller\Page' => 'Application\Controller\PageController',
+            'Application\Controller\CustomPage' => 'Application\Controller\CustomPageController',
         ),
     ),
     'view_manager' => array(
@@ -133,9 +145,17 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
+    'view_helpers' => array(
+        'invokables' => array(
+//            'langUrl' => 'Application\View\Helper\Url',
+        ),
+    ),
     'doctrine' => array(
         'entity_path' => array(
             __DIR__.'/../src/Application/Model/Entity'
         ),
+    ),
+    'admin' => array(
+        'no-reply' => !empty($_SERVER['SERVER_NAME']) ? 'no-reply@'.$_SERVER['SERVER_NAME'] : '',
     ),
 );

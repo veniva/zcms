@@ -15,6 +15,10 @@ h2{
     font-size: 20px;
 }
 
+table th, table td{
+    padding: 5px;
+}
+
 #main{
     width:900px;
     margin-left:auto;
@@ -57,4 +61,23 @@ h2{
 
 .padded_text{
     padding: 5px 5px 15px 5px;
+}
+
+footer{
+    width: 100%;
+    text-align: center;
+    padding-top: 7px;
+    background: url("../img/footer.png");
+    color: #A2A2B9;
+    font-size: 12px;
+    height: 23px;
+}
+
+footer a {
+    color: #A2A2B9;
+    font-size: 12px;
+}
+
+.content img{
+    margin: 0 5px 5px 0;
 }

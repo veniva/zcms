@@ -10,25 +10,9 @@ namespace Application\Service\Invokable;
 
 
 use Application\Model\LangTable;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class Layout
 {
-    /**
-     * @var ServiceLocatorInterface
-     */
-    protected static $staticServiceLocator;
-
-    public static function setStaticServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        self::$staticServiceLocator = $serviceLocator;
-    }
-
-    public static function getStaticServiceLocator()
-    {
-        return self::$staticServiceLocator;
-    }
-
     public static function getAllLangs()
     {
         $langs = new LangTable();
@@ -37,8 +21,36 @@ class Layout
 
     public static function getTopCategories()
     {
-        $entityManager = self::getStaticServiceLocator()->get('entity-manager');
-        $categoryEntity = self::getStaticServiceLocator()->get('category-entity');
+        $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
+        $categoryEntity = Misc::getStaticServiceLocator()->get('category-entity');
         return $entityManager->getRepository(get_class($categoryEntity))->getAllTopCategories();
+    }
+
+    public static function breadcrumb(&$title = null)
+    {//V_TODO - rework all this  breadcrumb with better approach
+        $route = Misc::getStaticRoute();
+        $alias = $route->getParam('alias', null);
+        if(!$alias) return '';
+
+        $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
+        $categoryRelationsEntity = Misc::getStaticServiceLocator()->get('category-relations-entity');
+        $categoryContentEntity = Misc::getStaticServiceLocator()->get('category-content-entity');
+
+        //if category
+        $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias($alias);
+        if(!$categoryContent) return '';
+
+        $categoryRelations = $entityManager->getRepository(get_class($categoryRelationsEntity))->findByCategory($categoryContent->getCategory());
+        $title = $categoryContent->getTitle();
+
+        $aBcrumb[] = '';//the Top category
+        foreach($categoryRelations as $categoryRelation){
+            $parentCategoryContent = $categoryRelation->getParent()->getContent();
+
+            if($alias != $parentCategoryContent->getAlias())
+                $aBcrumb[] = ['alias' => $parentCategoryContent->getAlias(), 'title' => $parentCategoryContent->getTitle()];
+        }
+
+        return $aBcrumb;
     }
 }

@@ -43,7 +43,7 @@ class Category
     protected $parentId;
 
     /**
-     * @OneToOne(targetEntity="CategoryContent", mappedBy="category")
+     * @OneToMany(targetEntity="CategoryContent", mappedBy="category")
      */
     protected $content;
 
@@ -108,12 +108,14 @@ class Category
         $this->parentId = $parentId;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getContent()
+    public function getContent($langId = 1)//V_TODO set $langId to be cookie or session or sort of
     {
-        return $this->content;
+        foreach($this->content as $content){
+            if($content->getLangId() == $langId){
+                return $content;
+            }
+        }
+        return $this->content[0];//return the main language if no match
     }
 
     public function setCategoryContent(CategoryContent $categoryContent)

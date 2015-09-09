@@ -30,39 +30,65 @@
 <body>
 <div id="main">
     <div id="header">
-        <div class="col-sm-2" style="padding:10px;"><a href="<?=$this->url('home')?>">Home</a></div>
+        <div class="col-sm-2" style="padding:10px;"><a href="<?=$this->langUrl('home')?>">Home</a></div>
         <div class="col-sm-10" style="text-align: right;padding:10px;">
         <?php foreach(\Application\Service\Invokable\Layout::getAllLangs() as $lang):?>
-            <a href="<?=$this->url('application/default', [
+            <a href="<?=$this->url($this->route, [
                 'controller' => $this->controller,
                 'action' => $this->action,
-                'lang' => $lang['iso_code']
+                'lang' => $lang['iso_code'],
+                'alias' => $this->alias,
             ])?>"><img src="<?=$this->basePath().'/img/flags/'.$lang['iso_code']?>.png" /></a>
         <?php endforeach; ?>
         </div>
     </div>
-    <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
-        $flashMessages = $this->flashmessenger()->render($namespace);
-        if (!empty($flashMessages)):?>
-            <div class="alert alert-<?= $namespace ?>">
-                <?= $flashMessages ?>
-            </div>
-        <?php endif;
-    endforeach; ?>
     <div class="row">
         <div class="col-sm-2">
             <?php foreach(\Application\Service\Invokable\Layout::getTopCategories() as $category):?>
-                <div class="left_head"><a href="<?=$this->url('category', ['alias' => $category['content']['alias']])?>"><?=$category['content']['title']?></a></div>
+                <div class="left_head"><a href="<?=$this->langUrl('category', ['alias' => $category['content']['alias']])?>"><?=$category['content']['title']?></a></div>
                 <div class="padded_text">
                     <?php foreach($category['listings'] as $listing):?>
-                        <div class="page_link"><div class="bullet"></div><a href="<?=$this->url('page', ['alias' => $listing['content']['alias']])?>"><?=$listing['content']['link']?></a></div>
+                        <div class="page_link"><div class="bullet"></div><a href="<?=$this->langUrl('page', ['alias' => $listing['content']['alias']])?>"><?=$listing['content']['link']?></a></div>
                     <?php endforeach; ?>
                 </div>
             <?php endforeach; ?>
+            <!--custom pages-->
+            <div class="left_head"><?=$this->translate('Information')?></div>
+            <div class="padded_text">
+                <div class="page_link"><div class="bullet"></div>
+                    <a href="<?=$this->langUrl('application/default', ['controller' => 'customPage', 'action' => 'contact'])?>"><?=$this->translate('Contact')?></a>
+                </div>
+            </div>
         </div>
-        <div class="col-sm-8"><?=$this->content?></div>
+        <div class="col-sm-8">
+            <div class="bcrumb">
+                <?php if(\Application\Service\Invokable\Layout::breadcrumb($title)): ?>
+                    <?php $bCrumb = [];
+                    foreach(\Application\Service\Invokable\Layout::breadcrumb() as $bItem):?>
+                        <?php $bCrumb[] = !$bItem ? '<a href="'.$this->langUrl('home').'">'.$this->translate('Top').'</a>' : '<a href="'.$this->langUrl('category', ['alias' => $bItem['alias']]).'">'.$bItem['title'].'</a>'?>
+                    <?php endforeach; ?>
+                    <?=implode(' &gt; ', $bCrumb)?> &gt; <?=$title?>
+                <?php endif; ?>
+            </div>
+            <div class="messages">
+                <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
+                    $flashMessages = $this->flashmessenger()->render($namespace);
+                    if (!empty($flashMessages)):?>
+                        <div class="alert alert-<?= $namespace ?>">
+                            <?= $flashMessages ?>
+                        </div>
+                    <?php endif;
+                endforeach; ?>
+            </div>
+            <div class="content">
+                <?=$this->content?>
+            </div>
+        </div>
         <div class="col-sm-2">right</div>
     </div>
+    <footer>
+        Powered by <a href="http://libretto.artwebonline.com" target="_blank">ZCMS
+    </footer>
 
 </div>
 </body>
