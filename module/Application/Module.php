@@ -31,7 +31,7 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
-        $serviceManager->get('ViewHelperManager')->setFactory('langUrl', function() use ($e) {
+        $serviceManager->get('ViewHelperManager')->setFactory('langUrl', function () use ($e) {
             $viewHelper = new View\Helper\Url($e->getRouteMatch());
             return $viewHelper;
         });

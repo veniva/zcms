@@ -14,7 +14,7 @@ define('ZF2_PATH', __DIR__.'/../../../vendor/zendframework');
 /**
  * Test bootstrap, for setting up autoloading
  */
-class Bootstrap
+class bootstrap
 {
     protected static $serviceManager;
 
