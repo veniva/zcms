@@ -1,5 +1,5 @@
 <?php
-namespace ApplicationTest;
+namespace tests;
 
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
@@ -14,7 +14,7 @@ define('ZF2_PATH', __DIR__.'/../../../vendor/zendframework');
 /**
  * Test bootstrap, for setting up autoloading
  */
-class bootstrap
+class Bootstrap
 {
     protected static $serviceManager;
 
