@@ -3,6 +3,7 @@
 namespace Application\Form;
 
 
+use Zend\Captcha\Image;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
@@ -10,7 +11,7 @@ use Zend\InputFilter\InputFilterInterface;
 
 class Contact extends Form
 {
-    public function __construct($name = 'contact_form')
+    public function __construct($urlCaptcha, $name = 'contact_form')
     {
         parent::__construct($name);
 
@@ -36,6 +37,22 @@ class Contact extends Form
         ));
 
         $this->add(array(
+            'name' => 'captcha',
+            'type' => 'Captcha',
+            'options' => array(
+                'label' => 'Security code',
+                'captcha' => new Image(array(
+                    'font' => './public/fonts/PTN77F.ttf',
+                    'imgDir' => 'public/img/captcha/',
+                    'imgUrl' => $urlCaptcha,
+                    'dotNoiseLevel' => 20,
+                    'lineNoiseLevel' => 3,
+                    'imgAlt' => 'captcha_img',
+                )),
+            ),
+        ));
+
+        $this->add(array(
             'name' => 'inquiry',
             'type' => 'Textarea',
             'options' => array(
@@ -57,6 +74,7 @@ class Contact extends Form
 
     public function getInputFilter()
     {
+        parent::getInputFilter();
         if(!$this->filter){
             $inputFilter = new InputFilter();
             $inputFactory = new InputFactory();
@@ -109,11 +127,7 @@ class Contact extends Form
 
             $this->filter = $inputFilter;
         }
-        return $this->filter;
-    }
 
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new \Exception('It is not allowed to override this input filter');
+        return $this->filter;
     }
 }
