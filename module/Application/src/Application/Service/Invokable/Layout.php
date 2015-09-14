@@ -15,15 +15,17 @@ class Layout
 {
     public static function getAllLangs()
     {
-        $langs = new LangTable();
-        return $langs->getAllLangs();
+        $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
+        $langEntity = Misc::getStaticServiceLocator()->get('lang-entity');
+        $languages = $entityManager->getRepository(get_class($langEntity))->allFrontendActiveLangs();
+        return $languages;
     }
 
     public static function getTopCategories()
     {
         $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
         $categoryEntity = Misc::getStaticServiceLocator()->get('category-entity');
-        return $entityManager->getRepository(get_class($categoryEntity))->getAllTopCategories();
+        return $entityManager->getRepository(get_class($categoryEntity))->getAllTopCategories(Misc::getLangID());
     }
 
     public static function breadcrumb(&$title = null)

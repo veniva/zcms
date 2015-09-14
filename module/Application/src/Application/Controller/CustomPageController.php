@@ -13,9 +13,9 @@ class CustomPageController extends AbstractActionController
     public function contactAction()
     {
         $adminEmail = Misc::getAdminEmail();
-        $form = new Contact($this->getRequest()->getBaseUrl().'/img/captcha/');
-
         $request = $this->getRequest();
+        $form = new Contact($request->getBaseUrl().'/img/captcha/');
+
         if($request->isPost()){
             $form->setData($request->getPost());
             if($form->isValid()){

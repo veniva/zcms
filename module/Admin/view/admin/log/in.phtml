@@ -1,0 +1,39 @@
+<?php $this->layout('admin/login');//change the default layout to the login layout ?>
+<table align="center">
+    <tr>
+        <td>
+            <form action="" method="get">
+                <span class="text">
+                    <?= $this->translate('Language') ?>:
+                    <select name="lang" onChange="this.form.submit()">
+                        <?php //echo globalCtr::langs(); ?>
+                    </select>
+                </span>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p><?php //echo globalCtr::message(); ?>&nbsp;</p>
+
+            <div id="login">
+                <div class="login_font" style="margin-bottom:20px;"> <?=$this->translate('Administration Login')?></div>
+                <form action="<?=$_SERVER['PHP_SELF']?>" method="post">
+
+                    <div class="uname"><?=$this->translate('User name')?>:</div>
+                    <div class="uform">
+                        <input name="user" value="" type="text" id="user" size="15" />
+                    </div>
+                    <div class="uname"><?=$this->translate('Password')?>:</div>
+                    <div class="uform"><input value="" name="password" type="password" id="password" size="15" />
+                    </div>
+                    <div class="uform"><input type="submit" name="submit" value="<?=$this->translate('Enter')?>" />
+                    </div>
+                </form>
+                <div class="forgotten">
+                    <a href="login/lost_pass"><?=$this->translate('Password forgotten')?></a>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>

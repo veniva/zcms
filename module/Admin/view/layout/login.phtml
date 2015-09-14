@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <?=$this->headTitle($this->translate('Administration panel'))."\n"?>
+    <?=$this->headLink()
+        ->prependStylesheet($this->basePath().'/css/bootstrap-theme.min.css')
+        ->prependStylesheet($this->basePath().'/css/admin/login.css')
+        ."\n"
+    ?>
+    <?=$this->headScript()
+        ->prependFile($this->basePath().'/js/jquery-2.1.4.min.js')
+        ."\n"
+    ?>
+</head>
+<body>
+    <?=$content?>
+</body>
+</html>
+

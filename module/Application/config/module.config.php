@@ -105,6 +105,7 @@ return array(
             'category-content-entity' => 'Application\Model\Entity\CategoryContent',
             'category-relations-entity' => 'Application\Model\Entity\CategoryRelations',
             'user-entity' => 'Application\Model\Entity\User',
+            'lang-entity' => 'Application\Model\Entity\Lang',
         ),
         'shared' => array(
             'listing-entity' => false,

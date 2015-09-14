@@ -3,7 +3,7 @@
 namespace Application\Model\Entity;
 
 /**
- * @Entity(repositoryClass="\Application\Model\ListingContentRepository") @Table(name="listings_content")
+ * @Entity @Table(name="listings_content")
  */
 class ListingContent
 {
@@ -18,7 +18,7 @@ class ListingContent
     protected $listing;
 
     /**
-     * @OneToOne(targetEntity="Lang")
+     * @ManyToOne(targetEntity="Lang")
      */
     protected $lang;
 

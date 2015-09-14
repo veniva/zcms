@@ -17,12 +17,15 @@ use Zend\View\Model\ViewModel;
 
 class Module
 {
+    private $routeMatch;
+
     public function onBootstrap(MvcEvent $e)
     {
         $eventManager = $e->getApplication()->getEventManager();
         $serviceManager = $e->getApplication()->getServiceManager();
 
         $eventManager->attach(MvcEvent::EVENT_RENDER, array($this, 'globalLayoutVars'));
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setRouteMatch'));
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);
 
@@ -58,13 +61,7 @@ class Module
         if(!$e->getResponse()->contentSent()){
             $viewModel = $e->getViewModel();
             if($viewModel instanceof ViewModel){
-                $routeMatch = $e->getRouteMatch();
-                if(!$routeMatch) {
-                    $routeMatch = new \Zend\Mvc\Router\RouteMatch(array('home'));
-                    $e->setRouteMatch($routeMatch);
-                    $routeMatch = $e->getRouteMatch();
-                }
-                Misc::setStaticRoute($routeMatch);
+                $routeMatch = $this->routeMatch;
 
                 $serviceManager = $e->getApplication()->getServiceManager();
                 $translator = $serviceManager->get('translator');
@@ -89,5 +86,18 @@ class Module
                 $viewModel->setVariables($setArray);
             }
         }
+    }
+
+    public function setRouteMatch(MvcEvent $e)
+    {
+        $routeMatch = $e->getRouteMatch();
+        if(!$routeMatch) {
+            $routeMatch = new \Zend\Mvc\Router\RouteMatch(array('home'));
+            $e->setRouteMatch($routeMatch);
+            $routeMatch = $e->getRouteMatch();
+        }
+        Misc::setStaticRoute($routeMatch);
+        Misc::setLangID();
+        $this->routeMatch = $routeMatch;
     }
 }

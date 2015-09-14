@@ -19,6 +19,8 @@ class Misc
 
     protected static $staticRoute;
 
+    protected static $langID;
+
     /**
      * @return mixed
      */
@@ -52,5 +54,19 @@ class Misc
 
         $admin = $entityManager->getRepository(get_class($userEntity))->findOneById(1);
         return $admin->getEmail();
+    }
+
+    public static function setLangID()
+    {
+        $langISO = self::$staticRoute->getParam('lang');
+        $entityManager = self::getStaticServiceLocator()->get('entity-manager');
+        $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
+        $language = $entityManager->getRepository(get_class($languageEntity))->findOneByIsoCode($langISO);
+        self::$langID = $language->getId();
+    }
+
+    public static function getLangID()
+    {
+        return self::$langID;
     }
 }

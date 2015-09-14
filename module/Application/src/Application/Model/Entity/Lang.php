@@ -4,7 +4,7 @@ namespace Application\Model\Entity;
 
 /**
  * Class Lang
- * @Entity @Table(name="lang")
+ * @Entity(repositoryClass="\Application\Model\LangRepository") @Table(name="lang")
  */
 class Lang
 {
@@ -14,9 +14,9 @@ class Lang
     protected $id;
 
     /**
-     * @Column(type="string")
+     * @Column(type="string", name="iso_code")
      */
-    protected $iso_code;
+    protected $isoCode;
 
     /**
      * @Column(type="string")
@@ -24,14 +24,14 @@ class Lang
     protected $name;
 
     /**
-     * @Column(type="integer")
+     * @Column(type="integer", name="front_end")
      */
-    protected $front_end;
+    protected $frontEnd;
 
     /**
-     * @Column(type="integer")
+     * @Column(type="integer", name="back_end")
      */
-    protected $back_end;
+    protected $backEnd;
 
     /**
      * @return integer
@@ -46,15 +46,15 @@ class Lang
      */
     public function getIsoCode()
     {
-        return $this->iso_code;
+        return $this->isoCode;
     }
 
     /**
-     * @param string $iso_code
+     * @param string $isoCode
      */
-    public function setIsoCode($iso_code)
+    public function setIsoCode($isoCode)
     {
-        $this->iso_code = $iso_code;
+        $this->isoCode = $isoCode;
     }
 
     /**
@@ -78,15 +78,15 @@ class Lang
      */
     public function getFrontEnd()
     {
-        return $this->front_end;
+        return $this->frontEnd;
     }
 
     /**
-     * @param integer $front_end
+     * @param integer $frontEnd
      */
-    public function setFrontEnd($front_end)
+    public function setFrontEnd($frontEnd)
     {
-        $this->front_end = $front_end;
+        $this->frontEnd = $frontEnd;
     }
 
     /**
@@ -94,14 +94,14 @@ class Lang
      */
     public function getBackEnd()
     {
-        return $this->back_end;
+        return $this->backEnd;
     }
 
     /**
-     * @param integer $back_end
+     * @param integer $backEnd
      */
-    public function setBackEnd($back_end)
+    public function setBackEnd($backEnd)
     {
-        $this->back_end = $back_end;
+        $this->backEnd = $backEnd;
     }
 }
