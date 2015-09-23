@@ -1,12 +1,14 @@
 <?php
 
 namespace Application\Model\Entity;
+use Application\Model\PasswordAwareInterface;
+use Zend\Crypt\Password\PasswordInterface;
 
 /**
  * Class User
  * @Entity @Table(name="users")
  */
-class User
+class User implements PasswordAwareInterface
 {
     /**
      * @Id @GeneratedValue @Column(type="integer")
@@ -29,9 +31,9 @@ class User
     protected $email;
 
     /**
-     * @Column(type="integer")
+     * @Column(type="string")
      */
-    protected $type = 1;
+    protected $role = 'guest';
 
     /**
      * @Column(type="datetime", name="reg_date")
@@ -39,11 +41,21 @@ class User
     protected $regDate;
 
     /**
+     * @var PasswordInterface
+     */
+    protected $passwordAdapter;
+
+    /**
      * @return mixed
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
@@ -75,7 +87,7 @@ class User
      */
     public function setUpass($upass)
     {
-        $this->upass = $upass;
+        $this->upass = $this->hashPassword($upass);
     }
 
     /**
@@ -97,17 +109,17 @@ class User
     /**
      * @return mixed
      */
-    public function getType()
+    public function getRole()
     {
-        return $this->type;
+        return $this->role;
     }
 
     /**
-     * @param mixed $type
+     * @param mixed $role
      */
-    public function setType($type)
+    public function setRole($role)
     {
-        $this->type = $type;
+        $this->role = $role;
     }
 
     /**
@@ -124,5 +136,52 @@ class User
     public function setRegDate($regDate)
     {
         $this->regDate = $regDate;
+    }
+
+    public function checkPassword($password)
+    {
+        return $this->getPasswordAdapter()->verify($password, $this->getUpass());
+    }
+
+    public function setPasswordAdapter(PasswordInterface $adapter)
+    {
+        $this->passwordAdapter = $adapter;
+    }
+
+    public function getPasswordAdapter()
+    {
+        return $this->passwordAdapter;
+    }
+
+    public function hashPassword($password)
+    {
+        return $this->getPasswordAdapter()->create($password);
+    }
+
+    /**
+     * Generate random password.
+     * Specifications: 8 chars; 1 Upper case letter + 6 letters + 1 number
+     * v_todo - keep this updated when creating/updating user password
+     */
+    public function generateRandomPassword()
+    {
+        $letters = 'abcdefghijklmnopqrstuvwxyz';
+        $min = 0; $max = strlen($letters)-1;
+
+        //generate one random uppercase letter
+        $upper = strtoupper($letters[mt_rand($min, $max)]);
+
+        //generate 6 random letters
+        $lower = '';
+        for($i=1; $i<=6; $i++){
+            $lower .= $letters[mt_rand($min, $max)];
+        }
+
+        //generate one random short number
+        $number = mt_rand(1, 9);
+        $generatedPassword = $upper.$lower.$number;
+        $this->setUpass($generatedPassword);
+        return $generatedPassword;
+
     }
 }

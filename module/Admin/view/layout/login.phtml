@@ -1,20 +1,54 @@
+<?php use Application\Service\Invokable; ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <?=$this->headTitle($this->translate('Administration panel'))."\n"?>
     <?=$this->headLink()
-        ->prependStylesheet($this->basePath().'/css/bootstrap-theme.min.css')
         ->prependStylesheet($this->basePath().'/css/admin/login.css')
+        ->prependStylesheet($this->basePath() .'/css/bootstrap-theme.min.css')
+        ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
         ."\n"
     ?>
     <?=$this->headScript()
+        ->prependFile($this->basePath() . '/js/bootstrap.min.js')
         ->prependFile($this->basePath().'/js/jquery-2.1.4.min.js')
         ."\n"
     ?>
 </head>
 <body>
-    <?=$content?>
+    <table align="center">
+        <tr>
+            <td>
+                <div style="margin-top:20px; width:100%;"></div>
+                <form action="" method="get">
+                <span class="text">
+                    <?= $this->translate('Language') ?>:
+                    <select name="lang" onChange="switchLanguage(this.value)">
+                        <?php foreach(Invokable\Layout::getAllLangs('backEnd') as $lang):
+                            $selected = Invokable\Misc::getLangID() == $lang['id'] ? 'selected="selected"' : '';?>
+                            <option value="<?=$this->url('admin', [
+                                'controller' => 'log',
+                                'action' => $this->action,
+                                'lang' => $lang['isoCode']])?>" <?=$selected?>><?=$lang['name']?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </span>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td class="login-td">
+                <div style="margin-top:100px; width:100%;"></div>
+                <?=$content?>
+            </td>
+        </tr>
+    </table>
+    <script type="text/javascript">
+        function switchLanguage(value){
+            window.location.href = value;
+        }
+    </script>
 </body>
 </html>
 

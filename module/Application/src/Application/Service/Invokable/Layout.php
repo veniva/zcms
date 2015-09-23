@@ -9,15 +9,13 @@
 namespace Application\Service\Invokable;
 
 
-use Application\Model\LangTable;
-
 class Layout
 {
-    public static function getAllLangs()
+    public static function getAllLangs($space = 'frontEnd')
     {
         $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
         $langEntity = Misc::getStaticServiceLocator()->get('lang-entity');
-        $languages = $entityManager->getRepository(get_class($langEntity))->allFrontendActiveLangs();
+        $languages = $entityManager->getRepository(get_class($langEntity))->allFrontendActiveLangs($space);
         return $languages;
     }
 

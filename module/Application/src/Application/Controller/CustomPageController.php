@@ -22,6 +22,7 @@ class CustomPageController extends AbstractActionController
                 $message = new Mail\Message();
                 $message->setFrom($form->get('email')->getValue())
                         ->setTo($adminEmail)
+                        ->setSubject('Website Inquiry')
                         ->setBody($form->get('inquiry')->getValue());
 
                 $transport = new Mail\Transport\Sendmail();

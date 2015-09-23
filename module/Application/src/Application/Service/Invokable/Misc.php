@@ -58,7 +58,7 @@ class Misc
 
     public static function setLangID()
     {
-        $langISO = self::$staticRoute->getParam('lang');
+        $langISO = self::$staticRoute->getParam('lang', 'en');
         $entityManager = self::getStaticServiceLocator()->get('entity-manager');
         $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
         $language = $entityManager->getRepository(get_class($languageEntity))->findOneByIsoCode($langISO);

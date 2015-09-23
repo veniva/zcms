@@ -13,6 +13,7 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager as DocEManager;
+use Doctrine\Common\EventArgs;
 
 class EntityManager implements FactoryInterface
 {
@@ -35,6 +36,31 @@ class EntityManager implements FactoryInterface
         $doctrineConfig->setAutoGenerateProxyClasses(true);
         $doctrineEntityManager = DocEManager::create($doctrineDbSettings, $doctrineConfig);
 
+        if(isset($config['doctrine']['initializers'])) {
+            $eventManager = $doctrineEntityManager->getEventManager();
+
+            foreach ($config['doctrine']['initializers'] as $initializer) {
+                $eventClass = new DoctrineEvent(new $initializer(), $serviceLocator);
+                $eventManager->addEventListener(\Doctrine\ORM\Events::postLoad, $eventClass);
+            }
+        }
+
         return $doctrineEntityManager;
+    }
+}
+
+class DoctrineEvent
+{
+    protected $initializer;
+
+    public function __construct($initializer, $serviceLocator)
+    {
+        $this->initializer = $initializer;
+        $this->serviceLocator = $serviceLocator;
+    }
+    public function postLoad(EventArgs $event)
+    {
+        $entity = $event->getEntity();
+        $this->initializer->initialize($entity, $this->serviceLocator);
     }
 }

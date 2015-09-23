@@ -10,34 +10,26 @@ return array(
     'router' => array(
         'routes' => array(
             'admin' => array(
-                'type'    => 'Literal',
+                'type'    => 'Segment',
                 'options' => array(
-                    'route'    => '/admin',
+                    'route'    => '/admin[/][:lang/][:controller[/][:action[/]]]',
+                    'constraints' => array(
+                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'lang'    => '[a-zA-Z]{2}',
+                    ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Admin\Controller',
                         'controller'    => 'Index',
                         'action'        => 'index',
-                    ),
-                ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Segment',
-                        'options' => array(
-                            'route'    => '/[:controller[/][:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
+                        'lang'          => 'en',
                     ),
                 ),
             ),
         ),
     ),
     'service_manager' => array(
+        'factories' => array(),
     ),
     'translator' => array(
         'locale' => 'en_US',
@@ -63,10 +55,26 @@ return array(
             'admin/layout'           => __DIR__ . '/../view/layout/layout.phtml',
             'admin/login'           => __DIR__ . '/../view/layout/login.phtml',
             'admin/index/index' => __DIR__ . '/../view/admin/index/index.phtml',
+            'error/404'               => __DIR__ . '/../view/error/404.phtml',
+            'error/index'             => __DIR__ . '/../view/error/index.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
     ),
+    'acl' => array(
+        'resource' => array(
+            'log' => null,
+            'administrators' => null,
+            'index' => null,
+        ),
+        'allow' => array(
+            array('guest', 'log', array('in', 'forgotten')),
+            array('admin', null, null),
+            array('super-admin', null, null),
+        ),
+        'deny' => array(
+            array('admin', 'administrators', null),
+        ),
+    ),
 );
-

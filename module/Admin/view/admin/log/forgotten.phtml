@@ -1,13 +1,11 @@
 <?php $this->layout('admin/login');//change the default layout to the login layout
 
 $form  = $this->form;
-$form->setAttribute('action', $this->url('admin', array('controller' => 'log', 'action' => 'in')))
+$form->setAttribute('action', $this->url('admin', array('controller' => 'log', 'action' => 'forgotten')))
     ->setAttribute('method', 'post');
 $form->prepare();
 $email = $form->get('email');
-$pass = $form->get('password');
 $errors = $this->formElementErrors($email);
-
 ?>
 <div class="messages">
     <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
@@ -27,21 +25,17 @@ $errors = $this->formElementErrors($email);
 </div>
 
 <div class="login">
-    <div class="login_font" style="margin-bottom:20px;"> <?=$this->translate('Administration Login')?></div>
+    <div class="login_font" style="margin-bottom:20px;"> <?=$this->translate('Generate new password')?></div>
     <?=$this->form()->openTag($form)?>
     <div class="uname"><?=$this->translate($email->getLabel())?>:</div>
     <div class="uform">
         <?=$this->formInput($email)?>
     </div>
-    <div class="uname"><?=$this->translate($pass->getLabel())?>:</div>
     <div class="uform">
-        <?=$this->formInput($pass)?>
-    </div>
-    <div class="uform">
-        <input type="submit" name="submit" value="<?=$this->translate('Enter')?>" />
+        <input type="submit" name="submit" value="<?=$this->translate('Reset password')?>" />
     </div>
     <?=$this->form()->closeTag()?>
     <div class="forgotten">
-        <a href="<?=$this->url('admin', ['controller' => 'log', 'action' => 'forgotten'])?>"><?=$this->translate('Password forgotten')?></a>
+        <a href="<?=$this->url('admin', ['controller' => 'log', 'action' => 'in'])?>"><?=$this->translate('Back to login')?></a>
     </div>
 </div>

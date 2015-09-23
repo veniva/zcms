@@ -13,14 +13,14 @@ return array(
             'home' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/[:lang]',
+                    'route'    => '/[:lang][/]',
                     'constraints' => array(
-                        'lang'     => '[a-zA-Z]{2}',
+                        'lang'    => '[a-zA-Z]{2}',
                     ),
                     'defaults' => array(
                         'controller' => 'Application\Controller\Index',
                         'action'     => 'index',
-                        'lang'          => 'en',
+                        'lang'       => 'en',
                     ),
                 ),
             ),
@@ -35,7 +35,7 @@ return array(
                     'defaults' => array(
                         '__NAMESPACE__' => 'Application\Controller',
                         'controller'    => 'Index',
-                        'action' => 'index',
+                        'action'        => 'index',
                         'lang'          => 'en',
                     ),
                 ),
@@ -48,7 +48,7 @@ return array(
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'lang'     => '[a-zA-Z]{2}',
+                                'lang'       => '[a-zA-Z]{2}',
                             ),
                             'defaults' => array(
                             ),
@@ -95,7 +95,11 @@ return array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'dbadapter' => 'Application\Service\Factory\DbAdapter',
-            'entity-manager' => 'Application\Service\Factory\EntityManager'
+            'entity-manager' => 'Application\Service\Factory\EntityManager',
+            'password-adapter' => 'Application\Service\Factory\PasswordAdapter',
+            'auth' => 'Application\Service\Factory\Authentication',
+            'current-user' => 'Application\Service\Factory\CurrentUser',
+            'acl' => 'Application\Service\Factory\Acl',
         ),
         'invokables' => array(
             'misc' => 'Application\Service\Invokable\Misc',
@@ -106,10 +110,13 @@ return array(
             'category-relations-entity' => 'Application\Model\Entity\CategoryRelations',
             'user-entity' => 'Application\Model\Entity\User',
             'lang-entity' => 'Application\Model\Entity\Lang',
+            'auth-adapter' => 'Application\Authentication\Adapter',
         ),
         'shared' => array(
-            'listing-entity' => false,
-            'category-entity' => false,
+            'user-entity' => false,
+        ),
+        'initializers' => array(
+            'Application\Service\Initializer\Password',
         ),
     ),
     'translator' => array(
@@ -155,8 +162,29 @@ return array(
         'entity_path' => array(
             __DIR__.'/../src/Application/Model/Entity'
         ),
+        'initializers' => array(
+            'Application\Service\Initializer\Password'
+        )
     ),
-    'admin' => array(
+    'other' => array(
         'no-reply' => !empty($_SERVER['SERVER_NAME']) ? 'no-reply@'.$_SERVER['SERVER_NAME'] : '',
+    ),
+    'acl' => array(
+        'role' => array(
+            'guest' => null,
+            'user' => 'guest',
+            'admin' => 'user',
+            'super-admin' => null,
+        ),
+        'resource' => array(),
+        'resource_aliases' => array(),
+        'allow' => array(),
+        'deny' => array(),
+        'defaults' => array(
+            'role' => 'guest'
+        ),
+        'modules' => array(
+            'Application', 'Admin'
+        ),
     ),
 );

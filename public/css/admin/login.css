@@ -1,6 +1,43 @@
+.login{
+    float: left;
+    background: #E5E5E5;
+    padding: 24px 10px 0 30px;
+    border: 1px solid #000;
+    width: 320px;
+}
+
+.login-td{
+    width: 320px;
+}
+
+.uname {
+    float: left;
+    height: 40px;
+    width: 90px;
+}
+
+.uform {
+    float: left;
+    height: 40px;
+    width: 170px;
+}
+
+.forgotten {
+    float: left;
+    width: 240px;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.forgotten a, #reset a {
+    font-size: 11px;
+    font-weight: normal;
+    color: #636363;
+    text-decoration: underline;
+}
+
 .login_font{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
     font-weight: bold;
-    color: blue;
 }

@@ -13,7 +13,9 @@ use Application\Service\Invokable\Misc;
 use Zend\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\Mvc\Router\RouteMatch;
 use Zend\View\Model\ViewModel;
+use Zend\Permissions\Acl\Exception\ExceptionInterface as AclException;
 
 class Module
 {
@@ -23,9 +25,10 @@ class Module
     {
         $eventManager = $e->getApplication()->getEventManager();
         $serviceManager = $e->getApplication()->getServiceManager();
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'accessControl'));
+        $eventManager->attach(MvcEvent::EVENT_RENDER, array($this, 'setRouteMatch'), 2);
+        $eventManager->attach(MvcEvent::EVENT_RENDER, array($this, 'globalLayoutVars'), 1);
 
-        $eventManager->attach(MvcEvent::EVENT_RENDER, array($this, 'globalLayoutVars'));
-        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setRouteMatch'));
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);
 
@@ -72,7 +75,7 @@ class Module
                     ->setTranslator($translator);
 
                 $controller = $routeMatch->getParam('controller');
-                $controller = strtolower(substr($controller, strrpos($controller, '\\')+1));
+//                $controller = strtolower(substr($controller, strrpos($controller, '\\')+1));
                 $action = $routeMatch->getParam('action');
                 $route = $routeMatch->getMatchedRouteName();
 
@@ -92,12 +95,65 @@ class Module
     {
         $routeMatch = $e->getRouteMatch();
         if(!$routeMatch) {
-            $routeMatch = new \Zend\Mvc\Router\RouteMatch(array('home'));
+            $routeMatch = new RouteMatch(array('home'));
             $e->setRouteMatch($routeMatch);
             $routeMatch = $e->getRouteMatch();
         }
         Misc::setStaticRoute($routeMatch);
         Misc::setLangID();
         $this->routeMatch = $routeMatch;
+    }
+
+    public function accessControl(MvcEvent $e)
+    {
+        $routeMatch = $e->getRouteMatch();
+        if(!$routeMatch) return;
+
+        $serviceManager = $e->getApplication()->getServiceManager();
+        $config = $serviceManager->get('config');
+
+        $controller = $routeMatch->getParam('controller');
+        $action = $routeMatch->getParam('action');
+        $namespace = $routeMatch->getParam('__NAMESPACE__');
+        $parts = explode('\\', $namespace);
+        $moduleNamespace = reset($parts);
+
+        //if the module is not in the list of access controlled modules, grant all access
+        if(!empty($config['acl']['modules']) && !in_array($moduleNamespace, $config['acl']['modules']))
+            return;
+
+        $acl = $serviceManager->get('acl');//the Acl class may be specific for each module
+        $currentUser = $serviceManager->get('current-user');
+        $userRole = $currentUser->getRole();
+
+        $resourceAliases = $config['acl']['resource_aliases'];
+        if(isset($resourceAliases[$controller])){
+            $resource = $resourceAliases[$controller];
+        }else{
+            $shortControllerPosition = strrpos($controller, '\\');
+            if($shortControllerPosition)
+                $resource = strtolower(substr($controller, $shortControllerPosition+1));//get the short name of the controller and use it as a resource name
+            else
+                $resource = $controller;
+        }
+
+        //if the resource is not in the Acl then add it
+        if(!$acl->hasResource($resource)){
+            $acl->addResource($resource);
+        }
+
+        try{
+            if($acl->isAllowed($userRole, $resource, $action)){
+                return;
+            }
+        }catch(AclException $e){
+            //v_todo - log this in the error log
+        }
+
+        $e->getResponse()->setStatusCode(403);
+        $e->setRouteMatch(new RouteMatch(array('application')));
+        $routeMatch = $e->getRouteMatch();
+        $routeMatch->setParam('controller', 'Admin\Controller\Log');
+        $routeMatch->setParam('action', 'in');
     }
 }

@@ -7,10 +7,10 @@ use Doctrine\ORM\EntityRepository;
 
 class LangRepository extends EntityRepository
 {
-    public function allFrontendActiveLangs()
+    public function allFrontendActiveLangs($space = 'frontEnd')
     {
         $queryBuilder = $this->createQueryBuilder('l');
-        $queryBuilder->where("l.frontEnd > 0");
+        $queryBuilder->where("l.$space > 0");
         return $queryBuilder->getQuery()->getArrayResult();
     }
 }

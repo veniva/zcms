@@ -72,6 +72,7 @@ echo $this->doctype(); ?>
             <div class="messages">
                 <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
                     $flashMessages = $this->flashmessenger()->render($namespace);
+                    $namespace = $namespace == 'error' ? 'danger' : $namespace;/*adjust bootstrap to ZF2*/
                     if (!empty($flashMessages)):?>
                         <div class="alert alert-<?= $namespace ?>">
                             <?= $flashMessages ?>
