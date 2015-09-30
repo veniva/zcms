@@ -1,2 +1,97 @@
-It is the default admin layout<br />
-<?=$this->content?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <?=$this->headTitle($this->translate('Administration panel'))."\n"?>
+    <?=$this->headLink()
+        ->prependStylesheet($this->basePath().'/css/admin/style.css')
+        ->prependStylesheet($this->basePath().'/js/admin/jquery-ui-1.11.4.custom/jquery-ui.min.css')
+        ->prependStylesheet($this->basePath() .'/css/bootstrap-theme.min.css')
+        ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
+    ."\n"
+    ?>
+    <?=$this->headScript()
+        ->prependFile($this->basePath() . '/js/admin/script.js')
+        ->prependFile($this->basePath() . '/js/admin/jquery-ui-1.11.4.custom/jquery-ui.min.js')
+        ->prependFile($this->basePath() . '/js/bootstrap.min.js')
+        ->prependFile($this->basePath().'/js/jquery-2.1.4.min.js')
+    ."\n"
+    ?>
+
+    <script type="text/javascript">
+        window.onload = function(){
+            handleMenu();
+        }
+    </script>
+</head>
+<body>
+    <div id="main">
+        <div class="header">
+            <div class="col-md-2" style="text-transform: uppercase"><a href="<?=$this->langUrl('admin')?>"><?=$this->translate('Admin panel')?></a></div>
+            <div class="col-md-1" style="float: right;"><a href="<?=$this->langUrl('admin', ['controller' => 'log', 'action' => 'out'])?>"><?=$this->translate('Log out')?></a></div>
+            <div class="clearfix"></div>
+        </div>
+        <div id="menu">
+            <ul>
+                <li><a rel="subMenu0" href="Javascript:void(0)" ><?=$this->translate('Content')?> |</a>
+                    <div id="subMenu0">
+                        <a href="<?=$this->langUrl('admin', ['controller' => 'category'])?>"><?=$this->translate('Categories')?></a>
+                        <a href=""><?=$this->translate('Pages')?></a>
+                    </div>
+                </li>
+                <li><a rel="subMenu2" href="Javascript:void(0)"><?=$this->translate('Administration')?>&nbsp;|</a>
+                    <div id="subMenu2">
+                        <a href=""><?=$this->translate('Languages')?></a>
+                        <a href=""><?=$this->translate('Users')?></a>
+<!--                        --><?php //if ($_SESSION['utype'] < 2): ?>
+                            <p><a href=""><?=$this->translate('Administrators')?></a></p>
+<!--                        --><?php //endif; ?>
+                        <a href=""><?=$this->translate('Change password')?></a>
+                        <a href=""><?=$this->translate('Change email')?></a>
+                    </div>
+                </li>
+                <li>
+                    <a rel="subMenu3" href="Javascript:void(0)"><?=$this->translate('Settings')?></a>
+                    <div id="subMenu3">
+                        <a href=""><?=$this->translate('Home pages')?></a>
+                        <a href=""><?=$this->translate('Meta tags')?></a>
+                    </div>
+                </li>
+            </ul>
+<!--            <form action="--><?php //echo link_url(); ?><!--" method="GET">-->
+<!--                <ul class="lui-right">-->
+<!--                    <li><span class="text">-->
+<!--                                --><?php //echo L_LANGUAGE; ?><!--:-->
+<!--                                <select name="lang" onChange="this.form.submit();">-->
+<!--                                    --><?php //echo globalCtr::langs(); ?>
+<!--                                </select>-->
+<!--                                <input type="hidden" name="token" value="--><?php //echo $_SESSION['token']; ?><!--" />-->
+<!--                            </span>-->
+<!--                    </li>-->
+<!--                    <li><a href="">--><?php //echo L_HELP; ?><!--</a></li>-->
+<!--                </ul>-->
+<!--            </form>-->
+        </div>
+        <div class="mbody">
+            <div class="content">
+                <div class="messages">
+                    <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
+                        $flashMessages = $this->flashmessenger()->render($namespace);
+                        $namespace = $namespace == 'error' ? 'danger' : $namespace;/*adjust bootstrap to ZF2*/
+                        if (!empty($flashMessages)):?>
+                            <div class="alert alert-<?=$namespace?>" role="alert">
+                                <?= $flashMessages ?>
+                            </div>
+                        <?php endif;
+                    endforeach; ?>
+                </div>
+                <div class="container">
+                    <?=$this->content?>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</body>
+</html>

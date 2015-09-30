@@ -3,7 +3,7 @@
 namespace ApplicationTest\Controller;
 
 
-use Application\Service\Invokable\Layout;
+use Application\Service\Invokable;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class ApplicationControllerTest extends AbstractHttpControllerTestCase
@@ -21,7 +21,7 @@ class ApplicationControllerTest extends AbstractHttpControllerTestCase
     public function testLanguages()
     {
         $this->dispatch('/');
-        $langs = Layout::getAllLangs();
+        $langs = Invokable\Layout::getAllLangs();
 
         //test if it is array or Traversable
         if(!$langs instanceof \Traversable && !is_array($langs)){
@@ -32,7 +32,7 @@ class ApplicationControllerTest extends AbstractHttpControllerTestCase
     public function testCategories()
     {
         $this->dispatch('/');
-        $categories = Layout::getTopCategories();
+        $categories = Invokable\Layout::getTopCategories();
         $this->assertInternalType('array', $categories);
 
         foreach($categories as $category){
@@ -43,9 +43,42 @@ class ApplicationControllerTest extends AbstractHttpControllerTestCase
     public function testBreadcrumb()
     {
         $this->dispatch('/');
-        $this->assertEmpty(Layout::breadcrumb());
+        $this->assertEmpty(Invokable\Layout::breadcrumb());
 
         $this->dispatch('/category');
-        $this->assertInternalType('array', Layout::breadcrumb());
+        $this->assertInternalType('array', Invokable\Layout::breadcrumb());
+    }
+
+    public function testInvokableServices()
+    {
+        $this->dispatch('/');
+        $serviceManager = Invokable\Misc::getStaticServiceLocator();
+
+        $acl = $serviceManager->get('acl');
+        $this->assertType($acl, '\Zend\Permissions\Acl\Acl');
+
+        $auth = $serviceManager->get('auth');
+        $this->assertType($auth, '\Zend\Authentication\AuthenticationService');
+
+        $dbadapter = $serviceManager->get('dbadapter');
+        $this->assertType($dbadapter, '\Zend\Db\Adapter\Adapter');
+
+        $entityManager = $serviceManager->get('entity-manager');
+        $this->assertType($entityManager, '\Doctrine\ORM\EntityManager');
+
+        $passwordAdapter = $serviceManager->get('password-adapter');
+        $this->assertType($passwordAdapter, '\Zend\Crypt\Password\Bcrypt');
+
+        $currentUser = $serviceManager->get('current-user');
+        $this->assertType($currentUser, '\Application\Model\Entity\User');
+    }
+
+    protected function assertType($obj, $type)
+    {
+        if(!$obj instanceof $type){
+            throw new \PHPUnit_Framework_AssertionFailedError('A service object is not an instance of '.get_class($type));
+        }else{
+            $this->assertTrue(true);
+        }
     }
 }

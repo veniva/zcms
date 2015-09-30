@@ -8,7 +8,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 1.8.5\n"
 "Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: bg_BG\n"
@@ -40,3 +40,42 @@ msgstr "Обратно към входа"
 
 msgid "Reset password"
 msgstr "Генерирай"
+
+msgid "Admin panel"
+msgstr "Контролен панел"
+
+msgid "Log out"
+msgstr "Изход"
+
+msgid "Categories"
+msgstr "Категории"
+
+msgid "Languages"
+msgstr "Езици"
+
+msgid "Users"
+msgstr "Потребители"
+
+msgid "Administrators"
+msgstr "Администратори"
+
+msgid "Change password"
+msgstr "Смяна на парола"
+
+msgid "Change email"
+msgstr "Смяна на email"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Home pages"
+msgstr "Заглавни страници"
+
+msgid "Meta tags"
+msgstr "Мета тагове"
+
+msgid "Content"
+msgstr "Съдържание"
+
+msgid "Administration"
+msgstr "Администрация"

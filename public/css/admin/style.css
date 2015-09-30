@@ -1,0 +1,174 @@
+body{
+    font-size: 12px;
+}
+
+a{
+    text-decoration: underline;
+}
+
+.faded{
+    color: grey;
+}
+
+h1{
+    font-size:18px;
+}
+
+button{
+    cursor:pointer;
+}
+
+#main{
+    width:900px;
+    margin-left:auto;
+    margin-right:auto;
+    background:white;
+    border:1px solid #E1E1E1;
+}
+
+.header{
+    background: #2370A1;
+    color:white;
+    padding:15px 0;
+}
+
+.header a{
+    color:#E1E1E1;
+}
+
+.logout{
+    float:right;
+    margin:10px;
+}
+
+.logout a{
+    color:white;
+    text-decoration:underline;
+}
+
+#menu{
+    width:100%;
+    height:25px;
+    background: #373737;
+    border-top:1px solid grey;
+    color:#fff;
+}
+
+#menu ul{
+    list-style:none;
+    padding:0 0 0 15px;
+    margin:0;
+}
+
+#menu li{
+    display:inline;
+    float: left;
+    position:relative;
+}
+
+#menu li a, .help a, #menu li .text{
+    float:left;
+    display:block;
+    text-decoration:none;
+    color:#fff;
+    padding:5px;
+    height:24px;
+}
+
+#menu li span.text select{
+    font-size: 10px;
+}
+
+#menu li a:hover,.help a:hover{
+    background: #808080;
+}
+
+/* sub-menus*/
+#menu div{
+    position: absolute;
+    display: none;
+    width:150px;
+    top:24px;
+    margin: 0;
+    padding: 0;
+    background: #373737;
+    border: 1px solid grey;
+    z-index: 100;
+}
+
+#menu div a{
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 5px 10px;
+    width: 100%;
+    white-space: nowrap;
+    text-align: left;
+    text-decoration: none;
+    background: #373737;
+    color: #fff;
+    font: 11px arial;
+}
+
+#menu div a:hover{
+    background: #808080;
+    color: #FFF;
+}
+
+/* sub-menus end; drop menu end */
+
+.mbody{
+    float:left;
+    width:inherit;
+    padding:10px;
+}
+
+#footer{
+    float:left;
+    padding-top:10px;
+    text-align:center;
+    width:100%;
+    height: 30px;
+    background: #9A9CFC;
+    color: #607192;
+    font-size:12px;
+}
+
+#footer a{
+    color: #607192;
+    font-size:12px;
+}
+
+.content{
+    float:left;
+    width:100%; /*necessary for the dojo editor to fill the screen */
+}
+
+.container{
+    padding: 0;
+    width:100%;
+    border-radius:5px;
+    border:1px solid #E1E1E1;
+}
+
+.header_cont{
+    background: #F3F3F3;
+    height:30px;
+    padding:7px 10px 14px 10px;
+}
+
+.body_cont{
+    padding:10px;
+}
+
+div.icons{
+    float:left;
+    font-size: 11px;
+    color: #2370A1;
+    text-align:center;
+    margin-right:10px;
+}
+
+div.icons a{
+    text-decoration: none;
+}

@@ -45,6 +45,7 @@ return array(
         'invokables' => array(
             'Admin\Controller\Index' => 'Admin\Controller\IndexController',
             'Admin\Controller\Log' => 'Admin\Controller\LogController',
+            'Admin\Controller\Category' => 'Admin\Controller\CategoryController',
         ),
     ),
     'view_manager' => array(

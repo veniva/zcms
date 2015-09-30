@@ -10,7 +10,7 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 1.8.5\n"
 "X-Poedit-SearchPath-0: ..\n"
 
 msgid "Welcome"
@@ -38,4 +38,43 @@ msgid "Back to login"
 msgstr ""
 
 msgid "Reset password"
+msgstr ""
+
+msgid "Admin panel"
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Languages"
+msgstr ""
+
+msgid "Users"
+msgstr ""
+
+msgid "Administrators"
+msgstr ""
+
+msgid "Change password"
+msgstr ""
+
+msgid "Change email"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Home pages"
+msgstr ""
+
+msgid "Meta tags"
+msgstr ""
+
+msgid "Content"
+msgstr ""
+
+msgid "Administration"
 msgstr ""

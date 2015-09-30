@@ -135,7 +135,7 @@ class LogController extends AbstractActionController
                         $transport->send($message);
 
                         $this->flashMessenger()->addSuccessMessage("A new password was generated and sent to ".$email);
-                        $this->redirect()->toRoute('application/default', array('controller' => 'customPage', 'action' => 'contact'));
+                        $this->redirect()->toRoute('admin', array('controller' => 'log', 'action' => 'in'));
                     }
                 }
 

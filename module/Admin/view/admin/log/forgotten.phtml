@@ -1,7 +1,7 @@
 <?php $this->layout('admin/login');//change the default layout to the login layout
 
 $form  = $this->form;
-$form->setAttribute('action', $this->url('admin', array('controller' => 'log', 'action' => 'forgotten')))
+$form->setAttribute('action', $this->langUrl('admin', array('controller' => 'log', 'action' => 'forgotten')))
     ->setAttribute('method', 'post');
 $form->prepare();
 $email = $form->get('email');
@@ -36,6 +36,6 @@ $errors = $this->formElementErrors($email);
     </div>
     <?=$this->form()->closeTag()?>
     <div class="forgotten">
-        <a href="<?=$this->url('admin', ['controller' => 'log', 'action' => 'in'])?>"><?=$this->translate('Back to login')?></a>
+        <a href="<?=$this->langUrl('admin', ['controller' => 'log', 'action' => 'in'])?>"><?=$this->translate('Back to login')?></a>
     </div>
 </div>
