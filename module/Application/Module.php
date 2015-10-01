@@ -75,7 +75,7 @@ class Module
                     ->setTranslator($translator);
 
                 $controller = $routeMatch->getParam('controller');
-//                $controller = strtolower(substr($controller, strrpos($controller, '\\')+1));
+                $controller = strtolower(substr($controller, strrpos($controller, '\\')+1));
                 $action = $routeMatch->getParam('action');
                 $route = $routeMatch->getMatchedRouteName();
 
@@ -149,11 +149,13 @@ class Module
         }catch(AclException $e){
             //v_todo - log this in the error log
         }
-
+        $lang = $routeMatch->getParam('lang');
         $e->getResponse()->setStatusCode(403);
         $e->setRouteMatch(new RouteMatch(array('application')));
         $routeMatch = $e->getRouteMatch();
         $routeMatch->setParam('controller', 'Admin\Controller\Log');
         $routeMatch->setParam('action', 'in');
+        if($lang)
+            $routeMatch->setParam('lang', $lang);
     }
 }

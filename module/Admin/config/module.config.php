@@ -20,7 +20,7 @@ return array(
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Admin\Controller',
-                        'controller'    => 'Index',
+                        'controller'    => 'index',
                         'action'        => 'index',
                         'lang'          => 'en',
                     ),

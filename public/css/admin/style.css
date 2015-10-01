@@ -83,6 +83,10 @@ button{
     background: #808080;
 }
 
+#menu  span.lang{
+    color: black;
+}
+
 /* sub-menus*/
 #menu div{
     position: absolute;

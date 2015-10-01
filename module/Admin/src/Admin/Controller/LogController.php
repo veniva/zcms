@@ -59,7 +59,7 @@ class LogController extends AbstractActionController
                 $user = $result->getIdentity();
                 if($result->isValid()){
                     $this->flashMessenger()->addSuccessMessage(sprintf("Welcome %s. You have been logged in successfully", $user->getUname()));//V_TODO- i18n
-                    $this->redirect()->toRoute('admin', array('controller' => 'index'));
+                    $this->redir()->toRoute('admin', array('controller' => 'index'));
 
                 }else{
                     $this->flashMessenger()->addErrorMessage("Wrong details");//V_TODO- i18n
@@ -76,7 +76,7 @@ class LogController extends AbstractActionController
         $auth = $this->getServiceLocator()->get('auth');
         $auth->clearIdentity();
         $this->flashMessenger()->addSuccessMessage('You have been logged out successfully');//V_TODO - translate
-        return $this->redirect()->toRoute('admin');
+        return $this->redir()->toRoute('admin');
     }
 
     public function forgottenAction()

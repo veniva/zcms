@@ -137,6 +137,11 @@ return array(
             'Application\Controller\CustomPage' => 'Application\Controller\CustomPageController',
         ),
     ),
+    'controller_plugins' => array(
+        'invokables' => array(
+            'redir' => 'Application\Controller\Plugin\Redir',
+        ),
+    ),
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
