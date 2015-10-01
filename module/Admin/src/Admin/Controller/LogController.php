@@ -6,6 +6,7 @@ namespace Admin\Controller;
 use Application\Service\Invokable\Misc;
 use Zend\Form\Element;
 use Zend\Form\Form;
+use Zend\I18n\Translator\Translator;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -14,6 +15,10 @@ use Zend\Mail;
 
 class LogController extends AbstractActionController
 {
+    public function __construct(Translator $translator){
+        $this->translator = $translator;
+    }
+
     public function indexAction()
     {
         $this->redirect()->toRoute('admin', ['controller' => 'log', 'action' => 'in']);
@@ -58,12 +63,12 @@ class LogController extends AbstractActionController
                 $result = $auth->authenticate();
                 $user = $result->getIdentity();
                 if($result->isValid()){
-                    $this->flashMessenger()->addSuccessMessage(sprintf("Welcome %s. You have been logged in successfully", $user->getUname()));//V_TODO- i18n
+                    $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate("Welcome %s. You have been logged in successfully"), $user->getUname()));
                     $this->redir()->toRoute('admin', array('controller' => 'index'));
 
                 }else{
-                    $this->flashMessenger()->addErrorMessage("Wrong details");//V_TODO- i18n
-                    $this->redirect()->toRoute('admin', array('controller' => 'log', 'action' => 'in'));
+                    $this->flashMessenger()->addErrorMessage($this->translator->translate('Wrong details'));
+                    $this->redir()->toRoute('admin', array('controller' => 'log', 'action' => 'in'));
                 }
             }
         }
@@ -75,7 +80,7 @@ class LogController extends AbstractActionController
     {
         $auth = $this->getServiceLocator()->get('auth');
         $auth->clearIdentity();
-        $this->flashMessenger()->addSuccessMessage('You have been logged out successfully');//V_TODO - translate
+        $this->flashMessenger()->addSuccessMessage($this->translator->translate('You have been logged out successfully'));
         return $this->redir()->toRoute('admin');
     }
 

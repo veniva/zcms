@@ -25,9 +25,9 @@ class Module
     {
         $eventManager = $e->getApplication()->getEventManager();
         $serviceManager = $e->getApplication()->getServiceManager();
-        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'accessControl'));
-        $eventManager->attach(MvcEvent::EVENT_RENDER, array($this, 'setRouteMatch'), 2);
-        $eventManager->attach(MvcEvent::EVENT_RENDER, array($this, 'globalLayoutVars'), 1);
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setRouteMatch'), -1);
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'accessControl'), -2);
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'globalLayoutVars'), -3);
 
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);

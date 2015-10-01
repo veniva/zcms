@@ -44,8 +44,13 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Admin\Controller\Index' => 'Admin\Controller\IndexController',
-            'Admin\Controller\Log' => 'Admin\Controller\LogController',
             'Admin\Controller\Category' => 'Admin\Controller\CategoryController',
+        ),
+        'factories' => array(
+            'Admin\Controller\Log' => function($sm){
+                $translator = $sm->getServiceLocator()->get('translator');
+                return new \Admin\Controller\LogController($translator);
+            },
         ),
     ),
     'view_manager' => array(

@@ -42,7 +42,7 @@ msgid "Reset password"
 msgstr "Generar"
 
 msgid "Admin panel"
-msgstr "Panel administrativo"
+msgstr "Administración"
 
 msgid "Log out"
 msgstr "Salir"
@@ -52,6 +52,9 @@ msgstr "Categorias"
 
 msgid "Languages"
 msgstr "Lenguas"
+
+msgid "Language"
+msgstr "Lengua"
 
 msgid "Users"
 msgstr "Usuarios"
@@ -76,3 +79,12 @@ msgstr "Contenido"
 
 msgid "Administration"
 msgstr "Administración"
+
+msgid "Welcome %s. You have been logged in successfully"
+msgstr "Bienvenido %s. Ha entrado con exito"
+
+msgid "You have been logged out successfully"
+msgstr "Ha salido con exito"
+
+msgid "Wrong details"
+msgstr "Detalles incorrectos"

@@ -53,6 +53,9 @@ msgstr "Категории"
 msgid "Languages"
 msgstr "Езици"
 
+msgid "Language"
+msgstr "Език"
+
 msgid "Users"
 msgstr "Потребители"
 
@@ -79,3 +82,12 @@ msgstr "Съдържание"
 
 msgid "Administration"
 msgstr "Администрация"
+
+msgid "Welcome %s. You have been logged in successfully"
+msgstr "Добре дошъл %s. Влязохте успешно в системата."
+
+msgid "You have been logged out successfully"
+msgstr "Излязохте от системата"
+
+msgid "Wrong details"
+msgstr "Грешни потребителско име и/или парола"
