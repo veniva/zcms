@@ -12,11 +12,12 @@ return array(
             'admin' => array(
                 'type'    => 'Segment',
                 'options' => array(
-                    'route'    => '/admin[/][:lang/][:controller[/][:action[/]]]',
+                    'route'    => '/admin[/][:lang/][:controller[/][:action[/]][:id]]',
                     'constraints' => array(
-                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'lang'    => '[a-zA-Z]{2}',
+                        'lang'          => '[a-zA-Z]{2}',
+                        'controller'    => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'            => '[0-9]*',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Admin\Controller',

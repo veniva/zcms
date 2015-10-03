@@ -1,9 +1,14 @@
 body{
     font-size: 12px;
+    background-color: #E8E8E8;
 }
 
 a{
     text-decoration: underline;
+}
+
+a.img{
+    text-decoration: none;
 }
 
 .faded{
@@ -157,8 +162,13 @@ button{
 
 .header_cont{
     background: #F3F3F3;
-    height:30px;
-    padding:7px 10px 14px 10px;
+    height:38px;
+    padding:7px 10px;
+}
+
+.header_cont div.title{
+    float:left;
+    margin-top: 4px;
 }
 
 .body_cont{
@@ -175,4 +185,24 @@ div.icons{
 
 div.icons a{
     text-decoration: none;
+}
+
+.list_table{
+    border-collapse:collapse;
+    border:1px solid #E1E1E1;
+}
+
+.list_table th, .list_table td{
+    border:1px solid #E1E1E1;
+    text-align:left;
+    padding: 5px;
+}
+
+.bcrumb{
+    margin-bottom:5px;
+}
+
+.bcrumb, .bcrumb a{
+    color:grey;
+    font-size:0.9em;
 }

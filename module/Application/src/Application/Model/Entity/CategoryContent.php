@@ -47,6 +47,11 @@ class CategoryContent
         $this->category = new ArrayCollection();
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function getCategory()
     {
         return $this->category;

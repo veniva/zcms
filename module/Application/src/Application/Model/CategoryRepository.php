@@ -15,27 +15,72 @@ use phpDocumentor\Reflection\DocBlock\Tag;
 
 class CategoryRepository extends EntityRepository
 {
-    public function getAllTopCategories($langId = 1, $type = 1)
+    public function getCategoriesListings($langId = 1, $parent = 0, $type = 1)
     {
         $category = new Category();
         $categoryClassName = get_class($category);
 
         $dql = <<<TAG
-SELECT c, co, l, lc
-FROM $categoryClassName c
-JOIN c.content co
-JOIN c.listings l
-JOIN l.content lc
-WHERE c.type = $type
-AND c.parentId = 0
-AND co.langId = $langId
-AND lc.lang = $langId
-ORDER BY c.sort, l.sort, l.id
+            SELECT
+                c, co, l, lc
+            FROM $categoryClassName c
+            JOIN c.content co
+            JOIN c.listings l
+            JOIN l.content lc
+            WHERE c.type = $type
+            AND c.parentId = $parent
+            AND co.langId = $langId
+            AND lc.lang = $langId
+            ORDER BY c.id, c.sort, l.sort, l.id
 TAG;
-        $categories = $this->getEntityManager()->createQuery($dql)->getArrayResult();
+        $query = $this->getEntityManager()->createQuery($dql);
+        $categories = $query->getArrayResult();
         foreach($categories as &$category){
             $category['content'] = $category['content'][0];
         }
         return $categories;
+    }
+
+    public function getCategories($langId = 1, $parent = 0, $type = 1)
+    {
+        $category = new Category();
+        $categoryClassName = get_class($category);
+
+        $dql = <<<TAG
+            SELECT
+                c, co
+            FROM $categoryClassName c
+            LEFT JOIN c.content co
+            WHERE c.type = $type
+            AND c.parentId = $parent
+            AND co.langId = $langId
+            ORDER BY c.id, c.sort
+TAG;
+        $query = $this->getEntityManager()->createQuery($dql);
+        $categories = $query->getArrayResult();
+        foreach($categories as &$category){
+            $category['content'] = $category['content'][0];
+        }
+        return $categories;
+    }
+
+    public  function getCategory($id, $langId = 1)
+    {
+        $category = new Category();
+        $categoryClassName = get_class($category);
+
+        $dql = <<<TAG
+            SELECT
+                c, co
+            FROM $categoryClassName c
+            LEFT JOIN c.content co
+            WHERE c.id = $id
+            AND co.langId = $langId
+TAG;
+        $query = $this->getEntityManager()->createQuery($dql);
+        $results = $query->getArrayResult();
+        $result =  reset($results);
+        $result['content'] = $result['content'][0];
+        return $result;
     }
 }

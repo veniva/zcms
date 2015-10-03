@@ -88,3 +88,9 @@ msgstr "Ha salido con exito"
 
 msgid "Wrong details"
 msgstr "Detalles incorrectos"
+
+msgid "New"
+msgstr "Crear"
+
+msgid "Top"
+msgstr "Inicio"

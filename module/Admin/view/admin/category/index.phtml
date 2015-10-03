@@ -1,4 +1,62 @@
-<div class="header_cont"><?=$this->translate($this->title)?></div>
+<?php use Application\Service\Invokable\Layout;?>
+<div class="header_cont">
+    <div class="title"><?=$this->translate($this->title)?></div>
+    <div style="float:right;">
+        <button type="button" class="btn btn-primary btn-xs"><?=$this->translate('New')?></button>
+    </div>
+</div>
 <div class="body_cont">
-    asdasdf
+    <div class="bcrumb lui-padding-5">
+        <?php if($crumb = Layout::breadcrumb($title, $this->category_alias)): ?>
+            <?php $items = [];
+            foreach($crumb as $item):?>
+                <?php $items[] = !$item ?
+                    '<a href="'.$this->langUrl('admin', ['controller' => 'category']).'">'.$this->translate('Top').'</a>' :
+                    '<a href="'.$this->langUrl('admin', ['controller' => 'category', 'id' => $item['id']]).'">'.$item['title'].'</a>'?>
+            <?php endforeach; ?>
+            <?=implode(' &gt; ', $items)?> &gt; <?=$title?>
+        <?php else:?>
+            <?=$this->translate('Top')?>
+        <?php endif; ?>
+    </div>
+    <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
+        <tr>
+            <th width="20">#</th>
+            <th><?=$this->translate('Category')?></th>
+            <th width="20"><?=$this->translate('Order')?></th>
+            <th width="70"><?=$this->translate('Action')?></th>
+        </tr>
+        <?php foreach($this->categories as $category): ?>
+            <tr>
+                <td><?php echo $category['id']; ?></td>
+                <td>
+                    <a href="<?=$this->langUrl('admin', array('controller' => 'category', 'id' => $category['id']))?>">
+                        <?php echo $category['content']['title']; ?>
+                    </a>
+                    <small><?='(' . $category['children_count'] . ')'?></small>
+                </td>
+                <td>
+                    <?=$category['sort']; ?>
+<!--                    <a href="--><?php //echo link_url('order/order_categs/' . $cid.'/'.$type); ?><!--">-->
+                    <a class="img" href="<?=$this->url('admin')?>">
+                        <img src="<?=$this->url('home')?>/img/admin/reorder.png" title="<?=$this->translate('re-order')?>" />
+                    </a>
+                </td>
+                <td>
+                    <?php if ($category['content']['alias'] != 'home'): ?>
+<!--                        <a href="--><?php //echo link_url('categories/edit/' . $category['id'].'/'.$cpage_id); ?><!--">-->
+                        <a class="img" href="<?=$this->url('admin')?>">
+                            <img src="<?=$this->url('home')?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
+                        </a>
+<!--                        <a href="--><?php //echo link_url('categories/delete', array('cid' => $category['content']['id'])); ?><!--">-->
+                        <a class="img" href="<?=$this->url('admin')?>">
+                            <img src="<?=$this->url('home')?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
+                        </a>
+                    <?php else: ?>
+                        <img src="<?=$this->url('home')?>/img/admin/lock.png" title="<?=$this->translate('locked')?>" />
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
 </div>

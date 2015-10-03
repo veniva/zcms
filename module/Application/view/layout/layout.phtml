@@ -61,9 +61,9 @@ echo $this->doctype(); ?>
         </div>
         <div class="col-sm-8">
             <div class="bcrumb">
-                <?php if(Layout::breadcrumb($title)): ?>
+                <?php if($crumb = Layout::breadcrumb($title)): ?>
                     <?php $bCrumb = [];
-                    foreach(Layout::breadcrumb() as $bItem):?>
+                    foreach($crumb as $bItem):?>
                         <?php $bCrumb[] = !$bItem ? '<a href="'.$this->langUrl('home').'">'.$this->translate('Top').'</a>' : '<a href="'.$this->langUrl('category', ['alias' => $bItem['alias']]).'">'.$bItem['title'].'</a>'?>
                     <?php endforeach; ?>
                     <?=implode(' &gt; ', $bCrumb)?> &gt; <?=$title?>

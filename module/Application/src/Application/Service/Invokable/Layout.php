@@ -23,13 +23,15 @@ class Layout
     {
         $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
         $categoryEntity = Misc::getStaticServiceLocator()->get('category-entity');
-        return $entityManager->getRepository(get_class($categoryEntity))->getAllTopCategories(Misc::getLangID());
+        return $entityManager->getRepository(get_class($categoryEntity))->getCategoriesListings(Misc::getLangID());
     }
 
-    public static function breadcrumb(&$title = null)
-    {//V_TODO - rework all this  breadcrumb with better approach
-        $route = Misc::getStaticRoute();
-        $alias = $route->getParam('alias', null);
+    public static function breadcrumb(&$title = null, $alias = null)
+    {//V_TODO - rework all this breadcrumb with better approach
+        if(!$alias){
+            $route = Misc::getStaticRoute();
+            $alias = $route->getParam('alias', null);
+        }
         if(!$alias) return '';
 
         $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
@@ -48,7 +50,11 @@ class Layout
             $parentCategoryContent = $categoryRelation->getParent()->getContent();
 
             if($alias != $parentCategoryContent->getAlias())
-                $aBcrumb[] = ['alias' => $parentCategoryContent->getAlias(), 'title' => $parentCategoryContent->getTitle()];
+                $aBcrumb[] = [
+                    'alias' => $parentCategoryContent->getAlias(),
+                    'title' => $parentCategoryContent->getTitle(),
+                    'id'    => $parentCategoryContent->getId(),
+                ];
         }
 
         return $aBcrumb;

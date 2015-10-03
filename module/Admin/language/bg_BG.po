@@ -91,3 +91,9 @@ msgstr "Излязохте от системата"
 
 msgid "Wrong details"
 msgstr "Грешни потребителско име и/или парола"
+
+msgid "New"
+msgstr "Създай"
+
+msgid "Top"
+msgstr "Начало"

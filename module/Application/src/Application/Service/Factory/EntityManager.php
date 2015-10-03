@@ -25,6 +25,12 @@ class EntityManager implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $config = $serviceLocator->get('config');
+        //in unit testing sometimes the $config['db'] is empty
+        if(!isset($config['db'])){
+            $serviceLocator = \Application\Service\Invokable\Misc::getStaticServiceLocator();
+            $config = $serviceLocator->get('config');
+        }
+
         //set the Doctrine configuration array
         $doctrineDbSettings = (array)$config['db'];
         $doctrineDbSettings['driver'] = strtolower($config['db']['driver']);
