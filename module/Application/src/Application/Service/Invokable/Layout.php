@@ -23,7 +23,7 @@ class Layout
     {
         $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
         $categoryEntity = Misc::getStaticServiceLocator()->get('category-entity');
-        return $entityManager->getRepository(get_class($categoryEntity))->getCategoriesListings(Misc::getLangID());
+        return $entityManager->getRepository(get_class($categoryEntity))->getCategoriesListings(0, Misc::getLangID());
     }
 
     public static function breadcrumb(&$title = null, $alias = null)
@@ -53,7 +53,7 @@ class Layout
                 $aBcrumb[] = [
                     'alias' => $parentCategoryContent->getAlias(),
                     'title' => $parentCategoryContent->getTitle(),
-                    'id'    => $parentCategoryContent->getId(),
+                    'id'    => $parentCategoryContent->getCategory()->getId(),
                 ];
         }
 

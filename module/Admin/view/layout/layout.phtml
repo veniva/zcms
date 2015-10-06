@@ -29,14 +29,14 @@
     <div id="main">
         <div class="header">
             <div class="col-md-2" style="text-transform: uppercase"><a href="<?=$this->langUrl('admin')?>"><?=$this->translate('Admin panel')?></a></div>
-            <div class="col-md-1" style="float: right;"><a href="<?=$this->langUrl('admin', ['controller' => 'log', 'action' => 'out'])?>"><?=$this->translate('Log out')?></a></div>
+            <div class="col-md-1" style="float: right;"><a href="<?=$this->langUrl('admin/default', ['controller' => 'log', 'action' => 'out'])?>"><?=$this->translate('Log out')?></a></div>
             <div class="clearfix"></div>
         </div>
         <div id="menu">
             <ul>
                 <li><a rel="subMenu0" href="Javascript:void(0)" ><?=$this->translate('Content')?> |</a>
                     <div id="subMenu0">
-                        <a href="<?=$this->langUrl('admin', ['controller' => 'category'])?>"><?=$this->translate('Categories')?></a>
+                        <a href="<?=$this->langUrl('admin/default', ['controller' => 'category'])?>"><?=$this->translate('Categories')?></a>
                         <a href=""><?=$this->translate('Pages')?></a>
                     </div>
                 </li>
@@ -65,7 +65,7 @@
                         <select name="lang" onChange="switchLanguage(this.value)">
                             <?php foreach(Invokable\Layout::getAllLangs('backEnd') as $lang):
                                 $selected = Invokable\Misc::getLangID() == $lang['id'] ? 'selected="selected"' : '';?>
-                                <option value="<?=$this->url('admin', [
+                                <option value="<?=$this->url('admin/default', [
                                     'controller' => $this->controller,
                                     'action' => $this->action,
                                     'lang' => $lang['isoCode']])?>" <?=$selected?>><?=$lang['name']?></option>

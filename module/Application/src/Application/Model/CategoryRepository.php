@@ -11,11 +11,11 @@ namespace Application\Model;
 
 use Application\Model\Entity\Category;
 use Doctrine\ORM\EntityRepository;
-use phpDocumentor\Reflection\DocBlock\Tag;
+use Zend\Paginator\Paginator;
 
 class CategoryRepository extends EntityRepository
 {
-    public function getCategoriesListings($langId = 1, $parent = 0, $type = 1)
+    public function getCategoriesListings($parent, $langId = 1, $type = 1)
     {
         $category = new Category();
         $categoryClassName = get_class($category);
@@ -41,7 +41,23 @@ TAG;
         return $categories;
     }
 
-    public function getCategories($langId = 1, $parent = 0, $type = 1)
+    public function getCategories($parent = 0, $langId = 1, $type = 1)
+    {
+        $query = $this->categoriesDQL($parent, $langId, $type);
+        $categories = $query->getArrayResult();
+        foreach($categories as &$category){
+            $category['content'] = $category['content'][0];
+        }
+        return $categories;
+    }
+
+    public function getPaginatedCategories($parent = 0, $langId = 1, $type = 1)
+    {
+        $query = $this->categoriesDQL($parent, $langId, $type);
+        return new Paginator(new \Application\Paginator\DoctrineAdapter($query));
+    }
+
+    protected function categoriesDQL($parent, $langId, $type)
     {
         $category = new Category();
         $categoryClassName = get_class($category);
@@ -56,12 +72,7 @@ TAG;
             AND co.langId = $langId
             ORDER BY c.id, c.sort
 TAG;
-        $query = $this->getEntityManager()->createQuery($dql);
-        $categories = $query->getArrayResult();
-        foreach($categories as &$category){
-            $category['content'] = $category['content'][0];
-        }
-        return $categories;
+        return $this->getEntityManager()->createQuery($dql);
     }
 
     public  function getCategory($id, $langId = 1)

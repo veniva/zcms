@@ -10,20 +10,53 @@ return array(
     'router' => array(
         'routes' => array(
             'admin' => array(
-                'type'    => 'Segment',
+                'type'    => 'Literal',
                 'options' => array(
-                    'route'    => '/admin[/][:lang/][:controller[/][:action[/]][:id]]',
-                    'constraints' => array(
-                        'lang'          => '[a-zA-Z]{2}',
-                        'controller'    => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'            => '[0-9]*',
-                    ),
+                    'route'    => '/admin',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Admin\Controller',
                         'controller'    => 'index',
                         'action'        => 'index',
-                        'lang'          => 'en',
+                    ),
+                ),
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'default' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route'    => '/[:lang/][:controller[/][:action[/]][:id]]',
+                            'constraints' => array(
+                                'lang'          => '[a-zA-Z]{2}',
+                                'controller'    => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'            => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                '__NAMESPACE__' => 'Admin\Controller',
+                                'controller'    => 'index',
+                                'action'        => 'index',
+                                'lang'          => 'en',
+                            ),
+                        ),
+                    ),
+                    'category' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/category[/:lang][/:parent_id[/:page]]',
+                            'constraints' => array(
+                                'lang'      => '[a-zA-Z]{2}',
+                                'parent_id' => '[0-9]*',
+                                'page'      => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                '__NAMESPACE__' => 'Admin\Controller',
+                                'controller'    => 'category',
+                                'action'        => 'list',
+                                'lang'          => 'en',
+                                'parent_id'     => 0,
+                                'page'          => 1,
+                            ),
+                        ),
                     ),
                 ),
             ),
@@ -59,11 +92,12 @@ return array(
         'display_exceptions'       => true,
         'doctype'                  => 'HTML5',
         'template_map' => array(
-            'admin/layout'           => __DIR__ . '/../view/layout/layout.phtml',
-            'admin/login'           => __DIR__ . '/../view/layout/login.phtml',
-            'admin/index/index' => __DIR__ . '/../view/admin/index/index.phtml',
-            'error/404'               => __DIR__ . '/../view/error/404.phtml',
-            'error/index'             => __DIR__ . '/../view/error/index.phtml',
+            'admin/layout'       => __DIR__ . '/../view/layout/layout.phtml',
+            'admin/login'        => __DIR__ . '/../view/layout/login.phtml',
+            'admin/index/index'  => __DIR__ . '/../view/admin/index/index.phtml',
+            'error/404'          => __DIR__ . '/../view/error/404.phtml',
+            'error/index'        => __DIR__ . '/../view/error/index.phtml',
+            'paginator/category_sliding'  => __DIR__ . '/../view/paginator/category_sliding.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
