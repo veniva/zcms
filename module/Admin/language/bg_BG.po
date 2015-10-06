@@ -97,3 +97,18 @@ msgstr "Създай"
 
 msgid "Top"
 msgstr "Начало"
+
+msgid "First"
+msgstr "Начало"
+
+msgid "Previous"
+msgstr "Назад"
+
+msgid "Next"
+msgstr "Напред"
+
+msgid "Last"
+msgstr "Последна"
+
+msgid "Category"
+msgstr "Категория"

@@ -10,37 +10,37 @@ See http://developer.yahoo.com/ypatterns/pattern.php?pattern=itempagination
         <!-- First page link -->
         <?php if (isset($this->previous)): ?>
             <a href="<?php echo $this->url($this->route, array('parent_id' => $this->parent_id, 'page' => $this->first)); ?>">
-                First
+                <?=$this->translate('First')?>
             </a> |
         <?php else: ?>
-            <span class="disabled">First</span> |
+            <span class="disabled"><?=$this->translate('First')?></span> |
         <?php endif; ?>
 
         <!-- Previous page link -->
         <?php if (isset($this->previous)): ?>
             <a href="<?php echo $this->url($this->route, array('parent_id' => $this->parent_id, 'page' => $this->previous)); ?>">
-                &lt; Previous
+                &lt; <?=$this->translate('Previous')?>
             </a> |
         <?php else: ?>
-            <span class="disabled">&lt; Previous</span> |
+            <span class="disabled">&lt; <?=$this->translate('Previous')?></span> |
         <?php endif; ?>
 
         <!-- Next page link -->
         <?php if (isset($this->next)): ?>
             <a href="<?php echo $this->url($this->route, array('parent_id' => $this->parent_id, 'page' => $this->next)); ?>">
-                Next &gt;
+        <?=$this->translate('Next')?> &gt;
             </a> |
         <?php else: ?>
-            <span class="disabled">Next &gt;</span> |
+            <span class="disabled"><?=$this->translate('Next')?> &gt;</span> |
         <?php endif; ?>
 
         <!-- Last page link -->
         <?php if (isset($this->next)): ?>
             <a href="<?php echo $this->url($this->route, array('parent_id' => $this->parent_id, 'page' => $this->last)); ?>">
-                Last
+        <?=$this->translate('Last')?>
             </a>
         <?php else: ?>
-            <span class="disabled">Last</span>
+            <span class="disabled"><?=$this->translate('Last')?></span>
         <?php endif; ?>
 
     </div>

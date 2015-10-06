@@ -48,7 +48,7 @@ msgid "Log out"
 msgstr "Salir"
 
 msgid "Categories"
-msgstr "Categorias"
+msgstr "Categorías"
 
 msgid "Languages"
 msgstr "Lenguas"
@@ -94,3 +94,18 @@ msgstr "Crear"
 
 msgid "Top"
 msgstr "Inicio"
+
+msgid "First"
+msgstr "Inicio"
+
+msgid "Previous"
+msgstr "Atras"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Last"
+msgstr "Ultimo"
+
+msgid "Category"
+msgstr "Categoría"

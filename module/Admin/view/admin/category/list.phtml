@@ -42,7 +42,7 @@
                     </a>
                 </td>
                 <td>
-                    <?php if ($category->getContent()->getAlias() != 'home'): ?>
+                    <?php if ($category->getId() != 17): ?>
 <!--                        <a href="--><?php //echo link_url('categories/edit/' . $category['id'].'/'.$cpage_id); ?><!--">-->
                         <a class="img" href="<?=$this->url('admin')?>">
                             <img src="<?=$this->url('home')?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
