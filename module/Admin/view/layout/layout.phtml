@@ -63,7 +63,7 @@
                 <li class="lang">
                     <span class="text lang">
                         <select name="lang" onChange="switchLanguage(this.value)">
-                            <?php foreach(Invokable\Layout::getAllLangs('backEnd') as $lang):
+                            <?php foreach(Invokable\Layout::getAllLangs() as $lang):
                                 $selected = Invokable\Misc::getLangID() == $lang['id'] ? 'selected="selected"' : '';?>
                                 <option value="<?=$this->url('admin/default', [
                                     'controller' => $this->controller,

@@ -101,6 +101,7 @@ class Module
         }
         Misc::setStaticRoute($routeMatch);
         Misc::setLangID();
+        Misc::setDefaultLanguage();
         $this->routeMatch = $routeMatch;
     }
 

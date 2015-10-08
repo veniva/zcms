@@ -11,11 +11,11 @@ namespace Application\Service\Invokable;
 
 class Layout
 {
-    public static function getAllLangs($space = 'frontEnd')
+    public static function getAllLangs()
     {
         $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
         $langEntity = Misc::getStaticServiceLocator()->get('lang-entity');
-        $languages = $entityManager->getRepository(get_class($langEntity))->allFrontendActiveLangs($space);
+        $languages = $entityManager->getRepository(get_class($langEntity))->getActiveLangs();
         return $languages;
     }
 
@@ -23,7 +23,11 @@ class Layout
     {
         $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
         $categoryEntity = Misc::getStaticServiceLocator()->get('category-entity');
-        return $entityManager->getRepository(get_class($categoryEntity))->getCategoriesListings(0, Misc::getLangID());
+        $categRepo = $entityManager->getRepository(get_class($categoryEntity));
+        $topCategs = $categRepo->getCategoriesListings(0, Misc::getDefaultLanguageID());
+        if(Misc::getLangID() != Misc::getDefaultLanguageID())
+            $topCategs = $categRepo->translateCategoryTitles($topCategs, Misc::getLangID());
+        return $topCategs;
     }
 
     public static function breadcrumb(&$title = null, $alias = null)

@@ -24,14 +24,9 @@ class Lang
     protected $name;
 
     /**
-     * @Column(type="integer", name="front_end")
+     * @Column(type="integer")
      */
-    protected $frontEnd;
-
-    /**
-     * @Column(type="integer", name="back_end")
-     */
-    protected $backEnd;
+    protected $status;
 
     /**
      * @return integer
@@ -76,32 +71,16 @@ class Lang
     /**
      * @return integer
      */
-    public function getFrontEnd()
+    public function getStatus()
     {
-        return $this->frontEnd;
+        return $this->status;
     }
 
     /**
-     * @param integer $frontEnd
+     * @param integer $status
      */
-    public function setFrontEnd($frontEnd)
+    public function setStatus($status)
     {
-        $this->frontEnd = $frontEnd;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getBackEnd()
-    {
-        return $this->backEnd;
-    }
-
-    /**
-     * @param integer $backEnd
-     */
-    public function setBackEnd($backEnd)
-    {
-        $this->backEnd = $backEnd;
+        $this->status = $status;
     }
 }

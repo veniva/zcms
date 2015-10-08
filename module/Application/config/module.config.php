@@ -13,7 +13,7 @@ return array(
             'home' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/[:lang][/]',
+                    'route'    => '/[:lang]',
                     'constraints' => array(
                         'lang'    => '[a-zA-Z]{2}',
                     ),

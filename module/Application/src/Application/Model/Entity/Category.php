@@ -33,6 +33,11 @@ class Category
     protected $sort;
 
     /**
+     * @Column(type="integer")
+     */
+    protected $children_count;
+
+    /**
      * @Column(type="integer", name="parent_id")
      */
     protected $parentId;
@@ -75,6 +80,16 @@ class Category
     public function setSort($sort)
     {
         $this->sort = $sort;
+    }
+
+    public function getChildrenCount()
+    {
+        return $this->children_count;
+    }
+
+    public function setChildrenCount($count)
+    {
+        $this->children_count = $count;
     }
 
     /**

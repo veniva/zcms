@@ -21,6 +21,8 @@ class Misc
 
     protected static $langID;
 
+    protected static $defaultLangID;
+
     /**
      * @return mixed
      */
@@ -68,5 +70,18 @@ class Misc
     public static function getLangID()
     {
         return self::$langID;
+    }
+
+    public static function setDefaultLanguage()
+    {
+        $entityManager = self::getStaticServiceLocator()->get('entity-manager');
+        $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
+        $language = $entityManager->getRepository(get_class($languageEntity))->findOneByStatus(2);
+        self::$defaultLangID = $language->getId();
+    }
+
+    public static function getDefaultLanguageID()
+    {
+        return self::$defaultLangID;
     }
 }

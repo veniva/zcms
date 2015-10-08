@@ -18,7 +18,7 @@ class CategoryController extends AbstractActionController
         $categoryEntity = $serviceLocator->get('category-entity');
         $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
 
-        $categoriesPaginated = $categoryRepository->getPaginatedCategories($parent, $lang);
+        $categoriesPaginated = $categoryRepository->getPaginatedCategories($parent);
         $categoriesPaginated->setCurrentPageNumber($page);
 
         $category = $parent ? $categoryRepository->getCategory($parent, $lang) : null;
