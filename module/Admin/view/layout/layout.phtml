@@ -63,11 +63,13 @@
                 <li class="lang">
                     <span class="text lang">
                         <select name="lang" onChange="switchLanguage(this.value)">
-                            <?php foreach(Invokable\Layout::getAllLangs() as $lang):
+                            <?php foreach(Invokable\Misc::getActiveLangsArray() as $lang):
                                 $selected = Invokable\Misc::getLangID() == $lang['id'] ? 'selected="selected"' : '';?>
-                                <option value="<?=$this->url('admin/default', [
+                                <option value="<?=$this->url($this->route != 'admin' ? $this->route : 'admin/default', [
                                     'controller' => $this->controller,
                                     'action' => $this->action,
+                                    'id' => $this->id,
+                                    'page' => $this->page,
                                     'lang' => $lang['isoCode']])?>" <?=$selected?>><?=$lang['name']?></option>
                             <?php endforeach; ?>
                         </select>

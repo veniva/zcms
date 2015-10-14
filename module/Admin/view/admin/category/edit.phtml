@@ -1,0 +1,45 @@
+<?php
+use Application\Service\Invokable\Misc;
+$this->form->prepare();
+?>
+<div class="header_cont">
+    <div class="title"><?=$this->translate("Edit a category")?></div>
+</div>
+<div class="body_cont">
+    <?=$this->form()->openTag($this->form)?>
+    <table class="list_table" width="400" cellpadding="5" cellspacing="0">
+        <tr>
+            <td><label><?=$this->translate($this->form->get('title')->getLabel())?>:</label></td>
+            <td>
+                <?=$this->formInput($this->form->get('title'))?>
+                <img src="<?=$this->basePath().'/img/flags/'.Misc::getDefaultLanguage()->getIsoCode()?>.png" />
+            </td>
+        </tr>
+        <?php foreach(Misc::getActiveLangs() as $lang):?>
+            <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()): ?>
+                <tr>
+                    <td></td>
+                    <td>
+                        <?=$this->formInput($this->form->get('title_'.$lang->getIsoCode()))?>
+                        <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" />
+                    </td>
+                </tr>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <tr>
+            <td>Parent category:</td>
+            <td><?=isset($this->parentCategory) ? $this->parentCategory->getContent()->getTitle() : $this->translate('Top')?></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button class="btn btn-primary btn-xs" name="categ_form">Submit</button>
+                <small> or <a href="<?=$this->langUrl('admin/category', [
+                        'id' => isset($this->parentCategory) ? $this->parentCategory->getId() : null,
+                        'page' => $this->page,
+                    ])?>">Cancel</a></small>
+            </td>
+        </tr>
+    </table>
+    <?=$this->form()->closeTag()?>
+    <div style="height:100px;">&nbsp;</div>
+</div>

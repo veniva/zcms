@@ -1,4 +1,4 @@
-<?php use Application\Service\Invokable\Layout;
+<?php use Application\Service\Invokable;
 
 echo $this->doctype(); ?>
 <html lang="en">
@@ -34,7 +34,7 @@ echo $this->doctype(); ?>
     <div id="header">
         <div class="col-sm-2" style="padding:10px;"><a href="<?=$this->langUrl('home')?>">Home</a></div>
         <div class="col-sm-10" style="text-align: right;padding:10px;">
-        <?php foreach(Layout::getAllLangs() as $lang):?>
+        <?php foreach(Invokable\Misc::getActiveLangsArray() as $lang):?>
             <a href="<?=$this->url('home', [
                 'lang' => $lang['isoCode'],
             ])?>"><img src="<?=$this->basePath().'/img/flags/'.$lang['isoCode']?>.png" /></a>
@@ -43,7 +43,7 @@ echo $this->doctype(); ?>
     </div>
     <div class="row">
         <div class="col-sm-2">
-            <?php foreach(Layout::getTopCategories() as $category):?>
+            <?php foreach(Invokable\Layout::getTopCategories() as $category):?>
                 <div class="left_head"><a href="<?=$this->langUrl('category', ['alias' => $category['content']['alias']])?>"><?=$category['content']['title']?></a></div>
                 <div class="padded_text">
                     <?php foreach($category['listings'] as $listing):?>
@@ -61,7 +61,7 @@ echo $this->doctype(); ?>
         </div>
         <div class="col-sm-8">
             <div class="bcrumb">
-                <?php if($crumb = Layout::breadcrumb($title)): ?>
+                <?php if($crumb = Invokable\Layout::breadcrumb($title)): ?>
                     <?php $bCrumb = [];
                     foreach($crumb as $bItem):?>
                         <?php $bCrumb[] = !$bItem ? '<a href="'.$this->langUrl('home').'">'.$this->translate('Top').'</a>' : '<a href="'.$this->langUrl('category', ['alias' => $bItem['alias']]).'">'.$bItem['title'].'</a>'?>

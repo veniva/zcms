@@ -11,6 +11,7 @@ namespace Application;
 
 use Application\Service\Invokable\Misc;
 use Zend\Db\TableGateway\Feature\GlobalAdapterFeature;
+use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
@@ -21,6 +22,12 @@ class Module
 {
     private $routeMatch;
 
+    public function init(ModuleManager $moduleManager)
+    {
+        if(extension_loaded('mbstring'))
+            mb_internal_encoding("UTF-8");
+    }
+
     public function onBootstrap(MvcEvent $e)
     {
         $eventManager = $e->getApplication()->getEventManager();
@@ -28,6 +35,7 @@ class Module
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setRouteMatch'), -1);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'accessControl'), -2);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'globalLayoutVars'), -3);
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setStaticHelpers'), -4);
 
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);
@@ -84,6 +92,14 @@ class Module
                 if($alias)
                     $setArray['alias'] = $alias;
 
+                $id = $routeMatch->getParam('id');
+                if($id)
+                    $setArray['id'] = $id;
+
+                $page = $routeMatch->getParam('page');
+                if($page)
+                    $setArray['page'] = $page;
+
                 $setArray['lang'] = ($lang && $lang != 'en') ? $lang : '';
 
                 $viewModel->setVariables($setArray);
@@ -100,8 +116,6 @@ class Module
             $routeMatch = $e->getRouteMatch();
         }
         Misc::setStaticRoute($routeMatch);
-        Misc::setLangID();
-        Misc::setDefaultLanguage();
         $this->routeMatch = $routeMatch;
     }
 
@@ -158,5 +172,12 @@ class Module
         $routeMatch->setParam('action', 'in');
         if($lang)
             $routeMatch->setParam('lang', $lang);
+    }
+
+    public function setStaticHelpers()
+    {
+        Misc::setLangID();
+        Misc::setDefaultLanguage();
+        Misc::setActiveLangs();
     }
 }

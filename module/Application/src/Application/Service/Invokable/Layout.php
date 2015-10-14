@@ -11,13 +11,6 @@ namespace Application\Service\Invokable;
 
 class Layout
 {
-    public static function getAllLangs()
-    {
-        $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
-        $langEntity = Misc::getStaticServiceLocator()->get('lang-entity');
-        $languages = $entityManager->getRepository(get_class($langEntity))->getActiveLangs();
-        return $languages;
-    }
 
     public static function getTopCategories()
     {

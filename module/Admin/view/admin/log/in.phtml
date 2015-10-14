@@ -42,6 +42,6 @@ $errors = $this->formElementErrors($email);
     </div>
     <?=$this->form()->closeTag()?>
     <div class="forgotten">
-        <a href="<?=$this->url('admin', ['controller' => 'log', 'action' => 'forgotten'])?>"><?=$this->translate('Password forgotten')?></a>
+        <a href="<?=$this->url('admin/default', ['controller' => 'log', 'action' => 'forgotten'])?>"><?=$this->translate('Password forgotten')?></a>
     </div>
 </div>

@@ -8,36 +8,55 @@
 
 namespace Application\Model\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Zend\Form\Annotation;
 
 /**
- * Class Category
- * @package Application\Model\Entity
+ * Class CategoryContent
+ * @Annotation\Name("category")
+ * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ClassMethods")
  *
  * @Entity @Table(name="category_content")
  */
 class CategoryContent
 {
     /**
+     * @Annotation\Exclude()
+     *
      * @Id @GeneratedValue @Column(type="integer")
      */
     protected $id;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @ManyToOne(targetEntity="Category", inversedBy="content")
      */
     protected $category;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @Column(type="integer", name="lang_id")
      */
     protected $langId;
 
     /**
+     * @Annotation\Type("text")
+     * @Annotation\Filter({"name": "StripTags"})
+     * @Annotation\Filter({"name": "StringTrim"})
+     * @Annotation\Options({"label": "Alias"})
+     *
      * @Column(type="string")
      */
     protected $alias;
 
     /**
+     * @Annotation\Type("text")
+     * @Annotation\Filter({"name": "StripTags"})
+     * @Annotation\Filter({"name": "StringTrim"})
+     * @Annotation\Options({"label": "Name"})
+     * @Annotation\Attributes({"required": true})
+     *
      * @Column(type="string")
      */
     protected $title;
@@ -57,11 +76,11 @@ class CategoryContent
         return $this->category;
     }
 
-//    public function setCategory(Category $category)
-//    {
-//        $category->setCategoryContent($this);
-//        $this->category = $category;
-//    }
+    public function setCategory(Category $category)
+    {
+        $category->setCategoryContent($this);
+        $this->category = $category;
+    }
 
     public function getLangId()
     {

@@ -9,6 +9,7 @@
 namespace Application\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Application\Service\Invokable\Misc;
 
 /**
  * Class Category
@@ -108,19 +109,29 @@ class Category
         $this->parentId = $parentId;
     }
 
-    public function getContent($langId = 1)//V_TODO set $langId to be cookie or session or sort of
+    /**
+     * @param null $langId If null an entity on the default language is returned; if false a collection of all entities is returned
+     * @return \Application\Model\Entity\CategoryContent|\Doctrine\ORM\PersistentCollection Either a single entity or a collection of entities
+     */
+    public function getContent($langId = null)
     {
-        foreach($this->content as $content){
-            if($content->getLangId() == $langId){
-                return $content;
+        if(is_null($langId))
+            $langId = Misc::getDefaultLanguageID();
+        //return a content in concrete language only if desired
+        if($langId){
+            foreach($this->content as $content){
+                if($content->getLangId() == $langId){
+                    return $content;//return single entity
+                }
             }
         }
-        return $this->content[0];//return the main language if no match
+
+        return $this->content;//return collection of content
     }
 
     public function setCategoryContent(CategoryContent $categoryContent)
     {
-        $this->content = $categoryContent;
+        $this->content[] = $categoryContent;
     }
 
     public function setToListing(Listing $listing)

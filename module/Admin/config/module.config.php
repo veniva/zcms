@@ -24,7 +24,7 @@ return array(
                     'default' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route'    => '/[:lang/][:controller[/][:action[/]][:id]]',
+                            'route'    => '/[:lang/][:controller[/:action][/:id]]',
                             'constraints' => array(
                                 'lang'          => '[a-zA-Z]{2}',
                                 'controller'    => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -42,10 +42,11 @@ return array(
                     'category' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/category[/:lang][/:parent_id[/:page]]',
+                            'route' => '[/:lang]/category[/:action][/:id[/:page]]',
                             'constraints' => array(
                                 'lang'      => '[a-zA-Z]{2}',
-                                'parent_id' => '[0-9]*',
+                                'action'    => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'        => '[0-9]*',
                                 'page'      => '[0-9]*',
                             ),
                             'defaults' => array(
@@ -53,7 +54,7 @@ return array(
                                 'controller'    => 'category',
                                 'action'        => 'list',
                                 'lang'          => 'en',
-                                'parent_id'     => 0,
+                                'id'            => 0,
                                 'page'          => 1,
                             ),
                         ),
@@ -78,13 +79,17 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Admin\Controller\Index' => 'Admin\Controller\IndexController',
-            'Admin\Controller\Category' => 'Admin\Controller\CategoryController',
         ),
         'factories' => array(
             'Admin\Controller\Log' => function($sm){
                 $translator = $sm->getServiceLocator()->get('translator');
                 return new \Admin\Controller\LogController($translator);
             },
+            'Admin\Controller\Category' => function($sm){
+                $translator = $sm->getServiceLocator()->get('translator');
+                return new \Admin\Controller\CategoryController($translator);
+            },
+
         ),
     ),
     'view_manager' => array(

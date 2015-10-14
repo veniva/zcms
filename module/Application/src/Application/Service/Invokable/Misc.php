@@ -8,6 +8,7 @@
 
 namespace Application\Service\Invokable;
 
+use Doctrine\Common\Collections\Criteria;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class Misc
@@ -16,12 +17,11 @@ class Misc
      * @var ServiceLocatorInterface
      */
     protected static $staticServiceLocator;
-
     protected static $staticRoute;
-
     protected static $langID;
-
     protected static $defaultLangID;
+    protected static $defaultLang;
+    protected static $languages;
 
     /**
      * @return mixed
@@ -58,6 +58,31 @@ class Misc
         return $admin->getEmail();
     }
 
+    public static function setActiveLangs()
+    {
+        $entityManager = self::getStaticServiceLocator()->get('entity-manager');
+        $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
+        $criteria = new Criteria();
+        $criteria->where($criteria->expr()->gt('status', 0));
+        self::$languages = $entityManager->getRepository(get_class($languageEntity))->matching($criteria);
+    }
+
+    public static function getActiveLangs()
+    {
+        return self::$languages;
+    }
+
+    /**
+     * @deprecated
+     */
+    public static function getActiveLangsArray()
+    {
+        $entityManager = self::getStaticServiceLocator()->get('entity-manager');
+        $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
+        $languages = $entityManager->getRepository(get_class($languageEntity))->getActiveLangs();//v_todo - also remove the repo class
+        return $languages;
+    }
+
     public static function setLangID()
     {
         $langISO = self::$staticRoute->getParam('lang', 'en');
@@ -78,10 +103,28 @@ class Misc
         $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
         $language = $entityManager->getRepository(get_class($languageEntity))->findOneByStatus(2);
         self::$defaultLangID = $language->getId();
+        self::$defaultLang = $language;
     }
 
+    /**
+     * @return \Application\Model\Entity\Lang
+     */
+    public static function getDefaultLanguage()
+    {
+        return self::$defaultLang;
+    }
+
+    /**
+     * @deprecated Use getDefaultLanguage()->getId() instead
+     */
     public static function getDefaultLanguageID()
     {
         return self::$defaultLangID;
+    }
+
+    public static function alias($str) {
+        $str = preg_replace('/[\s]+/i', '-', str_replace(',', '', $str));
+        $alias = extension_loaded('mbstring') ? mb_strtolower($str) : strtolower($str);
+        return $alias;
     }
 }

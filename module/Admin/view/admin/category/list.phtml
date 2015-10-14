@@ -1,8 +1,8 @@
-<?php use Application\Service\Invokable\Layout;?>
+<?php use Application\Service\Invokable\Layout; ?>
 <div class="header_cont">
     <div class="title"><?=$this->translate($this->title)?></div>
     <div style="float:right;">
-        <button type="button" class="btn btn-primary btn-xs"><?=$this->translate('New')?></button>
+        <button type="button" id="add_button" class="btn btn-primary btn-xs"><?=$this->translate('New')?></button>
     </div>
 </div>
 <div class="body_cont">
@@ -12,7 +12,7 @@
             foreach($crumb as $item):?>
                 <?php $items[] = !$item ?
                     '<a href="'.$this->langUrl('admin/category').'">'.$this->translate('Top').'</a>' :
-                    '<a href="'.$this->langUrl('admin/category', ['parent_id' => $item['id']]).'">'.$item['title'].'</a>'?>
+                    '<a href="'.$this->langUrl('admin/category', ['id' => $item['id']]).'">'.$item['title'].'</a>'?>
             <?php endforeach; ?>
             <?=implode(' &gt; ', $items)?> &gt; <?=$title?>
         <?php else:?>
@@ -30,7 +30,7 @@
             <tr>
                 <td><?php echo $category->getId(); ?></td>
                 <td>
-                    <a href="<?=$this->langUrl('admin/category', array('parent_id' => $category->getId()))?>">
+                    <a href="<?=$this->langUrl('admin/category', array('id' => $category->getId()))?>">
                         <?php echo $category->getContent()->getTitle(); ?>
                     </a>
                     <small><?='(' . $category->getChildrenCount() . ')'?></small>
@@ -39,25 +39,36 @@
                     <?=$category->getSort(); ?>
 <!--                    <a href="--><?php //echo link_url('order/order_categs/' . $cid.'/'.$type); ?><!--">-->
                     <a class="img" href="<?=$this->url('admin')?>">
-                        <img src="<?=$this->url('home')?>/img/admin/reorder.png" title="<?=$this->translate('re-order')?>" />
+                        <img src="<?=$this->basePath()?>/img/admin/reorder.png" title="<?=$this->translate('re-order')?>" />
                     </a>
                 </td>
                 <td>
                     <?php if ($category->getId() != 17): ?>
 <!--                        <a href="--><?php //echo link_url('categories/edit/' . $category['id'].'/'.$cpage_id); ?><!--">-->
-                        <a class="img" href="<?=$this->url('admin')?>">
-                            <img src="<?=$this->url('home')?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
+                        <a class="img" href="<?=$this->langUrl('admin/category', array(
+                            'action' => 'edit',
+                            'id' => $category->getId(),
+                            'page' => $this->page,
+                        ))?>">
+                            <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
                         </a>
 <!--                        <a href="--><?php //echo link_url('categories/delete', array('cid' => $category['content']['id'])); ?><!--">-->
-                        <a class="img" href="<?=$this->url('admin')?>">
-                            <img src="<?=$this->url('home')?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
+                        <a class="img" href="<?=$this->langUrl('admin')?>">
+                            <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
                         </a>
                     <?php else: ?>
-                        <img src="<?=$this->url('home')?>/img/admin/lock.png" title="<?=$this->translate('locked')?>" />
+                        <img src="<?=$this->basePath()?>/img/admin/lock.png" title="<?=$this->translate('locked')?>" />
                     <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>
     </table>
-    <?=$this->paginationControl($this->categories, 'Sliding', 'paginator/category_sliding', ['route' => 'admin/category', 'parent_id' => $this->parent_id])?>
+    <?=$this->paginationControl($this->categories, 'Sliding', 'paginator/category_sliding', [
+        'route' => 'admin/category',
+        'id' => $this->parent_id])?>
 </div>
+<script type="text/javascript">
+    $('#add_button').click(function(){
+        location.href='<?=$this->langUrl('admin/category', ['action' => 'add', 'id' => $this->parent_id])?>';
+    });
+</script>

@@ -25,9 +25,9 @@
                 <span class="text">
                     <?= $this->translate('Language') ?>:
                     <select name="lang" onChange="switchLanguage(this.value)">
-                        <?php foreach(Invokable\Layout::getAllLangs() as $lang):
+                        <?php foreach(Invokable\Misc::getActiveLangsArray() as $lang):
                             $selected = Invokable\Misc::getLangID() == $lang['id'] ? 'selected="selected"' : '';?>
-                            <option value="<?=$this->url('admin', [
+                            <option value="<?=$this->url('admin/default', [
                                 'controller' => 'log',
                                 'action' => $this->action,
                                 'lang' => $lang['isoCode']])?>" <?=$selected?>><?=$lang['name']?></option>

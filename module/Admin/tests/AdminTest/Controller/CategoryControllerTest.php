@@ -29,7 +29,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $serviceManager = Bootstrap::getServiceManager();
-        $this->controller = new CategoryController();
+        $this->controller = new CategoryController(new \Zend\i18n\Translator\Translator());
         $this->request    = new Request();
         $this->routeMatch = new RouteMatch(array('controller' => 'category'));
         $this->event      = new MvcEvent();
@@ -46,6 +46,17 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
     public function testIndexActionCanBeAccessed()
     {
         $this->routeMatch->setParam('action', 'index');
+
+        $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testEditActionCanBeAccessed()
+    {
+        $this->routeMatch->setParam('action', 'edit');
+        $this->routeMatch->setParam('id', 17);//requires an actual category ID
 
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();

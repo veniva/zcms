@@ -112,9 +112,6 @@ return array(
             'lang-entity' => 'Application\Model\Entity\Lang',
             'auth-adapter' => 'Application\Authentication\Adapter',
         ),
-        'shared' => array(
-            'user-entity' => false,
-        ),
         'initializers' => array(
             'Application\Service\Initializer\Password',
         ),
