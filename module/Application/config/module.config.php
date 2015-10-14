@@ -115,6 +115,15 @@ return array(
         'initializers' => array(
             'Application\Service\Initializer\Password',
         ),
+        'shared' => array(
+            'listing-entity' => false,
+            'listing-content-entity' => false,
+            'category-entity' => false,
+            'category-content-entity' => false,
+            'category-relations-entity' => false,
+            'user-entity' => false,
+            'lang-entity' => false,
+        ),
     ),
     'translator' => array(
         'locale' => 'en_US',

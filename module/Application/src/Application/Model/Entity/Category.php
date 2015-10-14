@@ -26,17 +26,17 @@ class Category
     /**
      * @Column(type="integer")
      */
-    protected $type;
+    protected $type = 1;
 
     /**
      * @Column(type="integer")
      */
-    protected $sort;
+    protected $sort = 0;
 
     /**
      * @Column(type="integer")
      */
-    protected $children_count;
+    protected $children_count = 0;
 
     /**
      * @Column(type="integer", name="parent_id")
@@ -116,7 +116,7 @@ class Category
     public function getContent($langId = null)
     {
         if(is_null($langId))
-            $langId = Misc::getDefaultLanguageID();
+            $langId = Misc::getDefaultLanguage()->getId();
         //return a content in concrete language only if desired
         if($langId){
             foreach($this->content as $content){

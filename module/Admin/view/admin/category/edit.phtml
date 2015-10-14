@@ -28,7 +28,9 @@ $this->form->prepare();
         <?php endforeach; ?>
         <tr>
             <td>Parent category:</td>
-            <td><?=isset($this->parentCategory) ? $this->parentCategory->getContent()->getTitle() : $this->translate('Top')?></td>
+            <td><?=($this->parentCategory instanceof \Application\Model\Entity\Category) ?
+                    $this->parentCategory->getContent()->getTitle() :
+                    $this->translate('Top')?></td>
         </tr>
         <tr>
             <td colspan="2">

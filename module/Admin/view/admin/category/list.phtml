@@ -69,6 +69,6 @@
 </div>
 <script type="text/javascript">
     $('#add_button').click(function(){
-        location.href='<?=$this->langUrl('admin/category', ['action' => 'add', 'id' => $this->parent_id])?>';
+        location.href='<?=$this->langUrl('admin/category', ['action' => 'add', 'id' => $this->parent_id, 'page' => $this->page,])?>';
     });
 </script>

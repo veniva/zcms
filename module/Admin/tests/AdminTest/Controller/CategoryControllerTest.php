@@ -53,10 +53,17 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function testEditActionCanBeAccessed()
+    public function testEditAndAddActionsCanBeAccessed()
     {
         $this->routeMatch->setParam('action', 'edit');
         $this->routeMatch->setParam('id', 17);//requires an actual category ID
+
+        $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $this->routeMatch->setParam('action', 'add');
 
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();

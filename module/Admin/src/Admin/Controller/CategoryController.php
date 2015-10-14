@@ -3,12 +3,14 @@
 namespace Admin\Controller;
 
 
-use Admin\Form\Category;
+use Admin\Form\Category as CategoryForm;
+use Application\Model\Entity\Category;
 use Application\Model\Entity\CategoryContent;
 use Application\Service\Invokable\Misc;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\i18n\Translator\Translator;
 use Zend\Stdlib\ArrayUtils;
+use Zend\View\Model\ViewModel;
 
 class CategoryController extends AbstractActionController
 {
@@ -51,7 +53,7 @@ class CategoryController extends AbstractActionController
         $id = $this->params()->fromRoute('id', 0);
         $page = $this->params()->fromRoute('page', 1);
         if(empty($id))
-            $this->redir()->toRoute('admin/category', ['action' => 'add', 'page' => $page]);
+            $this->redir()->toRoute('admin/category');
 
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
@@ -65,7 +67,7 @@ class CategoryController extends AbstractActionController
 
         //foreach active language add a content title field to the form
         $languages = Misc::getActiveLangs();
-        $formClass = new Category($categoryContentDefaultLanguageEntity, $languages);
+        $formClass = new CategoryForm($categoryContentDefaultLanguageEntity, $languages);
         $form = $formClass->getForm();
 
         $contentLanguageEntities = [];
@@ -92,7 +94,7 @@ class CategoryController extends AbstractActionController
                 $entityManager->persist($categoryContentDefaultLanguageEntity);
 
                 foreach($languages as $language) {
-                    if ($language->getId() != Misc::getDefaultLanguageID()) {
+                    if ($language->getId() != Misc::getDefaultLanguage()->getId()) {
                         $post['alias'] = Misc::alias($post['title_'.$language->getIsoCode()]);
                         $post['title'] = $post['title_'.$language->getIsoCode()];
 
@@ -140,6 +142,72 @@ class CategoryController extends AbstractActionController
 
     public function addAction()
     {
+        $parentCategoryID = $this->params()->fromRoute('id', 0);
+        $page = $this->params()->fromRoute('page', 1);
 
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $categoryEntity = new Category();
+        $categoryEntity->setParentId($parentCategoryID);
+        $categoryContentEntity = new CategoryContent();
+        $categoryContentEntity->setLangId(Misc::getDefaultLanguage()->getId());
+        $categoryContentEntity->setCategory($categoryEntity);
+
+        $parentCategory = ($parentCategoryID) ?
+            $entityManager->getRepository(get_class($categoryEntity))->findOneById($parentCategoryID) :
+            null;
+
+        //foreach active language add a content title field to the form
+        $languages = Misc::getActiveLangs();
+        $formClass = new CategoryForm($categoryContentEntity, $languages);
+        $form = $formClass->getForm();
+        $form->bind($categoryContentEntity);
+
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $post = ArrayUtils::iteratorToArray($request->getPost());
+            $post['alias'] = Misc::alias($post['title']);
+            $form->setData($post);
+            if($form->isValid()){
+                $entityManager->persist($categoryEntity);
+                $entityManager->persist($categoryContentEntity);
+
+                foreach($languages as $language){
+                    if ($language->getId() != Misc::getDefaultLanguage()->getId()) {
+                        $post['alias'] = Misc::alias($post['title_'.$language->getIsoCode()]);
+                        $post['title'] = $post['title_'.$language->getIsoCode()];
+
+                        if(!empty($post['title'])){
+                            $categoryContentLanguageEntity = new CategoryContent();//new entry
+                            $categoryContentLanguageEntity->setCategory($categoryEntity);
+                            $categoryContentLanguageEntity->setLangId($language->getId());
+
+                            $form->bind($categoryContentLanguageEntity);
+                            $form->setData($post);
+                            if($form->isValid()){
+                                $entityManager->persist($categoryContentLanguageEntity);
+                            }
+                        }
+                    }
+                }
+                $entityManager->flush();
+                $this->flashMessenger()->addSuccessMessage($this->translator->translate('The new category was added successfully'));
+                $this->redir()->toRoute('admin/category', [
+                    'id' => $parentCategoryID,
+                    'page' => $page,
+                ]);
+            }else{
+                $this->flashMessenger()->addErrorMessage($this->translator->translate('There was an error in the new category name on the default language'));
+                $this->redirect()->toUrl($_SERVER['REQUEST_URI']);//redirect to the same URL
+            }
+        }
+
+        $viewModel = new ViewModel(array(
+            'form' => $form,
+            'parentCategory' => $parentCategory,
+            'page' => $page,
+        ));
+        $viewModel->setTemplate('admin/category/edit');
+
+        return $viewModel;
     }
 }
