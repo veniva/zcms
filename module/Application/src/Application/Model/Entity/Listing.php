@@ -22,11 +22,12 @@ class Listing
 
     /**
      * @OneToOne(targetEntity="ListingContent", mappedBy="listing")
+     * v_todo - amend this using oneToMany http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html#annref-onetomany
      */
     protected $content;
 
     /**
-     * @ManyToMany(targetEntity="Category")
+     * @ManyToMany(targetEntity="Category", mappedBy="listings")
      */
     protected $categories;
 

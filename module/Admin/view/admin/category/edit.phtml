@@ -30,7 +30,7 @@ $this->form->prepare();
             <td>Parent category:</td>
             <td><?=($this->parentCategory instanceof \Application\Model\Entity\Category) ?
                     $this->parentCategory->getContent()->getTitle() :
-                    $this->translate('Top')?></td>
+                    $this->translate('Top')?></td><!--v_todo - insert a category tree select input here-->
         </tr>
         <tr>
             <td colspan="2">

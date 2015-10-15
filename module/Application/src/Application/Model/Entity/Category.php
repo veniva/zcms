@@ -49,7 +49,7 @@ class Category
     protected $content;
 
     /**
-     * @ManyToMany(targetEntity="Listing")
+     * @ManyToMany(targetEntity="Listing", inversedBy="categories", cascade={"remove"})
      */
     protected $listings;
 

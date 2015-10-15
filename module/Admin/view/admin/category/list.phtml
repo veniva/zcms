@@ -44,7 +44,6 @@
                 </td>
                 <td>
                     <?php if ($category->getId() != 17): ?>
-<!--                        <a href="--><?php //echo link_url('categories/edit/' . $category['id'].'/'.$cpage_id); ?><!--">-->
                         <a class="img" href="<?=$this->langUrl('admin/category', array(
                             'action' => 'edit',
                             'id' => $category->getId(),
@@ -52,8 +51,9 @@
                         ))?>">
                             <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
                         </a>
-<!--                        <a href="--><?php //echo link_url('categories/delete', array('cid' => $category['content']['id'])); ?><!--">-->
-                        <a class="img" href="<?=$this->langUrl('admin')?>">
+                        <a class="img del_button" href="#" data-href="<?=$this->langUrl('admin/category', [
+                            'action' => 'delete', 'id' => $category->getId(), 'page' => $this->page,
+                        ])?>">
                             <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
                         </a>
                     <?php else: ?>
@@ -70,5 +70,11 @@
 <script type="text/javascript">
     $('#add_button').click(function(){
         location.href='<?=$this->langUrl('admin/category', ['action' => 'add', 'id' => $this->parent_id, 'page' => $this->page,])?>';
+    });
+    $('.del_button').click(function(){
+        if(confirm('<?=$this->translate('Are you sure you want to delete this category and all listings in it')?>')){
+            location.href=this.dataset.href;
+        }
+        return false;
     });
 </script>

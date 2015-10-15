@@ -55,6 +55,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
 
     public function testEditAndAddActionsCanBeAccessed()
     {
+        //test edit
         $this->routeMatch->setParam('action', 'edit');
         $this->routeMatch->setParam('id', 17);//requires an actual category ID
 
@@ -63,6 +64,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
 
+        //test add
         $this->routeMatch->setParam('action', 'add');
 
         $this->controller->dispatch($this->request);

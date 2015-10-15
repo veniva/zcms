@@ -7,6 +7,7 @@ use Admin\Form\Category as CategoryForm;
 use Application\Model\Entity\Category;
 use Application\Model\Entity\CategoryContent;
 use Application\Service\Invokable\Misc;
+use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\i18n\Translator\Translator;
 use Zend\Stdlib\ArrayUtils;
@@ -209,5 +210,42 @@ class CategoryController extends AbstractActionController
         $viewModel->setTemplate('admin/category/edit');
 
         return $viewModel;
+    }
+
+    public function deleteAction()
+    {
+        $id = $this->params()->fromRoute('id', 0);
+        $page = $this->params()->fromRoute('page', 1);
+        if(empty($id))
+            $this->redir()->toRoute('admin/category');
+
+        $serviceLocator = $this->getServiceLocator();
+        $entityManager = $serviceLocator->get('entity-manager');
+
+        $categoryEntity = new Category();
+        $category = $this->getCategoryAndParent($id, $entityManager, $categoryEntity, $parentCategory);
+        $entityManager->remove($category);//contained listings are cascade removed from the ORM!!
+        $entityManager->flush();
+
+        $this->flashMessenger()->addSuccessMessage($this->translator->translate('The category and all it\'s listings was removed successfully'));
+        $this->redir()->toRoute('admin/category', [
+            'id' => isset($parentCategory) ? $parentCategory->getId() : null,
+            'page' => $page,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @param EntityManager $entityManager
+     * @param Category $categoryEntity
+     * @param $parentCategory
+     * @return mixed
+     */
+    protected function getCategoryAndParent($id, EntityManager $entityManager, Category $categoryEntity, &$parentCategory)
+    {
+        $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
+        $category = $categoryRepository->findOneById($id);
+        $parentCategory = $categoryRepository->findOneById($category->getParentId());
+        return $category;
     }
 }
