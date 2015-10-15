@@ -1,7 +1,9 @@
 <?php
 
 namespace Application\Model\Entity;
+
 use Doctrine\Common\Collections\ArrayCollection;
+use Application\Service\Invokable\Misc;
 
 /**
  * Class Listing
@@ -21,8 +23,7 @@ class Listing
     protected $sort;
 
     /**
-     * @OneToOne(targetEntity="ListingContent", mappedBy="listing")
-     * v_todo - amend this using oneToMany http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html#annref-onetomany
+     * @OneToMany(targetEntity="ListingContent", mappedBy="listing", cascade={"remove"})
      */
     protected $content;
 
@@ -62,8 +63,18 @@ class Listing
         $this->categories[] = $category;
     }
 
-    public function getContent()
+    public function getContent($langId = null)
     {
+        if(is_null($langId))
+            $langId = Misc::getDefaultLanguage()->getId();
+        //return a content in concrete language only if desired
+        if($langId){
+            foreach($this->content as $content){
+                if($content->getLangId() == $langId){
+                    return $content;//return single entity
+                }
+            }
+        }
         return $this->content;
     }
 

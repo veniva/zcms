@@ -37,13 +37,16 @@ class CategoryRepository extends ORM\EntityRepository
             WHERE c.type = $type
             AND c.parentId = $parent
             AND co.langId = $langId
-            AND lc.lang = $langId
+            AND lc.langId = $langId
             ORDER BY c.id, c.sort, l.sort, l.id
 TAG;
         $query = $this->getEntityManager()->createQuery($dql);
         $categories = $query->getArrayResult();
         foreach($categories as &$category){
             $category['content'] = $category['content'][0];
+            foreach($category['listings'] as &$listing){
+                $listing['content'] = $listing['content'][0];
+            }
         }
         return $categories;
     }
