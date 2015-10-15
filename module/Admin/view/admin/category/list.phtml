@@ -72,7 +72,7 @@
         location.href='<?=$this->langUrl('admin/category', ['action' => 'add', 'id' => $this->parent_id, 'page' => $this->page,])?>';
     });
     $('.del_button').click(function(){
-        if(confirm('<?=$this->translate('Are you sure you want to delete this category and all listings in it')?>')){
+        if(confirm('<?=$this->translate('Are you sure you want to delete this category and all listings in it?')?>')){
             location.href=this.dataset.href;
         }
         return false;

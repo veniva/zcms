@@ -109,3 +109,18 @@ msgstr "Ultimo"
 
 msgid "Category"
 msgstr "Categoría"
+
+msgid "The new category was added successfully"
+msgstr "La categoría nueva ha sido añadida con exito"
+
+msgid "The category has been edited successfully"
+msgstr "La categoría ha sido editada con exito"
+
+msgid "There was an error in the new category name on the default language"
+msgstr "Ha ocurrido un error en el nombre de la categoría en el idioma predeterminado"
+
+msgid "Are you sure you want to delete this category and all listings in it?"
+msgstr "Esta seguro que quiere eliminar esta categoría y todos elementos que le pertenezcan?"
+
+msgid "The category and all listings in it was removed successfully"
+msgstr "La categoría y todos los elementos dentro de la misma han sido eliminados con exito"

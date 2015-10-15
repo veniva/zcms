@@ -58,11 +58,8 @@ class CategoryController extends AbstractActionController
 
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
-        $categoryEntity = $serviceLocator->get('category-entity');
-
-        $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
-        $category = $categoryRepository->findOneById($id);
-        $parentCategory = $categoryRepository->findOneById($category->getParentId());
+        $categoryEntity = new Category();
+        $category = $this->getCategoryAndParent($id, $entityManager, $categoryEntity, $parentCategory);
 
         $categoryContentDefaultLanguageEntity = $category->getContent();
 
@@ -227,7 +224,7 @@ class CategoryController extends AbstractActionController
         $entityManager->remove($category);//contained listings are cascade removed from the ORM!!
         $entityManager->flush();
 
-        $this->flashMessenger()->addSuccessMessage($this->translator->translate('The category and all it\'s listings was removed successfully'));
+        $this->flashMessenger()->addSuccessMessage($this->translator->translate('The category and all listings in it was removed successfully'));
         $this->redir()->toRoute('admin/category', [
             'id' => isset($parentCategory) ? $parentCategory->getId() : null,
             'page' => $page,
