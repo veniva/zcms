@@ -39,6 +39,20 @@ class Category
     protected $children_count = 0;
 
     /**
+     * @OneToMany(targetEntity="CategoryRelations", mappedBy="parent", cascade={"all"})
+     */
+    protected $childrenCategoryRelations;
+
+    /**
+     * @ManyToMany(targetEntity="Category", cascade={"all"})
+     * @JoinTable(name="category_rel",
+     *      joinColumns={@JoinColumn(name="parent_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="category_id", referencedColumnName="id")}
+     *      )
+     */
+    protected $children;
+
+    /**
      * @Column(type="integer", name="parent_id")
      */
     protected $parentId;
@@ -146,4 +160,22 @@ class Category
     {
         return $this->listings;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param mixed $children
+     */
+    public function setChildren($children)
+    {
+        $this->children = $children;
+    }
+
+
 }

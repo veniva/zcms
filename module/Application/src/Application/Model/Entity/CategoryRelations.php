@@ -24,7 +24,7 @@ class CategoryRelations
     protected $category;
 
     /**
-     * @ManyToOne(targetEntity="Category")
+     * @ManyToOne(targetEntity="Category", inversedBy="childrenCategoryRelations")
      */
     protected $parent;
 
