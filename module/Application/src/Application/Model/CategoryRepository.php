@@ -10,6 +10,8 @@ namespace Application\Model;
 
 
 use Application\Model\Entity\Category;
+use Application\Model\Entity\CategoryRelations;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM;
 use Zend\Paginator\Paginator;
 
@@ -142,5 +144,27 @@ TAG;
         $result =  reset($results);
         $result['content'] = $result['content'][0];
         return $result;
+    }
+
+    public function getParentCategories(Category $category, Category $parentCategory)
+    {
+        $relatedParents = $parentCategory->getRelatedParents();
+        $relatedParentCategories = new ArrayCollection();
+        foreach($relatedParents as $relatedParent){
+            $categRelations = $this->setNewCategoryRelationsEntity($category, $relatedParent->getParent());
+            $relatedParentCategories->add($categRelations);
+        }
+        $categRelations = $this->setNewCategoryRelationsEntity($category, $parentCategory);
+        $relatedParentCategories->add($categRelations);
+
+        return $relatedParentCategories;
+    }
+
+    protected function setNewCategoryRelationsEntity(Category $category, Category $parent)
+    {
+        $categRelations = new CategoryRelations();
+        $categRelations->setCategory($category);
+        $categRelations->setParent($parent);
+        return $categRelations;
     }
 }

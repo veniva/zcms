@@ -19,12 +19,12 @@ class CategoryRelations
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="Category")
+     * @ManyToOne(targetEntity="Category", inversedBy="relatedParents")
      */
     protected $category;
 
     /**
-     * @ManyToOne(targetEntity="Category", inversedBy="childrenCategoryRelations")
+     * @ManyToOne(targetEntity="Category", inversedBy="relatedChildren")
      */
     protected $parent;
 

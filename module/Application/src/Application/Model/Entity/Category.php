@@ -39,12 +39,17 @@ class Category
     protected $children_count = 0;
 
     /**
-     * @OneToMany(targetEntity="CategoryRelations", mappedBy="parent", cascade={"all"})
+     * @OneToMany(targetEntity="CategoryRelations", mappedBy="parent", cascade={"remove"})
      */
-    protected $childrenCategoryRelations;
+    protected $relatedChildren;
 
     /**
-     * @ManyToMany(targetEntity="Category", cascade={"all"})
+     * @OneToMany(targetEntity="CategoryRelations", mappedBy="category", cascade={"persist"})
+     */
+    protected $relatedParents;
+
+    /**
+     * @ManyToMany(targetEntity="Category", cascade={"remove"})
      * @JoinTable(name="category_rel",
      *      joinColumns={@JoinColumn(name="parent_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="category_id", referencedColumnName="id")}
@@ -70,6 +75,7 @@ class Category
     public function __construct()
     {
         $this->listings = new ArrayCollection();
+        $this->relatedParents = new ArrayCollection();
     }
 
     public function getId()
@@ -175,6 +181,38 @@ class Category
     public function setChildren($children)
     {
         $this->children = $children;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRelatedChildren()
+    {
+        return $this->relatedChildren;
+    }
+
+    /**
+     * @param mixed $relatedChildren
+     */
+    public function setRelatedChildren($relatedChildren)
+    {
+        $this->relatedChildren = $relatedChildren;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRelatedParents()
+    {
+        return $this->relatedParents;
+    }
+
+    /**
+     * @param mixed $relatedParents
+     */
+    public function setRelatedParents(ArrayCollection $relatedParents)
+    {
+        $this->relatedParents = $relatedParents;
     }
 
 

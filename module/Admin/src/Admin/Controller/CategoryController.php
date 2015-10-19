@@ -146,13 +146,20 @@ class CategoryController extends AbstractActionController
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $categoryEntity = new Category();
         $categoryEntity->setParentId($parentCategoryID);
+
+        $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
+        $parentCategory = ($parentCategoryID) ?
+            $categoryRepository->findOneById($parentCategoryID) :
+            null;
+
+        if($parentCategory){
+            $relatedParentCategories = $categoryRepository->getParentCategories($categoryEntity, $parentCategory);
+            $categoryEntity->setRelatedParents($relatedParentCategories);
+        }
+
         $categoryContentEntity = new CategoryContent();
         $categoryContentEntity->setLangId(Misc::getDefaultLanguage()->getId());
         $categoryContentEntity->setCategory($categoryEntity);
-
-        $parentCategory = ($parentCategoryID) ?
-            $entityManager->getRepository(get_class($categoryEntity))->findOneById($parentCategoryID) :
-            null;
 
         //foreach active language add a content title field to the form
         $languages = Misc::getActiveLangs();
