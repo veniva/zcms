@@ -33,7 +33,7 @@
                     <a href="<?=$this->langUrl('admin/category', array('id' => $category->getId()))?>">
                         <?php echo $category->getContent()->getTitle(); ?>
                     </a>
-                    <small><?='(' . $category->getChildrenCount() . ')'?></small>
+                    <small><?='(' . $this->categoryRepo->countChildren($category->getId()) . ')'?></small>
                 </td>
                 <td>
                     <?=$category->getSort(); ?>

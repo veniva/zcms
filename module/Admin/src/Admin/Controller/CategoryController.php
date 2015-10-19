@@ -46,6 +46,7 @@ class CategoryController extends AbstractActionController
             'parent_id' => $parent,
             'category_alias' => $categoryAlias,
             'page' => $page,
+            'categoryRepo' => $categoryRepository
         ];
     }
 

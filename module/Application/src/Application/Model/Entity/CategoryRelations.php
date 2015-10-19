@@ -9,6 +9,7 @@
 namespace Application\Model\Entity;
 
 /**
+ * V_TODO - Possible replacement of this entity with Join table ORM management
  * @Entity @Table(name="category_rel")
  */
 class CategoryRelations

@@ -167,4 +167,14 @@ TAG;
         $categRelations->setParent($parent);
         return $categRelations;
     }
+
+    public function countChildren($id)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select($qb->expr()->count('ch'))
+            ->leftJoin('c.children', 'ch')
+            ->where('c.id ='.$id);
+        $query = $qb->getQuery();
+        return $query->getSingleScalarResult();
+    }
 }

@@ -34,11 +34,6 @@ class Category
     protected $sort = 0;
 
     /**
-     * @Column(type="integer")
-     */
-    protected $children_count = 0;
-
-    /**
      * @OneToMany(targetEntity="CategoryRelations", mappedBy="parent", cascade={"remove"})
      */
     protected $relatedChildren;
@@ -101,16 +96,6 @@ class Category
     public function setSort($sort)
     {
         $this->sort = $sort;
-    }
-
-    public function getChildrenCount()
-    {
-        return $this->children_count;
-    }
-
-    public function setChildrenCount($count)
-    {
-        $this->children_count = $count;
     }
 
     /**
