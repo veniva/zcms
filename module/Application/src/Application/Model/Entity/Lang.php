@@ -29,6 +29,11 @@ class Lang
     protected $status;
 
     /**
+     * @OneToMany(targetEntity="CategoryContent", mappedBy="lang", cascade={"remove"})
+     */
+    protected $categoryContent;
+
+    /**
      * @return integer
      */
     public function getId()

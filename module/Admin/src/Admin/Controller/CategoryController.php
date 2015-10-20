@@ -107,7 +107,7 @@ class CategoryController extends AbstractActionController
                             $categoryContentLanguageEntity = new CategoryContent();//new entry
                             if(!empty($post['title'])){
                                 $categoryContentLanguageEntity->setCategory($category);
-                                $categoryContentLanguageEntity->setLangId($language->getId());
+                                $categoryContentLanguageEntity->setLang($language);
                             }
                         }
 
@@ -160,7 +160,7 @@ class CategoryController extends AbstractActionController
         }
 
         $categoryContentEntity = new CategoryContent();
-        $categoryContentEntity->setLangId(Misc::getDefaultLanguage()->getId());
+        $categoryContentEntity->setLang(Misc::getDefaultLanguage());
         $categoryContentEntity->setCategory($categoryEntity);
 
         //foreach active language add a content title field to the form
@@ -175,9 +175,6 @@ class CategoryController extends AbstractActionController
             $post['alias'] = Misc::alias($post['title']);
             $form->setData($post);
             if($form->isValid()){
-                $entityManager->persist($categoryEntity);
-                $entityManager->persist($categoryContentEntity);
-
                 foreach($languages as $language){
                     if ($language->getId() != Misc::getDefaultLanguage()->getId()) {
                         $post['alias'] = Misc::alias($post['title_'.$language->getIsoCode()]);
@@ -185,17 +182,17 @@ class CategoryController extends AbstractActionController
 
                         if(!empty($post['title'])){
                             $categoryContentLanguageEntity = new CategoryContent();//new entry
-                            $categoryContentLanguageEntity->setCategory($categoryEntity);
-                            $categoryContentLanguageEntity->setLangId($language->getId());
+                            $categoryContentLanguageEntity->setLang($language);
 
                             $form->bind($categoryContentLanguageEntity);
                             $form->setData($post);
                             if($form->isValid()){
-                                $entityManager->persist($categoryContentLanguageEntity);
+                                $categoryContentLanguageEntity->setCategory($categoryEntity);//set to the new category to be cascade persisted by the ORM
                             }
                         }
                     }
                 }
+                $entityManager->persist($categoryEntity);
                 $entityManager->flush();
                 $this->flashMessenger()->addSuccessMessage($this->translator->translate('The new category was added successfully'));
                 $this->redir()->toRoute('admin/category', [

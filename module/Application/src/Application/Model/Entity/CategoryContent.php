@@ -7,7 +7,6 @@
  */
 
 namespace Application\Model\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Form\Annotation;
 
 /**
@@ -35,10 +34,9 @@ class CategoryContent
 
     /**
      * @Annotation\Exclude()
-     *
-     * @Column(type="integer", name="lang_id")
+     * @ManyToOne(targetEntity="Lang", inversedBy="categoryContent")
      */
-    protected $langId;
+    protected $lang;
 
     /**
      * @Annotation\Type("text")
@@ -61,11 +59,6 @@ class CategoryContent
      */
     protected $title;
 
-    public function __construct()
-    {
-        $this->category = new ArrayCollection();
-    }
-
     public function getId()
     {
         return $this->id;
@@ -82,14 +75,14 @@ class CategoryContent
         $this->category = $category;
     }
 
-    public function getLangId()
+    public function getLang()
     {
-        return $this->langId;
+        return $this->lang;
     }
 
-    public function setLangId($langId)
+    public function setLang(Lang $lang)
     {
-        $this->langId = $langId;
+        $this->lang = $lang;
     }
 
     public function getAlias()

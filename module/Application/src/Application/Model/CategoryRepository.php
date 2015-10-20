@@ -37,7 +37,7 @@ class CategoryRepository extends ORM\EntityRepository
             JOIN l.content lc
             WHERE c.type = $type
             AND c.parent = $parent
-            AND co.langId = $langId
+            AND co.lang = $langId
             AND lc.langId = $langId
             ORDER BY c.id, c.sort, l.sort, l.id
 TAG;
@@ -62,8 +62,8 @@ TAG;
             ->join('c.listings', 'cl')
             ->join('cl.content', 'lc')
             ->where('c.id = ?1')
-            ->andWhere('co.langId = '.$displayLang)
-            ->andWhere('lc.lang = '.$displayLang);
+            ->andWhere('co.lang = '.$displayLang)
+            ->andWhere('lc.langId = '.$displayLang);
         foreach($categories as &$category){
             $categoryQueryBuilder->setParameter(1, $category['id']);
             $query = $categoryQueryBuilder->getQuery();
@@ -84,7 +84,7 @@ TAG;
             foreach($category['listings'] as &$categList){
                 foreach($listings as $listing){
                     if($categList['id'] == $listing['id']){
-                        $categList['content'] = $listing['content'];
+                        $categList['content'] = isset($listing['content'][0]) ? $listing['content'][0] : $listing['content'];
                     }
                 }
             }
@@ -136,7 +136,7 @@ TAG;
             FROM $categoryClassName c
             LEFT JOIN c.content co
             WHERE c.id = $id
-            AND co.langId = $langId
+            AND co.lang = $langId
 TAG;
         $query = $this->getEntityManager()->createQuery($dql);
         $results = $query->getArrayResult();

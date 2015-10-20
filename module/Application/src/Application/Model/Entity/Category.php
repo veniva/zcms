@@ -57,7 +57,7 @@ class Category
     protected $parent;
 
     /**
-     * @OneToMany(targetEntity="CategoryContent", mappedBy="category")
+     * @OneToMany(targetEntity="CategoryContent", mappedBy="category", cascade={"remove", "persist"})
      */
     protected $content;
 
@@ -68,8 +68,9 @@ class Category
 
     public function __construct()
     {
+        $this->children = new ArrayCollection();
+        $this->parents = new ArrayCollection();
         $this->listings = new ArrayCollection();
-        $this->relatedParents = new ArrayCollection();
     }
 
     public function getId()
@@ -124,7 +125,7 @@ class Category
         //return a content in concrete language only if desired
         if($langId){
             foreach($this->content as $content){
-                if($content->getLangId() == $langId){
+                if($content->getLang()->getId() == $langId){
                     return $content;//return single entity
                 }
             }
@@ -162,7 +163,7 @@ class Category
     /**
      * @param mixed $children
      */
-    public function setChildren($children)
+    public function setChildren(ArrayCollection $children)
     {
         $this->children = $children;
     }
@@ -178,7 +179,7 @@ class Category
     /**
      * @param mixed $parents
      */
-    public function setParents($parents)
+    public function setParents(ArrayCollection $parents)
     {
         $this->parents = $parents;
     }
