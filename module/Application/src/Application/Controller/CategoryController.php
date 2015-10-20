@@ -31,9 +31,8 @@ class CategoryController extends AbstractActionController
             $this->getResponse()->setStatusCode(404);
             return;
         }
-        $categoryID = $categoryContent->getCategory()->getId();
 
-        $subCategories = $entityManager->getRepository(get_class($categoryEntity))->findByParentId($categoryID);
+        $subCategories = $entityManager->getRepository(get_class($categoryEntity))->findByParent($categoryContent->getCategory());
 
         return new ViewModel([
             'category_content' => $categoryContent,

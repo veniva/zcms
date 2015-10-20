@@ -29,22 +29,24 @@ class Layout
             $route = Misc::getStaticRoute();
             $alias = $route->getParam('alias', null);
         }
-        if(!$alias) return '';
+        if(!$alias) return [];
 
         $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
-        $categoryRelationsEntity = Misc::getStaticServiceLocator()->get('category-relations-entity');
         $categoryContentEntity = Misc::getStaticServiceLocator()->get('category-content-entity');
 
         //if category
         $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias($alias);
-        if(!$categoryContent) return '';
+        if(!$categoryContent) return [];
 
-        $categoryRelations = $entityManager->getRepository(get_class($categoryRelationsEntity))->findByCategory($categoryContent->getCategory());
+        $categoryParents = $categoryContent->getCategory()->getParents();
         $title = $categoryContent->getTitle();
 
         $aBcrumb[] = '';//the Top category
-        foreach($categoryRelations as $categoryRelation){
-            $parentCategoryContent = $categoryRelation->getParent()->getContent();
+        foreach($categoryParents as $categoryParent){
+            if(!$categoryParent->getId())
+                break;
+
+            $parentCategoryContent = $categoryParent->getContent();
 
             if($alias != $parentCategoryContent->getAlias())
                 $aBcrumb[] = [

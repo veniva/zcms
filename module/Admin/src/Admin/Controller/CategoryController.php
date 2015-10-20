@@ -146,16 +146,17 @@ class CategoryController extends AbstractActionController
 
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $categoryEntity = new Category();
-        $categoryEntity->setParentId($parentCategoryID);
 
         $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
         $parentCategory = ($parentCategoryID) ?
             $categoryRepository->findOneById($parentCategoryID) :
             null;
 
+        $categoryEntity->setParent($parentCategory);
+
         if($parentCategory){
-            $relatedParentCategories = $categoryRepository->getParentCategories($categoryEntity, $parentCategory);
-            $categoryEntity->setRelatedParents($relatedParentCategories);
+            $relatedParentCategories = $categoryRepository->getParentCategories($parentCategory);
+            $categoryEntity->setParents($relatedParentCategories);
         }
 
         $categoryContentEntity = new CategoryContent();
@@ -250,7 +251,7 @@ class CategoryController extends AbstractActionController
     {
         $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
         $category = $categoryRepository->findOneById($id);
-        $parentCategory = $categoryRepository->findOneById($category->getParentId());
+        $parentCategory = $categoryRepository->findOneById($category->getParent()->getId());
         return $category;
     }
 }

@@ -10,7 +10,6 @@ namespace Application\Model;
 
 
 use Application\Model\Entity\Category;
-use Application\Model\Entity\CategoryRelations;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM;
 use Zend\Paginator\Paginator;
@@ -37,7 +36,7 @@ class CategoryRepository extends ORM\EntityRepository
             JOIN c.listings l
             JOIN l.content lc
             WHERE c.type = $type
-            AND c.parentId = $parent
+            AND c.parent = $parent
             AND co.langId = $langId
             AND lc.langId = $langId
             ORDER BY c.id, c.sort, l.sort, l.id
@@ -120,7 +119,7 @@ TAG;
             FROM $categoryClassName c
             LEFT JOIN c.content co
             WHERE c.type = $type
-            AND c.parentId = $parent
+            AND c.parent = $parent
             ORDER BY c.id, c.sort
 TAG;
         return $this->getEntityManager()->createQuery($dql);
@@ -146,26 +145,16 @@ TAG;
         return $result;
     }
 
-    public function getParentCategories(Category $category, Category $parentCategory)
+    public function getParentCategories(Category $parentCategory)
     {
-        $relatedParents = $parentCategory->getRelatedParents();
+        $parents = $parentCategory->getParents();
         $relatedParentCategories = new ArrayCollection();
-        foreach($relatedParents as $relatedParent){
-            $categRelations = $this->setNewCategoryRelationsEntity($category, $relatedParent->getParent());
-            $relatedParentCategories->add($categRelations);
+        foreach($parents as $parent){
+            $relatedParentCategories->add($parent);
         }
-        $categRelations = $this->setNewCategoryRelationsEntity($category, $parentCategory);
-        $relatedParentCategories->add($categRelations);
+        $relatedParentCategories->add($parentCategory);
 
         return $relatedParentCategories;
-    }
-
-    protected function setNewCategoryRelationsEntity(Category $category, Category $parent)
-    {
-        $categRelations = new CategoryRelations();
-        $categRelations->setCategory($category);
-        $categRelations->setParent($parent);
-        return $categRelations;
     }
 
     public function countChildren($id)

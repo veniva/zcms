@@ -34,17 +34,7 @@ class Category
     protected $sort = 0;
 
     /**
-     * @OneToMany(targetEntity="CategoryRelations", mappedBy="parent", cascade={"remove"})
-     */
-    protected $relatedChildren;
-
-    /**
-     * @OneToMany(targetEntity="CategoryRelations", mappedBy="category", cascade={"persist"})
-     */
-    protected $relatedParents;
-
-    /**
-     * @ManyToMany(targetEntity="Category", cascade={"remove"})
+     * @ManyToMany(targetEntity="Category", cascade={"remove", "persist"})
      * @JoinTable(name="category_rel",
      *      joinColumns={@JoinColumn(name="parent_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="category_id", referencedColumnName="id")}
@@ -53,9 +43,18 @@ class Category
     protected $children;
 
     /**
-     * @Column(type="integer", name="parent_id")
+     * @ManyToMany(targetEntity="Category", cascade={"persist"})
+     * @JoinTable(name="category_rel",
+     *      joinColumns={@JoinColumn(name="category_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="parent_id", referencedColumnName="id")}
+     *      )
      */
-    protected $parentId;
+    protected $parents;
+
+    /**
+     * @OneToOne(targetEntity="Category")
+     */
+    protected $parent;
 
     /**
      * @OneToMany(targetEntity="CategoryContent", mappedBy="category")
@@ -101,17 +100,17 @@ class Category
     /**
      * @return mixed
      */
-    public function getParentId()
+    public function getParent()
     {
-        return $this->parentId;
+        return $this->parent;
     }
 
     /**
-     * @param mixed $parentId
+     * @param mixed $parent
      */
-    public function setParentId($parentId)
+    public function setParent(Category $parent)
     {
-        $this->parentId = $parentId;
+        $this->parent = $parent;
     }
 
     /**
@@ -171,34 +170,17 @@ class Category
     /**
      * @return mixed
      */
-    public function getRelatedChildren()
+    public function getParents()
     {
-        return $this->relatedChildren;
+        return $this->parents;
     }
 
     /**
-     * @param mixed $relatedChildren
+     * @param mixed $parents
      */
-    public function setRelatedChildren($relatedChildren)
+    public function setParents($parents)
     {
-        $this->relatedChildren = $relatedChildren;
+        $this->parents = $parents;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getRelatedParents()
-    {
-        return $this->relatedParents;
-    }
-
-    /**
-     * @param mixed $relatedParents
-     */
-    public function setRelatedParents(ArrayCollection $relatedParents)
-    {
-        $this->relatedParents = $relatedParents;
-    }
-
 
 }
