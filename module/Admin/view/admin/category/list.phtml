@@ -43,22 +43,18 @@
                     </a>
                 </td>
                 <td>
-                    <?php if ($category->getId() != 17): ?>
-                        <a class="img" href="<?=$this->langUrl('admin/category', array(
-                            'action' => 'edit',
-                            'id' => $category->getId(),
-                            'page' => $this->page,
-                        ))?>">
-                            <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
-                        </a>
-                        <a class="img del_button" href="#" data-href="<?=$this->langUrl('admin/category', [
-                            'action' => 'delete', 'id' => $category->getId(), 'page' => $this->page,
-                        ])?>">
-                            <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
-                        </a>
-                    <?php else: ?>
-                        <img src="<?=$this->basePath()?>/img/admin/lock.png" title="<?=$this->translate('locked')?>" />
-                    <?php endif; ?>
+                    <a class="img" href="<?=$this->langUrl('admin/category', array(
+                        'action' => 'edit',
+                        'id' => $category->getId(),
+                        'page' => $this->page,
+                    ))?>">
+                        <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
+                    </a>
+                    <a class="img del_button" href="#" data-href="<?=$this->langUrl('admin/category', [
+                        'action' => 'delete', 'id' => $category->getId(), 'page' => $this->page,
+                    ])?>">
+                        <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
+                    </a>
                 </td>
             </tr>
         <?php endforeach; ?>
