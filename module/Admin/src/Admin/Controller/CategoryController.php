@@ -201,7 +201,7 @@ class CategoryController extends AbstractActionController
                     'page' => $page,
                 ]);
             }else{
-                $this->flashMessenger()->addErrorMessage($this->translator->translate('There was an error in the new category name on the default language'));
+                $this->flashMessenger()->addErrorMessage($form->getInputFilter()->getMessages());
                 $this->redirect()->toUrl($_SERVER['REQUEST_URI']);//redirect to the same URL
             }
         }

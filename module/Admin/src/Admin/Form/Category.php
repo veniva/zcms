@@ -52,7 +52,9 @@ class Category
                                         Validator\StringLength::TOO_LONG =>
                                             sprintf($translator->translate('The input %s is more than %%max%% characters long'),
                                                 '"'.$translator->translate('Name').' ('.$language->getIsoCode().')"')
-                                    ))))
+                                    )))
+                        ),
+                        'required' => false, //also allow empty value
                     ), 'title_'.$language->getIsoCode());
                 }
             }
@@ -101,6 +103,7 @@ class Category
                     ),
                 ),
             ),
+            'required' => false,//also allow empty value
         ), 'sort');
         $form->setInputFilter($inputFilter);
 
