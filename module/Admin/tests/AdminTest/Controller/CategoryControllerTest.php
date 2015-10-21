@@ -66,6 +66,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
 
         //test add
         $this->routeMatch->setParam('action', 'add');
+        $this->routeMatch->setParam('id', 0);
 
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();

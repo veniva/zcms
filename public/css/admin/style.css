@@ -210,3 +210,7 @@ div.icons a{
 .paginationControl{
     margin-top: 10px;
 }
+
+input.numbers{
+    width:47px;
+}

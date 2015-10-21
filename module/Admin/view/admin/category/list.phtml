@@ -23,7 +23,7 @@
         <tr>
             <th width="20">#</th>
             <th><?=$this->translate('Category')?></th>
-            <th width="20"><?=$this->translate('Order')?></th>
+            <th width="20"><?=$this->translate('Sort')?></th>
             <th width="70"><?=$this->translate('Action')?></th>
         </tr>
         <?php foreach($this->categories as $category): ?>
@@ -37,10 +37,6 @@
                 </td>
                 <td>
                     <?=$category->getSort(); ?>
-<!--                    <a href="--><?php //echo link_url('order/order_categs/' . $cid.'/'.$type); ?><!--">-->
-                    <a class="img" href="<?=$this->url('admin')?>">
-                        <img src="<?=$this->basePath()?>/img/admin/reorder.png" title="<?=$this->translate('re-order')?>" />
-                    </a>
                 </td>
                 <td>
                     <a class="img" href="<?=$this->langUrl('admin/category', array(

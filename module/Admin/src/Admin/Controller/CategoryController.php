@@ -66,7 +66,7 @@ class CategoryController extends AbstractActionController
 
         //foreach active language add a content title field to the form
         $languages = Misc::getActiveLangs();
-        $formClass = new CategoryForm($categoryContentDefaultLanguageEntity, $languages);
+        $formClass = new CategoryForm($categoryContentDefaultLanguageEntity, $languages, $this->getServiceLocator()->get('translator'));
         $form = $formClass->getForm();
 
         $contentLanguageEntities = [];
@@ -82,6 +82,7 @@ class CategoryController extends AbstractActionController
 
             }
         }
+        $form->get('sort')->setValue($category->getSort());
         $form->bind($categoryContentDefaultLanguageEntity);
 
         $request = $this->getRequest();
@@ -90,7 +91,7 @@ class CategoryController extends AbstractActionController
             $post['alias'] = Misc::alias($post['title']);
             $form->setData($post);
             if($form->isValid()){
-                $entityManager->persist($categoryContentDefaultLanguageEntity);
+                $category->setSort($form->getInputFilter()->getValue('sort'));
 
                 foreach($languages as $language) {
                     if ($language->getId() != Misc::getDefaultLanguage()->getId()) {
@@ -106,7 +107,6 @@ class CategoryController extends AbstractActionController
                         }else{
                             $categoryContentLanguageEntity = new CategoryContent();//new entry
                             if(!empty($post['title'])){
-                                $categoryContentLanguageEntity->setCategory($category);
                                 $categoryContentLanguageEntity->setLang($language);
                             }
                         }
@@ -114,11 +114,12 @@ class CategoryController extends AbstractActionController
                         $form->bind($categoryContentLanguageEntity);
                         $form->setData($post);
                         if($form->isValid()){
-                            $entityManager->persist($categoryContentLanguageEntity);
+                            $categoryContentLanguageEntity->setCategory($category);
                         }
                     }
                 }
 
+                $entityManager->persist($category);
                 $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage($this->translator->translate('The category has been edited successfully'));
@@ -127,7 +128,7 @@ class CategoryController extends AbstractActionController
                     'page' => $page,
                 ]);
             }else{
-                $this->flashMessenger()->addErrorMessage($this->translator->translate('There was an error in the new category name on the default language'));
+                $this->flashMessenger()->addErrorMessage($form->getInputFilter()->getMessages());
                 $this->redirect()->toUrl($_SERVER['REQUEST_URI']);//redirect to the same URL
             }
         }
@@ -152,11 +153,10 @@ class CategoryController extends AbstractActionController
             $categoryRepository->findOneById($parentCategoryID) :
             null;
 
-        $categoryEntity->setParent($parentCategory);
-
         if($parentCategory){
             $relatedParentCategories = $categoryRepository->getParentCategories($parentCategory);
             $categoryEntity->setParents($relatedParentCategories);
+            $categoryEntity->setParent($parentCategory);
         }
 
         $categoryContentEntity = new CategoryContent();
@@ -165,7 +165,7 @@ class CategoryController extends AbstractActionController
 
         //foreach active language add a content title field to the form
         $languages = Misc::getActiveLangs();
-        $formClass = new CategoryForm($categoryContentEntity, $languages);
+        $formClass = new CategoryForm($categoryContentEntity, $languages, $this->getServiceLocator()->get('translator'));
         $form = $formClass->getForm();
         $form->bind($categoryContentEntity);
 
@@ -175,6 +175,7 @@ class CategoryController extends AbstractActionController
             $post['alias'] = Misc::alias($post['title']);
             $form->setData($post);
             if($form->isValid()){
+                $categoryEntity->setSort($form->getInputFilter()->getValue('sort'));
                 foreach($languages as $language){
                     if ($language->getId() != Misc::getDefaultLanguage()->getId()) {
                         $post['alias'] = Misc::alias($post['title_'.$language->getIsoCode()]);
@@ -248,7 +249,8 @@ class CategoryController extends AbstractActionController
     {
         $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
         $category = $categoryRepository->findOneById($id);
-        $parentCategory = $categoryRepository->findOneById($category->getParent()->getId());
+        if($category->getParent() instanceof Category)
+            $parentCategory = $categoryRepository->findOneById($category->getParent()->getId());
         return $category;
     }
 }

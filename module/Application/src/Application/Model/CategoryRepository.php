@@ -12,6 +12,7 @@ namespace Application\Model;
 use Application\Model\Entity\Category;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM;
+use Doctrine\ORM\QueryBuilder;
 use Zend\Paginator\Paginator;
 
 class CategoryRepository extends ORM\EntityRepository
@@ -27,6 +28,7 @@ class CategoryRepository extends ORM\EntityRepository
     {
         $category = new Category();
         $categoryClassName = get_class($category);
+        $parent = $this->andCategoryParent($this->createQueryBuilder('c'), $parent);
 
         $dql = <<<TAG
             SELECT
@@ -36,7 +38,7 @@ class CategoryRepository extends ORM\EntityRepository
             JOIN c.listings l
             JOIN l.content lc
             WHERE c.type = $type
-            AND c.parent = $parent
+            AND $parent
             AND co.lang = $langId
             AND lc.langId = $langId
             ORDER BY c.id, c.sort, l.sort, l.id
@@ -110,19 +112,14 @@ TAG;
 
     protected function categoriesDQL($parent, $type)
     {
-        $category = new Category();
-        $categoryClassName = get_class($category);
-
-        $dql = <<<TAG
-            SELECT
-                c, co
-            FROM $categoryClassName c
-            LEFT JOIN c.content co
-            WHERE c.type = $type
-            AND c.parent = $parent
-            ORDER BY c.id, c.sort
-TAG;
-        return $this->getEntityManager()->createQuery($dql);
+        $qb = $this->createQueryBuilder('c');
+        $parent = $this->andCategoryParent($qb, $parent);
+        $qb->select('c', 'co')
+            ->leftJoin('c.content', 'co')
+            ->where('c.type='.$type)
+            ->andWhere($parent)
+            ->orderBy('c.id, c.sort');
+        return $qb->getQuery();
     }
 
     public  function getCategory($id, $langId = 1)
@@ -165,5 +162,10 @@ TAG;
             ->where('c.id ='.$id);
         $query = $qb->getQuery();
         return $query->getSingleScalarResult();
+    }
+
+    protected function andCategoryParent(QueryBuilder $qb, $parent)
+    {
+        return $parent = empty($parent) ? '('.$qb->expr()->isNull('c.parent').' OR c.parent=0)' : 'c.parent='.$parent;
     }
 }

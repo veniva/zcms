@@ -27,6 +27,12 @@ $this->form->prepare();
             <?php endif; ?>
         <?php endforeach; ?>
         <tr>
+            <td><label><?=$this->translate($this->form->get('sort')->getLabel())?></label></td>
+            <td>
+                <?=$this->formInput($this->form->get('sort'))?>
+            </td>
+        </tr>
+        <tr>
             <td>Parent category:</td>
             <td><?=($this->parentCategory instanceof \Application\Model\Entity\Category) ?
                     $this->parentCategory->getContent()->getTitle() :

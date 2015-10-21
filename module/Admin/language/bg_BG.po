@@ -113,17 +113,23 @@ msgstr "Последна"
 msgid "Category"
 msgstr "Категория"
 
+msgid "Name"
+msgstr "Име"
+
 msgid "The new category was added successfully"
 msgstr "Новата категория беше добавена успешно"
 
 msgid "The category has been edited successfully"
 msgstr "Категорията беше редактирана успешно"
 
-msgid "There was an error in the new category name on the default language"
-msgstr "Има грешка в името на категорията на езика по подразбиране"
+msgid "The input %s is more than %%max%% characters long"
+msgstr "Полето %s е по-дълго от позволените %%max%% символа"
 
 msgid "Are you sure you want to delete this category and all listings in it?"
 msgstr "Сигурен ли сте че искате да премахнете тази категория и всички елементи (страници) в нея?"
 
 msgid "The category and all listings in it was removed successfully"
 msgstr "Категорията и всички елементи в нея бяха премахнати успешно"
+
+msgid "The input must contain only digits"
+msgstr "Полето трябва да съдържа само цифри"
