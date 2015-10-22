@@ -127,9 +127,6 @@ class CategoryController extends AbstractActionController
                     'id' => isset($parentCategory) ? $parentCategory->getId() : null,
                     'page' => $page,
                 ]);
-            }else{
-                $this->flashMessenger()->addErrorMessage($form->getInputFilter()->getMessages());
-                $this->redirect()->toUrl($_SERVER['REQUEST_URI']);//redirect to the same URL
             }
         }
 
@@ -137,6 +134,7 @@ class CategoryController extends AbstractActionController
             'form' => $form,
             'parentCategory' => $parentCategory,
             'page' => $page,
+            'action' => 'Edit'
         ];
     }
 
@@ -200,9 +198,6 @@ class CategoryController extends AbstractActionController
                     'id' => $parentCategoryID,
                     'page' => $page,
                 ]);
-            }else{
-                $this->flashMessenger()->addErrorMessage($form->getInputFilter()->getMessages());
-                $this->redirect()->toUrl($_SERVER['REQUEST_URI']);//redirect to the same URL
             }
         }
 
@@ -210,6 +205,7 @@ class CategoryController extends AbstractActionController
             'form' => $form,
             'parentCategory' => $parentCategory,
             'page' => $page,
+            'action' => 'Add',
         ));
         $viewModel->setTemplate('admin/category/edit');
 

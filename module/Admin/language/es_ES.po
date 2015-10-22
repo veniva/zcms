@@ -8,7 +8,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 1.8.6\n"
 "Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: es_ES\n"
@@ -130,3 +130,9 @@ msgstr "La categoría y todos los elementos dentro de la misma han sido eliminad
 
 msgid "The input must contain only digits"
 msgstr "El input tiene que contener solamente numeros"
+
+msgid "Add a category"
+msgstr "Añadir categoría nueva"
+
+msgid "Edit a category"
+msgstr "Editar categoría"

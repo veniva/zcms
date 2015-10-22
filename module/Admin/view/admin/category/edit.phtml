@@ -3,7 +3,7 @@ use Application\Service\Invokable\Misc;
 $this->form->prepare();
 ?>
 <div class="header_cont">
-    <div class="title"><?=$this->translate("Edit a category")?></div>
+    <div class="title"><?=$this->translate($this->action." a category")?></div>
 </div>
 <div class="body_cont">
     <?=$this->form()->openTag($this->form)?>
@@ -13,6 +13,9 @@ $this->form->prepare();
             <td>
                 <?=$this->formInput($this->form->get('title'))?>
                 <img src="<?=$this->basePath().'/img/flags/'.Misc::getDefaultLanguage()->getIsoCode()?>.png" />
+                <div class="form-error">
+                    <?=$this->formElementErrors($this->form->get('title'))?>
+                </div>
             </td>
         </tr>
         <?php foreach(Misc::getActiveLangs() as $lang):?>
@@ -22,6 +25,9 @@ $this->form->prepare();
                     <td>
                         <?=$this->formInput($this->form->get('title_'.$lang->getIsoCode()))?>
                         <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" />
+                        <div class="form-error">
+                            <?=$this->formElementErrors($this->form->get('title_'.$lang->getIsoCode()))?>
+                        </div>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -30,6 +36,9 @@ $this->form->prepare();
             <td><label><?=$this->translate($this->form->get('sort')->getLabel())?></label></td>
             <td>
                 <?=$this->formInput($this->form->get('sort'))?>
+                <div class="form-error">
+                    <?=$this->formElementErrors($this->form->get('sort'))?>
+                </div>
             </td>
         </tr>
         <tr>
