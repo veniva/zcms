@@ -122,26 +122,6 @@ TAG;
         return $qb->getQuery();
     }
 
-    public  function getCategory($id, $langId = 1)
-    {
-        $category = new Category();
-        $categoryClassName = get_class($category);
-
-        $dql = <<<TAG
-            SELECT
-                c, co
-            FROM $categoryClassName c
-            LEFT JOIN c.content co
-            WHERE c.id = $id
-            AND co.lang = $langId
-TAG;
-        $query = $this->getEntityManager()->createQuery($dql);
-        $results = $query->getArrayResult();
-        $result =  reset($results);
-        $result['content'] = $result['content'][0];
-        return $result;
-    }
-
     public function getParentCategories(Category $parentCategory)
     {
         $parents = $parentCategory->getParents();

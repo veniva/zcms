@@ -37,8 +37,8 @@ class CategoryController extends AbstractActionController
         $categoriesPaginated = $categoryRepository->getPaginatedCategories($parent);
         $categoriesPaginated->setCurrentPageNumber($page);
 
-        $category = $parent ? $categoryRepository->getCategory($parent, $lang) : null;
-        $categoryAlias = $category ? $category['content']['alias'] : null;
+        $category = $parent ? $categoryRepository->findOneById($parent) : null;
+        $categoryAlias = $category ? $category->getContent()->getAlias() : null;
 
         return [
             'title' => 'Categories',
