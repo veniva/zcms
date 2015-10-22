@@ -40,7 +40,7 @@ class CategoryRepository extends ORM\EntityRepository
             WHERE c.type = $type
             AND $parent
             AND co.lang = $langId
-            AND lc.langId = $langId
+            AND lc.lang = $langId
             ORDER BY c.id, c.sort, l.sort, l.id
 TAG;
         $query = $this->getEntityManager()->createQuery($dql);
@@ -65,7 +65,7 @@ TAG;
             ->join('cl.content', 'lc')
             ->where('c.id = ?1')
             ->andWhere('co.lang = '.$displayLang)
-            ->andWhere('lc.langId = '.$displayLang);
+            ->andWhere('lc.lang = '.$displayLang);
         foreach($categories as &$category){
             $categoryQueryBuilder->setParameter(1, $category['id']);
             $query = $categoryQueryBuilder->getQuery();

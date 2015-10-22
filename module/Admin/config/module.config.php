@@ -6,6 +6,8 @@
  * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Admin\Controller;
 return array(
     'router' => array(
         'routes' => array(
@@ -59,6 +61,26 @@ return array(
                             ),
                         ),
                     ),
+                    'listing' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '[/:lang]/listing[/:action][/:id[/:page]]',
+                            'constraints' => array(
+                                'lang'      => '[a-zA-Z]{2}',
+                                'action'    => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'        => '[0-9]*',
+                                'page'      => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                '__NAMESPACE__' => 'Admin\Controller',
+                                'controller'    => 'listing',
+                                'action'        => 'list',
+                                'lang'          => 'en',
+                                'id'            => 0,
+                                'page'          => 1,
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),
@@ -81,15 +103,18 @@ return array(
             'Admin\Controller\Index' => 'Admin\Controller\IndexController',
         ),
         'factories' => array(
-            'Admin\Controller\Log' => function($sm){
+            'Admin\Controller\Log' => function(ServiceLocatorAwareInterface $sm){
                 $translator = $sm->getServiceLocator()->get('translator');
-                return new \Admin\Controller\LogController($translator);
+                return new Controller\LogController($translator);
             },
-            'Admin\Controller\Category' => function($sm){
+            'Admin\Controller\Category' => function(ServiceLocatorAwareInterface $sm){
                 $translator = $sm->getServiceLocator()->get('translator');
-                return new \Admin\Controller\CategoryController($translator);
+                return new Controller\CategoryController($translator);
             },
-
+            'Admin\Controller\Listing' => function(ServiceLocatorAwareInterface $sm){
+                $translator = $sm->getServiceLocator()->get('translator');
+                return new Controller\ListingController($translator);
+            },
         ),
     ),
     'view_manager' => array(

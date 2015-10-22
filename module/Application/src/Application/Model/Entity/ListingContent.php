@@ -18,9 +18,9 @@ class ListingContent
     protected $listing;
 
     /**
-     * @Column(type="integer", name="lang_id")
+     * @ManyToOne(targetEntity="Lang", inversedBy="listingContent")
      */
-    protected $langId;
+    protected $lang;
 
     /**
      * @Column(type="string")
@@ -120,18 +120,18 @@ class ListingContent
     }
 
     /**
-     * @return mixed
+     * @return Lang
      */
-    public function getLangId()
+    public function getLang()
     {
-        return $this->langId;
+        return $this->lang;
     }
 
     /**
-     * @param mixed $langId
+     * @param Lang $lang
      */
-    public function setLangId($langId)
+    public function setLang(Lang $lang)
     {
-        $this->langId = $langId;
+        $this->lang = $lang;
     }
 }

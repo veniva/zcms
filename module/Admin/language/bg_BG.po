@@ -139,3 +139,6 @@ msgstr "Добавяне на категория"
 
 msgid "Edit a category"
 msgstr "Редактиране на категория"
+
+msgid "Pages"
+msgstr "Страници"

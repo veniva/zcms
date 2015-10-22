@@ -136,3 +136,6 @@ msgstr "Añadir categoría nueva"
 
 msgid "Edit a category"
 msgstr "Editar categoría"
+
+msgid "Pages"
+msgstr "Paginas"

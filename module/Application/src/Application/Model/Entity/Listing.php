@@ -23,7 +23,7 @@ class Listing
     protected $sort;
 
     /**
-     * @OneToMany(targetEntity="ListingContent", mappedBy="listing", cascade={"remove"})
+     * @OneToMany(targetEntity="ListingContent", mappedBy="listing", cascade={"remove", "persist"})
      */
     protected $content;
 

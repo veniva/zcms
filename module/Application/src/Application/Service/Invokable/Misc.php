@@ -18,6 +18,7 @@ class Misc
      */
     protected static $staticServiceLocator;
     protected static $staticRoute;
+    protected static $lang;
     protected static $langID;
     protected static $defaultLangID;
     protected static $defaultLang;
@@ -89,9 +90,18 @@ class Misc
         $entityManager = self::getStaticServiceLocator()->get('entity-manager');
         $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
         $language = $entityManager->getRepository(get_class($languageEntity))->findOneByIsoCode($langISO);
+        self::$lang = $language;
         self::$langID = $language->getId();
     }
 
+    public static function getCurrentLang()
+    {
+        return self::$langID;
+    }
+
+    /**
+     * @deprecated Use Misc::getCurrentLang()->getId() instead
+     */
     public static function getLangID()
     {
         return self::$langID;
