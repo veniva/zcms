@@ -142,3 +142,12 @@ msgstr "Редактиране на категория"
 
 msgid "Pages"
 msgstr "Страници"
+
+msgid "Link Name"
+msgstr "Линк"
+
+msgid "Sort"
+msgstr "Подредба"
+
+msgid "Action"
+msgstr "Действие"

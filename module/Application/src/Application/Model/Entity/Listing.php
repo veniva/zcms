@@ -8,7 +8,7 @@ use Application\Service\Invokable\Misc;
 /**
  * Class Listing
  *
- * @Entity @Table(name="listings")
+ * @Entity(repositoryClass="\Application\Model\ListingRepository") @Table(name="listings")
  */
 class Listing
 {
@@ -70,7 +70,7 @@ class Listing
         //return a content in concrete language only if desired
         if($langId){
             foreach($this->content as $content){
-                if($content->getLangId() == $langId){
+                if($content->getLang()->getId() == $langId){
                     return $content;//return single entity
                 }
             }

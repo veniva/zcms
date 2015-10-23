@@ -27,7 +27,6 @@ class CategoryController extends AbstractActionController
 
     public function listAction()
     {
-        $lang = Misc::getLangID();
         $parent = $this->params()->fromRoute('id', 0);
         $page = $this->params()->fromRoute('page', 1);
         $entityManager = $this->getServiceLocator()->get('entity-manager');

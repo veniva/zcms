@@ -115,7 +115,7 @@ TAG;
         $qb = $this->createQueryBuilder('c');
         $parent = $this->andCategoryParent($qb, $parent);
         $qb->select('c', 'co')
-            ->leftJoin('c.content', 'co')
+            ->join('c.content', 'co')
             ->where('c.type='.$type)
             ->andWhere($parent)
             ->orderBy('c.id, c.sort');

@@ -139,3 +139,12 @@ msgstr "Editar categoría"
 
 msgid "Pages"
 msgstr "Paginas"
+
+msgid "Link Name"
+msgstr "Link"
+
+msgid "Sort"
+msgstr "Orden"
+
+msgid "Action"
+msgstr "Acción"

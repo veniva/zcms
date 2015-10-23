@@ -7,12 +7,35 @@
 <div class="body_cont">
     <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
         <tr>
-            <th width="20">#</th>
-            <th width="20">&nbsp;</th>
+            <th style="width: 20px">#</th>
+            <th style="width: 20px">&nbsp;</th>
             <th><?=$this->translate('Link Name')?></th>
-            <th width="20"><?=$this->translate('Category')?></th>
-            <th width="20"><?=$this->translate('Sort')?></th>
-            <th width="20"><?=$this->translate('Action')?></th>
+            <th style="width: 150px;"><?=$this->translate('Category')?></th>
+            <th style="width: 20px;"><?=$this->translate('Sort')?></th>
+            <th style="width: 20px;"><?=$this->translate('Action')?></th>
         </tr>
+        <?php foreach($this->listings as $listing): ?>
+            <tr>
+                <td><?=$listing->getId()?></td>
+                <td><input type="checkbox" name="lid[]" value="<?=$listing->getId()?>" /></td>
+                <td><?=$listing->getContent()->getLink()?></td>
+                <td>
+                    <?php foreach($listing->getCategories() as $category):?>
+                        [<?=$category->getId()?>] <?=$category->getContent()->getTitle()?>
+                    <?php endforeach; ?>
+                </td>
+                <td><?=$listing->getSort()?></td>
+                <td>
+                    <a class="img" href="<?=$this->langUrl('admin/listing', array(
+                        'action' => 'edit',
+                        'id' => $listing->getId(),
+                        'page' => $this->page,
+                    ))?>">
+                        <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
+                    </a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
     </table>
+    <?=$this->paginationControl($this->listings, 'Sliding', 'paginator/category_sliding', ['route' => 'admin/listing', 'id' => $this->parentCategory])?>
 </div>
