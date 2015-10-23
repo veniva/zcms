@@ -69,3 +69,7 @@ img_change = {
         id.src = this.oldImg;
     }
 };
+
+function goToHref(href){
+    window.location.href = href;
+}

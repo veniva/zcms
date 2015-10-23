@@ -94,9 +94,12 @@ class Misc
         self::$langID = $language->getId();
     }
 
+    /**
+     * @return \Application\Model\Entity\Lang
+     */
     public static function getCurrentLang()
     {
-        return self::$langID;
+        return self::$lang;
     }
 
     /**

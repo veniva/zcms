@@ -2,9 +2,17 @@
     <div class="title"><?=$this->translate($this->title)?></div>
     <div style="float:right;">
         <button type="button" id="add_button" class="btn btn-primary btn-xs"><?=$this->translate('New')?></button>
+        <button type="button" id="add_button" class="btn btn-primary btn-xs"><?=$this->translate('Delete')?></button>
     </div>
 </div>
 <div class="body_cont">
+    <div class="filter">
+        <label for="filter_category">Filter: </label>
+        <select id="filter_category" onChange="goToHref(this.value)">
+            <option value="">Select category</option>
+            <option value="<?=$this->langUrl('admin/listing', ['id' => 17])?>">Main</option>
+        </select>
+    </div>
     <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
         <tr>
             <th style="width: 20px">#</th>

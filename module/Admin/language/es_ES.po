@@ -148,3 +148,6 @@ msgstr "Orden"
 
 msgid "Action"
 msgstr "Acción"
+
+msgid "Delete"
+msgstr "Eliminar"

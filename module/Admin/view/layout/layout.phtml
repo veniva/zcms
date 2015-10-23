@@ -62,9 +62,9 @@
             <ul style="float:right;">
                 <li class="lang">
                     <span class="text lang">
-                        <select name="lang" onChange="switchLanguage(this.value)">
+                        <select name="lang" onChange="goToHref(this.value)">
                             <?php foreach(Invokable\Misc::getActiveLangsArray() as $lang):
-                                $selected = Invokable\Misc::getLangID() == $lang['id'] ? 'selected="selected"' : '';?>
+                                $selected = Invokable\Misc::getCurrentLang()->getId() == $lang['id'] ? 'selected="selected"' : '';?>
                                 <option value="<?=$this->url($this->route != 'admin' ? $this->route : 'admin/default', [
                                     'controller' => $this->controller,
                                     'action' => $this->action,
@@ -98,10 +98,5 @@
         </div>
         <div class="clearfix"></div>
     </div>
-    <script type="text/javascript">
-        function switchLanguage(value){
-            window.location.href = value;
-        }
-    </script>
 </body>
 </html>

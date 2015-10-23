@@ -26,7 +26,7 @@ class ListingController extends AbstractActionController
         $listingEntity = $this->getServiceLocator()->get('listing-entity');
         $listingRepository = $entityManager->getRepository(get_class($listingEntity));
 
-        $listingsPaginated = $listingRepository->getListingsPaginated();
+        $listingsPaginated = $listingRepository->getListingsPaginated($parentCategory);
         $listingsPaginated->setCurrentPageNumber($page);
 
         return [
