@@ -86,7 +86,9 @@ return array(
         ),
     ),
     'service_manager' => array(
-        'factories' => array(),
+        'factories' => array(
+            'category-tree' => 'Admin\Service\Factory\CategoryTree'
+        ),
     ),
     'translator' => array(
         'locale' => 'en_US',

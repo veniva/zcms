@@ -24,14 +24,18 @@ class ListingController extends AbstractActionController
         $page = $this->params()->fromRoute('page', 1);
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $listingEntity = $this->getServiceLocator()->get('listing-entity');
+        $categoryTree = $this->getServiceLocator()->get('category-tree');
         $listingRepository = $entityManager->getRepository(get_class($listingEntity));
 
         $listingsPaginated = $listingRepository->getListingsPaginated($parentCategory);
         $listingsPaginated->setCurrentPageNumber($page);
 
+        $categories = $categoryTree->getCategories();
+
         return [
             'title' => 'Pages',
             'listings' => $listingsPaginated,
+            'categories' => $categories,
             'parentCategory' => $parentCategory,
             'page' => $page,
         ];
