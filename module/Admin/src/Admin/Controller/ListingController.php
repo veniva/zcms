@@ -25,6 +25,8 @@ class ListingController extends AbstractActionController
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $listingEntity = $this->getServiceLocator()->get('listing-entity');
         $categoryTree = $this->getServiceLocator()->get('category-tree');
+
+        /* @var \Application\Model\ListingRepository $listingRepository */
         $listingRepository = $entityManager->getRepository(get_class($listingEntity));
 
         $listingsPaginated = $listingRepository->getListingsPaginated($parentCategory);
@@ -38,6 +40,7 @@ class ListingController extends AbstractActionController
             'categories' => $categories,
             'parentCategory' => $parentCategory,
             'page' => $page,
+            'categoryTree' => $categoryTree,
         ];
     }
 }

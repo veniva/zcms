@@ -10,8 +10,13 @@ class Module
     {
         $application = $e->getApplication();
         $eventManager = $application->getEventManager();
+        $serviceManager = $application->getServiceManager();
 
         $eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'setLayout'));
+
+        $serviceManager->get('ViewHelperManager')->setFactory('formSelectCategory', function(){
+            return new Form\View\Helper\SelectCategory();
+        });
     }
 
     /**

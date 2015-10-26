@@ -8,15 +8,7 @@
 <div class="body_cont">
     <div class="filter">
         <label for="filter_category">Filter: </label>
-        <select id="filter_category" onChange="goToHref(this.value)">
-            <option value="<?=$this->langUrl('admin/listing')?>"><?=$this->translate('All categories')?></option>
-            <?php foreach($this->categories as $category): ?>
-                <?php $selected = ($category['id'] == $this->parentCategory) ? 'selected="selected"' : ''; ?>
-                <option value="<?=$this->langUrl('admin/listing', ['id' => $category['id']])?>" <?=$selected?>>
-                    <?=$category['indent'].$category['title']?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+        <?=$this->formSelectCategory($this->categoryTree, $this->parentCategory, 'admin/listing')?>
     </div>
     <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
         <tr>
@@ -52,3 +44,8 @@
     </table>
     <?=$this->paginationControl($this->listings, 'Sliding', 'paginator/category_sliding', ['route' => 'admin/listing', 'id' => $this->parentCategory])?>
 </div>
+<script type="text/javascript">
+    $('#filter_category').change(function(){
+        goToHref(this.value);
+    });
+</script>
