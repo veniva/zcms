@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Ventsislav Ivanov
- * Date: 02/10/2015
- * Time: 17:16
- */
 
 namespace AdminTest\Controller;
 
@@ -23,6 +17,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
     protected $controller;
     protected $request;
     protected $response;
+    /** @var RouteMatch */
     protected $routeMatch;
     protected $event;
 

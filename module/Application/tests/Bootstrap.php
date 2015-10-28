@@ -37,6 +37,7 @@ class Bootstrap
             ),
             'modules' => array(
                 'Application',
+                'Admin',
             )
         );
 
