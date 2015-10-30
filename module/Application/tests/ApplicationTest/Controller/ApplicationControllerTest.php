@@ -49,7 +49,7 @@ class ApplicationControllerTest extends AbstractHttpControllerTestCase
         $this->assertInternalType('array', Invokable\Layout::breadcrumb());
     }
 
-    public function testInvokableServices()
+    public function testServices()
     {
         $this->dispatch('/');
         $serviceManager = Invokable\Misc::getStaticServiceLocator();

@@ -1,12 +1,12 @@
 <?php
 use Application\Service\Invokable\Misc;
-//$this->form->prepare();
+$this->form->prepare();
 ?>
 <div class="header_cont">
     <div class="title"><?=$this->translate($this->action." a page")?></div>
 </div>
 <div class="body_cont">
-<!--    --><?//=$this->form()->openTag($this->form)?>
+    <?=$this->form()->openTag($this->form)?>
     <div class="tabs">
         <ul>
             <li><a href="#tabs-1"><?=$this->translate('Content')?></a></li>
@@ -33,26 +33,29 @@ use Application\Service\Invokable\Misc;
                     <?php endforeach; ?>
                 </ul>
                 <div id="tabs1-1">
-                    <div><?=$this->translate('Link')?></div>
-                    <div><input type="text" name="link" /></div>
-                    <div><?=$this->translate('Alias')?></div>
-                    <div><input type="text" name="alias" /></div>
-                    <div><?=$this->translate('Page title')?></div>
-                    <div><input type="text" name="title" /></div>
-                    <div><?=$this->translate('Content')?></div>
-                    <div><textarea name="text" cols="70" rows="10"></textarea></div>
+                    <?php foreach(['link', 'alias', 'title', 'text'] as $input): ?>
+                        <div><label><?=$this->translate($this->form->get($input)->getLabel())?>:</label></div>
+                        <div>
+                            <?=$this->formElement($this->form->get($input))?>
+                            <div class="form-error"><?=$this->formElementErrors($this->form->get($input))?></div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
                 <?php foreach(Misc::getActiveLangs() as $lang):?>
                     <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()):?>
                         <div id="tabs1-<?=$lang->getId()?>">
-                            <div><?=$this->translate('Link')?></div>
-                            <div><input type="text" name="link_<?=$lang->getIsoCode()?>" /></div>
+                            <?php foreach(['link_'.$lang->getIsoCode(), 'alias_'.$lang->getIsoCode(), 'title_'.$lang->getIsoCode(), 'text_'.$lang->getIsoCode()] as $input): ?>
+                                <div><label><?=$this->translate($this->form->get($input)->getLabel())?>:</label></div>
+                                <div>
+                                    <?=$this->formElement($this->form->get($input))?>
+                                    <div class="form-error"><?=$this->formElementErrors($this->form->get($input))?></div>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </div>
-            <div><?=$this->translate('Category')?></div>
-            <div><input type="text" name="category" /></div>
+            <div><?=$this->translate('Category')?>: <?=$this->formSelectCategory($this->categoryTree, $this->parentCategory)?></div>
             <div><?=$this->translate('Page image')?></div>
             <div><input type="text" name="image" /></div>
         </div>
@@ -63,7 +66,7 @@ use Application\Service\Invokable\Misc;
             'id' => $this->filter,
             'page' => $this->page,
         ])?>">Cancel</a></small>
-<!--    --><?//=$this->form()->closeTag()?>
+    <?=$this->form()->closeTag()?>
     <div style="height:100px;">&nbsp;</div>
 </div>
 <script type="text/javascript">

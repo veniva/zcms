@@ -51,12 +51,12 @@ class ListingController extends AbstractActionController
         $listing = $listingRepository->findOneBy(['id' => $categId]);
         $listingContentDefaultLanguage = $listing->getContent();
 
-
         $languages = Misc::getActiveLangs();
         $formClass = new ListingForm($listingContentDefaultLanguage, $languages,
             $this->getServiceLocator()->get('translator'), $this->getServiceLocator()->get('validator-messages'));
 
         $form = $formClass->getForm();
+        $form->bind($listingContentDefaultLanguage);
 
         $listingContent = [Misc::getDefaultLanguage()->getIsoCode() => $listingContentDefaultLanguage];
         foreach($languages as $language){
@@ -64,17 +64,20 @@ class ListingController extends AbstractActionController
                 $listingContentLanguage = $listing->getContent($language->getId());
                 if(get_class($listingContentLanguage) == get_class($listingContentDefaultLanguage)){//if content on that language exists
                     $listingContent[$language->getIsoCode()] = $listingContentLanguage;
-                }else{
-                    $listingContent[$language->getIsoCode()] = $listingContentDefaultLanguage;
+                    foreach(['link', 'alias', 'title', 'text'] as $input){
+                        $form->get($input.'_'.$language->getIsoCode())->setValue($listingContentLanguage->{'get'.$input}());
+                    }
                 }
-
             }
         }
 
         return [
             'page' => $page,
             'filter' => $parentFilter,
-            'listing' => $listingEntity,//v_todo
+            'form' => $form,
+            'categoryTree' => $categoryTree,//v_todo - create multiple parent categories support
+            'parentCategory' => $listing->getCategories()[0]->getId(),//work with one parent category for the time being
+            'listing' => $listing,
             'action' => 'Edit',
         ];
     }

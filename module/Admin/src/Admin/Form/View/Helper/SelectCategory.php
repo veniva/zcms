@@ -9,7 +9,7 @@ use Zend\Form\View\Helper\FormSelect;
 
 class SelectCategory extends FormSelect
 {
-    public function __invoke(CategoryTree $categoryTree, $selectedCategoryId = null, $route = 'home', $idRouteOption = 'id')
+    public function __invoke(CategoryTree $categoryTree, $selectedCategoryId = null, $route = null, $idRouteOption = 'id')
     {
         $view = $this->getView();
         $element = new Select('filter_category');
@@ -17,13 +17,25 @@ class SelectCategory extends FormSelect
         $categories = $categoryTree->getCategories();
 
         $selected = null;
-        $options = [$view->langUrl($route) => $view->translate('All categories')];
-        foreach($categories as $category){
-            if($category['id'] == $selectedCategoryId)
-                $selected = $view->langUrl($route, [$idRouteOption => $category['id']]);
 
-            $options[$view->langUrl($route, [$idRouteOption => $category['id']])] = $category['indent'].$category['title'];
+        if($route){//set the url route as options value
+            $options = [$view->langUrl($route) => $view->translate('All categories')];
+            foreach($categories as $category){
+                if($category['id'] == $selectedCategoryId)
+                    $selected = $view->langUrl($route, [$idRouteOption => $category['id']]);
+
+                $options[$view->langUrl($route, [$idRouteOption => $category['id']])] = $category['indent'].$category['title'];
+            }
+        }else{//set the category id as option value
+            $options = ['' => $view->translate('All categories')];
+            foreach($categories as $category){
+                if($category['id'] == $selectedCategoryId)
+                    $selected = $category['id'];
+
+                $options[$category['id']] = $category['indent'].$category['title'];
+            }
         }
+
         $element->setValueOptions($options);
         $element->setValue($selected);
 

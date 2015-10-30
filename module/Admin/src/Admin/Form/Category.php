@@ -20,7 +20,6 @@ class Category
 
     public function __construct(CategoryContent $categoryContentEntity, Collection $languages, Translator $translator, ValidatorMessages $validatorMessages)
     {
-        $maxTitleSize = 15;
         $annotationBuilder = new AnnotationBuilder;
         $form = $annotationBuilder->createForm($categoryContentEntity);
         $inputFilter = $form->getInputFilter();

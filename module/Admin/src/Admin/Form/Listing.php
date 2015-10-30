@@ -36,33 +36,34 @@ class Listing
             if($language instanceof Lang){
                 if($language->getId() != Misc::getDefaultLanguage()->getId()){
                     $isoCode = $language->getIsoCode();
+                    //v_todo - iterate over the annotated form elements $form->getElements() and create language inputs automatically
                     //add some form elements
                     $form->add(array(
                         'name' => 'alias_'.$isoCode,
                         'type' => 'text',
                         'options' => array(
-                            'label' => 'Alias'
+                            'label' => $form->get('alias')->getLabel()
                         ),
                     ));
                     $form->add(array(
                         'name' => 'link_'.$isoCode,
                         'type' => 'text',
                         'options' => array(
-                            'label' => 'Link'
+                            'label' => $form->get('link')->getLabel()
                         ),
                     ));
                     $form->add(array(
                         'name' => 'title_'.$isoCode,
                         'type' => 'text',
                         'options' => array(
-                            'label' => 'Name'
+                            'label' => $form->get('title')->getLabel()
                         ),
                     ));
                     $form->add(array(
                         'name' => 'text_'.$isoCode,
                         'type' => 'textarea',
                         'options' => array(
-                            'label' => 'Content'
+                            'label' => $form->get('text')->getLabel()
                         ),
                     ));
 

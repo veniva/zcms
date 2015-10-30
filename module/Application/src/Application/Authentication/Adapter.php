@@ -5,15 +5,11 @@ namespace Application\Authentication;
 
 use Zend\Authentication\Adapter\AbstractAdapter;
 use Zend\Authentication\Result;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager;
 
-class Adapter extends AbstractAdapter implements ServiceLocatorAwareInterface
+class Adapter extends AbstractAdapter implements ServiceManager\ServiceLocatorAwareInterface
 {
-    /**
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator;
+    use ServiceManager\ServiceLocatorAwareTrait;
 
     /**
      * Authenticate against database credentials
@@ -28,15 +24,5 @@ class Adapter extends AbstractAdapter implements ServiceLocatorAwareInterface
         }
 
         return new Result(Result::FAILURE, $this->getIdentity());
-    }
-
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-    }
-
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
     }
 }
