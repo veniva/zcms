@@ -28,6 +28,11 @@ class Listing
     protected $content;
 
     /**
+     * @OneToMany(targetEntity="Metadata", mappedBy="listing", cascade={"remove", "persist"})
+     */
+    protected $metadata;
+
+    /**
      * @ManyToMany(targetEntity="Category", mappedBy="listings")
      */
     protected $categories;
@@ -76,6 +81,21 @@ class Listing
             }
         }
         return $this->content;
+    }
+
+    public function getMetadata($langId = null)
+    {
+        if(is_null($langId))
+            $langId = Misc::getDefaultLanguage()->getId();
+        //return a content in concrete language only if desired
+        if($langId){
+            foreach($this->metadata as $metadata){
+                if($metadata->getLang()->getId() == $langId){
+                    return $metadata;//return single entity
+                }
+            }
+        }
+        return $this->metadata;
     }
 
     /**
