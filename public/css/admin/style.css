@@ -11,6 +11,8 @@ a.img{
     text-decoration: none;
 }
 
+a:focus {outline:none;}
+
 .faded{
     color: grey;
 }
@@ -223,4 +225,12 @@ input.numbers{
 
 .filter{
     font-size: 11px;
+}
+
+.ui-widget-header{
+    font-size: 11px;
+}
+
+.ui-widget-content{
+    font-size: 1em;
 }

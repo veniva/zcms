@@ -1,0 +1,71 @@
+<?php
+use Application\Service\Invokable\Misc;
+//$this->form->prepare();
+?>
+<div class="header_cont">
+    <div class="title"><?=$this->translate($this->action." a page")?></div>
+</div>
+<div class="body_cont">
+<!--    --><?//=$this->form()->openTag($this->form)?>
+    <div class="tabs">
+        <ul>
+            <li><a href="#tabs-1"><?=$this->translate('Content')?></a></li>
+            <li><a href="#tabs-2"><?=$this->translate('Meta tags')?></a></li>
+        </ul>
+        <div id="tabs-1">
+            <div class="tabs">
+                <ul>
+                    <li>
+                        <a href="#tabs1-<?=Misc::getDefaultLanguage()->getId()?>">
+                            <img src="<?=$this->basePath().'/img/flags/'.Misc::getDefaultLanguage()->getIsoCode()?>.png" />
+                            <?=Misc::getDefaultLanguage()->getIsoCode()?>
+                        </a>
+                    </li>
+                    <?php foreach(Misc::getActiveLangs() as $lang):?>
+                        <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()):?>
+                            <li>
+                                <a href="#tabs1-<?=$lang->getId()?>">
+                                    <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" />
+                                    <?=$lang->getIsoCode()?>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+                <div id="tabs1-1">
+                    <div><?=$this->translate('Link')?></div>
+                    <div><input type="text" name="link" /></div>
+                    <div><?=$this->translate('Alias')?></div>
+                    <div><input type="text" name="alias" /></div>
+                    <div><?=$this->translate('Page title')?></div>
+                    <div><input type="text" name="title" /></div>
+                    <div><?=$this->translate('Content')?></div>
+                    <div><textarea name="text" cols="70" rows="10"></textarea></div>
+                </div>
+                <?php foreach(Misc::getActiveLangs() as $lang):?>
+                    <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()):?>
+                        <div id="tabs1-<?=$lang->getId()?>">
+                            <div><?=$this->translate('Link')?></div>
+                            <div><input type="text" name="link_<?=$lang->getIsoCode()?>" /></div>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+            <div><?=$this->translate('Category')?></div>
+            <div><input type="text" name="category" /></div>
+            <div><?=$this->translate('Page image')?></div>
+            <div><input type="text" name="image" /></div>
+        </div>
+        <div id="tabs-2">Edit meta</div>
+    </div>
+    <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
+    <small> or <a href="<?=$this->langUrl('admin/listing', [
+            'id' => $this->filter,
+            'page' => $this->page,
+        ])?>">Cancel</a></small>
+<!--    --><?//=$this->form()->closeTag()?>
+    <div style="height:100px;">&nbsp;</div>
+</div>
+<script type="text/javascript">
+    $('.tabs').tabs();
+</script>

@@ -136,7 +136,7 @@ class Misc
     }
 
     public static function alias($str) {
-        $str = preg_replace('/[\s]+/i', '-', str_replace(',', '', $str));
+        $str = preg_replace('/[\s]+/i', '-', str_replace(',', '', trim($str)));
         $alias = extension_loaded('mbstring') ? mb_strtolower($str) : strtolower($str);
         return $alias;
     }

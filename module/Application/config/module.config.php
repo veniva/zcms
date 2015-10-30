@@ -100,6 +100,7 @@ return array(
             'auth' => 'Application\Service\Factory\Authentication',
             'current-user' => 'Application\Service\Factory\CurrentUser',
             'acl' => 'Application\Service\Factory\Acl',
+            'validator-messages' => 'Application\Service\Factory\ValidatorMessages',
         ),
         'invokables' => array(
             'misc' => 'Application\Service\Invokable\Misc',

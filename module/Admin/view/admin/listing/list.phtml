@@ -23,7 +23,12 @@
             <tr>
                 <td><?=$listing->getId()?></td>
                 <td><input type="checkbox" name="lid[]" value="<?=$listing->getId()?>" /></td>
-                <td><?=$listing->getContent()->getLink()?></td>
+                <td><a href="<?=$this->langUrl('admin/listing', [
+                        'action' => 'edit',
+                        'id' => $listing->getId(),
+                        'page' => $this->page,
+                        'filter' => $this->parentCategory,
+                    ])?>"><?=$listing->getContent()->getLink()?></a></td>
                 <td>
                     <?php foreach($listing->getCategories() as $category):?>
                         [<?=$category->getId()?>] <?=$category->getContent()->getTitle()?>
@@ -35,6 +40,7 @@
                         'action' => 'edit',
                         'id' => $listing->getId(),
                         'page' => $this->page,
+                        'filter' => $this->parentCategory,
                     ))?>">
                         <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
                     </a>

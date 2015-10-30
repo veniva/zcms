@@ -52,6 +52,7 @@ class CategoryContent
      * @Annotation\Type("text")
      * @Annotation\Filter({"name": "StripTags"})
      * @Annotation\Filter({"name": "StringTrim"})
+     * @Annotation\Validator({"name": "StringLength", "options": {"max": 15}})
      * @Annotation\Options({"label": "Name"})
      * @Annotation\Attributes({"required": true})
      *

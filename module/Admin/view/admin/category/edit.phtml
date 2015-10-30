@@ -49,7 +49,7 @@ $this->form->prepare();
         </tr>
         <tr>
             <td colspan="2">
-                <button class="btn btn-primary btn-xs" name="categ_form">Submit</button>
+                <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
                 <small> or <a href="<?=$this->langUrl('admin/category', [
                         'id' => isset($this->parentCategory) ? $this->parentCategory->getId() : null,
                         'page' => $this->page,

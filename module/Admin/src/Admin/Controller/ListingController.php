@@ -3,6 +3,8 @@
 namespace Admin\Controller;
 
 
+use Admin\Form\Listing as ListingForm;
+use Application\Service\Invokable\Misc;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\i18n\Translator\Translator;
 
@@ -20,14 +22,9 @@ class ListingController extends AbstractActionController
 
     public function listAction()
     {
-        $parentCategory = $this->params()->fromRoute('id', 0);
-        $page = $this->params()->fromRoute('page', 1);
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $listingEntity = $this->getServiceLocator()->get('listing-entity');
-        $categoryTree = $this->getServiceLocator()->get('category-tree');
-
-        /* @var \Application\Model\ListingRepository $listingRepository */
-        $listingRepository = $entityManager->getRepository(get_class($listingEntity));
+        $parentCategory = $this->params()->fromRoute('id');
+        $page = $this->params()->fromRoute('page');
+        $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
 
         $listingsPaginated = $listingRepository->getListingsPaginated($parentCategory);
         $listingsPaginated->setCurrentPageNumber($page);
@@ -42,5 +39,55 @@ class ListingController extends AbstractActionController
             'page' => $page,
             'categoryTree' => $categoryTree,
         ];
+    }
+
+    public function editAction()
+    {
+        $categId = $this->params()->fromRoute('id');
+        $page = $this->params()->fromRoute('page');
+        $parentFilter = $this->params()->fromRoute('filter');
+        $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
+
+        $listing = $listingRepository->findOneBy(['id' => $categId]);
+        $listingContentDefaultLanguage = $listing->getContent();
+
+
+        $languages = Misc::getActiveLangs();
+        $formClass = new ListingForm($listingContentDefaultLanguage, $languages,
+            $this->getServiceLocator()->get('translator'), $this->getServiceLocator()->get('validator-messages'));
+
+        $form = $formClass->getForm();
+
+        $listingContent = [Misc::getDefaultLanguage()->getIsoCode() => $listingContentDefaultLanguage];
+        foreach($languages as $language){
+            if($language->getId() != Misc::getDefaultLanguage()->getId()){
+                $listingContentLanguage = $listing->getContent($language->getId());
+                if(get_class($listingContentLanguage) == get_class($listingContentDefaultLanguage)){//if content on that language exists
+                    $listingContent[$language->getIsoCode()] = $listingContentLanguage;
+                }else{
+                    $listingContent[$language->getIsoCode()] = $listingContentDefaultLanguage;
+                }
+
+            }
+        }
+
+        return [
+            'page' => $page,
+            'filter' => $parentFilter,
+            'listing' => $listingEntity,//v_todo
+            'action' => 'Edit',
+        ];
+    }
+
+    protected function dependencyProvider(&$entityManager, &$listingEntity, &$categoryTree, &$listingRepository)
+    {
+        /* \Doctrine\Orm\EntityManager */
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        /* \Application\Model\Entity\Listing */
+        $listingEntity = $this->getServiceLocator()->get('listing-entity');
+        /* \Admin\CategoryTree\CategoryTree $categoryTree */
+        $categoryTree = $this->getServiceLocator()->get('category-tree');
+        /* @var \Application\Model\ListingRepository $listingRepository */
+        $listingRepository = $entityManager->getRepository(get_class($listingEntity));
     }
 }

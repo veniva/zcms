@@ -2,6 +2,7 @@
 
 namespace AdminTest;
 
+use Application\Service\Invokable\Misc;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class AdminTest extends AbstractHttpControllerTestCase
@@ -19,5 +20,16 @@ class AdminTest extends AbstractHttpControllerTestCase
         $categoryTree = new \Admin\CategoryTree\CategoryTree($this->getApplicationServiceLocator());
         $categories = $categoryTree->getCategories();
         $this->assertInternalType('array', $categories);
+    }
+
+    public function testListingForm()
+    {
+        $sl = $this->getApplicationServiceLocator();
+        $obj = new \Admin\Form\Listing($sl->get('listing-content-entity'), Misc::getActiveLangs(), $sl->get('translator'), $sl->get('validator-messages'));
+        if(!$obj->getForm() instanceof \Zend\Form\Form){
+            throw new \PHPUnit_Framework_AssertionFailedError('A service object is not an instance of '.'\Zend\Form\Form');
+        }else{
+            $this->assertTrue(true);
+        }
     }
 }

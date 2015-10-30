@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\I18n\Translator\Translator;
 use Zend\Validator;
+use Application\Validator\ValidatorMessages;
 
 class Category
 {
@@ -17,7 +18,7 @@ class Category
      */
     protected $form;
 
-    public function __construct(CategoryContent $categoryContentEntity, Collection $languages, Translator $translator)
+    public function __construct(CategoryContent $categoryContentEntity, Collection $languages, Translator $translator, ValidatorMessages $validatorMessages)
     {
         $maxTitleSize = 15;
         $annotationBuilder = new AnnotationBuilder;
@@ -26,7 +27,7 @@ class Category
 
         foreach($languages as $language){
             if($language instanceof Lang){
-                if($language->getId() != Misc::getDefaultLanguageID()){
+                if($language->getId() != Misc::getDefaultLanguage()->getId()){
                     $form->add(array(
                         'name' => 'title_'.$language->getIsoCode(),
                         'type' => 'text',
@@ -42,20 +43,25 @@ class Category
                         ),
                     ));
 
+                    //region Retrieve filters and validator defined in entity via annotations and re-create those for the title field
+                    $titleValidators = [];
+                    $validatorMessages->setValidatorMessages($inputFilter->get('title'), function()use($form,$inputFilter){
+                        return '"'.$form->get($inputFilter->get('title')->getName())->getLabel().'"';
+                    }, $titleValidators);
+
+                    $titleFilters = [];
+                    foreach($inputFilter->get('title')->getFilterChain()->getFilters() as $filter){
+                        if($filter instanceof \Zend\InputFilter\InputFilterInterface){
+                            $titleFilters[] = $filter;
+                        }
+                    }
+
                     $inputFilter->add(array(
-                        'validators' => array(
-                            array(
-                                'name' => 'StringLength',
-                                'options' => array(
-                                    'max' => $maxTitleSize,
-                                    'messages' => array(
-                                        Validator\StringLength::TOO_LONG =>
-                                            sprintf($translator->translate('The input %s is more than %%max%% characters long'),
-                                                '"'.$translator->translate('Name').' ('.$language->getIsoCode().')"')
-                                    )))
-                        ),
+                        'validators' => $titleValidators,
+                        'filters' => $titleFilters,
                         'required' => false, //also allow empty value
                     ), 'title_'.$language->getIsoCode());
+                    //endregion
                 }
             }
         }
@@ -80,18 +86,10 @@ class Category
             ),
         ));
 
-        $inputFilter->add(array(
-            'validators' => array(
-                array(
-                    'name' => 'StringLength',
-                    'options' => array(
-                        'max' => $maxTitleSize,
-                        'messages' => array(
-                            Validator\StringLength::TOO_LONG =>
-                                sprintf($translator->translate('The input %s is more than %%max%% characters long'),
-                                    '"'.$translator->translate('Name').'"')
-                        ))))
-        ), 'title');
+        $validatorMessages->setValidatorMessages($inputFilter->get('title'), function()use($form,$inputFilter){
+            return '"'.$form->get($inputFilter->get('title')->getName())->getLabel().'"';
+        });
+
         $inputFilter->add(array(
             'validators' => array(
                 array(

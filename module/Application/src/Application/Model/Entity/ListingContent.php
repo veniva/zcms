@@ -2,42 +2,74 @@
 
 namespace Application\Model\Entity;
 
+use Zend\Form\Annotation;
+
 /**
+ * @Annotation\Name("listing")
+ * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ClassMethods")
+ *
  * @Entity @Table(name="listings_content")
  */
 class ListingContent
 {
     /**
+     * @Annotation\Exclude()
+     *
      * @Id @GeneratedValue @Column(type="integer")
      */
     protected $id;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @ManyToOne(targetEntity="Listing", inversedBy="content")
      */
     protected $listing;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @ManyToOne(targetEntity="Lang", inversedBy="listingContent")
      */
     protected $lang;
 
     /**
+     * @Annotation\Type("text")
+     * @Annotation\Filter({"name": "StringTrim"})
+     * @Annotation\Filter({"name": "StripTags"})
+     * @Annotation\Validator({"name": "StringLength", "options": {"max": 255}})
+     * @Annotation\Options({"label": "Alias"})
+     *
      * @Column(type="string")
      */
     protected $alias;
 
     /**
+     * @Annotation\Type("text")
+     * @Annotation\Filter({"name": "StringTrim"})
+     * @Annotation\Filter({"name": "StripTags"})
+     * @Annotation\Validator({"name": "StringLength", "options": {"max": 15}})
+     * @Annotation\Options({"label": "Link"})
+     *
      * @Column(type="string")
      */
     protected $link;
 
     /**
+     * @Annotation\Type("text")
+     * @Annotation\Filter({"name": "StringTrim"})
+     * @Annotation\Filter({"name": "StripTags"})
+     * @Annotation\Validator({"name": "StringLength", "options": {"max": 15}})
+     * @Annotation\Options({"label": "Title"})
+     *
      * @Column(type="string")
      */
     protected $title;
 
     /**
+     * @Annotation\Type("textarea")
+     * @Annotation\Options({"label": "Content"})
+     *
      * @Column(type="string")
      */
     protected $text;

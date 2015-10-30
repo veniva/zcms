@@ -64,7 +64,7 @@ return array(
                     'listing' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '[/:lang]/listing[/:action][/:id[/:page]]',
+                            'route' => '[/:lang]/listing[/:action][/:id[/:page[/:filter]]]',
                             'constraints' => array(
                                 'lang'      => '[a-zA-Z]{2}',
                                 'action'    => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -78,6 +78,7 @@ return array(
                                 'lang'          => 'en',
                                 'id'            => 0,
                                 'page'          => 1,
+                                'filter'        => 0,
                             ),
                         ),
                     ),
