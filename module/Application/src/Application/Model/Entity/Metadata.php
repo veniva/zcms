@@ -2,35 +2,65 @@
 
 namespace Application\Model\Entity;
 
+use Zend\Form\Annotation;
+
 /**
+ * @Annotation\Name("metadata")
+ * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ClassMethods")
+ *
  * @Entity @Table(name="metadata")
  */
 class Metadata
 {
     /**
+     * @Annotation\Exclude()
+     *
      * @Id @ManyToOne(targetEntity="Listing", inversedBy="content")
      */
     protected $listing;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @Id @ManyToOne(targetEntity="Lang")
      */
     protected $lang;
 
     /**
-     * @Column(type="string")
+     * @Annotation\Type("text")
+     * @Annotation\Name("meta_title")
+     * @Annotation\Filter({"name": "StringTrim"})
+     * @Annotation\Filter({"name": "StripTags"})
+     * @Annotation\Validator({"name": "StringLength", "options": {"max": 255}})
+     * @Annotation\Options({"label": "Meta title"})
+     *
+     * @Column(type="string", name="meta_title")
      */
-    protected $title;
+    protected $metaTitle;
 
     /**
-     * @Column(type="string")
+     * @Annotation\Type("text")
+     * @Annotation\Name("meta_description")
+     * @Annotation\Filter({"name": "StringTrim"})
+     * @Annotation\Filter({"name": "StripTags"})
+     * @Annotation\Validator({"name": "StringLength", "options": {"max": 255}})
+     * @Annotation\Options({"label": "Meta description"})
+     *
+     * @Column(type="string", name="meta_description")
      */
-    protected $description;
+    protected $metaDescription;
 
     /**
-     * @Column(type="string")
+     * @Annotation\Type("text")
+     * @Annotation\Name("meta_keywords")
+     * @Annotation\Filter({"name": "StringTrim"})
+     * @Annotation\Filter({"name": "StripTags"})
+     * @Annotation\Validator({"name": "StringLength", "options": {"max": 255}})
+     * @Annotation\Options({"label": "Meta keywords"})
+     *
+     * @Column(type="string", name="meta_keywords")
      */
-    protected $keywords;
+    protected $metaKeywords;
 
     public function __construct($listingId, $langId)
     {
@@ -73,48 +103,48 @@ class Metadata
     /**
      * @return mixed
      */
-    public function getTitle()
+    public function getMetaTitle()
     {
-        return $this->title;
+        return $this->metaTitle;
     }
 
     /**
-     * @param mixed $title
+     * @param mixed $metaTitle
      */
-    public function setTitle($title)
+    public function setMetaTitle($metaTitle)
     {
-        $this->title = $title;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param mixed $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
+        $this->metaTitle = $metaTitle;
     }
 
     /**
      * @return mixed
      */
-    public function getKeywords()
+    public function getMetaDescription()
     {
-        return $this->keywords;
+        return $this->metaDescription;
     }
 
     /**
-     * @param mixed $keywords
+     * @param mixed $metaDescription
      */
-    public function setKeywords($keywords)
+    public function setMetaDescription($metaDescription)
     {
-        $this->keywords = $keywords;
+        $this->metaDescription = $metaDescription;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMetaKeywords()
+    {
+        return $this->metaKeywords;
+    }
+
+    /**
+     * @param mixed $metaKeywords
+     */
+    public function setMetaKeywords($metaKeywords)
+    {
+        $this->metaKeywords = $metaKeywords;
     }
 }
