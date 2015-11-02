@@ -34,8 +34,8 @@ $this->form->prepare();
                 </ul>
                 <div id="tabs-1-1">
                     <?php foreach(['link', 'alias', 'title', 'text'] as $input): ?>
-                        <div><label><?=$this->translate($this->form->get($input)->getLabel())?>:</label></div>
-                        <div>
+                        <div class="form-group">
+                            <label><?=$this->translate($this->form->get($input)->getLabel())?>:</label>
                             <?=$this->formElement($this->form->get($input))?>
                             <div class="form-error"><?=$this->formElementErrors($this->form->get($input))?></div>
                         </div>
@@ -45,8 +45,8 @@ $this->form->prepare();
                     <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()):?>
                         <div id="tabs-1-<?=$lang->getId()?>">
                             <?php foreach(['link_'.$lang->getIsoCode(), 'alias_'.$lang->getIsoCode(), 'title_'.$lang->getIsoCode(), 'text_'.$lang->getIsoCode()] as $input): ?>
-                                <div><label><?=$this->translate($this->form->get($input)->getLabel())?>:</label></div>
-                                <div>
+                                <div class="form-group">
+                                    <label><?=$this->translate($this->form->get($input)->getLabel())?>:</label>
                                     <?=$this->formElement($this->form->get($input))?>
                                     <div class="form-error"><?=$this->formElementErrors($this->form->get($input))?></div>
                                 </div>
@@ -55,9 +55,22 @@ $this->form->prepare();
                     <?php endif; ?>
                 <?php endforeach; ?>
             </div>
-            <div><?=$this->translate('Category')?>: <?=$this->formSelectCategory($this->categoryTree, $this->parentCategory)?></div>
-            <div><?=$this->translate('Page image')?></div>
-            <div><input type="text" name="image" /></div>
+            <div class="form-group">&nbsp;</div>
+            <div class="row form-group">
+                <label class="col-md-2"><?=$this->translate('Category')?>:</label>
+                <div class="col-md-10"><?=$this->formSelectCategory($this->categoryTree, $this->parentCategory)?></div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-2"><?=$this->translate($this->form->get('sort')->getLabel())?>:</label>
+                <div class="col-md-10"><?=$this->formInput($this->form->get('sort'))?></div>
+                <div class="form-error">
+                    <?=$this->formElementErrors($this->form->get('sort'))?>
+                </div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-2"><?=$this->translate('Page image')?></label>
+                <div class="col-md-10"><input type="file" name="image" /></div>
+            </div>
         </div>
         <div id="tabs-2">
             <div class="tabs">
@@ -81,8 +94,8 @@ $this->form->prepare();
                 </ul>
                 <div id="tabs-2-1">
                     <?php foreach(['metaTitle', 'metaDescription', 'metaKeywords'] as $input): ?>
-                        <div><label><?=$this->translate($this->form->get($input)->getLabel())?>:</label></div>
-                        <div>
+                        <div class="form-group">
+                            <label><?=$this->translate($this->form->get($input)->getLabel())?>:</label>
                             <?=$this->formElement($this->form->get($input))?>
                             <div class="form-error"><?=$this->formElementErrors($this->form->get($input))?></div>
                         </div>
@@ -92,8 +105,8 @@ $this->form->prepare();
                     <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()):?>
                         <div id="tabs-2-<?=$lang->getId()?>">
                             <?php foreach(['metaTitle_'.$lang->getIsoCode(), 'metaDescription_'.$lang->getIsoCode(), 'metaKeywords_'.$lang->getIsoCode()] as $input): ?>
-                                <div><label><?=$this->translate($this->form->get($input)->getLabel())?>:</label></div>
-                                <div>
+                                <div class="form-group">
+                                    <label><?=$this->translate($this->form->get($input)->getLabel())?>:</label>
                                     <?=$this->formElement($this->form->get($input))?>
                                     <div class="form-error"><?=$this->formElementErrors($this->form->get($input))?></div>
                                 </div>

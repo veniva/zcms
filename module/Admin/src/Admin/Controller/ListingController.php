@@ -56,6 +56,15 @@ class ListingController extends AbstractActionController
             $this->getServiceLocator()->get('translator'), $this->getServiceLocator()->get('validator-messages'));
 
         $form = $formClass->getForm();
+        //add form-control class to all the form elements except for "sort"
+        foreach($form->getElements() as $element){
+            if($element->getName() != 'sort'){
+                $inputCSSClass = !empty($element->getAttribute('class')) ? $element->getAttribute('class').' ' : '';
+                $element->setAttribute('class', $element->getAttribute('class').$inputCSSClass.'form-control');
+            }
+        }
+        $form->get('sort')->setValue($listing->getSort());
+
         $form->bind($listingContentDefaultLanguage);
 
         //set metadata content on the default language
