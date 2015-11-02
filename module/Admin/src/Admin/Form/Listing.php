@@ -178,7 +178,7 @@ class Listing
         $filters = [];
         foreach($inputFilter->get($inputName)->getFilterChain()->getFilters() as $filter){
             if($filter instanceof InputFilterInterface){
-                $filters[] = $filter;//v_todo - make sure clone is not necessary
+                $filters[] = $filter;
             }
         }
         return array(

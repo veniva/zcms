@@ -16,7 +16,7 @@ $this->form->prepare();
             <div class="tabs">
                 <ul>
                     <li>
-                        <a href="#tabs1-<?=Misc::getDefaultLanguage()->getId()?>">
+                        <a href="#tabs-1-<?=Misc::getDefaultLanguage()->getId()?>">
                             <img src="<?=$this->basePath().'/img/flags/'.Misc::getDefaultLanguage()->getIsoCode()?>.png" />
                             <?=Misc::getDefaultLanguage()->getIsoCode()?>
                         </a>
@@ -24,7 +24,7 @@ $this->form->prepare();
                     <?php foreach(Misc::getActiveLangs() as $lang):?>
                         <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()):?>
                             <li>
-                                <a href="#tabs1-<?=$lang->getId()?>">
+                                <a href="#tabs-1-<?=$lang->getId()?>">
                                     <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" />
                                     <?=$lang->getIsoCode()?>
                                 </a>
@@ -32,7 +32,7 @@ $this->form->prepare();
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </ul>
-                <div id="tabs1-1">
+                <div id="tabs-1-1">
                     <?php foreach(['link', 'alias', 'title', 'text'] as $input): ?>
                         <div><label><?=$this->translate($this->form->get($input)->getLabel())?>:</label></div>
                         <div>
@@ -43,7 +43,7 @@ $this->form->prepare();
                 </div>
                 <?php foreach(Misc::getActiveLangs() as $lang):?>
                     <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()):?>
-                        <div id="tabs1-<?=$lang->getId()?>">
+                        <div id="tabs-1-<?=$lang->getId()?>">
                             <?php foreach(['link_'.$lang->getIsoCode(), 'alias_'.$lang->getIsoCode(), 'title_'.$lang->getIsoCode(), 'text_'.$lang->getIsoCode()] as $input): ?>
                                 <div><label><?=$this->translate($this->form->get($input)->getLabel())?>:</label></div>
                                 <div>
@@ -59,7 +59,50 @@ $this->form->prepare();
             <div><?=$this->translate('Page image')?></div>
             <div><input type="text" name="image" /></div>
         </div>
-        <div id="tabs-2">Edit meta</div>
+        <div id="tabs-2">
+            <div class="tabs">
+                <ul>
+                    <li>
+                        <a href="#tabs-2-<?=Misc::getDefaultLanguage()->getId()?>">
+                            <img src="<?=$this->basePath().'/img/flags/'.Misc::getDefaultLanguage()->getIsoCode()?>.png" />
+                            <?=Misc::getDefaultLanguage()->getIsoCode()?>
+                        </a>
+                    </li>
+                    <?php foreach(Misc::getActiveLangs() as $lang):?>
+                        <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()):?>
+                            <li>
+                                <a href="#tabs-2-<?=$lang->getId()?>">
+                                    <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" />
+                                    <?=$lang->getIsoCode()?>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+                <div id="tabs-2-1">
+                    <?php foreach(['metaTitle', 'metaDescription', 'metaKeywords'] as $input): ?>
+                        <div><label><?=$this->translate($this->form->get($input)->getLabel())?>:</label></div>
+                        <div>
+                            <?=$this->formElement($this->form->get($input))?>
+                            <div class="form-error"><?=$this->formElementErrors($this->form->get($input))?></div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php foreach(Misc::getActiveLangs() as $lang):?>
+                    <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()):?>
+                        <div id="tabs-2-<?=$lang->getId()?>">
+                            <?php foreach(['metaTitle_'.$lang->getIsoCode(), 'metaDescription_'.$lang->getIsoCode(), 'metaKeywords_'.$lang->getIsoCode()] as $input): ?>
+                                <div><label><?=$this->translate($this->form->get($input)->getLabel())?>:</label></div>
+                                <div>
+                                    <?=$this->formElement($this->form->get($input))?>
+                                    <div class="form-error"><?=$this->formElementErrors($this->form->get($input))?></div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
     </div>
     <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
     <small> or <a href="<?=$this->langUrl('admin/listing', [

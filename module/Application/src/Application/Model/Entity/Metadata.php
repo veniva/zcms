@@ -28,7 +28,6 @@ class Metadata
 
     /**
      * @Annotation\Type("text")
-     * @Annotation\Name("meta_title")
      * @Annotation\Filter({"name": "StringTrim"})
      * @Annotation\Filter({"name": "StripTags"})
      * @Annotation\Validator({"name": "StringLength", "options": {"max": 255}})
@@ -40,7 +39,6 @@ class Metadata
 
     /**
      * @Annotation\Type("text")
-     * @Annotation\Name("meta_description")
      * @Annotation\Filter({"name": "StringTrim"})
      * @Annotation\Filter({"name": "StripTags"})
      * @Annotation\Validator({"name": "StringLength", "options": {"max": 255}})
@@ -52,7 +50,6 @@ class Metadata
 
     /**
      * @Annotation\Type("text")
-     * @Annotation\Name("meta_keywords")
      * @Annotation\Filter({"name": "StringTrim"})
      * @Annotation\Filter({"name": "StripTags"})
      * @Annotation\Validator({"name": "StringLength", "options": {"max": 255}})

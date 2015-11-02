@@ -58,7 +58,14 @@ class ListingController extends AbstractActionController
         $form = $formClass->getForm();
         $form->bind($listingContentDefaultLanguage);
 
+        //set metadata content on the default language
+        $listingMetadataContent = $listing->getMetadata();
+        foreach(['metaTitle', 'metaDescription', 'metaKeywords'] as $input){
+            $form->get($input)->setValue($listingMetadataContent->{'get'.$input}());
+        }
+
         $listingContent = [Misc::getDefaultLanguage()->getIsoCode() => $listingContentDefaultLanguage];
+        $listingMeta = [Misc::getDefaultLanguage()->getIsoCode() => $listingMetadataContent];
         foreach($languages as $language){
             if($language->getId() != Misc::getDefaultLanguage()->getId()){
                 $listingContentLanguage = $listing->getContent($language->getId());
@@ -67,6 +74,16 @@ class ListingController extends AbstractActionController
                     foreach(['link', 'alias', 'title', 'text'] as $input){
                         $form->get($input.'_'.$language->getIsoCode())->setValue($listingContentLanguage->{'get'.$input}());
                     }
+
+                    //set metadata fields
+                    $listingMetadataLanguage = $listing->getMetadata($language->getId());
+                    if(get_class($listingMetadataLanguage) == get_class($listingMetadataContent)){
+                        $listingMeta[$language->getIsoCode()] = $listingMetadataLanguage;
+                        foreach(['metaTitle', 'metaDescription', 'metaKeywords'] as $input){
+                            $form->get($input.'_'.$language->getIsoCode())->setValue($listingMetadataLanguage->{'get'.$input}());
+                        }
+                    }
+
                 }
             }
         }
