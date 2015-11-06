@@ -72,7 +72,7 @@ class CategoryContent
 
     public function setCategory(Category $category)
     {
-        $category->setCategoryContent($this);
+        $category->addCategoryContent($this);
         $this->category = $category;
     }
 

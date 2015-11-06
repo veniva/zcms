@@ -21,19 +21,16 @@ class SelectCategory extends FormSelect
         if($route){//set the url route as options value
             $options = [$view->langUrl($route) => $view->translate('All categories')];
             foreach($categories as $category){
-                if($category['id'] == $selectedCategoryId)
-                    $selected = $view->langUrl($route, [$idRouteOption => $category['id']]);
-
                 $options[$view->langUrl($route, [$idRouteOption => $category['id']])] = $category['indent'].$category['title'];
             }
+            $selected = $view->langUrl($route, [$idRouteOption => $selectedCategoryId]);
+
         }else{//set the category id as option value
             $options = ['' => $view->translate('All categories')];
             foreach($categories as $category){
-                if($category['id'] == $selectedCategoryId)
-                    $selected = $category['id'];
-
                 $options[$category['id']] = $category['indent'].$category['title'];
             }
+            $selected = $selectedCategoryId;
         }
 
         $element->setValueOptions($options);

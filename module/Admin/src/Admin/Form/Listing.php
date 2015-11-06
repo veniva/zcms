@@ -12,6 +12,11 @@ use Zend\I18n\Translator\Translator;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Validator;
 
+/**
+ * v_todo - refactor this to use the fieldsets approach: http://framework.zend.com/manual/current/en/modules/zend.form.collections.html
+ * Class Listing
+ * @package Admin\Form
+ */
 class Listing
 {
     /**
@@ -28,7 +33,7 @@ class Listing
     {
         $annotationBuilder = new AnnotationBuilder;
         $form = $annotationBuilder->createForm($listingContentEntity);
-        $metadataForm = $annotationBuilder->createForm(new Entity\Metadata(0,0));
+        $metadataForm = $annotationBuilder->createForm(new Entity\Metadata());
         $this->validatorMessages = $validatorMessages;
 
         $inputFilter = $form->getInputFilter();
@@ -77,6 +82,14 @@ class Listing
         }
 
         $form->add(array(
+            'name' => 'category',//v_todo - create multiple parent categories support
+            'type' => 'Select',
+            'options' => array(
+                'label' => 'Category'
+            ),
+        ));
+
+        $form->add(array(
             'name' => 'sort',
             'type' => 'Number',
             'options' => array(
@@ -85,6 +98,22 @@ class Listing
             'attributes' => array(
                 'maxlength' => 3,
                 'class' => 'numbers',
+            ),
+        ));
+
+        $form->add(array(
+            'name' => 'listingImage',
+            'type' => 'File',
+            'options' => array(
+                'label' => 'Page image'
+            ),
+        ));
+
+        $form->add(array(
+            'name' => 'image_remove',
+            'type' => 'checkbox',
+            'options' => array(
+                'label' => 'Remove image',
             ),
         ));
 
@@ -103,6 +132,20 @@ class Listing
             });
         }
 
+        //set input filters and validators
+        $inputFilter->add(array(
+            'validators' => array(
+                array(
+                    'name' => 'Digits',
+                    'options' => array(
+                        'messages' => array(
+                            Validator\Digits::NOT_DIGITS => $translator->translate('The input must contain only digits')//v_todo - refactor validator translations: http://framework.zend.com/manual/current/en/modules/zend.validator.html#translating-messages
+                        )
+                    ),
+                ),
+            ),
+        ), 'sort');
+
         $inputFilter->add(array(
             'validators' => array(
                 array(
@@ -114,8 +157,37 @@ class Listing
                     ),
                 ),
             ),
-            'required' => false,//also allow empty value
-        ), 'sort');
+        ), 'category');
+
+        $inputFilter->add(array(
+            'validators' => array(
+                array(
+                    'name' => 'File\Extension',
+                    'options' => array(
+                        'extension' => array('jpeg', 'jpg', 'png', 'gif')
+                    ),
+                ),
+                array(
+                    'name' => 'File\Size',
+                    'options' => array(
+                        'max' => '50Kb',
+                    ),
+                ),
+                array(
+                    'name' => 'File\ImageSize',
+                    'options' => array(
+                        'maxWidth' => 300,
+                        'maxHeight' => 300
+                    ),
+                ),
+            ),
+            'required' => false,
+        ), 'listingImage');
+
+        $inputFilter->add(array(
+            'required' => false,
+        ), 'image_remove');
+
         $form->setInputFilter($inputFilter);
 
         $this->form = $form;

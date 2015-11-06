@@ -9,7 +9,15 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class CategoryTree
 {
 
+    /**
+     * @var array Categories as detailed array
+     */
     protected $categories = array();
+
+    /**
+     * @var array Categories array handy for setting select options
+     */
+    protected $categoriesAsOptions = array();
 
     /**
      * @var \Application\Model\CategoryRepository
@@ -45,6 +53,8 @@ class CategoryTree
                 'title' => $category->getContent()->getTitle(),
                 'indent' => $indent
             ];
+            $this->categoriesAsOptions[$category->getId()] = $indent.$category->getContent()->getTitle();
+
             $this->setCategories($category->getId(), $level+1);
         }
     }
@@ -52,5 +62,13 @@ class CategoryTree
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * @return array Categories array handy for setting select options [id] => intent+title
+     */
+    public function getCategoriesAsOptions()
+    {
+        return $this->categoriesAsOptions;
     }
 }

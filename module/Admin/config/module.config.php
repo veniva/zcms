@@ -151,4 +151,7 @@ return array(
             array('admin', 'administrators', null),
         ),
     ),
+    'listing' => array(
+        'img-path' => '/img/listing_img/'
+    ),
 );

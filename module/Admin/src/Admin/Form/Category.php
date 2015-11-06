@@ -44,8 +44,8 @@ class Category
 
                     //region Retrieve filters and validator defined in entity via annotations and re-create those for the title field
                     $titleValidators = [];
-                    $validatorMessages->setValidatorMessages($inputFilter->get('title'), function()use($form,$inputFilter){
-                        return '"'.$form->get($inputFilter->get('title')->getName())->getLabel().'"';
+                    $validatorMessages->setValidatorMessages($inputFilter->get('title'), function()use($form,$inputFilter,$language){
+                        return '"'.$form->get($inputFilter->get('title')->getName())->getLabel().' ('.$language->getIsoCode().')"';
                     }, $titleValidators);
 
                     $titleFilters = [];

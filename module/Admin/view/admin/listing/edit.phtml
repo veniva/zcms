@@ -57,8 +57,8 @@ $this->form->prepare();
             </div>
             <div class="form-group">&nbsp;</div>
             <div class="row form-group">
-                <label class="col-md-2"><?=$this->translate('Category')?>:</label>
-                <div class="col-md-10"><?=$this->formSelectCategory($this->categoryTree, $this->parentCategory)?></div>
+                <label class="col-md-2"><?=$this->translate($this->form->get('category')->getLabel())?>:</label>
+                <div class="col-md-10"><?=$this->formElement($this->form->get('category'))?></div>
             </div>
             <div class="row form-group">
                 <label class="col-md-2"><?=$this->translate($this->form->get('sort')->getLabel())?>:</label>
@@ -67,9 +67,19 @@ $this->form->prepare();
                     <?=$this->formElementErrors($this->form->get('sort'))?>
                 </div>
             </div>
+            <hr />
             <div class="row form-group">
-                <label class="col-md-2"><?=$this->translate('Page image')?></label>
-                <div class="col-md-10"><input type="file" name="image" /></div>
+                <label class="col-md-2"><?=$this->translate($this->form->get('listingImage')->getLabel())?></label>
+                <div class="col-md-10"><?=$this->formFile($this->form->get('listingImage'))?></div>
+                <div class="col-md-12 form-error">
+                    <?=$this->formElementErrors($this->form->get('listingImage'))?>
+                </div>
+                <?php if($this->image):?>
+                    <div class="col-md-12">
+                        <img style="width:100px;" src="<?=$this->basePath().$this->image?>" />
+                        <?=$this->formCheckbox($this->form->get('image_remove'))?> <label><?=$this->translate($this->form->get('image_remove')->getLabel())?></label>
+                    </div>
+                <?php endif?>
             </div>
         </div>
         <div id="tabs-2">
@@ -117,13 +127,16 @@ $this->form->prepare();
             </div>
         </div>
     </div>
-    <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
-    <small> or <a href="<?=$this->langUrl('admin/listing', [
-            'id' => $this->filter,
-            'page' => $this->page,
-        ])?>">Cancel</a></small>
-    <?=$this->form()->closeTag()?>
-    <div style="height:100px;">&nbsp;</div>
+    <div class="form-group">&nbsp;</div>
+    <div class="form-group">
+        <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
+        <small> or <a href="<?=$this->langUrl('admin/listing', [
+                'id' => $this->filter,
+                'page' => $this->page,
+            ])?>">Cancel</a></small>
+        <?=$this->form()->closeTag()?>
+        <div style="height:100px;">&nbsp;</div>
+    </div>
 </div>
 <script type="text/javascript">
     $('.tabs').tabs();

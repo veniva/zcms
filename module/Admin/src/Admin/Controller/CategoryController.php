@@ -54,12 +54,14 @@ class CategoryController extends AbstractActionController
         $id = $this->params()->fromRoute('id', 0);
         $page = $this->params()->fromRoute('page', 1);
         if(empty($id))
-            $this->redir()->toRoute('admin/category');
+            return $this->redir()->toRoute('admin/category');
 
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
         $categoryEntity = new Category();
         $category = $this->getCategoryAndParent($id, $entityManager, $categoryEntity, $parentCategory);
+        if(!$category)
+            return $this->redir()->toRoute('admin/category');
 
         $categoryContentDefaultLanguageEntity = $category->getContent();
 
@@ -92,6 +94,7 @@ class CategoryController extends AbstractActionController
             $form->setData($post);
             if($form->isValid()){
                 $category->setSort($form->getInputFilter()->getValue('sort'));
+                $entityManager->persist($category);
 
                 foreach($languages as $language) {
                     if ($language->getId() != Misc::getDefaultLanguage()->getId()) {
@@ -119,11 +122,10 @@ class CategoryController extends AbstractActionController
                     }
                 }
 
-                $entityManager->persist($category);
                 $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage($this->translator->translate('The category has been edited successfully'));
-                $this->redir()->toRoute('admin/category', [
+                return $this->redir()->toRoute('admin/category', [
                     'id' => isset($parentCategory) ? $parentCategory->getId() : null,
                     'page' => $page,
                 ]);
@@ -240,12 +242,14 @@ class CategoryController extends AbstractActionController
      * @param EntityManager $entityManager
      * @param Category $categoryEntity
      * @param $parentCategory
-     * @return mixed
+     * @return Category|null
      */
     protected function getCategoryAndParent($id, EntityManager $entityManager, Category $categoryEntity, &$parentCategory)
     {
         $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
         $category = $categoryRepository->findOneById($id);
+        if(!$category) return null;
+
         if($category->getParent() instanceof Category)
             $parentCategory = $categoryRepository->findOneById($category->getParent()->getId());
         return $category;

@@ -68,15 +68,33 @@ class ListingContent
 
     /**
      * @Annotation\Type("textarea")
+     * @Annotation\Validator({"name": "NotEmpty"})
      * @Annotation\Options({"label": "Content"})
      *
      * @Column(type="string")
      */
     protected $text;
 
+    public function __construct(Listing $listing = null, Lang $lang = null)
+    {
+        if($listing)
+            $this->setListing($listing);
+        if($lang)
+            $this->setLang($lang);
+    }
+
     public function getListing()
     {
         return $this->listing;
+    }
+
+    /**
+     * @param mixed $listing
+     */
+    public function setListing(Listing $listing)
+    {
+        $listing->addContent($this);
+        $this->listing = $listing;
     }
 
     /**

@@ -62,7 +62,7 @@ class Category
     protected $content;
 
     /**
-     * @ManyToMany(targetEntity="Listing", inversedBy="categories", cascade={"remove"})
+     * @ManyToMany(targetEntity="Listing", mappedBy="categories", cascade={"remove", "persist"})
      */
     protected $listings;
 
@@ -71,6 +71,7 @@ class Category
         $this->children = new ArrayCollection();
         $this->parents = new ArrayCollection();
         $this->listings = new ArrayCollection();
+//        $this->content = new ArrayCollection();//v_todo - activate this
     }
 
     public function getId()
@@ -134,14 +135,9 @@ class Category
         return $this->content;//return collection of content
     }
 
-    public function setCategoryContent(CategoryContent $categoryContent)
+    public function addCategoryContent(CategoryContent $categoryContent)
     {
         $this->content[] = $categoryContent;
-    }
-
-    public function setToListing(Listing $listing)
-    {
-        $this->listings[] = $listing;
     }
 
     /**

@@ -59,10 +59,12 @@ class Metadata
      */
     protected $metaKeywords;
 
-    public function __construct($listingId, $langId)
+    public function __construct(Listing $listing = null, Lang $lang = null)
     {
-        $this->listing = $listingId;
-        $this->lang = $langId;
+        if($listing)
+            $this->setListing($listing);
+        if($lang)
+            $this->setLang($lang);
     }
 
     /**
@@ -76,8 +78,9 @@ class Metadata
     /**
      * @param mixed $listing
      */
-    public function setListing($listing)
+    public function setListing(Listing $listing)
     {
+        $listing->addMetadata($this);
         $this->listing = $listing;
     }
 
@@ -106,7 +109,7 @@ class Metadata
     }
 
     /**
-     * @param mixed $metaTitle
+     * @param string $metaTitle
      */
     public function setMetaTitle($metaTitle)
     {
@@ -122,7 +125,7 @@ class Metadata
     }
 
     /**
-     * @param mixed $metaDescription
+     * @param string $metaDescription
      */
     public function setMetaDescription($metaDescription)
     {
@@ -138,7 +141,7 @@ class Metadata
     }
 
     /**
-     * @param mixed $metaKeywords
+     * @param string $metaKeywords
      */
     public function setMetaKeywords($metaKeywords)
     {

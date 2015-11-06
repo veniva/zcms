@@ -4,6 +4,7 @@ namespace Application\Controller\Plugin;
 
 
 use Zend\Mvc\Controller\Plugin\Redirect;
+use Zend\Mvc\Exception;
 
 class Redir extends Redirect
 {
@@ -15,6 +16,6 @@ class Redir extends Redirect
         if($lang)
             $params['lang'] = $lang;
 
-        parent::toRoute($route, $params, $options, $reuseMatchedParams);
+        return parent::toRoute($route, $params, $options, $reuseMatchedParams);
     }
 }

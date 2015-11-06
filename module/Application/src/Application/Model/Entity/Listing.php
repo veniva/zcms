@@ -28,17 +28,26 @@ class Listing
     protected $content;
 
     /**
+     * A collection of metadata entities in different languages
      * @OneToMany(targetEntity="Metadata", mappedBy="listing", cascade={"remove", "persist"})
      */
     protected $metadata;
 
     /**
-     * @ManyToMany(targetEntity="Category", mappedBy="listings")
+     * @OneToMany(targetEntity="ListingImage", mappedBy="listing", cascade={"remove", "persist"})
+     */
+    protected $listingImages;
+
+    /**
+     * @ManyToMany(targetEntity="Category", inversedBy="listings", cascade={"remove", "persist"})
      */
     protected $categories;
 
     public function __construct()
     {
+        $this->content = new ArrayCollection();
+        $this->metadata = new ArrayCollection();
+        $this->listingImages = new ArrayCollection();
         $this->categories = new ArrayCollection();
     }
 
@@ -63,11 +72,6 @@ class Listing
         $this->sort = $sort;
     }
 
-    public function setToCategory(Category $category)
-    {
-        $this->categories[] = $category;
-    }
-
     public function getContent($langId = null)
     {
         if(is_null($langId))
@@ -81,6 +85,11 @@ class Listing
             }
         }
         return $this->content;
+    }
+
+    public function addContent(ListingContent $content)
+    {
+        $this->content[] = $content;
     }
 
     public function getMetadata($langId = null)
@@ -99,10 +108,56 @@ class Listing
     }
 
     /**
-     * @return mixed
+     * @param Metadata $metadata
+     */
+    public function addMetadata(Metadata $metadata)
+    {
+        $this->metadata[] = $metadata;
+    }
+
+    /**
+     * @return ListingImage|null The first ListingImage entity from the collection, or null
+     */
+    public function getListingImage()
+    {
+        return isset($this->listingImages[0]) ? $this->listingImages[0] : null;
+    }
+
+    /**
+     * @return \Doctrine\ORM\PersistentCollection
+     */
+    public function getListingImages()
+    {
+        return $this->listingImages;
+    }
+
+    /**
+     * @param ArrayCollection $listingImages
+     */
+    public function setListingImages(ArrayCollection $listingImages)
+    {
+        $this->listingImages = $listingImages;
+    }
+
+    public function addListingImage(ListingImage $listingImage)
+    {
+        $this->listingImages[] = $listingImage;
+    }
+
+    /**
+     * @return \Doctrine\ORM\PersistentCollection
      */
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * This serves to set a category as the only parent category
+     * @param Category $category
+     */
+    public function setOnlyCategory(Category $category)
+    {
+        $this->categories = new ArrayCollection([$category]);
     }
 }

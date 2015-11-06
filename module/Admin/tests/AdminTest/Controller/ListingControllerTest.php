@@ -45,5 +45,14 @@ class ListingControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    //v_todo - test the CategoryTree view plugin (in a different test controller)
+    public function testEditActionCanBeAccessed()
+    {
+        $this->routeMatch->setParam('action', 'edit');
+        $this->routeMatch->setParam('id', 18);//requires an actual category ID v_todo - refactor this
+
+        $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
 }
