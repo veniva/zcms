@@ -24,17 +24,11 @@ class Listing
      */
     protected $form;
 
-    /**
-     * @var ValidatorMessages
-     */
-    protected $validatorMessages;
-
-    public function __construct(Entity\ListingContent $listingContentEntity, Collection $languages, Translator $translator, ValidatorMessages $validatorMessages)
+    public function __construct(Entity\ListingContent $listingContentEntity, Collection $languages, Translator $translator)
     {
         $annotationBuilder = new AnnotationBuilder;
         $form = $annotationBuilder->createForm($listingContentEntity);
         $metadataForm = $annotationBuilder->createForm(new Entity\Metadata());
-        $this->validatorMessages = $validatorMessages;
 
         $inputFilter = $form->getInputFilter();
         $metadataInputFilter = $metadataForm->getInputFilter();
@@ -125,37 +119,18 @@ class Listing
             ),
         ));
 
-        //set some custom messages to validators set via the annotation builder
-        foreach(['alias', 'link', 'title'] as $inputName){
-            $validatorMessages->setValidatorMessages($inputFilter->get($inputName), function()use($form,$inputFilter,$inputName){
-                return '"'.$form->get($inputFilter->get($inputName)->getName())->getLabel().'"';
-            });
-        }
-
         //set input filters and validators
         $inputFilter->add(array(
             'validators' => array(
                 array(
                     'name' => 'Digits',
-                    'options' => array(
-                        'messages' => array(
-                            Validator\Digits::NOT_DIGITS => $translator->translate('The input must contain only digits')//v_todo - refactor validator translations: http://framework.zend.com/manual/current/en/modules/zend.validator.html#translating-messages
-                        )
-                    ),
                 ),
             ),
         ), 'sort');
 
         $inputFilter->add(array(
             'validators' => array(
-                array(
-                    'name' => 'Digits',
-                    'options' => array(
-                        'messages' => array(
-                            Validator\Digits::NOT_DIGITS => $translator->translate('The input must contain only digits')
-                        )
-                    ),
-                ),
+                array('name' => 'Digits'),
             ),
         ), 'category');
 
@@ -243,10 +218,11 @@ class Listing
     protected function prepareValidatorsAndFilters($inputName, InputFilterInterface $inputFilter, Form $form, $isoCode = null)
     {
         $validators = [];
-        $this->validatorMessages->setValidatorMessages($inputFilter->get($inputName), function()use($form,$inputFilter,$isoCode,$inputName){
-            $isoCode = $isoCode ? ' ('.$isoCode.')' : '';
-            return '"'.$form->get($inputName)->getLabel().$isoCode.'"';
-        }, $validators);
+        foreach($inputFilter->get($inputName)->getValidatorChain()->getValidators() as $validator){
+            if(isset($validator['instance'])){
+                $validators[] = $validator['instance'];
+            }
+        }
         $filters = [];
         foreach($inputFilter->get($inputName)->getFilterChain()->getFilters() as $filter){
             if($filter instanceof InputFilterInterface){

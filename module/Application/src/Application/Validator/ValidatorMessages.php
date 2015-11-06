@@ -11,6 +11,7 @@ class ValidatorMessages
 {
     /**
      * @var Translator
+     * @deprecated - use Validator's translator instead
      */
     protected $translator;
 

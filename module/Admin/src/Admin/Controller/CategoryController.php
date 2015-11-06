@@ -67,8 +67,7 @@ class CategoryController extends AbstractActionController
 
         //foreach active language add a content title field to the form
         $languages = Misc::getActiveLangs();
-        $formClass = new CategoryForm($categoryContentDefaultLanguageEntity, $languages,
-            $this->getServiceLocator()->get('translator'), $this->getServiceLocator()->get('validator-messages'));
+        $formClass = new CategoryForm($categoryContentDefaultLanguageEntity, $languages, $this->getServiceLocator()->get('translator'));
         $form = $formClass->getForm();
 
         $contentLanguageEntities = [];

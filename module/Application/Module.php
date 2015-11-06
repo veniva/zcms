@@ -15,6 +15,7 @@ use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
+use Zend\Validator\AbstractValidator;
 use Zend\View\Model\ViewModel;
 use Zend\Permissions\Acl\Exception\ExceptionInterface as AclException;
 
@@ -41,6 +42,7 @@ class Module
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);
 
         Misc::setStaticServiceLocator($serviceManager);
+        AbstractValidator::setDefaultTranslator(new \Zend\Mvc\I18n\Translator($serviceManager->get('translator')));
 
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);

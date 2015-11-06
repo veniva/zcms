@@ -18,7 +18,7 @@ class Category
      */
     protected $form;
 
-    public function __construct(CategoryContent $categoryContentEntity, Collection $languages, Translator $translator, ValidatorMessages $validatorMessages)
+    public function __construct(CategoryContent $categoryContentEntity, Collection $languages, Translator $translator)
     {
         $annotationBuilder = new AnnotationBuilder;
         $form = $annotationBuilder->createForm($categoryContentEntity);
@@ -44,9 +44,11 @@ class Category
 
                     //region Retrieve filters and validator defined in entity via annotations and re-create those for the title field
                     $titleValidators = [];
-                    $validatorMessages->setValidatorMessages($inputFilter->get('title'), function()use($form,$inputFilter,$language){
-                        return '"'.$form->get($inputFilter->get('title')->getName())->getLabel().' ('.$language->getIsoCode().')"';
-                    }, $titleValidators);
+                    foreach($inputFilter->get('title')->getValidatorChain()->getValidators() as $validator){
+                        if(isset($validator['instance'])){
+                            $titleValidators[] = $validator['instance'];
+                        }
+                    }
 
                     $titleFilters = [];
                     foreach($inputFilter->get('title')->getFilterChain()->getFilters() as $filter){
@@ -85,20 +87,9 @@ class Category
             ),
         ));
 
-        $validatorMessages->setValidatorMessages($inputFilter->get('title'), function()use($form,$inputFilter){
-            return '"'.$form->get($inputFilter->get('title')->getName())->getLabel().'"';
-        });
-
         $inputFilter->add(array(
             'validators' => array(
-                array(
-                    'name' => 'Digits',
-                    'options' => array(
-                        'messages' => array(
-                            Validator\Digits::NOT_DIGITS => $translator->translate('The input must contain only digits')
-                        )
-                    ),
-                ),
+                array('name' => 'Digits'),
             ),
             'required' => false,//also allow empty value
         ), 'sort');
