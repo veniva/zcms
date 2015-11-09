@@ -8,29 +8,21 @@ $this->form->prepare();
 <div class="body_cont">
     <?=$this->form()->openTag($this->form)?>
     <table class="list_table" width="400" cellpadding="5" cellspacing="0">
-        <tr>
-            <td><label><?=$this->translate($this->form->get('title')->getLabel())?>:</label></td>
-            <td>
-                <?=$this->formInput($this->form->get('title'))?>
-                <img src="<?=$this->basePath().'/img/flags/'.Misc::getDefaultLanguage()->getIsoCode()?>.png" />
-                <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('title'))?>
-                </div>
-            </td>
-        </tr>
-        <?php foreach(Misc::getActiveLangs() as $lang):?>
-            <?php if($lang->getId() != Misc::getDefaultLanguage()->getId()): ?>
-                <tr>
-                    <td></td>
-                    <td>
-                        <?=$this->formInput($this->form->get('title_'.$lang->getIsoCode()))?>
-                        <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" />
-                        <div class="form-error">
-                            <?=$this->formElementErrors($this->form->get('title_'.$lang->getIsoCode()))?>
-                        </div>
-                    </td>
-                </tr>
-            <?php endif; ?>
+        <?php foreach($this->form->get('content')->getFieldsets() as $fieldset):?>
+            <tr>
+                <td>
+                    <?php if($fieldset->getObject()->getLang()->getId() == Misc::getDefaultLanguage()->getId()): ?>
+                        <label><?=$this->translate($this->form->get('content')->getFieldsets()[0]->getElements()['title']->getLabel())?>:</label>
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <?=$this->formInput($fieldset->getElements()['title'])?>
+                    <img src="<?=$this->basePath().'/img/flags/'.$fieldset->getObject()->getLang()->getIsoCode()?>.png" />
+                    <div class="form-error">
+                        <?=$this->formElementErrors($fieldset->getElements()['title'])?>
+                    </div>
+                </td>
+            </tr>
         <?php endforeach; ?>
         <tr>
             <td><label><?=$this->translate($this->form->get('sort')->getLabel())?></label></td>
@@ -44,7 +36,7 @@ $this->form->prepare();
         <tr>
             <td>Parent category:</td>
             <td><?=($this->parentCategory instanceof \Application\Model\Entity\Category) ?
-                    $this->parentCategory->getContent()->getTitle() :
+                    $this->parentCategory->getSingleCategoryContent()->getTitle() :
                     $this->translate('Top')?></td><!--v_todo - insert a category tree select input here-->
         </tr>
         <tr>

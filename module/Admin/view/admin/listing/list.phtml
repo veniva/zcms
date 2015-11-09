@@ -31,7 +31,7 @@
                     ])?>"><?=$listing->getContent()->getLink()?></a></td>
                 <td>
                     <?php foreach($listing->getCategories() as $category):?>
-                        [<?=$category->getId()?>] <?=$category->getContent()->getTitle()?>
+                        [<?=$category->getId()?>] <?=$category->getSingleCategoryContent()->getTitle()?>
                     <?php endforeach; ?>
                 </td>
                 <td><?=$listing->getSort()?></td>

@@ -4,7 +4,6 @@ namespace Admin\Form;
 
 use Application\Model\Entity;
 use Application\Service\Invokable\Misc;
-use Application\Validator\ValidatorMessages;
 use Doctrine\Common\Collections\Collection;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Form;
@@ -14,6 +13,7 @@ use Zend\Validator;
 
 /**
  * v_todo - refactor this to use the fieldsets approach: http://framework.zend.com/manual/current/en/modules/zend.form.collections.html
+ * v_todo - http://stackoverflow.com/questions/12002722/using-annotation-builder-in-extended-zend-form-class/18427685#18427685
  * Class Listing
  * @package Admin\Form
  */

@@ -46,7 +46,7 @@ class Layout
             if(!$categoryParent->getId())
                 break;
 
-            $parentCategoryContent = $categoryParent->getContent();
+            $parentCategoryContent = $categoryParent->getSingleCategoryContent();
 
             if($alias != $parentCategoryContent->getAlias())
                 $aBcrumb[] = [

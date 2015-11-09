@@ -1,64 +1,45 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Ventsislav Ivanov
- * Date: 04/08/2015
- * Time: 15:43
- */
-
 namespace Application\Model\Entity;
-use Zend\Form\Annotation;
 
 /**
  * Class CategoryContent
- * @Annotation\Name("category")
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ClassMethods")
- *
  * @Entity @Table(name="category_content")
  */
 class CategoryContent
 {
     /**
-     * @Annotation\Exclude()
-     *
      * @Id @GeneratedValue @Column(type="integer")
      */
     protected $id;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @ManyToOne(targetEntity="Category", inversedBy="content")
      */
     protected $category;
 
     /**
-     * @Annotation\Exclude()
      * @ManyToOne(targetEntity="Lang", inversedBy="categoryContent")
      */
     protected $lang;
 
     /**
-     * @Annotation\Type("text")
-     * @Annotation\Filter({"name": "StripTags"})
-     * @Annotation\Filter({"name": "StringTrim"})
-     * @Annotation\Options({"label": "Alias"})
-     *
      * @Column(type="string")
      */
     protected $alias;
 
     /**
-     * @Annotation\Type("text")
-     * @Annotation\Filter({"name": "StripTags"})
-     * @Annotation\Filter({"name": "StringTrim"})
-     * @Annotation\Validator({"name": "StringLength", "options": {"max": 15}})
-     * @Annotation\Options({"label": "Name"})
-     * @Annotation\Attributes({"required": true})
-     *
      * @Column(type="string")
      */
     protected $title;
+
+    public function __construct($category = null, $lang = null)
+    {
+        if($category)
+            $this->setCategory($category);
+
+        if($lang)
+            $this->setLang($lang);
+    }
 
     public function getId()
     {

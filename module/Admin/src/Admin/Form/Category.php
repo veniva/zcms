@@ -2,14 +2,10 @@
 
 namespace Admin\Form;
 
-use Application\Model\Entity\CategoryContent;
-use Application\Model\Entity\Lang;
-use Application\Service\Invokable\Misc;
+use Application\Model\Entity\Category as CategoryEntity;
 use Doctrine\Common\Collections\Collection;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\I18n\Translator\Translator;
 use Zend\Validator;
-use Application\Validator\ValidatorMessages;
 
 class Category
 {
@@ -18,64 +14,20 @@ class Category
      */
     protected $form;
 
-    public function __construct(CategoryContent $categoryContentEntity, Collection $languages, Translator $translator)
+    public function __construct(CategoryEntity $categoryEntity, Collection $languages)
     {
         $annotationBuilder = new AnnotationBuilder;
-        $form = $annotationBuilder->createForm($categoryContentEntity);
-        $inputFilter = $form->getInputFilter();
-
-        foreach($languages as $language){
-            if($language instanceof Lang){
-                if($language->getId() != Misc::getDefaultLanguage()->getId()){
-                    $form->add(array(
-                        'name' => 'title_'.$language->getIsoCode(),
-                        'type' => 'text',
-                        'options' => array(
-                            'label' => 'Name'
-                        ),
-                    ));
-                    $form->add(array(
-                        'name' => 'alias_'.$language->getIsoCode(),
-                        'type' => 'text',
-                        'options' => array(
-                            'label' => 'Alias'
-                        ),
-                    ));
-
-                    //region Retrieve filters and validator defined in entity via annotations and re-create those for the title field
-                    $titleValidators = [];
-                    foreach($inputFilter->get('title')->getValidatorChain()->getValidators() as $validator){
-                        if(isset($validator['instance'])){
-                            $titleValidators[] = $validator['instance'];
-                        }
-                    }
-
-                    $titleFilters = [];
-                    foreach($inputFilter->get('title')->getFilterChain()->getFilters() as $filter){
-                        if($filter instanceof \Zend\InputFilter\InputFilterInterface){
-                            $titleFilters[] = $filter;
-                        }
-                    }
-
-                    $inputFilter->add(array(
-                        'validators' => $titleValidators,
-                        'filters' => $titleFilters,
-                        'required' => false, //also allow empty value
-                    ), 'title_'.$language->getIsoCode());
-                    //endregion
-                }
-            }
-        }
-
+        $form = $annotationBuilder->createForm($categoryEntity);
         $form->add(array(
-            'name' => 'sort',
-            'type' => 'Number',
+            'type' => 'Zend\Form\Element\Collection',
+            'name' => 'content',
             'options' => array(
-                'label' => 'Sort'
+                'target_element' => array(
+                    'type' => 'Admin\Form\CategoryContentFieldset',
+                ),
             ),
             'attributes' => array(
-                'maxlength' => 3,
-                'class' => 'numbers',
+                'label' => 'Name'
             ),
         ));
 
@@ -86,14 +38,6 @@ class Category
                 'value' => 'Edit'
             ),
         ));
-
-        $inputFilter->add(array(
-            'validators' => array(
-                array('name' => 'Digits'),
-            ),
-            'required' => false,//also allow empty value
-        ), 'sort');
-        $form->setInputFilter($inputFilter);
 
         $this->form = $form;
     }

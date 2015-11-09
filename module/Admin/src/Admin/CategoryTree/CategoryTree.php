@@ -50,10 +50,10 @@ class CategoryTree
             }
             $this->categories[$category->getId()] = [
                 'id' => $category->getId(),
-                'title' => $category->getContent()->getTitle(),
+                'title' => $category->getSingleCategoryContent()->getTitle(),
                 'indent' => $indent
             ];
-            $this->categoriesAsOptions[$category->getId()] = $indent.$category->getContent()->getTitle();
+            $this->categoriesAsOptions[$category->getId()] = $indent.$category->getSingleCategoryContent()->getTitle();
 
             $this->setCategories($category->getId(), $level+1);
         }

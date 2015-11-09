@@ -6,6 +6,7 @@ namespace Admin\Controller;
 use Admin\Form\Category as CategoryForm;
 use Application\Model\Entity\Category;
 use Application\Model\Entity\CategoryContent;
+use Application\Model\Entity\Lang;
 use Application\Service\Invokable\Misc;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -37,7 +38,7 @@ class CategoryController extends AbstractActionController
         $categoriesPaginated->setCurrentPageNumber($page);
 
         $category = $parent ? $categoryRepository->findOneById($parent) : null;
-        $categoryAlias = $category ? $category->getContent()->getAlias() : null;
+        $categoryAlias = $category ? $category->getSingleCategoryContent()->getAlias() : null;
 
         return [
             'title' => 'Categories',
@@ -62,65 +63,25 @@ class CategoryController extends AbstractActionController
         $category = $this->getCategoryAndParent($id, $entityManager, $categoryEntity, $parentCategory);
         if(!$category)
             return $this->redir()->toRoute('admin/category');
+        $languages = Misc::getActiveLangs();
 
-        $categoryContentDefaultLanguageEntity = $category->getContent();
+        //add empty language content tot he collection, so that input fields are created
+        $this->addEmptyContent($category, $languages);
 
         //foreach active language add a content title field to the form
-        $languages = Misc::getActiveLangs();
-        $formClass = new CategoryForm($categoryContentDefaultLanguageEntity, $languages, $this->getServiceLocator()->get('translator'));
+        $formClass = new CategoryForm($categoryEntity, $languages);
         $form = $formClass->getForm();
-
-        $contentLanguageEntities = [];
-        foreach($languages as $language){
-            if($language->getId() != Misc::getDefaultLanguage()->getId()){
-
-                $categoryContentLanguageEntity = $category->getContent($language->getId());
-
-                if(get_class($categoryContentLanguageEntity) == get_class($categoryContentDefaultLanguageEntity)){//if content on that language exists
-                    $contentLanguageEntities[$language->getIsoCode()] = $categoryContentLanguageEntity;
-                    $form->get('title_'.$language->getIsoCode())->setValue($categoryContentLanguageEntity->getTitle());
-                }
-
-            }
-        }
-        $form->get('sort')->setValue($category->getSort());
-        $form->bind($categoryContentDefaultLanguageEntity);
+        $form->bind($category);
 
         $request = $this->getRequest();
         if($request->isPost()){
-            $post = ArrayUtils::iteratorToArray($request->getPost());
-            $post['alias'] = Misc::alias($post['title']);
+            $post = $request->getPost()->toArray();
+            foreach($post['content'] as &$content){
+                $content['alias'] = Misc::alias($content['title']);
+            }
             $form->setData($post);
             if($form->isValid()){
-                $category->setSort($form->getInputFilter()->getValue('sort'));
                 $entityManager->persist($category);
-
-                foreach($languages as $language) {
-                    if ($language->getId() != Misc::getDefaultLanguage()->getId()) {
-                        $post['alias'] = Misc::alias($post['title_'.$language->getIsoCode()]);
-                        $post['title'] = $post['title_'.$language->getIsoCode()];
-
-                        if(isset($contentLanguageEntities[$language->getIsoCode()])){
-                            $categoryContentLanguageEntity = $contentLanguageEntities[$language->getIsoCode()];
-                            if(empty($post['title'])){
-                                $entityManager->remove($categoryContentLanguageEntity);
-                                continue;
-                            }
-                        }else{
-                            $categoryContentLanguageEntity = new CategoryContent();//new entry
-                            if(!empty($post['title'])){
-                                $categoryContentLanguageEntity->setLang($language);
-                            }
-                        }
-
-                        $form->bind($categoryContentLanguageEntity);
-                        $form->setData($post);
-                        if($form->isValid()){
-                            $categoryContentLanguageEntity->setCategory($category);
-                        }
-                    }
-                }
-
                 $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage($this->translator->translate('The category has been edited successfully'));
@@ -146,6 +107,7 @@ class CategoryController extends AbstractActionController
 
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $categoryEntity = new Category();
+        $languages = Misc::getActiveLangs();
 
         $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
         $parentCategory = ($parentCategoryID) ?
@@ -158,45 +120,26 @@ class CategoryController extends AbstractActionController
             $categoryEntity->setParent($parentCategory);
         }
 
-        $categoryContentEntity = new CategoryContent();
-        $categoryContentEntity->setLang(Misc::getDefaultLanguage());
-        $categoryContentEntity->setCategory($categoryEntity);
+        //add empty language content tot he collection, so that input fields are created
+        $this->addEmptyContent($categoryEntity, $languages);
 
-        //foreach active language add a content title field to the form
-        $languages = Misc::getActiveLangs();
-        $formClass = new CategoryForm($categoryContentEntity, $languages,
-            $this->getServiceLocator()->get('translator'), $this->getServiceLocator()->get('validator-messages'));
+        $formClass = new CategoryForm($categoryEntity, $languages);
         $form = $formClass->getForm();
-        $form->bind($categoryContentEntity);
+        $form->bind($categoryEntity);
 
         $request = $this->getRequest();
         if($request->isPost()){
-            $post = ArrayUtils::iteratorToArray($request->getPost());
-            $post['alias'] = Misc::alias($post['title']);
+            $post = $request->getPost()->toArray();
+            foreach($post['content'] as &$content){
+                $content['alias'] = Misc::alias($content['title']);
+            }
             $form->setData($post);
             if($form->isValid()){
-                $categoryEntity->setSort($form->getInputFilter()->getValue('sort'));
-                foreach($languages as $language){
-                    if ($language->getId() != Misc::getDefaultLanguage()->getId()) {
-                        $post['alias'] = Misc::alias($post['title_'.$language->getIsoCode()]);
-                        $post['title'] = $post['title_'.$language->getIsoCode()];
-
-                        if(!empty($post['title'])){
-                            $categoryContentLanguageEntity = new CategoryContent();//new entry
-                            $categoryContentLanguageEntity->setLang($language);
-
-                            $form->bind($categoryContentLanguageEntity);
-                            $form->setData($post);
-                            if($form->isValid()){
-                                $categoryContentLanguageEntity->setCategory($categoryEntity);//set to the new category to be cascade persisted by the ORM
-                            }
-                        }
-                    }
-                }
                 $entityManager->persist($categoryEntity);
                 $entityManager->flush();
+
                 $this->flashMessenger()->addSuccessMessage($this->translator->translate('The new category was added successfully'));
-                $this->redir()->toRoute('admin/category', [
+                return $this->redir()->toRoute('admin/category', [
                     'id' => $parentCategoryID,
                     'page' => $page,
                 ]);
@@ -212,6 +155,20 @@ class CategoryController extends AbstractActionController
         $viewModel->setTemplate('admin/category/edit');
 
         return $viewModel;
+    }
+
+    protected function addEmptyContent(Category $category, \Doctrine\Common\Collections\Collection $languages)
+    {
+        $contentIDs = [];
+        foreach($category->getContent() as $content){
+            $contentIDs[] = $content->getLang()->getId();
+        }
+
+        foreach($languages as $language){
+            if(!in_array($language->getId(), $contentIDs)){
+                new CategoryContent($category, $language);
+            }
+        }
     }
 
     public function deleteAction()

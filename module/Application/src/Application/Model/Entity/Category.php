@@ -1,39 +1,45 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Ventsislav Ivanov
- * Date: 22/08/2015
- * Time: 16:15
- */
-
 namespace Application\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Application\Service\Invokable\Misc;
+use Zend\Form\Annotation;
 
 /**
- * Class Category
+ * @Annotation\Name("category")
+ * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ClassMethods")
  *
  * @Entity(repositoryClass="\Application\Model\CategoryRepository") @Table(name="categories")
  */
 class Category
 {
     /**
+     * @Annotation\Exclude()
+     *
      * @Id @GeneratedValue @Column(type="integer")
      */
     protected $id;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @Column(type="integer")
      */
     protected $type = 1;
 
     /**
+     * @Annotation\Type("number")
+     * @Annotation\Validator({"name": "Digits"})
+     * @Annotation\Options({"label": "Sort"})
+     * @Annotation\Attributes({"maxlength": 3, "class": "numbers"})
+     *
      * @Column(type="integer")
      */
     protected $sort = 0;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @ManyToMany(targetEntity="Category", cascade={"remove", "persist"})
      * @JoinTable(name="category_rel",
      *      joinColumns={@JoinColumn(name="parent_id", referencedColumnName="id")},
@@ -43,6 +49,8 @@ class Category
     protected $children;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @ManyToMany(targetEntity="Category", cascade={"persist"})
      * @JoinTable(name="category_rel",
      *      joinColumns={@JoinColumn(name="category_id", referencedColumnName="id")},
@@ -52,16 +60,22 @@ class Category
     protected $parents;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @OneToOne(targetEntity="Category")
      */
     protected $parent;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @OneToMany(targetEntity="CategoryContent", mappedBy="category", cascade={"remove", "persist"})
      */
     protected $content;
 
     /**
+     * @Annotation\Exclude()
+     *
      * @ManyToMany(targetEntity="Listing", mappedBy="categories", cascade={"remove", "persist"})
      */
     protected $listings;
@@ -71,7 +85,7 @@ class Category
         $this->children = new ArrayCollection();
         $this->parents = new ArrayCollection();
         $this->listings = new ArrayCollection();
-//        $this->content = new ArrayCollection();//v_todo - activate this
+        $this->content = new ArrayCollection();
     }
 
     public function getId()
@@ -115,11 +129,16 @@ class Category
         $this->parent = $parent;
     }
 
+    public function getContent()
+    {
+        return $this->content;//return collection of content
+    }
+
     /**
      * @param null $langId If null an entity on the default language is returned; if false a collection of all entities is returned
      * @return \Application\Model\Entity\CategoryContent|\Doctrine\ORM\PersistentCollection Either a single entity or a collection of entities
      */
-    public function getContent($langId = null)
+    public function getSingleCategoryContent($langId = null)
     {
         if(is_null($langId))
             $langId = Misc::getDefaultLanguage()->getId();

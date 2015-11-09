@@ -3,8 +3,8 @@
 <h2>Sub-categories:</h2>
 <section id="sub-categories">
     <?php foreach($this->sub_categories as $subCategory): ?>
-        <a href="<?=$this->url('category', ['alias' => $subCategory->getContent()->getAlias()])?>">
-            <?=$subCategory->getContent()->getTitle()?>
+        <a href="<?=$this->url('category', ['alias' => $subCategory->getSingleCategoryContent()->getAlias()])?>">
+            <?=$subCategory->getSingleCategoryContent()->getTitle()?>
         </a>
     <?php endforeach; ?>
 </section>
