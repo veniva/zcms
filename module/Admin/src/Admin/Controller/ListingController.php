@@ -48,10 +48,10 @@ class ListingController extends AbstractActionController
 
     public function editAction()
     {
-        $categId = $this->params()->fromRoute('id');
+        $listingId = $this->params()->fromRoute('id');
         $page = $this->params()->fromRoute('page');
         $parentFilter = $this->params()->fromRoute('filter');
-        if(!$categId){
+        if(!$listingId){
             return $this->redir()->toRoute('admin/listing', [
                 'id' => $parentFilter,
                 'page' => $page,
@@ -59,70 +59,32 @@ class ListingController extends AbstractActionController
         }
 
         $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
+        $languages = Misc::getActiveLangs();
 
-        $listing = $listingRepository->findOneBy(['id' => $categId]);
+        $listing = $listingRepository->findOneBy(['id' => $listingId]);
         if(!$listing){
             return $this->redir()->toRoute('admin/listing', [
                 'id' => $parentFilter,
                 'page' => $page,
             ]);
         }
+        //add empty language content to the collection, so that input fields are created
+        $this->addEmptyContent($listing, $languages);
 
-        $listingContentDefaultLanguage = $listing->getContent();
         $publicDir = __DIR__.'/../../../../../public';
         $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
 
-        $languages = Misc::getActiveLangs();
-        $listingForm = new ListingForm($listingContentDefaultLanguage, $languages,
-            $this->getServiceLocator()->get('translator'), $this->getServiceLocator()->get('validator-messages'));
-
+        $listingForm = new ListingForm($listing, $languages);
         $form = $listingForm->getForm();
-
-        //add form-control CSS class to all the form elements except for "sort"
-        foreach($form->getElements() as $element){
-            if($element->getName() != 'sort'  && !$element instanceof Element\File &&
-                !$element instanceof Element\Checkbox && $element->getName() != 'category'){
-                $inputCSSClass = !empty($element->getAttribute('class')) ? $element->getAttribute('class').' ' : '';
-                $element->setAttribute('class', $element->getAttribute('class').$inputCSSClass.'form-control');
-            }
-        }
-
-        $form->get('sort')->setValue($listing->getSort());
+        $form->bind($listing);
         $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($listing->getCategories()[0]->getId());
 
-        $form->bind($listingContentDefaultLanguage);
-
-        //set metadata content on the default language
-        $listingMetadata = $listing->getMetadata();
-        if($listingMetadata instanceof Metadata){
-            foreach(['metaTitle', 'metaDescription', 'metaKeywords'] as $input){
-                $form->get($input)->setValue($listingMetadata->{'get'.$input}());
-            }
-        }
-
-        $listingContentEntities = [Misc::getDefaultLanguage()->getIsoCode() => $listingContentDefaultLanguage];
-        $listingMetaEntities = [Misc::getDefaultLanguage()->getIsoCode() => $listingMetadata];
-        foreach($languages as $language){
-            if($language->getId() != Misc::getDefaultLanguage()->getId()){
-                //set content fields
-                $listingContentLanguage = $listing->getContent($language->getId());
-                if(get_class($listingContentLanguage) == get_class($listingContentDefaultLanguage)){//if content on that language exists
-                    $listingContentEntities[$language->getIsoCode()] = $listingContentLanguage;
-                    foreach(['link', 'alias', 'title', 'text'] as $input){
-                        $form->get($input.'_'.$language->getIsoCode())->setValue($listingContentLanguage->{'get'.$input}());
-
-                        if($input != 'alias')//set all the language input fields but alias to be required
-                            $form->getInputFilter()->get($input.'_'.$language->getIsoCode())->setRequired(true);
-                    }
-                }
-
-                //set metadata fields
-                $listingMetadataLanguage = $listing->getMetadata($language->getId());
-                if($listingMetadataLanguage instanceof Metadata){
-                    $listingMetaEntities[$language->getIsoCode()] = $listingMetadataLanguage;
-                    foreach(['metaTitle', 'metaDescription', 'metaKeywords'] as $input){
-                        $form->get($input.'_'.$language->getIsoCode())->setValue($listingMetadataLanguage->{'get'.$input}());
-                    }
+        //add form-control CSS class to some form elements
+        foreach($form->getFieldsets() as $fieldset){
+            foreach($fieldset->getFieldsets() as $subFieldset){
+                foreach($subFieldset->getElements() as $element){
+                    $inputCSSClass = !empty($element->getAttribute('class')) ? $element->getAttribute('class').' ' : '';
+                    $element->setAttribute('class', $element->getAttribute('class').$inputCSSClass.'form-control');
                 }
             }
         }
@@ -133,67 +95,18 @@ class ListingController extends AbstractActionController
                 $request->getPost()->toArray(),
                 $request->getFiles()->toArray()
             );
+            foreach($post['content'] as &$content){
+                if(empty($content['alias'])){
+                    $content['alias'] = Misc::alias($content['title']);
+                }
+            }
             $form->setData($post);
-            $post['alias'] = (!empty($post['alias'])) ? $post['alias'] : Misc::alias($post['title']);
             if($form->isValid()){
-                $isValid = true;//may be changed to false to abort data saving
-                //set data to entity classes, other than $listingContentDefaultLanguage which is bound to the $form
-                $listing->setSort($form->getInputFilter()->getValue('sort'));
                 $category = $entityManager->find(get_class($this->getServiceLocator()->get('category-entity')),
                     ['id' => $form->getInputFilter()->getValue('category')]);
                 $listing->setOnlyCategory($category);
-                foreach(['metaTitle', 'metaDescription', 'metaKeywords'] as $input){
-                    $listingMetadata->{'set'.$input}($form->getInputFilter()->getValue($input));
-                }
 
                 $entityManager->persist($listing);
-
-                foreach($languages as $language){
-                    if ($language->getId() != Misc::getDefaultLanguage()->getId()) {
-                        $iso = $language->getIsoCode();
-
-                        //set the listing content in a given language, only set if link, title and text are all filled in
-                        if(!empty($post['link_'.$iso]) && !empty($post['title_'.$iso]) && !empty($post['text_'.$iso])){
-
-                            if(isset($listingContentEntities[$language->getIsoCode()])){
-                                $listingContentLanguage = $listingContentEntities[$language->getIsoCode()];
-                            }else{
-                                $listingContentLanguage = new ListingContent($listing, $language);
-                            }
-
-                            foreach(['link', 'title', 'text'] as $input){
-                                $listingContentLanguage->{'set'.$input}($form->getInputFilter()->getValue($input.'_'.$iso));
-                            }
-                            $alias = !empty($post['alias_'.$iso]) ? $form->getInputFilter()->getValue('alias_'.$iso) :
-                                Misc::alias($form->getInputFilter()->getValue('title_'.$iso));
-                            $listingContentLanguage->setAlias($alias);
-
-                        }else if(!empty($post['link_'.$iso]) || !empty($post['title_'.$iso]) || !empty($post['text_'.$iso])) {
-                            $this->flashMessenger()->addErrorMessage(
-                                sprintf($this->translator->translate('Content %s - you must fill in all the required fields or leave them all empty'), '('.$iso.')')
-                            );
-                            $isValid = false;
-                            break;
-                        }
-
-                        //set the metadata in a given language
-                        if(empty($post['metaTitle_'.$iso]) && empty($post['metaDescription_'.$iso]) && empty($post['metaKeywords_'.$iso])){
-                            if(isset($listingMetaEntities[$language->getIsoCode()])){
-                                $entityManager->remove($listingMetaEntities[$language->getIsoCode()]);//remove the metadata on that language if no fields are filled in
-                            }
-                        }else{
-                            if(isset($listingMetaEntities[$language->getIsoCode()])){
-                                $listingMetadataLanguage = $listingMetaEntities[$language->getIsoCode()];
-                            }else{
-                                $listingMetadataLanguage = new Metadata($listing, $language);
-                            }
-
-                            foreach(['metaTitle', 'metaDescription', 'metaKeywords'] as $input){
-                                $listingMetadataLanguage->{'set'.$input}($form->getInputFilter()->getValue($input.'_'.$iso));
-                            }
-                        }
-                    }
-                }
 
                 //is the image scheduled for removal
                 if(!empty($post['image_remove']) && $listing->getListingImage()){
@@ -209,13 +122,11 @@ class ListingController extends AbstractActionController
                     \move_uploaded_file($post['listingImage']['tmp_name'], $publicDir.$imgDir.$post['listingImage']['name']);
                 }
 
-                if($isValid){
-                    $entityManager->flush();
-                    return $this->redir()->toRoute('admin/listing', [
-                        'id' => $parentFilter,
-                        'page' => $page,
-                    ]);
-                }
+                $entityManager->flush();
+                return $this->redir()->toRoute('admin/listing', [
+                    'id' => $parentFilter,
+                    'page' => $page,
+                ]);
 
             }else{
                 $this->flashMessenger()->addErrorMessage($this->translator->translate("Please check the form for errors"));
@@ -230,6 +141,45 @@ class ListingController extends AbstractActionController
             'action' => 'Edit',
             'image' => $listing->getListingImage() ? $imgDir.$listing->getListingImage()->getImageName() : $listing->getListingImage(),
         ];
+    }
+
+    protected function addEmptyContent(Entity\Listing $listing, \Doctrine\Common\Collections\Collection $languages)
+    {
+        $contentLangIDs = [];
+        $defaultContent = null;
+        foreach($listing->getContent() as $content){
+            $contentLangIDs[] = $content->getLang()->getId();
+            if($content->getLang()->getId() == Misc::getDefaultLanguage()->getId())
+                $defaultContent = $content;
+        }
+
+        $metaLangIDs = [];
+        $defaultMeta = null;
+        foreach($listing->getMetadata() as $metadata){
+            $metaLangIDs[] = $metadata->getLang()->getId();
+            if($metadata->getLang()->getId() == Misc::getDefaultLanguage()->getId())
+                $defaultMeta = $metadata;
+        }
+
+        foreach($languages as $language){
+            if(!in_array($language->getId(), $contentLangIDs)){
+                $newContent = new ListingContent($listing, $language);
+                if($defaultContent){
+                    $newContent->setAlias($defaultContent->getAlias());
+                    $newContent->setLink($defaultContent->getLink());
+                    $newContent->setTitle($defaultContent->getTitle());
+                    $newContent->setText($defaultContent->getText());
+                }
+            }
+            if(!in_array($language->getId(), $metaLangIDs)){
+                $newMeta = new Metadata($listing, $language);
+                if($defaultMeta){
+                    $newMeta->setMetaTitle($defaultMeta->getMetaTitle());
+                    $newMeta->setMetaDescription($defaultMeta->getMetaDescription());
+                    $newMeta->setMetaKeywords($defaultMeta->getMetaKeywords());
+                }
+            }
+        }
     }
 
     protected function removeListingImage(Entity\ListingImage $listingImage, $dir)

@@ -26,9 +26,6 @@ class Category
                     'type' => 'Admin\Form\CategoryContentFieldset',
                 ),
             ),
-            'attributes' => array(
-                'label' => 'Name'
-            ),
         ));
 
         $form->add(array(

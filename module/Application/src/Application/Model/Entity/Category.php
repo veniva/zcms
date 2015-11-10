@@ -135,8 +135,8 @@ class Category
     }
 
     /**
-     * @param null $langId If null an entity on the default language is returned; if false a collection of all entities is returned
-     * @return \Application\Model\Entity\CategoryContent|\Doctrine\ORM\PersistentCollection Either a single entity or a collection of entities
+     * @param null $langId If null, then an entity on the default language is returned
+     * @return CategoryContent|null
      */
     public function getSingleCategoryContent($langId = null)
     {
@@ -151,7 +151,7 @@ class Category
             }
         }
 
-        return $this->content;//return collection of content
+        return null;
     }
 
     public function addCategoryContent(CategoryContent $categoryContent)

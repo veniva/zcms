@@ -2,62 +2,35 @@
 
 namespace Application\Model\Entity;
 
-use Zend\Form\Annotation;
-
 /**
- * @Annotation\Name("metadata")
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ClassMethods")
- *
  * @Entity @Table(name="metadata")
  */
 class Metadata
 {
     /**
-     * @Annotation\Exclude()
-     *
      * @Id @ManyToOne(targetEntity="Listing", inversedBy="content")
      */
     protected $listing;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @Id @ManyToOne(targetEntity="Lang")
      */
     protected $lang;
 
     /**
-     * @Annotation\Type("text")
-     * @Annotation\Filter({"name": "StringTrim"})
-     * @Annotation\Filter({"name": "StripTags"})
-     * @Annotation\Validator({"name": "StringLength", "options": {"max": 255}})
-     * @Annotation\Options({"label": "Meta title"})
-     *
-     * @Column(type="string", name="meta_title")
+     * @Column(type="string", name="meta_title", nullable=true)
      */
-    protected $metaTitle;
+    protected $metaTitle = null;
 
     /**
-     * @Annotation\Type("text")
-     * @Annotation\Filter({"name": "StringTrim"})
-     * @Annotation\Filter({"name": "StripTags"})
-     * @Annotation\Validator({"name": "StringLength", "options": {"max": 255}})
-     * @Annotation\Options({"label": "Meta description"})
-     *
      * @Column(type="string", name="meta_description")
      */
-    protected $metaDescription;
+    protected $metaDescription = null;//v_todo - annotate all the ORM with the full set of options: http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html#annref-column
 
     /**
-     * @Annotation\Type("text")
-     * @Annotation\Filter({"name": "StringTrim"})
-     * @Annotation\Filter({"name": "StripTags"})
-     * @Annotation\Validator({"name": "StringLength", "options": {"max": 255}})
-     * @Annotation\Options({"label": "Meta keywords"})
-     *
-     * @Column(type="string", name="meta_keywords")
+     * @Column(type="string", name="meta_keywords", nullable=true)
      */
-    protected $metaKeywords;
+    protected $metaKeywords = null;
 
     public function __construct(Listing $listing = null, Lang $lang = null)
     {

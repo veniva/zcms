@@ -2,7 +2,7 @@
     <div class="title"><?=$this->translate($this->title)?></div>
     <div style="float:right;">
         <button type="button" id="add_button" class="btn btn-primary btn-xs"><?=$this->translate('New')?></button>
-        <button type="button" id="add_button" class="btn btn-primary btn-xs"><?=$this->translate('Delete')?></button>
+        <button type="button" id="del_button" class="btn btn-primary btn-xs"><?=$this->translate('Delete')?></button>
     </div>
 </div>
 <div class="body_cont">
@@ -28,7 +28,7 @@
                         'id' => $listing->getId(),
                         'page' => $this->page,
                         'filter' => $this->parentCategory,
-                    ])?>"><?=$listing->getContent()->getLink()?></a></td>
+                    ])?>"><?=$listing->getSingleListingContent()->getLink()?></a></td>
                 <td>
                     <?php foreach($listing->getCategories() as $category):?>
                         [<?=$category->getId()?>] <?=$category->getSingleCategoryContent()->getTitle()?>

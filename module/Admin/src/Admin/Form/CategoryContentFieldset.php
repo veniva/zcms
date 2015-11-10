@@ -9,7 +9,9 @@ use Zend\Stdlib\Hydrator\ClassMethods as ClassMethodsHydrator;
 
 class CategoryContentFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    protected $inputFilterSpec;
+
+    protected $maxTitleLength = 15;
+    protected $maxAliasLength = 15;
 
     public function __construct()
     {
@@ -24,12 +26,18 @@ class CategoryContentFieldset extends Fieldset implements InputFilterProviderInt
             'options' => array(
                 'label' => 'Alias'
             ),
+            'attributes'=> array(
+                'maxlength' => $this->maxAliasLength,
+            ),
         ));
 
         $this->add(array(
             'name' => 'title',
             'options' => array(
                 'label' => 'Name'
+            ),
+            'attributes'=> array(
+                'maxlength' => $this->maxTitleLength,
             ),
         ));
     }
@@ -49,6 +57,14 @@ class CategoryContentFieldset extends Fieldset implements InputFilterProviderInt
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
                 ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'max' => $this->maxAliasLength,
+                        ),
+                    )
+                ),
             ),
             'title' => array(
                 'required' => true,
@@ -60,10 +76,9 @@ class CategoryContentFieldset extends Fieldset implements InputFilterProviderInt
                     array(
                         'name' => 'StringLength',
                         'options' => array(
-                            'max' => 15,
+                            'max' => $this->maxTitleLength,
                         ),
                     ),
-
                 ),
             ),
         );
