@@ -160,13 +160,20 @@ class CategoryController extends AbstractActionController
     protected function addEmptyContent(Category $category, \Doctrine\Common\Collections\Collection $languages)
     {
         $contentIDs = [];
+        $defaultContent = null;
         foreach($category->getContent() as $content){
             $contentIDs[] = $content->getLang()->getId();
+            if($content->getLang()->getId() == Misc::getDefaultLanguage()->getId())
+                $defaultContent = $content;
         }
 
         foreach($languages as $language){
             if(!in_array($language->getId(), $contentIDs)){
-                new CategoryContent($category, $language);
+                $newContent = new CategoryContent($category, $language);
+                if($defaultContent){
+                    $newContent->setAlias($defaultContent->getAlias());
+                    $newContent->setTitle($defaultContent->getTitle());
+                }
             }
         }
     }

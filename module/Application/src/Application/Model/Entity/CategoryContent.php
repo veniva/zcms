@@ -8,6 +8,7 @@ namespace Application\Model\Entity;
 class CategoryContent
 {
     /**
+     * @deprecated - v_todo Create a composite primary instead
      * @Id @GeneratedValue @Column(type="integer")
      */
     protected $id;
