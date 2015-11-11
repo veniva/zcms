@@ -135,20 +135,34 @@ class ListingController extends AbstractActionController
                 $entityManager->persist($listing);
 
                 //is the image scheduled for removal
-                if(!empty($post['image_remove']) && $listing->getListingImage()){
-                    $this->removeListingImage($listing->getListingImage(), $publicDir.$imgDir);
-                }
-                //upload new image
-                if(isset($post['listingImage']) && !$post['listingImage']['error']){
-                    if(empty($post['image_remove']) && $listing->getListingImage()){
-                        $this->removeListingImage($listing->getListingImage(), $publicDir.$imgDir);
+                if($action == 'edit'){
+                    if(!empty($post['image_remove']) && $listing->getListingImage()){
+                        $this->removeListingImage($listing->getListingImage(), $publicDir.$imgDir, $listing->getId());
                     }
+                }
+
+                //upload new image
+                $upload = false;
+                if(isset($post['listingImage']) && !$post['listingImage']['error']){
+                    if($action == 'edit'){
+                        if(empty($post['image_remove']) && $listing->getListingImage()){
+                            $this->removeListingImage($listing->getListingImage(), $publicDir.$imgDir, $listing->getId());
+                        }
+                    }
+
                     $listingImage = new ListingImage($listing);
                     $listingImage->setImageName($post['listingImage']['name']);
-                    \move_uploaded_file($post['listingImage']['tmp_name'], $publicDir.$imgDir.$post['listingImage']['name']);
+                    $upload = true;
                 }
 
                 $entityManager->flush();
+                if($upload){
+                    $uploadDir = $publicDir.$imgDir.$listing->getId();
+                    if(!file_exists($uploadDir) && !is_dir($uploadDir)){
+                        mkdir($publicDir.$imgDir.$listing->getId());
+                    }
+                    \move_uploaded_file($post['listingImage']['tmp_name'], $uploadDir.'/'.$post['listingImage']['name']);
+                }
                 return $this->redir()->toRoute('admin/listing', [
                     'id' => $parentFilter,
                     'page' => $page,
@@ -164,7 +178,7 @@ class ListingController extends AbstractActionController
             'form' => $form,
             'listing' => $listing,
             'action' => ucfirst($action),
-            'image' => $listing->getListingImage() ? $imgDir.$listing->getListingImage()->getImageName() : null,
+            'image' => $listing->getListingImage() ? $imgDir.$listing->getId().'/'.$listing->getListingImage()->getImageName() : null,
         ]);
         return $viewModel;
     }
@@ -208,10 +222,11 @@ class ListingController extends AbstractActionController
         }
     }
 
-    protected function removeListingImage(Entity\ListingImage $listingImage, $dir)
+    protected function removeListingImage(Entity\ListingImage $listingImage, $listingsDir, $listingId)
     {
         $this->getServiceLocator()->get('entity-manager')->remove($listingImage);
-        unlink($dir.$listingImage->getImageName());
+        unlink($listingsDir.$listingId.'/'.$listingImage->getImageName());
+        //v_todo- safely remove the directory (check empty first)
     }
 
     protected function dependencyProvider(&$entityManager, &$listingEntity, &$categoryTree, &$listingRepository)
