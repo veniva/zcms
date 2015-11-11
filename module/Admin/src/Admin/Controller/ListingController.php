@@ -111,7 +111,8 @@ class ListingController extends AbstractActionController
         $form = $listingForm->getForm();
         $form->bind($listing);
         if($action == 'edit'){
-            $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($listing->getCategories()[0]->getId());
+            if(isset($listing->getCategories()[0]))
+                $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($listing->getCategories()[0]->getId());
         }else{
             $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($parentFilter);
         }
