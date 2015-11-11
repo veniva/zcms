@@ -29,7 +29,7 @@ class Listing
      *
      * @Column(type="integer")
      */
-    protected $sort;
+    protected $sort = 0;
 
     /**
      * @Annotation\Exclude()

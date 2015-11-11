@@ -55,4 +55,14 @@ class ListingControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
     }
+
+    public function testAddActionCanBeAccessed()
+    {
+        $this->routeMatch->setParam('action', 'add');
+
+        $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
 }

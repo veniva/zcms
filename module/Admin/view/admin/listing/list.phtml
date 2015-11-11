@@ -54,4 +54,7 @@
     $('#filter_category').change(function(){
         goToHref(this.value);
     });
+    $('#add_button').click(function(){
+        location.href='<?=$this->langUrl('admin/listing', ['action' => 'add', 'id' => 0, 'page' => $this->page, 'filter' => $this->parentCategory])?>';
+    });
 </script>

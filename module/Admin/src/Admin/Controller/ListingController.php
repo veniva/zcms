@@ -12,6 +12,7 @@ use Application\Service\Invokable\Misc;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\i18n\Translator\Translator;
 use Zend\Form\Element;
+use Zend\View\Model\ViewModel;
 
 class ListingController extends AbstractActionController
 {
@@ -48,26 +49,47 @@ class ListingController extends AbstractActionController
 
     public function editAction()
     {
-        $listingId = $this->params()->fromRoute('id');
+        return $this->addEditListing('edit');
+    }
+
+    public function addAction()
+    {
+        $return = $this->addEditListing('add');
+        if($return instanceof ViewModel){
+            $return->setTemplate('admin/listing/edit');
+        }
+        return $return;
+    }
+
+    protected function addEditListing($action)
+    {
         $page = $this->params()->fromRoute('page');
         $parentFilter = $this->params()->fromRoute('filter');
-        if(!$listingId){
-            return $this->redir()->toRoute('admin/listing', [
-                'id' => $parentFilter,
-                'page' => $page,
-            ]);
+        if($action == 'edit'){
+            $listingId = $this->params()->fromRoute('id');
+            if(!$listingId){
+                return $this->redir()->toRoute('admin/listing', [
+                    'id' => $parentFilter,
+                    'page' => $page,
+                ]);
+            }
         }
 
         $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
         $languages = Misc::getActiveLangs();
 
-        $listing = $listingRepository->findOneBy(['id' => $listingId]);
-        if(!$listing){
-            return $this->redir()->toRoute('admin/listing', [
-                'id' => $parentFilter,
-                'page' => $page,
-            ]);
+        if($action == 'edit'){
+            $listing = $listingRepository->findOneBy(['id' => $listingId]);
+            if(!$listing){
+                return $this->redir()->toRoute('admin/listing', [
+                    'id' => $parentFilter,
+                    'page' => $page,
+                ]);
+            }
+        }else{
+            $listing = new Entity\Listing();
         }
+
         //add empty language content to the collection, so that input fields are created
         $this->addEmptyContent($listing, $languages);
 
@@ -77,7 +99,11 @@ class ListingController extends AbstractActionController
         $listingForm = new ListingForm($listing, $languages);
         $form = $listingForm->getForm();
         $form->bind($listing);
-        $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($listing->getCategories()[0]->getId());
+        if($action == 'edit'){
+            $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($listing->getCategories()[0]->getId());
+        }else{
+            $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($parentFilter);
+        }
 
         //add form-control CSS class to some form elements
         foreach($form->getFieldsets() as $fieldset){
@@ -132,15 +158,15 @@ class ListingController extends AbstractActionController
                 $this->flashMessenger()->addErrorMessage($this->translator->translate("Please check the form for errors"));
             }
         }
-
-        return [
+        $viewModel = new ViewModel([
             'page' => $page,
             'filter' => $parentFilter,
             'form' => $form,
             'listing' => $listing,
-            'action' => 'Edit',
-            'image' => $listing->getListingImage() ? $imgDir.$listing->getListingImage()->getImageName() : $listing->getListingImage(),
-        ];
+            'action' => ucfirst($action),
+            'image' => $listing->getListingImage() ? $imgDir.$listing->getListingImage()->getImageName() : null,
+        ]);
+        return $viewModel;
     }
 
     protected function addEmptyContent(Entity\Listing $listing, \Doctrine\Common\Collections\Collection $languages)

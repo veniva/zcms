@@ -120,7 +120,7 @@ class CategoryController extends AbstractActionController
             $categoryEntity->setParent($parentCategory);
         }
 
-        //add empty language content tot he collection, so that input fields are created
+        //add empty language content to the collection, so that input fields are created
         $this->addEmptyContent($categoryEntity, $languages);
 
         $formClass = new CategoryForm($categoryEntity, $languages);
