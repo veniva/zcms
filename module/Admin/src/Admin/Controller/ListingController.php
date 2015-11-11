@@ -226,7 +226,10 @@ class ListingController extends AbstractActionController
     {
         $this->getServiceLocator()->get('entity-manager')->remove($listingImage);
         unlink($listingsDir.$listingId.'/'.$listingImage->getImageName());
-        //v_todo- safely remove the directory (check empty first)
+        $fileSystem = $this->getServiceLocator()->get('stdlib-file-system');
+        if($fileSystem->isDirEmpty($listingsDir.$listingId)){
+            rmdir($listingsDir.$listingId);
+        }
     }
 
     protected function dependencyProvider(&$entityManager, &$listingEntity, &$categoryTree, &$listingRepository)
