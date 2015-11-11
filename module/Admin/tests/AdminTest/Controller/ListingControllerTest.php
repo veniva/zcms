@@ -48,7 +48,7 @@ class ListingControllerTest extends \PHPUnit_Framework_TestCase
     public function testEditActionCanBeAccessed()
     {
         $this->routeMatch->setParam('action', 'edit');
-        $this->routeMatch->setParam('id', 18);//requires an actual category ID v_todo - refactor this
+        $this->routeMatch->setParam('id', 19);//requires an actual listing ID v_todo - refactor this
 
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();

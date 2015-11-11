@@ -52,7 +52,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
     {
         //test edit
         $this->routeMatch->setParam('action', 'edit');
-        $this->routeMatch->setParam('id', 17);//requires an actual category ID v_todo - refactor this
+        $this->routeMatch->setParam('id', 111);//requires an actual category ID v_todo - refactor this
 
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
