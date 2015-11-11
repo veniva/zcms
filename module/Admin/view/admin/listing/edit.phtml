@@ -100,6 +100,17 @@ $this->form->prepare();
         <div style="height:100px;">&nbsp;</div>
     </div>
 </div>
+<link media="screen" rel="stylesheet" type="text/css" href="<?=$this->basePath().'/css/font-awesome-4.4.0/css/font-awesome.min.css'?>" />
+<link media="screen" rel="stylesheet" type="text/css" href="<?=$this->basePath().'/css/admin/summernote.css'?>" />
+<script type="text/javascript" src="<?=$this->basePath().'/js/admin/summernote/summernote.min.js'?>"></script>
+<?php $locale = str_replace('_', '-', $this->locale);
+        if($locale != 'en-US'):?>
+    <script type="text/javascript" src="<?=$this->basePath().'/js/admin/summernote/lang/summernote-'.$locale.'.js'?>"></script>
+<?php endif; ?>
 <script type="text/javascript">
     $('.tabs').tabs();
+    $('.summernote').summernote({
+        height: 300,
+        lang: '<?=$locale?>'
+    });
 </script>

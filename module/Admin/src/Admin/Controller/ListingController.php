@@ -122,7 +122,7 @@ class ListingController extends AbstractActionController
             foreach($fieldset->getFieldsets() as $subFieldset){
                 foreach($subFieldset->getElements() as $element){
                     $inputCSSClass = !empty($element->getAttribute('class')) ? $element->getAttribute('class').' ' : '';
-                    $element->setAttribute('class', $element->getAttribute('class').$inputCSSClass.'form-control');
+                    $element->setAttribute('class', $inputCSSClass.'form-control');
                 }
             }
         }
@@ -191,6 +191,7 @@ class ListingController extends AbstractActionController
             'listing' => $listing,
             'action' => ucfirst($action),
             'image' => $listing->getListingImage() ? $imgDir.$listing->getId().'/'.$listing->getListingImage()->getImageName() : null,
+            'locale' => $this->translator->getLocale()
         ]);
         return $viewModel;
     }

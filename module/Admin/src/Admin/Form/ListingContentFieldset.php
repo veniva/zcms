@@ -55,6 +55,9 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
             'options' => array(
                 'label' => 'Content',
             ),
+            'attributes' => array(
+                'class' => 'summernote'
+            ),
         ));
     }
 
@@ -81,6 +84,7 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
                         ),
                     )
                 ),
+                //v_todo - check unique in the DB
             ),
             'link' => array(
                 'filters' => array(
@@ -111,6 +115,7 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
                 ),
             ),
             'text' => array(
+                //v_todo - create a filter for <script tag only
                 'validators' => array(
                     array(
                         'name' => 'NotEmpty',
