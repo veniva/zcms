@@ -10,51 +10,83 @@
         <label for="filter_category">Filter: </label>
         <?=$this->formSelectCategory($this->categoryTree, $this->parentCategory, 'admin/listing')?>
     </div>
-    <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
-        <tr>
-            <th style="width: 20px">#</th>
-            <th style="width: 20px">&nbsp;</th>
-            <th><?=$this->translate('Link Name')?></th>
-            <th style="width: 150px;"><?=$this->translate('Category')?></th>
-            <th style="width: 20px;"><?=$this->translate('Sort')?></th>
-            <th style="width: 20px;"><?=$this->translate('Action')?></th>
-        </tr>
-        <?php foreach($this->listings as $listing): ?>
+    <form name="listings">
+        <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
             <tr>
-                <td><?=$listing->getId()?></td>
-                <td><input type="checkbox" name="lid[]" value="<?=$listing->getId()?>" /></td>
-                <td><a href="<?=$this->langUrl('admin/listing', [
-                        'action' => 'edit',
-                        'id' => $listing->getId(),
-                        'page' => $this->page,
-                        'filter' => $this->parentCategory,
-                    ])?>"><?=$listing->getSingleListingContent()->getLink()?></a></td>
-                <td>
-                    <?php foreach($listing->getCategories() as $category):?>
-                        [<?=$category->getId()?>] <?=$category->getSingleCategoryContent()->getTitle()?>
-                    <?php endforeach; ?>
-                </td>
-                <td><?=$listing->getSort()?></td>
-                <td>
-                    <a class="img" href="<?=$this->langUrl('admin/listing', array(
-                        'action' => 'edit',
-                        'id' => $listing->getId(),
-                        'page' => $this->page,
-                        'filter' => $this->parentCategory,
-                    ))?>">
-                        <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
-                    </a>
-                </td>
+                <th style="width: 20px">#</th>
+                <th style="width: 20px">&nbsp;</th>
+                <th><?=$this->translate('Link Name')?></th>
+                <th style="width: 150px;"><?=$this->translate('Category')?></th>
+                <th style="width: 20px;"><?=$this->translate('Sort')?></th>
+                <th style="width: 20px;"><?=$this->translate('Action')?></th>
             </tr>
-        <?php endforeach; ?>
-    </table>
+            <?php foreach($this->listings as $listing): ?>
+                <tr>
+                    <td><?=$listing->getId()?></td>
+                    <td><input type="checkbox" name="lid[]" value="<?=$listing->getId()?>" /></td>
+                    <td><a href="<?=$this->langUrl('admin/listing', [
+                            'action' => 'edit',
+                            'id' => $listing->getId(),
+                            'page' => $this->page,
+                            'filter' => $this->parentCategory,
+                        ])?>"><?=$listing->getSingleListingContent()->getLink()?></a></td>
+                    <td>
+                        <?php foreach($listing->getCategories() as $category):?>
+                            [<?=$category->getId()?>] <?=$category->getSingleCategoryContent()->getTitle()?>
+                        <?php endforeach; ?>
+                    </td>
+                    <td><?=$listing->getSort()?></td>
+                    <td>
+                        <a class="img" href="<?=$this->langUrl('admin/listing', array(
+                            'action' => 'edit',
+                            'id' => $listing->getId(),
+                            'page' => $this->page,
+                            'filter' => $this->parentCategory,
+                        ))?>">
+                            <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </form>
     <?=$this->paginationControl($this->listings, 'Sliding', 'paginator/category_sliding', ['route' => 'admin/listing', 'id' => $this->parentCategory])?>
 </div>
+<form name="form_delete" action="<?=$this->url('admin/listing', array(
+    'action' => 'delete',
+    'id' => $this->parentCategory,
+    'page' => $this->page
+))?>" method="post">
+    <div>
+        <input type="hidden" name="ids" value="" />
+    </div>
+</form>
 <script type="text/javascript">
     $('#filter_category').change(function(){
         goToHref(this.value);
     });
     $('#add_button').click(function(){
         location.href='<?=$this->langUrl('admin/listing', ['action' => 'add', 'id' => 0, 'page' => $this->page, 'filter' => $this->parentCategory])?>';
+    });
+
+    $('#del_button').click(function(){
+        if(confirm('<?=$this->translate('Are you sure you want to delete these pages?')?>')){
+            var elements = $(document.listings).find('input[name="lid[]"]');
+            var values = [];
+            elements.each(function(){
+                if(this.checked == true){
+                    values.push(this.value);
+                }
+            });
+
+            if(values.length){
+                document.form_delete.elements['ids'].value = values;
+                document.form_delete.submit();
+            }else{
+                alert('<?=$this->translate('You must choose at least one item to delete')?>');
+            }
+
+        }
+        return false;
     });
 </script>

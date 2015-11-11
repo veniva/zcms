@@ -65,6 +65,7 @@ class ListingController extends AbstractActionController
     {
         $page = $this->params()->fromRoute('page');
         $parentFilter = $this->params()->fromRoute('filter');
+        $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
         if($action == 'edit'){
             $listingId = $this->params()->fromRoute('id');
             if(!$listingId){
@@ -73,9 +74,19 @@ class ListingController extends AbstractActionController
                     'page' => $page,
                 ]);
             }
+        }else{
+            //check if there is at least one category available
+            $categoryEntity = new Entity\Category();
+            $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAllOfType(1);
+            if(!$categoryNumber){
+                $this->flashMessenger()->addErrorMessage($this->translator->translate("You must create at least one category in order to add pages"));
+                return $this->redir()->toRoute('admin/listing', [
+                    'id' => $parentFilter,
+                    'page' => $page,
+                ]);
+            }
         }
 
-        $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
         $languages = Misc::getActiveLangs();
 
         if($action == 'edit'){
@@ -93,7 +104,7 @@ class ListingController extends AbstractActionController
         //add empty language content to the collection, so that input fields are created
         $this->addEmptyContent($listing, $languages);
 
-        $publicDir = __DIR__.'/../../../../../public';
+        $publicDir = $this->getServiceLocator()->get('config')['other']['public-path'];
         $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
 
         $listingForm = new ListingForm($listing, $languages);
@@ -234,13 +245,40 @@ class ListingController extends AbstractActionController
 
     protected function dependencyProvider(&$entityManager, &$listingEntity, &$categoryTree, &$listingRepository)
     {
-        /* \Doctrine\Orm\EntityManager */
         $entityManager = $this->getServiceLocator()->get('entity-manager');
-        /* \Application\Model\Entity\Listing */
         $listingEntity = $this->getServiceLocator()->get('listing-entity');
-        /* \Admin\CategoryTree\CategoryTree $categoryTree */
         $categoryTree = $this->getServiceLocator()->get('category-tree');
-        /* @var \Application\Model\ListingRepository $listingRepository */
         $listingRepository = $entityManager->getRepository(get_class($listingEntity));
+    }
+
+    public function deleteAction()
+    {
+        $parentFilter = $this->params()->fromPost('id');
+        $page = $this->params()->fromPost('page');
+        $post = $this->params()->fromPost('ids', null);
+        if(!$post){
+            $this->flashMessenger()->addErrorMessage($this->translator->translate('You must choose at least one item to delete'));
+            return $this->redir()->toRoute('admin/listing');
+        }
+        $listingIds = explode(',', $post);
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $listingEntity = $this->getServiceLocator()->get('listing-entity');
+
+        $publicDir = $this->getServiceLocator()->get('config')['other']['public-path'];
+        $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
+
+        foreach($listingIds as $listingId){
+            $listing = $entityManager->find(get_class($listingEntity), $listingId);
+            $entityManager->remove($listing);
+            if($listing->getListingImage())
+                $this->removeListingImage($listing->getListingImage(), $publicDir.$imgDir, $listing->getId());
+        }
+        $entityManager->flush();
+        $this->flashMessenger()->addSuccessMessage($this->translator->translate('The pages have been deleted successfully'));
+        return $this->redir()->toRoute('admin/listing', [
+            'id' => $parentFilter,
+            'page' => $page,
+        ]);
+
     }
 }

@@ -56,7 +56,7 @@ class Listing
     /**
      * @Annotation\Exclude()
      *
-     * @ManyToMany(targetEntity="Category", inversedBy="listings", cascade={"remove", "persist"})
+     * @ManyToMany(targetEntity="Category", inversedBy="listings")
      */
     protected $categories;
 

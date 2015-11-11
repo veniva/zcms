@@ -179,6 +179,7 @@ return array(
     ),
     'other' => array(
         'no-reply' => !empty($_SERVER['SERVER_NAME']) ? 'no-reply@'.$_SERVER['SERVER_NAME'] : '',
+        'public-path' => __DIR__.'/../../../public'
     ),
     'acl' => array(
         'role' => array(

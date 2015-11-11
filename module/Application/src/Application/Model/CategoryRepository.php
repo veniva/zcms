@@ -144,6 +144,15 @@ TAG;
         return $query->getSingleScalarResult();
     }
 
+    public function countAllOfType($type)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select($qb->expr()->count('c'))
+            ->where('c.type='.$type);
+        $query = $qb->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
     protected function andCategoryParent(QueryBuilder $qb, $parent)
     {
         return $parent = empty($parent) ? '('.$qb->expr()->isNull('c.parent').' OR c.parent=0)' : 'c.parent='.$parent;
