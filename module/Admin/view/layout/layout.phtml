@@ -81,13 +81,15 @@
             <div class="content">
                 <div class="messages">
                     <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
-                        $flashMessages = $this->flashmessenger()->render($namespace);//V_TODO - use $this->flashmessenger()->renderCurrent() to show not only redirect msgs., also make sure not to display those twice in case of redirection
-                        $namespace = $namespace == 'error' ? 'danger' : $namespace;/*adjust bootstrap to ZF2*/
-                        if (!empty($flashMessages)):?>
-                            <div class="alert alert-<?=$namespace?>" role="alert">
-                                <?= $flashMessages ?>
-                            </div>
-                        <?php endif;
+                        //check for error messages
+                        $plugin = $this->flashMessenger()->getPluginFlashMessenger();
+                        if($plugin->getCurrentErrorMessages()){
+                            echo $this->flashMessenger()->renderCurrent($namespace, array('alert', 'alert-dismissible', 'alert-danger'));
+                            $plugin->clearCurrentMessages('error');
+                        }
+                        $style = $namespace != 'error' ? array('alert', 'alert-dismissible', 'alert-'.$namespace) :
+                            array('alert', 'alert-dismissible', 'alert-danger');
+                        echo $this->flashMessenger()->render($namespace, $style);//V_TODO - use $this->flashmessenger()->renderCurrent() to show not only redirect msgs., also make sure not to display those twice in case of redirection
                     endforeach; ?>
                 </div>
                 <div class="container">

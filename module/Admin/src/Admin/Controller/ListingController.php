@@ -176,6 +176,9 @@ class ListingController extends AbstractActionController
                     }
                     \move_uploaded_file($post['listingImage']['tmp_name'], $uploadDir.'/'.$post['listingImage']['name']);
                 }
+
+                $this->flashMessenger()->addSuccessMessage($this->translator->translate('The page has been '.$action.'ed successfully'));
+
                 return $this->redir()->toRoute('admin/listing', [
                     'id' => $parentFilter,
                     'page' => $page,
