@@ -4,58 +4,39 @@ namespace Application\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Application\Service\Invokable\Misc;
-use Zend\Form\Annotation;
 
 /**
- * @Annotation\Name("listing")
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ClassMethods")
- *
  * @Entity(repositoryClass="\Application\Model\ListingRepository") @Table(name="listings")
  */
 class Listing
 {
     /**
-     * @Annotation\Exclude()
-     *
      * @Id @GeneratedValue @Column(type="integer")
      */
     protected $id;
 
     /**
-     * @Annotation\Type("number")
-     * @Annotation\Validator({"name": "Digits"})
-     * @Annotation\Options({"label": "Sort"})
-     * @Annotation\Attributes({"maxlength": 3, "class": "numbers"})
-     *
      * @Column(type="integer")
      */
     protected $sort = 0;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @OneToMany(targetEntity="ListingContent", mappedBy="listing", cascade={"remove", "persist"})
      */
     protected $content;
 
     /**
      * A collection of metadata entities in different languages
-     * @Annotation\Exclude()
-     *
      * @OneToMany(targetEntity="Metadata", mappedBy="listing", cascade={"remove", "persist"})
      */
     protected $metadata;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @OneToMany(targetEntity="ListingImage", mappedBy="listing", cascade={"remove", "persist"})
      */
     protected $listingImages;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @ManyToMany(targetEntity="Category", inversedBy="listings")
      */
     protected $categories;

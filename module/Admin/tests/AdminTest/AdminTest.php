@@ -25,8 +25,8 @@ class AdminTest extends AbstractHttpControllerTestCase
     public function testListingForm()
     {
         $sl = $this->getApplicationServiceLocator();
-        $obj = new \Admin\Form\Listing($sl->get('listing-entity'), Misc::getActiveLangs());
-        if(!$obj->getForm() instanceof \Zend\Form\Form){
+        $form = new \Admin\Form\Listing($sl->get('entity-manager'), null);
+        if(!$form instanceof \Zend\Form\Form){
             throw new \PHPUnit_Framework_AssertionFailedError('A service object is not an instance of '.'\Zend\Form\Form');
         }else{
             $this->assertTrue(true);

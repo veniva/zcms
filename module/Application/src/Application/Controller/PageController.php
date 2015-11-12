@@ -20,7 +20,7 @@ class PageController extends AbstractActionController
         $entityManager = $this->serviceLocator->get('entity-manager');
 
         $repository = $entityManager->getRepository(get_class($listingContentEntity));
-        $listingContent = $repository->findOneBy(['alias' => $alias, 'lang' => Misc::getCurrentLang()]);
+        $listingContent = $repository->findOneBy(['alias' => urldecode($alias), 'lang' => Misc::getCurrentLang()]);
         if(!$listingContent) $this->getResponse()->setStatusCode(404);
 
         return new ViewModel([

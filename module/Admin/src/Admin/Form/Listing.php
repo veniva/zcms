@@ -3,27 +3,42 @@
 namespace Admin\Form;
 
 use Application\Model\Entity;
-use Doctrine\Common\Collections\Collection;
-use Zend\Form\Annotation\AnnotationBuilder;
+use Doctrine\ORM\EntityManager;
 use Zend\Form\Form;
 use Zend\Validator;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
  * Class Listing
  * @package Admin\Form
  */
-class Listing
+class Listing extends Form
 {
-    /**
-     * @var Form
-     */
-    protected $form;
+    protected $entityManager;
+    protected $listingContentCollection;
 
-    public function __construct(Entity\Listing $listingEntity, Collection $languages)
+    public function __construct(EntityManager $entityManager, $listingContentCollection)
     {
-        $annotationBuilder = new AnnotationBuilder;
-        $form = $annotationBuilder->createForm($listingEntity);
-        $form->add(array(
+        parent::__construct('listing');
+        $this->entityManager = $entityManager;
+        $this->listingContentCollection = $listingContentCollection;
+
+        $this->setHydrator(new ClassMethods(false))
+            ->setObject(new Entity\Listing());
+
+        $this->add(array(
+            'name' => 'sort',
+            'type' => 'Number',
+            'options' => array(
+                'label' => 'Sort',
+            ),
+            'attributes' => array(
+                'maxlength' => 3,
+                'class' => 'numbers'
+            ),
+        ));
+
+        $this->add(array(
             'type' => 'Zend\Form\Element\Collection',
             'name' => 'content',
             'options' => array(
@@ -32,7 +47,8 @@ class Listing
                 ),
             ),
         ));
-        $form->add(array(
+
+        $this->add(array(
             'type' => 'Zend\Form\Element\Collection',
             'name' => 'metadata',
             'options' => array(
@@ -42,7 +58,7 @@ class Listing
             ),
         ));
 
-        $form->add(array(
+        $this->add(array(
             'name' => 'category',//v_todo - create multiple parent categories support
             'type' => 'Select',
             'options' => array(
@@ -50,7 +66,7 @@ class Listing
             ),
         ));
 
-        $form->add(array(
+        $this->add(array(
             'name' => 'listingImage',
             'type' => 'File',
             'options' => array(
@@ -58,7 +74,7 @@ class Listing
             ),
         ));
 
-        $form->add(array(
+        $this->add(array(
             'name' => 'image_remove',
             'type' => 'checkbox',
             'options' => array(
@@ -66,7 +82,7 @@ class Listing
             ),
         ));
 
-        $form->add(array(
+        $this->add(array(
             'name' => 'submit',
             'type' => 'Zend\Form\Element\Submit',
             'attributes' => array(
@@ -75,7 +91,13 @@ class Listing
         ));
 
         //set input filters and validators
-        $inputFilter = $form->getInputFilter();
+        $inputFilter = $this->getInputFilter();
+
+        $inputFilter->add(array(
+            'validators' => array(
+                array('name' => 'Digits')
+            )
+        ), 'sort');
 
         $inputFilter->add(array(
             'validators' => array(
@@ -90,6 +112,7 @@ class Listing
                     'options' => array(
                         'extension' => array('jpeg', 'jpg', 'png', 'gif')
                     ),
+//                    'breakChainOnFailure' => true, //v_todo -Possibly use \Zend\Validator\ValidatorChain::$breakChainOnFailure
                 ),
                 array(
                     'name' => 'File\Size',
@@ -98,7 +121,7 @@ class Listing
                     ),
                 ),
                 array(
-                    'name' => 'File\ImageSize',//v_todo - when file is not image this throws notice
+                    'name' => 'File\ImageSize',//v_todo - when file is not image this throws notice.
                     'options' => array(
                         'maxWidth' => 300,
                         'maxHeight' => 300
@@ -111,15 +134,30 @@ class Listing
         $inputFilter->add(array(
             'required' => false,
         ), 'image_remove');
-
-        $this->form = $form;
     }
 
-    /**
-     * @return Form
-     */
-    public function getForm()
+    public function isValid()
     {
-        return $this->form;
+        //region attach NoRecordExists filter to the field alias to ensure uniqueness
+        $listingContent = $this->listingContentCollection;
+        $listingContentClassName = isset($listingContent[0]) ? get_class($listingContent[0]) : get_class(new Entity\ListingContent());
+        //check if the 'alias' field is unique in the database
+        $validatorOptions = [
+            'entityClass' => $listingContentClassName,
+            'field' => 'alias',
+            'exclude' => null,
+        ];
+
+        //if the listing's content is edited, don't compare it's aliases
+        if($listingContent[0]){
+            foreach($listingContent as $content){
+                $validatorOptions['exclude'][] = array('field' => 'id', 'value' => $content->getId());
+            }
+        }
+        $validator = new \Application\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);
+        $this->getInputFilter()->get('content')->getInputFilter()->get('alias')->getValidatorChain()->attach($validator);
+        //endregion
+
+        return parent::isValid();
     }
 }

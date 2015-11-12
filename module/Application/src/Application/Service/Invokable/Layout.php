@@ -17,9 +17,13 @@ class Layout
         $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
         $categoryEntity = Misc::getStaticServiceLocator()->get('category-entity');
         $categRepo = $entityManager->getRepository(get_class($categoryEntity));
-        $topCategs = $categRepo->getCategoriesListings(0, Misc::getDefaultLanguageID());
-        if(Misc::getLangID() != Misc::getDefaultLanguageID())
-            $topCategs = $categRepo->translateCategoryTitles($topCategs, Misc::getLangID());
+        $topCategs = [];
+        if(!empty(Misc::getDefaultLanguage())){
+            $topCategs = $categRepo->getCategoriesListings(0, Misc::getDefaultLanguage()->getId());
+            if(Misc::getLangID() != Misc::getDefaultLanguageID())
+                $topCategs = $categRepo->translateCategoryTitles($topCategs, Misc::getLangID());
+        }
+
         return $topCategs;
     }
 
@@ -27,7 +31,8 @@ class Layout
     {//V_TODO - rework all this breadcrumb with better approach
         if(!$alias){
             $route = Misc::getStaticRoute();
-            $alias = $route->getParam('alias', null);
+            if($route && $route->getMatchedRouteName() == 'category')
+                $alias = $route->getParam('alias', null);
         }
         if(!$alias) return [];
 

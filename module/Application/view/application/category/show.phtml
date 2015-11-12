@@ -12,7 +12,9 @@
 <h2>Pages:</h2>
 <section id="category-pages">
     <?php foreach($this->category_content->getCategory()->getListings() as $listing): ?>
-        <a href="<?=$this->url('page', ['alias' => $listing->getContent()->getAlias()])?>"><?=$listing->getContent()->getLink(); ?></a>
+        <a href="<?=$this->url('page', ['alias' => $listing->getSingleListingContent()->getAlias()])?>">
+            <?=$listing->getSingleListingContent()->getLink(); ?>
+        </a>
     <?php endforeach; ?>
 </section>
 <script type="text/javascript">

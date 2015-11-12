@@ -106,9 +106,8 @@ class ListingController extends AbstractActionController
 
         $publicDir = $this->getServiceLocator()->get('config')['other']['public-path'];
         $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
-
-        $listingForm = new ListingForm($listing, $languages);
-        $form = $listingForm->getForm();
+        $listingContent = $action == 'edit' ? $listing->getContent() : null;
+        $form = new ListingForm($this->getServiceLocator()->get('entity-manager'), $listingContent);
         $form->bind($listing);
         if($action == 'edit'){
             if(isset($listing->getCategories()[0]))
@@ -133,9 +132,11 @@ class ListingController extends AbstractActionController
                 $request->getPost()->toArray(),
                 $request->getFiles()->toArray()
             );
-            foreach($post['content'] as &$content){
+            foreach($post['content'] as &$content){//v_todo - check if this can be moved in the form's isValid()
                 if(empty($content['alias'])){
                     $content['alias'] = Misc::alias($content['title']);
+                }else{
+                    $content['alias'] = Misc::alias($content['alias']);
                 }
             }
             $form->setData($post);

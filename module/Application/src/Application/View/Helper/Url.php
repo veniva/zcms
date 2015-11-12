@@ -19,9 +19,12 @@ class Url extends Helper\AbstractHelper
     public function __invoke($name, $options = [])
     {
         $view = $this->getView();
-        $lang = $this->routeMatch->getParam('lang');
-        if($lang)
-            $options['lang'] = $lang;
+        if($this->routeMatch){
+            $lang = $this->routeMatch->getParam('lang');
+            if($lang)
+                $options['lang'] = $lang;
+        }
+
         return $view->url($name, $options);
     }
 }

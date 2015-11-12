@@ -48,7 +48,7 @@ echo $this->doctype(); ?>
                 <div class="padded_text">
                     <?php foreach($category['listings'] as $listing):?>
                         <div class="page_link"><div class="bullet"></div>
-                        <a href="<?=$this->langUrl('page', ['alias' => $listing['content']['alias']])?>"><?=$listing['content']['link']?></a></div>
+                        <a href="<?=$this->langUrl('page', ['alias' => urlencode($listing['content']['alias'])])?>"><?=$listing['content']['link']?></a></div>
                     <?php endforeach; ?>
                 </div>
             <?php endforeach; ?>

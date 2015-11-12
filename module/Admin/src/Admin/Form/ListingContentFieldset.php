@@ -84,7 +84,6 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
                         ),
                     )
                 ),
-                //v_todo - check unique in the DB
             ),
             'link' => array(
                 'filters' => array(
@@ -115,7 +114,7 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
                 ),
             ),
             'text' => array(
-                //v_todo - create a filter for <script tag only
+                //v_todo - create a filter for <script tag only or use balcklist filter
                 'validators' => array(
                     array(
                         'name' => 'NotEmpty',
