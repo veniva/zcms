@@ -1,0 +1,54 @@
+<?php use Application\Service\Invokable\Layout; ?>
+<div class="header_cont">
+    <div class="title"><?=$this->translate('Language management')?></div>
+    <div style="float:right;">
+        <button type="button" id="add_button" class="btn btn-primary btn-xs"><?=$this->translate('New')?></button>
+    </div>
+</div>
+<div class="body_cont">
+    <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
+        <tr>
+            <th width="20"><?=$this->translate('Flag')?></th>
+            <th><?=$this->translate('Language name')?></th>
+            <th width="20"><?=$this->translate('Status')?></th>
+            <th width="70"><?=$this->translate('Action')?></th>
+        </tr>
+        <?php foreach($this->languages as $lang): ?>
+            <tr>
+                <td><?=$lang->getIsoCode()?></td>
+                <td><?=$lang->getName()?></td>
+                <td><?=$lang->getStatus()?></td>
+                <td>
+                    <a class="img" href="<?=$this->langUrl('admin/default', array(
+                        'controller' => 'language',
+                        'action' => 'edit',
+                        'id' => $lang->getId(),
+                        'page' => $this->page,
+                    ))?>">
+                        <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
+                    </a>
+                    <a class="img del_button" href="#" data-href="<?=$this->langUrl('admin/default', [
+                        'controller' => 'language',
+                        'action' => 'delete',
+                        'id' => $lang->getId(),
+                        'page' => $this->page,
+                    ])?>">
+                        <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
+                    </a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+    <?=$this->paginationControl($this->languages, 'Sliding', 'paginator/sliding', [
+        'route' => 'admin/default', 'id' => $this->parent_id])?>
+</div>
+<script type="text/javascript">
+    $('#add_button').click(function(){
+        location.href='<?=$this->langUrl('admin/default', [
+        'controller' => 'language',
+        'action' => 'add',
+        'id' => $this->parent_id,
+        'page' => $this->page,
+        ])?>';
+    });
+</script>

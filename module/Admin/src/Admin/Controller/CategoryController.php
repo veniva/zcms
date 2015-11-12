@@ -6,7 +6,6 @@ namespace Admin\Controller;
 use Admin\Form\Category as CategoryForm;
 use Application\Model\Entity\Category;
 use Application\Model\Entity\CategoryContent;
-use Application\Model\Entity\Lang;
 use Application\Service\Invokable\Misc;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;

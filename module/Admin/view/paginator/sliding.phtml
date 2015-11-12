@@ -9,7 +9,7 @@ See http://developer.yahoo.com/ypatterns/pattern.php?pattern=itempagination
 
         <!-- First page link -->
         <?php if (isset($this->previous)): ?>
-            <a href="<?php echo $this->langUrl($this->route, array('id' => $this->id, 'page' => $this->first)); ?>">
+            <a href="<?php echo $this->langUrl($this->route, array('controller' => $this->controller, 'action' => $this->action, 'id' => $this->id, 'page' => $this->first)); ?>">
                 <?=$this->translate('First')?>
             </a> |
         <?php else: ?>
@@ -18,7 +18,7 @@ See http://developer.yahoo.com/ypatterns/pattern.php?pattern=itempagination
 
         <!-- Previous page link -->
         <?php if (isset($this->previous)): ?>
-            <a href="<?php echo $this->langUrl($this->route, array('id' => $this->id, 'page' => $this->previous)); ?>">
+            <a href="<?php echo $this->langUrl($this->route, array('controller' => $this->controller, 'action' => $this->action, 'id' => $this->id, 'page' => $this->previous)); ?>">
                 &lt; <?=$this->translate('Previous')?>
             </a> |
         <?php else: ?>
@@ -27,7 +27,7 @@ See http://developer.yahoo.com/ypatterns/pattern.php?pattern=itempagination
 
         <!-- Next page link -->
         <?php if (isset($this->next)): ?>
-            <a href="<?php echo $this->langUrl($this->route, array('id' => $this->id, 'page' => $this->next)); ?>">
+            <a href="<?php echo $this->langUrl($this->route, array('controller' => $this->controller, 'action' => $this->action, 'id' => $this->id, 'page' => $this->next)); ?>">
         <?=$this->translate('Next')?> &gt;
             </a> |
         <?php else: ?>
@@ -36,7 +36,7 @@ See http://developer.yahoo.com/ypatterns/pattern.php?pattern=itempagination
 
         <!-- Last page link -->
         <?php if (isset($this->next)): ?>
-            <a href="<?php echo $this->langUrl($this->route, array('id' => $this->id, 'page' => $this->last)); ?>">
+            <a href="<?php echo $this->langUrl($this->route, array('controller' => $this->controller, 'action' => $this->action, 'id' => $this->id, 'page' => $this->last)); ?>">
         <?=$this->translate('Last')?>
             </a>
         <?php else: ?>

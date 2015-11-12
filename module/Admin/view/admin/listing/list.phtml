@@ -50,7 +50,7 @@
             <?php endforeach; ?>
         </table>
     </form>
-    <?=$this->paginationControl($this->listings, 'Sliding', 'paginator/category_sliding', ['route' => 'admin/listing', 'id' => $this->parentCategory])?>
+    <?=$this->paginationControl($this->listings, 'Sliding', 'paginator/sliding', ['route' => 'admin/listing', 'id' => $this->parentCategory])?>
 </div>
 <form name="form_delete" action="<?=$this->url('admin/listing', array(
     'action' => 'delete',

@@ -26,18 +26,20 @@ return array(
                     'default' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route'    => '/[:lang/][:controller[/:action][/:id]]',
+                            'route'    => '/[:lang/][:controller[/:action][/:id[/:page]]]',
                             'constraints' => array(
                                 'lang'          => '[a-zA-Z]{2}',
                                 'controller'    => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id'            => '[0-9]*',
+                                'page'          => '[0-9]*',
                             ),
                             'defaults' => array(
                                 '__NAMESPACE__' => 'Admin\Controller',
                                 'controller'    => 'index',
                                 'action'        => 'index',
                                 'lang'          => 'en',
+                                'page'          => 1,
                             ),
                         ),
                     ),
@@ -119,6 +121,10 @@ return array(
                 $translator = $sm->getServiceLocator()->get('translator');
                 return new Controller\ListingController($translator);
             },
+            'Admin\Controller\Language' => function(ServiceLocatorAwareInterface $sm){
+                $translator = $sm->getServiceLocator()->get('translator');
+                return new Controller\LanguageController($translator);
+            },
         ),
     ),
     'view_manager' => array(
@@ -131,7 +137,7 @@ return array(
             'admin/index/index'  => __DIR__ . '/../view/admin/index/index.phtml',
             'error/404'          => __DIR__ . '/../view/error/404.phtml',
             'error/index'        => __DIR__ . '/../view/error/index.phtml',
-            'paginator/category_sliding'  => __DIR__ . '/../view/paginator/category_sliding.phtml',
+            'paginator/sliding'  => __DIR__ . '/../view/paginator/sliding.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
