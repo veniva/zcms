@@ -15,9 +15,9 @@
         </tr>
         <?php foreach($this->languages as $lang): ?>
             <tr>
-                <td><?=$lang->getIsoCode()?></td>
+                <td><img src="<?=$this->basePath()?>/img/flags/<?=$lang->getIsoCode()?>.png" /></td>
                 <td><?=$lang->getName()?></td>
-                <td><?=$lang->getStatus()?></td>
+                <td><?=$lang->getStatusName()?></td>
                 <td>
                     <a class="img" href="<?=$this->langUrl('admin/default', array(
                         'controller' => 'language',
@@ -40,7 +40,7 @@
         <?php endforeach; ?>
     </table>
     <?=$this->paginationControl($this->languages, 'Sliding', 'paginator/sliding', [
-        'route' => 'admin/default', 'id' => $this->parent_id])?>
+        'route' => 'admin/default', 'controller' => 'language'])?>
 </div>
 <script type="text/javascript">
     $('#add_button').click(function(){
@@ -50,5 +50,11 @@
         'id' => $this->parent_id,
         'page' => $this->page,
         ])?>';
+    });
+    $('.del_button').click(function(){
+        if(confirm('<?=$this->translate('Are you sure you want to delete this language?')?>')){
+            location.href=this.dataset.href;
+        }
+        return false;
     });
 </script>

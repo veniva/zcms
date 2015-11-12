@@ -1,0 +1,65 @@
+<?php
+use Application\Service\Invokable\Misc;
+$this->form->prepare();
+?>
+<div class="header_cont">
+    <div class="title"><?=$this->translate(ucfirst($this->action)." a category")?></div>
+</div>
+<div class="body_cont">
+    <?=$this->form()->openTag($this->form)?>
+    <table class="list_table" width="400" cellpadding="5" cellspacing="0">
+        <tr>
+            <td><label><?=$this->translate($this->form->get('name')->getLabel())?></label></td>
+            <td>
+                <?=$this->formInput($this->form->get('name'))?>
+                <div class="form-error">
+                    <?=$this->formElementErrors($this->form->get('name'))?>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><label><?=$this->translate($this->form->get('isoCode')->getLabel())?></label></td>
+            <td>
+                <?=$this->formInput($this->form->get('isoCode'))?>
+                <div class="form-error">
+                    <?=$this->formElementErrors($this->form->get('isoCode'))?>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><label><?=$this->translate($this->form->get('country_img')->getLabel())?></label></td>
+            <td>
+                <?=$this->formFile($this->form->get('country_img'))?>
+                <div class="form-error">
+                    <?=$this->formElementErrors($this->form->get('country_img'))?>
+                </div>
+            </td>
+        </tr>
+        <?php if($this->lang):?>
+            <tr>
+                <td><label><?=$this->translate('Current flag')?></label></td>
+                <td><img src="<?=$this->basePath()?>/img/flags/<?=$this->lang->getIsoCode()?>.png" /></td>
+            </tr>
+        <?php endif; ?>
+        <tr>
+            <td><label><?=$this->translate($this->form->get('status')->getLabel())?></label></td>
+            <td>
+                <?=$this->formSelect($this->form->get('status'))?>
+                <div class="form-error">
+                    <?=$this->formElementErrors($this->form->get('status'))?>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate(ucfirst($this->action))?></button>
+                <small> or <a href="<?=$this->langUrl('admin/default', [
+                        'controller' => 'language',
+                        'page' => $this->page,
+                    ])?>">Cancel</a></small>
+            </td>
+        </tr>
+    </table>
+    <?=$this->form()->closeTag()?>
+    <div style="height:100px;">&nbsp;</div>
+</div>

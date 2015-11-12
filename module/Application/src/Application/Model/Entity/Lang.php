@@ -93,4 +93,18 @@ class Lang
     {
         $this->status = $status;
     }
+
+    public function getStatusName()
+    {
+        return !is_null($this->status) ? $this->getStatusOptions()[$this->status] : null;
+    }
+
+    public function getStatusOptions()
+    {
+        return [
+            0 => 'inactive',
+            1 => 'active',
+            2 => 'default'
+        ];
+    }
 }

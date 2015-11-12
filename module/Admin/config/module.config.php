@@ -26,13 +26,13 @@ return array(
                     'default' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route'    => '/[:lang/][:controller[/:action][/:id[/:page]]]',
+                            'route'    => '/[:lang/][:controller[/:action][/:page[/:id]]]',
                             'constraints' => array(
                                 'lang'          => '[a-zA-Z]{2}',
                                 'controller'    => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id'            => '[0-9]*',
                                 'page'          => '[0-9]*',
+                                'id'            => '[0-9]*',
                             ),
                             'defaults' => array(
                                 '__NAMESPACE__' => 'Admin\Controller',

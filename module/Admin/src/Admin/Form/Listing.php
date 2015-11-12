@@ -112,7 +112,7 @@ class Listing extends Form
                     'options' => array(
                         'extension' => array('jpeg', 'jpg', 'png', 'gif')
                     ),
-//                    'breakChainOnFailure' => true, //v_todo -Possibly use \Zend\Validator\ValidatorChain::$breakChainOnFailure
+                    'break_chain_on_failure' => true,
                 ),
                 array(
                     'name' => 'File\Size',
