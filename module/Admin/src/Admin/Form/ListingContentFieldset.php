@@ -114,10 +114,14 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
                 ),
             ),
             'text' => array(
-                //v_todo - create a filter for <script tag only or use balcklist filter
+                //v_todo - create a filter for <script tag only
                 'validators' => array(
+                    array('name' => 'NotEmpty'),
                     array(
-                        'name' => 'NotEmpty',
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'min' => 15,//workaround the JS summernote's empty tags
+                        ),
                     )
                 ),
             ),
