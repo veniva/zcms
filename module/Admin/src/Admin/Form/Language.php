@@ -51,7 +51,6 @@ class Language extends Form
             'type' => 'Select',
             'options' => array(
                 'label' => 'Status',
-                'empty_option' => 'Select',
                 'value_options' => $lang->getStatusOptions()
             ),
         ));

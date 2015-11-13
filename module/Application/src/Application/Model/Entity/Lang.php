@@ -30,7 +30,7 @@ class Lang
     /**
      * @Column(type="integer")
      */
-    protected $status;
+    protected $status = self::STATUS_ACTIVE;
 
     /**
      * @OneToMany(targetEntity="CategoryContent", mappedBy="lang", cascade={"remove"})
@@ -53,6 +53,14 @@ class Lang
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
@@ -111,9 +119,8 @@ class Lang
     public function getStatusOptions()
     {
         return [
-            0 => 'inactive',
-            1 => 'active',
-            2 => 'default'
+            self::STATUS_ACTIVE => 'active',
+            self::STATUS_DEFAULT => 'default'
         ];
     }
 

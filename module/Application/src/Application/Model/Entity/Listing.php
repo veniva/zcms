@@ -72,7 +72,7 @@ class Listing
 
     public function getContent()
     {
-        return $this->content;
+        return $this->content;//v_todo - filter the content to show by lang.status to be able to implement language.status = inactive
     }
 
     /**

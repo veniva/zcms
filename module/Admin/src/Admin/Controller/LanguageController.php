@@ -95,78 +95,65 @@ class LanguageController extends AbstractActionController
             $form->setData($post);
             if($form->isValid($post['isoCode'], $oldIso, $language->isDefault())){
                 //if this is the new default language, change the old default to status active, and populate the missing content in the new default lang
-                if(isset($post['status']) && $oldStatus != $post['status']){
-                    if($language->isDefault($post['status'])){
-                        //region fill missing content in categories
-                        $oldDefaultLanguageId = $oldDefaultLanguage->getId();
-                        $editedLanguageId = $language->getId();//note! this is null if new language
-                        $getMissingData = function($contentCollection)use($entityManager,$language,$oldDefaultLanguageId,$editedLanguageId){
-                            $defaultContent = null;
-                            $editedContent = null;
-                            foreach($contentCollection as $content){
-                                $contentLangId = $content->getLang()->getId();
-                                if($contentLangId == $oldDefaultLanguageId){
-                                    $defaultContent = $content;
-                                    continue;
-                                }
-                                if($editedLanguageId && $contentLangId == $editedLanguageId){//if($editedLanguageId) = do this only in case of action == edit
-                                    $editedContent = $content;
-                                    continue;
-                                }
-                                if($defaultContent && $editedContent) break;//job done
-                            }
-                            return [
-                                'default_content' => $defaultContent,
-                                'edited_content' => $editedContent
-                            ];
-                        };
-                        //parse through all the categories
-                        $categories = $entityManager->getRepository(get_class(new Category()))->findByType(1);
-                        foreach($categories as $category){
-                            //region copy category content
-                            $categoryContents = $getMissingData($category->getContent());
-                            if(!$categoryContents['edited_content'] && $categoryContents['default_content']){
-                                $newContent = clone $categoryContents['default_content'];
-                                $newContent->setLang($language);
-                                $category->addCategoryContent($newContent);
-                                $entityManager->persist($category);
-                            }
-                            //endregion
+                if(isset($post['status']) && $oldStatus != $post['status'] && $language->isDefault($post['status'])){
 
-                            //region copy listings content
-                            foreach($category->getListings() as $listing){
-                                //deal with content
-                                $listingContents = $getMissingData($listing->getContent());
-                                if(!$listingContents['edited_content'] && $listingContents['default_content']){
-                                    $newListingContent = clone $listingContents['default_content'];
-                                    $newListingContent->setLang($language);
-                                    $listing->addContent($newListingContent);
-                                    $entityManager->persist($listing);
-                                }
+                    //region fill missing content in categories
+                    $oldDefaultLanguageId = $oldDefaultLanguage->getId();
+                    $editedLanguageId = $language->getId();//note! this is null if new language
+                    $getMissingData = function($contentCollection)use($entityManager,$language,$oldDefaultLanguageId,$editedLanguageId)
+                    {
+                        $defaultContent = null;
+                        $editedContent = null;
+                        foreach($contentCollection as $content){
+                            $contentLangId = $content->getLang()->getId();
+                            if($contentLangId == $oldDefaultLanguageId){
+                                $defaultContent = $content;
+                                continue;
                             }
-                            //endregion
+                            if($editedLanguageId && $contentLangId == $editedLanguageId){//if($editedLanguageId) = do this only in case of action == edit
+                                $editedContent = $content;
+                                continue;
+                            }
+                            if($defaultContent && $editedContent) break;//job done
+                        }
+                        return [
+                            'default_content' => $defaultContent,
+                            'edited_content' => $editedContent
+                        ];
+                    };
+                    //parse through all the categories
+                    $categories = $entityManager->getRepository(get_class(new Category()))->findByType(1);
+                    foreach($categories as $category){
+                        //region copy category content
+                        $categoryContents = $getMissingData($category->getContent());
+                        if(!$categoryContents['edited_content'] && $categoryContents['default_content']){
+                            $newContent = clone $categoryContents['default_content'];
+                            $newContent->setLang($language);
+                            $category->addCategoryContent($newContent);
+                            $entityManager->persist($category);
                         }
                         //endregion
 
-
-                        if($oldDefaultLanguage instanceof Lang){
-                            $oldDefaultLanguage->setStatus(Lang::STATUS_ACTIVE);
-                            $entityManager->persist($oldDefaultLanguage);
+                        //region copy listings content
+                        foreach($category->getListings() as $listing){
+                            //deal with content
+                            $listingContents = $getMissingData($listing->getContent());
+                            if(!$listingContents['edited_content'] && $listingContents['default_content']){
+                                $newListingContent = clone $listingContents['default_content'];
+                                $newListingContent->setLang($language);
+                                $listing->addContent($newListingContent);
+                                $entityManager->persist($listing);
+                            }
                         }
-                    }else if($post['status'] == Lang::STATUS_ACTIVE){//remove all the content of that language
-                        $categoryContentCollection = $entityManager->getRepository(get_class(new CategoryContent()))->findByLang($language->getId());
-                        foreach($categoryContentCollection as $content){
-                            $entityManager->remove($content);
-                        }
-                        $listingContentCollection = $entityManager->getRepository(get_class(new ListingContent()))->findByLang($language->getId());
-                        foreach($listingContentCollection as $content){
-                            $entityManager->remove($content);
-                        }
-                        $listingMetadataCollection = $entityManager->getRepository(get_class(new Metadata()))->findByLang($language->getId());
-                        foreach($listingMetadataCollection as $content){
-                            $entityManager->remove($content);
-                        }
+                        //endregion
                     }
+                    //endregion
+
+                    if($oldDefaultLanguage instanceof Lang){
+                        $oldDefaultLanguage->setStatus(Lang::STATUS_ACTIVE);
+                        $entityManager->persist($oldDefaultLanguage);
+                    }
+
                 }
 
                 $entityManager->persist($language);
