@@ -8,6 +8,7 @@
 
 namespace Application\Service\Invokable;
 
+use Application\Model\Entity\Lang;
 use Doctrine\Common\Collections\Criteria;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -114,7 +115,7 @@ class Misc
     {
         $entityManager = self::getStaticServiceLocator()->get('entity-manager');
         $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
-        $language = $entityManager->getRepository(get_class($languageEntity))->findOneByStatus(2);
+        $language = $entityManager->getRepository(get_class($languageEntity))->findOneByStatus(Lang::STATUS_DEFAULT);
         self::$defaultLangID = $language->getId();
         self::$defaultLang = $language;
     }

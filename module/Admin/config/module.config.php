@@ -125,6 +125,10 @@ return array(
                 $translator = $sm->getServiceLocator()->get('translator');
                 return new Controller\LanguageController($translator);
             },
+            'Admin\Controller\User' => function(ServiceLocatorAwareInterface $sm){
+                $translator = $sm->getServiceLocator()->get('translator');
+                return new Controller\UserController($translator);
+            },
         ),
     ),
     'view_manager' => array(

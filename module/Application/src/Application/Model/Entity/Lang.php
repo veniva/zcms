@@ -8,6 +8,10 @@ namespace Application\Model\Entity;
  */
 class Lang
 {
+    const STATUS_INACTIVE   = 0;
+    const STATUS_ACTIVE     = 1;
+    const STATUS_DEFAULT    = 2;
+
     /**
      * @Id @GeneratedValue @Column(type="integer")
      */
@@ -106,5 +110,19 @@ class Lang
             1 => 'active',
             2 => 'default'
         ];
+    }
+
+    /**
+     * Check's if the current entity's status, or the one provided as a parameter is the default language status
+     * @param null|int $status Status number to be checked
+     * @return bool
+     */
+    public function isDefault($status = null)
+    {
+        if($status && !is_numeric($status)) throw new \InvalidArgumentException('The provided argument is of invalid type');
+
+        $status = $status ?: $this->status;
+        $result = ($status == self::STATUS_DEFAULT) ? true : false;
+        return $result;
     }
 }

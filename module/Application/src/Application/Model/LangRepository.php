@@ -18,7 +18,7 @@ class LangRepository extends EntityRepository
     public function getLanguagesPaginated()
     {
         $qb = $this->createQueryBuilder('l');
-        $qb->select('l');
+        $qb->select('l')->orderBy('l.status', 'desc')->addOrderBy('l.id');
         return new Paginator(new \Application\Paginator\DoctrineAdapter($qb->getQuery()));
     }
 }

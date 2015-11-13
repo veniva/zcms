@@ -117,10 +117,13 @@ class Language extends Form
 
     }
 
-    public function isValid($newIso = null, $oldIso = null)
+    public function isValid($newIso = null, $oldIso = null, $isDefault = null)
     {
         if(!$oldIso || $newIso != $oldIso){//if action = add or edited iso code
             $this->getInputFilter()->get('country_img')->setRequired(true);
+        }
+        if($isDefault === true){//if the edited language is default, make the status not required as it'll be missing
+            $this->getInputFilter()->get('status')->setRequired(false);
         }
         return parent::isValid();
     }

@@ -44,12 +44,17 @@ $this->form->prepare();
         <tr>
             <td><label><?=$this->translate($this->form->get('status')->getLabel())?></label></td>
             <td>
-                <?=$this->formSelect($this->form->get('status'))?>
-                <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('status'))?>
-                </div>
+                <?php if(!$this->lang->isDefault()):?>
+                    <?=$this->formSelect($this->form->get('status'))?>
+                    <div class="form-error">
+                        <?=$this->formElementErrors($this->form->get('status'))?>
+                    </div>
+                <?php else: ?>
+                    <?=$this->lang->getStatusName()?>
+                <?php endif; ?>
             </td>
         </tr>
+
         <tr>
             <td colspan="2">
                 <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate(ucfirst($this->action))?></button>

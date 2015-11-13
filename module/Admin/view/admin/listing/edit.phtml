@@ -15,14 +15,18 @@ $this->form->prepare();
         <div id="tabs-1">
             <div class="tabs">
                 <ul>
-                    <?php foreach(Misc::getActiveLangs() as $lang):?>
+                    <?php $initiallyOpenedTabIndex = 0;?>
+                    <?php $i=0; foreach(Misc::getActiveLangs() as $lang):?>
                         <li>
                             <a href="#tabs-1-<?=$lang->getId()?>">
-                                <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" />
-                                <?=$lang->getIsoCode()?>
+                                <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getName()?>" />
+                                <span <?php if($lang->isDefault()):?>style="font-weight: bold;"<?php endif?>>
+                                    <?=$lang->getIsoCode()?>
+                                </span>
                             </a>
                         </li>
-                    <?php endforeach; ?>
+                        <?php if($lang->isDefault()) $initiallyOpenedTabIndex = $i;?>
+                    <?php $i++; endforeach; ?>
                 </ul>
                 <?php foreach($this->form->getFieldsets()['content']->getFieldsets() as $fieldset): ?>
                     <div id="tabs-1-<?=$fieldset->getObject()->getLang()->getId()?>">
@@ -69,8 +73,10 @@ $this->form->prepare();
                     <?php foreach(Misc::getActiveLangs() as $lang):?>
                         <li>
                             <a href="#tabs-2-<?=$lang->getId()?>">
-                                <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" />
-                                <?=$lang->getIsoCode()?>
+                                <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getName()?>" />
+                                <span <?php if($lang->isDefault()):?>style="font-weight: bold;"<?php endif?>>
+                                    <?=$lang->getIsoCode()?>
+                                </span>
                             </a>
                         </li>
                     <?php endforeach; ?>
@@ -108,7 +114,7 @@ $this->form->prepare();
     <script type="text/javascript" src="<?=$this->basePath().'/js/admin/summernote/lang/summernote-'.$locale.'.js'?>"></script>
 <?php endif; ?>
 <script type="text/javascript">
-    $('.tabs').tabs();
+    $('.tabs').tabs({active: <?=$initiallyOpenedTabIndex?>});
     $('.summernote').summernote({
         height: 300,
         lang: '<?=$locale?>'

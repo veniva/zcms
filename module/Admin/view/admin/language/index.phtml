@@ -1,6 +1,5 @@
-<?php use Application\Service\Invokable\Layout; ?>
 <div class="header_cont">
-    <div class="title"><?=$this->translate('Language management')?></div>
+    <div class="title"><?=$this->translate('Languages')?></div>
     <div style="float:right;">
         <button type="button" id="add_button" class="btn btn-primary btn-xs"><?=$this->translate('New')?></button>
     </div>
@@ -27,14 +26,16 @@
                     ))?>">
                         <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
                     </a>
-                    <a class="img del_button" href="#" data-href="<?=$this->langUrl('admin/default', [
-                        'controller' => 'language',
-                        'action' => 'delete',
-                        'id' => $lang->getId(),
-                        'page' => $this->page,
-                    ])?>">
-                        <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
-                    </a>
+                    <?php if(!$lang->isDefault()):?>
+                        <a class="img del_button" href="#" data-href="<?=$this->langUrl('admin/default', [
+                            'controller' => 'language',
+                            'action' => 'delete',
+                            'id' => $lang->getId(),
+                            'page' => $this->page,
+                        ])?>">
+                            <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
+                        </a>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -47,7 +48,6 @@
         location.href='<?=$this->langUrl('admin/default', [
         'controller' => 'language',
         'action' => 'add',
-        'id' => $this->parent_id,
         'page' => $this->page,
         ])?>';
     });

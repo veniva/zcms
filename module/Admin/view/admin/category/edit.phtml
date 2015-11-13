@@ -11,13 +11,15 @@ $this->form->prepare();
         <?php foreach($this->form->get('content')->getFieldsets() as $fieldset):?>
             <tr>
                 <td>
-                    <?php if($fieldset->getObject()->getLang()->getId() == Misc::getDefaultLanguage()->getId()): ?>
+                    <?php if(!isset($labelled)): ?>
                         <label><?=$this->translate($this->form->get('content')->getFieldsets()[0]->getElements()['title']->getLabel())?>:</label>
-                    <?php endif; ?>
+                    <?php $labelled = true; endif; ?>
                 </td>
                 <td>
                     <?=$this->formInput($fieldset->getElements()['title'])?>
-                    <img src="<?=$this->basePath().'/img/flags/'.$fieldset->getObject()->getLang()->getIsoCode()?>.png" />
+                    <?php $lang = $fieldset->getObject()->getLang()?>
+                    <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getName()?>" />
+                    <?php if($lang->isDefault()):?>(<?=$this->translate('default')?>)<?php endif; ?>
                     <div class="form-error">
                         <?=$this->formElementErrors($fieldset->getElements()['title'])?>
                     </div>

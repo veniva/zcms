@@ -6,7 +6,7 @@ use Zend\Crypt\Password\PasswordInterface;
 
 /**
  * Class User
- * @Entity @Table(name="users")
+ * @Entity(repositoryClass="\Application\Model\UserRepository") @Table(name="users")
  */
 class User implements PasswordAwareInterface
 {
@@ -123,11 +123,24 @@ class User implements PasswordAwareInterface
     }
 
     /**
-     * @return mixed
+     * @param bool|string $format Values:
+     *      false - return the raw date from the database;
+     *      true - return the date formatted as d-m-Y
+     *      string - return the date formatted using the string assigned
+     * @return null|string
      */
-    public function getRegDate()
+    public function getRegDate($format = false)
     {
-        return $this->regDate;
+        if($format && ($this->regDate instanceof \DateTime) && ($format === true || is_string($format))){
+            if($format === true)
+                $format = 'd-m-Y';
+
+            $date = $this->regDate->format($format);
+
+        }else{
+            $date = $this->regDate;
+        }
+        return $date;
     }
 
     /**
