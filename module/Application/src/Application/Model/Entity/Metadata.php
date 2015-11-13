@@ -13,7 +13,7 @@ class Metadata
     protected $listing;
 
     /**
-     * @Id @ManyToOne(targetEntity="Lang")
+     * @Id @ManyToOne(targetEntity="Lang", inversedBy="metadata")
      */
     protected $lang;
 

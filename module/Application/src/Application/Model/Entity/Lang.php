@@ -43,6 +43,11 @@ class Lang
     protected $listingContent;
 
     /**
+     * @OneToMany(targetEntity="Metadata", mappedBy="lang", cascade={"remove"})
+     */
+    protected $metadata;
+
+    /**
      * @return integer
      */
     public function getId()

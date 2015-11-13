@@ -44,7 +44,7 @@ $this->form->prepare();
         <tr>
             <td><label><?=$this->translate($this->form->get('status')->getLabel())?></label></td>
             <td>
-                <?php if(!$this->lang->isDefault()):?>
+                <?php if(!$this->lang || !$this->lang->isDefault()):?>
                     <?=$this->formSelect($this->form->get('status'))?>
                     <div class="form-error">
                         <?=$this->formElementErrors($this->form->get('status'))?>
@@ -68,3 +68,11 @@ $this->form->prepare();
     <?=$this->form()->closeTag()?>
     <div style="height:100px;">&nbsp;</div>
 </div>
+<script type="text/javascript">
+    <?php if($this->lang):?>
+        $('select[name="status"]').change(function(){
+            if(this.value == <?=\Application\Model\Entity\Lang::STATUS_INACTIVE?>)
+                alert('<?=$this->translate('Warning! Setting the language to status "inactive" will erase all of it\\\'s data')?>');
+        });
+    <?php endif; ?>
+</script>
