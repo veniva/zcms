@@ -104,7 +104,7 @@ class ListingController extends AbstractActionController
         //add empty language content to the collection, so that input fields are created
         $this->addEmptyContent($listing, $languages);
 
-        $publicDir = $this->getServiceLocator()->get('config')['other']['public-path'];
+        $publicDir = $this->getServiceLocator()->get('config')['public-path'];
         $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
         $listingContent = $action == 'edit' ? $listing->getContent() : null;
         $form = new ListingForm($this->getServiceLocator()->get('entity-manager'), $listingContent);
@@ -270,7 +270,7 @@ class ListingController extends AbstractActionController
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $listingEntity = $this->getServiceLocator()->get('listing-entity');
 
-        $publicDir = $this->getServiceLocator()->get('config')['other']['public-path'];
+        $publicDir = $this->getServiceLocator()->get('config')['public-path'];
         $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
 
         foreach($listingIds as $listingId){

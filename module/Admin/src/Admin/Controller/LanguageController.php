@@ -159,7 +159,7 @@ class LanguageController extends AbstractActionController
 
                 //upload new image
                 if(isset($post['country_img']) && !$post['country_img']['error']){
-                    $publicDir = $this->getServiceLocator()->get('config')['other']['public-path'];
+                    $publicDir = $this->getServiceLocator()->get('config')['public-path'];
                     $flagsDir = $publicDir.$this->flagsDir;
                     $imgName = $flagsDir.$post['isoCode'].'.png';
                     //remove old if existing
@@ -202,7 +202,7 @@ class LanguageController extends AbstractActionController
             $entityManager->flush();
 
             //remove flag image if existing
-            $publicDir = $this->getServiceLocator()->get('config')['other']['public-path'];
+            $publicDir = $this->getServiceLocator()->get('config')['public-path'];
             $flagsDir = $publicDir.$this->flagsDir;
             $imgName = $flagsDir.$lang->getIsoCode().'.png';
             if(file_exists($imgName)) unlink($imgName);

@@ -131,7 +131,7 @@ class Category
 
     public function getContent()
     {
-        return $this->content;//return collection of content
+        return $this->content;//return collection of content v_todo - sort by language status
     }
 
     /**
