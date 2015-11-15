@@ -27,7 +27,7 @@ class NoRecordExists extends AbstractValidator
     public function __construct(EntityManager $entityManager, $options){
         $this->entityClass = $options['entityClass'];
         $this->field = $options['field'];
-        $this->exclude = $options['exclude'];
+        if(isset($options['exclude'])) $this->exclude = $options['exclude'];
         parent::__construct($entityManager);
 
     }

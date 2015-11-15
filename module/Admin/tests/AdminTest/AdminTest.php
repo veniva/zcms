@@ -2,7 +2,7 @@
 
 namespace AdminTest;
 
-use Application\Service\Invokable\Misc;
+use Admin\Validator\Password;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class AdminTest extends AbstractHttpControllerTestCase
@@ -31,5 +31,12 @@ class AdminTest extends AbstractHttpControllerTestCase
         }else{
             $this->assertTrue(true);
         }
+    }
+
+    public function testValidatorPassword()
+    {
+        $validator = new Password();
+        $result = $validator->isValid('some-value');
+        $this->assertInternalType('bool', $result);
     }
 }

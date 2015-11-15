@@ -10,6 +10,13 @@ use Zend\Crypt\Password\PasswordInterface;
  */
 class User implements PasswordAwareInterface
 {
+    const PASS_MIN_LENGTH = 8;
+    const PASS_MAX_LENGTH = 255;
+
+    const USER_SUPER_ADMIN  = 'super-admin';
+    const USER_ADMIN        = 'admin';
+    const USER_USER         = 'user';
+    const USER_GUEST        = 'guest';
     /**
      * @Id @GeneratedValue @Column(type="integer")
      */
@@ -146,8 +153,11 @@ class User implements PasswordAwareInterface
     /**
      * @param mixed $regDate
      */
-    public function setRegDate($regDate)
+    public function setRegDate($regDate = null)
     {
+        if(empty($regDate)){
+            $regDate = new \DateTime();
+        }
         $this->regDate = $regDate;
     }
 
@@ -186,7 +196,7 @@ class User implements PasswordAwareInterface
 
         //generate 6 random letters
         $lower = '';
-        for($i=1; $i<=6; $i++){
+        for($i=1; $i<=(self::PASS_MIN_LENGTH-2); $i++){
             $lower .= $letters[mt_rand($min, $max)];
         }
 
@@ -196,5 +206,15 @@ class User implements PasswordAwareInterface
         $this->setUpass($generatedPassword);
         return $generatedPassword;
 
+    }
+
+    public function getRoleOptions()
+    {
+        return [
+            self::USER_SUPER_ADMIN => self::USER_SUPER_ADMIN,
+            self::USER_ADMIN => self::USER_ADMIN,
+            self::USER_USER => self::USER_USER,
+            self::USER_GUEST => self::USER_GUEST
+        ];
     }
 }
