@@ -25,25 +25,24 @@ class LogController extends AbstractActionController
 
     public function inAction()
     {
-        $email = new Element\Email('email');
-        $email->setLabel('Email');
-        $email->setAttribute('required', 'required');
+        $uname = new Element\Text('uname');
+        $uname->setLabel('User name');
+        $uname->setAttribute('required', 'required');
 
         $password = new Element\Password('password');
         $password->setLabel('Password');
         $password->setAttribute('required', 'required');
 
         $form = new Form('login');
-        $form->add($email)->add($password);
+        $form->add($uname)->add($password);
 
-        $emailInput = new Input('email');
-        $emailInput->getFilterChain()->attachByName('StringTrim');
-        $emailInput->getValidatorChain()->attachByName('EmailAddress');
+        $unameInput = new Input('uname');
+        $unameInput->getFilterChain()->attachByName('StringTrim');
 
         $passwordInput = new Input('password');
 
         $inputFilter = new InputFilter();
-        $inputFilter->add($emailInput)->add($passwordInput);
+        $inputFilter->add($unameInput)->add($passwordInput);
 
         $form->setInputFilter($inputFilter);
 
@@ -51,12 +50,12 @@ class LogController extends AbstractActionController
         if($request->isPost()){
             $form->setData($request->getPost());
             if($form->isValid()){
-                $email = $form->get('email')->getValue();
+                $uname = $form->get('uname')->getValue();
                 $password = $form->get('password')->getValue();
 
                 $auth = $this->getServiceLocator()->get('auth');
                 $authAdapter = $auth->getAdapter();
-                $authAdapter->setIdentity($email);
+                $authAdapter->setIdentity($uname);
                 $authAdapter->setCredential($password);
 
                 $result = $auth->authenticate();

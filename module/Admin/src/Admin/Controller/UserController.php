@@ -68,13 +68,14 @@ class UserController extends AbstractActionController
         }
         $action = $id ? 'edit' : 'add';
         $currentUserName = $user->getUname();
+        $currentEmail = $user->getEmail();
         $form = new \Admin\Form\User($this->getServiceLocator()->get('entity-manager'));
         $form->bind($user);
 
         $request = $this->getRequest();
         if($request->isPost()){
             $form->setData($request->getPost());
-            if($form->isValid($action, $currentUserName, get_class($user))){
+            if($form->isValid($action, $currentUserName, $currentEmail, get_class($user))){
                 $newPassword = $form->getInputFilter()->get('password')->getValue();
                 if($newPassword)
                     $user->setUpass($form->getInputFilter()->get('password')->getValue());

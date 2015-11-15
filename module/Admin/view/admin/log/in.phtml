@@ -4,9 +4,9 @@ $form  = $this->form;
 $form->setAttribute('action', $this->langUrl('admin', array('controller' => 'log', 'action' => 'in')))
     ->setAttribute('method', 'post');
 $form->prepare();
-$email = $form->get('email');
+$uname = $form->get('uname');
 $pass = $form->get('password');
-$errors = $this->formElementErrors($email);
+$errors = $this->formElementErrors($uname);
 
 ?>
 <div class="messages">
@@ -29,9 +29,9 @@ $errors = $this->formElementErrors($email);
 <div class="login">
     <div class="login_font" style="margin-bottom:20px;"> <?=$this->translate('Administration Login')?></div>
     <?=$this->form()->openTag($form)?>
-    <div class="uname"><?=$this->translate($email->getLabel())?>:</div>
+    <div class="uname"><?=$this->translate($uname->getLabel())?>:</div>
     <div class="uform">
-        <?=$this->formInput($email)?>
+        <?=$this->formInput($uname)?>
     </div>
     <div class="uname"><?=$this->translate($pass->getLabel())?>:</div>
     <div class="uform">

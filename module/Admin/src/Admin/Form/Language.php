@@ -39,7 +39,7 @@ class Language extends Form
         ));
 
         $this->add(array(
-            'name' => 'country_img',
+            'name' => 'country_img',//v_todo - use iso select menu + existing flag images
             'type' => 'File',
             'options' => array(
                 'label' => 'Country flag'

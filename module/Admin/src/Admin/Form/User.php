@@ -123,7 +123,7 @@ class User extends Form
         ), 'password_repeat');
     }
 
-    public function isValid($action = null, $currentUserName = null, $userEntityClassName = null)
+    public function isValid($action = null, $currentUserName = null, $currentEmail = null, $userEntityClassName = null)
     {
         if($action == 'edit'){
             $this->getInputFilter()->get('password')->setRequired(false);
@@ -131,16 +131,33 @@ class User extends Form
         if(!empty($this->get('password')->getValue()))
             $this->getInputFilter()->get('password_repeat')->setRequired(true);
 
-        //attach NoRecordExists validator to the user name
+        $userEntityClassName = $userEntityClassName ?: get_class(new \Application\Model\Entity\User());
+
+        //region attach NoRecordExists validator to the user name
+        $field = 'uname';
         $validatorOptions = array(
-            'entityClass' => $userEntityClassName ?: get_class(new \Application\Model\Entity\User()),
-            'field' => 'uname',
+            'entityClass' => $userEntityClassName,
+            'field' => $field,
         );
         if($currentUserName)
-            $validatorOptions['exclude'][] = array('field' => 'uname', 'value' => $currentUserName);
+            $validatorOptions['exclude'][] = array('field' => $field, 'value' => $currentUserName);
 
         $validator = new \Application\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);
-        $this->getInputFilter()->get('uname')->getValidatorChain()->attach($validator);
+        $this->getInputFilter()->get($field)->getValidatorChain()->attach($validator);
+        //endregion
+
+        //region attach NoRecordExists validator to the email
+        $field = 'email';
+        $validatorOptions = array(
+            'entityClass' => $userEntityClassName,
+            'field' => $field,
+        );
+        if($currentEmail)
+            $validatorOptions['exclude'][] = array('field' => $field, 'value' => $currentEmail);
+
+        $validator = new \Application\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);
+        $this->getInputFilter()->get($field)->getValidatorChain()->attach($validator);
+        //endregion
 
         return parent::isValid();
     }
