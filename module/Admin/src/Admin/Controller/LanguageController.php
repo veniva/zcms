@@ -75,8 +75,7 @@ class LanguageController extends AbstractActionController
             $language = new Lang();
         }
         $oldDefaultLanguage = $entityManager->getRepository(get_class($language))->findOneByStatus(Lang::STATUS_DEFAULT);
-
-        $form = new LanguageForm();
+        $form = new LanguageForm($this->getServiceLocator());
         $form->bind($language);
         $oldIso = null;
         $oldStatus = null;
@@ -86,10 +85,7 @@ class LanguageController extends AbstractActionController
         }
 
         if($this->getRequest()->isPost()){
-            $post = array_merge_recursive(
-                $this->getRequest()->getPost()->toArray(),
-                $this->getRequest()->getFiles()->toArray()
-            );
+            $post = $this->getRequest()->getPost()->toArray();
             if($language->isDefault()) unset($post['status']);//ensures no status can be changed if lang is default
 
             $form->setData($post);
@@ -159,17 +155,6 @@ class LanguageController extends AbstractActionController
                 $entityManager->persist($language);
                 $entityManager->flush();
 
-                //upload new image
-                if(isset($post['country_img']) && !$post['country_img']['error']){
-                    $publicDir = $this->getServiceLocator()->get('config')['public-path'];
-                    $flagsDir = $publicDir.$this->flagsDir;
-                    $imgName = $flagsDir.$post['isoCode'].'.png';
-                    //remove old if existing
-                    if(file_exists($imgName)) unlink($imgName);
-                    if(file_exists($flagsDir.$oldIso.'.png')) unlink($flagsDir.$oldIso.'.png');
-
-                    \move_uploaded_file($post['country_img']['tmp_name'], $imgName);
-                }
                 $this->flashMessenger()->addSuccessMessage($this->translator->translate('The language has been edited successfully'));
                 return $this->redir()->toRoute('admin/default', [
                     'controller' => 'language',
@@ -183,6 +168,8 @@ class LanguageController extends AbstractActionController
             'page' => $page,
             'form' => $form,
             'lang' => !empty($language->getIsoCode()) ? $language : null,
+            'flagCode' => $this->getRequest()->isPost() ? $this->params()->fromPost('isoCode') :
+                $language->getIsoCode() ?: null
         ]);
     }
 

@@ -4,6 +4,7 @@ namespace Admin\Form;
 
 use Application\Model\Entity\Lang;
 use Zend\Form\Form;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
 class Language extends Form
@@ -11,12 +12,14 @@ class Language extends Form
     protected $nameMaxLength = 15;
     protected $isoCodeMaxLength = 2;
 
-    public function __construct()
+    public function __construct(ServiceLocatorInterface $serviceManager)
     {
         parent::__construct('language');
         $lang = new Lang();
         $this->setObject($lang)->
             setHydrator(new ClassMethods(false));
+
+        $fm = $serviceManager->get('flag-codes');
 
         $this->add(array(
             'name' => 'name',
@@ -30,19 +33,14 @@ class Language extends Form
 
         $this->add(array(
             'name' => 'isoCode',
+            'type' => 'Select',
             'options' => array(
-                'label' => 'ISO code'
+                'label' => 'ISO code',
+                'empty_option' => 'Select',
+                'value_options' => $fm->getFlagCodeOptions()
             ),
             'attributes' => array(
-                'maxlength' => $this->isoCodeMaxLength,
-            )
-        ));
-
-        $this->add(array(
-            'name' => 'country_img',//v_todo - use iso select menu + existing flag images
-            'type' => 'File',
-            'options' => array(
-                'label' => 'Country flag'
+                'id' => 'flags_select'
             ),
         ));
 
@@ -76,51 +74,10 @@ class Language extends Form
             ),
         ), 'name');
 
-        $inputFilter->add(array(
-            'validators' => array(
-                array(
-                    'name' => 'StringLength',
-                    'options' => array(
-                        'max' => $this->isoCodeMaxLength,
-                    ),
-                )
-            ),
-        ), 'isoCode');
-
-        $inputFilter->add(array(
-            'validators' => array(
-                array(
-                    'name' => 'File\Extension',
-                    'options' => array(
-                        'extension' => array('png'),
-                    ),
-                    'break_chain_on_failure' => true,
-                ),
-                array(
-                    'name' => 'File\Size',
-                    'options' => array(
-                        'max' => '50Kb',
-                    ),
-                ),
-                array(
-                    'name' => 'File\ImageSize',//v_todo - when file is not image this throws notice.
-                    'options' => array(
-                        'maxWidth' => 20,
-                        'maxHeight' => 20
-                    ),
-                ),
-            ),
-
-            'required' => false,
-        ), 'country_img');
-
     }
 
     public function isValid($newIso = null, $oldIso = null, $isDefault = null)
     {
-        if(!$oldIso || $newIso != $oldIso){//if action = add or edited iso code
-            $this->getInputFilter()->get('country_img')->setRequired(true);
-        }
         if($isDefault === true){//if the edited language is default, make the status not required as it'll be missing
             $this->getInputFilter()->get('status')->setRequired(false);
         }

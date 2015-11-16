@@ -91,7 +91,8 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'category-tree' => 'Admin\Service\Factory\CategoryTree'
+            'category-tree' => 'Admin\Service\Factory\CategoryTree',
+            'flag-codes' => 'Admin\Service\Factory\FlagCodes'
         ),
     ),
     'translator' => array(

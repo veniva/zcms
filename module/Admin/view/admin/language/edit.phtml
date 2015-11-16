@@ -17,27 +17,13 @@
         <tr>
             <td><label><?=$this->translate($this->form->get('isoCode')->getLabel())?></label></td>
             <td>
-                <?=$this->formInput($this->form->get('isoCode'))?>
+                <?=$this->formSelect($this->form->get('isoCode'))?>
+                <img id="flag" src="<?=$this->basePath()?>/img/flags/<?=$this->flagCode?>.png" />
                 <div class="form-error">
                     <?=$this->formElementErrors($this->form->get('isoCode'))?>
                 </div>
             </td>
         </tr>
-        <tr>
-            <td><label><?=$this->translate($this->form->get('country_img')->getLabel())?></label></td>
-            <td>
-                <?=$this->formFile($this->form->get('country_img'))?>
-                <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('country_img'))?>
-                </div>
-            </td>
-        </tr>
-        <?php if($this->lang):?>
-            <tr>
-                <td><label><?=$this->translate('Current flag')?></label></td>
-                <td><img src="<?=$this->basePath()?>/img/flags/<?=$this->lang->getIsoCode()?>.png" /></td>
-            </tr>
-        <?php endif; ?>
         <tr>
             <td><label><?=$this->translate($this->form->get('status')->getLabel())?></label></td>
             <td>
@@ -65,3 +51,17 @@
     <?=$this->form()->closeTag()?>
     <div style="height:100px;">&nbsp;</div>
 </div>
+<script type="text/javascript">
+    var $flagImg = $(document.getElementById('flag'));
+    $flagImg.attr('src', function(){
+        <?php if($this->flagCode):?>
+            return "<?=$this->basePath()?>/img/flags/<?=$this->flagCode?>.png";
+        <?php else: ?>
+            return "<?=$this->basePath()?>/img/pixel-trans.gif";
+        <?php endif; ?>
+    });
+
+    $(document.getElementById('flags_select')).change(function(){
+        $flagImg.attr('src', "<?=$this->basePath()?>/img/flags/"+this.value+".png")
+    });
+</script>
