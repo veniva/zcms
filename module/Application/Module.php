@@ -141,7 +141,7 @@ class Module
 
         $acl = $serviceManager->get('acl');//the Acl class may be specific for each module
         $currentUser = $serviceManager->get('current-user');
-        $userRole = $currentUser->getRole();
+        $userRole = $currentUser->getRoleName();
 
         $resourceAliases = $config['acl']['resource_aliases'];
         if(isset($resourceAliases[$controller])){
@@ -159,18 +159,19 @@ class Module
             $acl->addResource($resource);
         }
 
-        try{
+//        try{
             if($acl->isAllowed($userRole, $resource, $action)){
                 return;
             }
-        }catch(AclException $e){
-            //v_todo - log this in the error log
-        }
+//        }
+//        catch(AclException $ex){
+//            //v_todo - log this in the error log
+//        }
         $lang = $routeMatch->getParam('lang');
         $e->getResponse()->setStatusCode(403);
         $e->setRouteMatch(new RouteMatch(array('application')));
         $routeMatch = $e->getRouteMatch();
-        $routeMatch->setParam('controller', 'Admin\Controller\Log');
+        $routeMatch->setParam('controller', 'Admin\Controller\Log');//v_todo - redirect to Action prohibited location instead
         $routeMatch->setParam('action', 'in');
         if($lang)
             $routeMatch->setParam('lang', $lang);

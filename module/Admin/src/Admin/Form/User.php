@@ -15,13 +15,23 @@ class User extends Form
      */
     protected $entityManager;
 
-    public function __construct($entityManager)
+    /**
+     * @var UserEntity
+     */
+    protected $loggedInUser;
+
+    /**
+     * User constructor.
+     * @param UserEntity $loggedInUser
+     * @param array $entityManager
+     */
+    public function __construct($loggedInUser, $entityManager)
     {
+        $this->loggedInUser = $loggedInUser;
         $this->entityManager = $entityManager;
 
         parent::__construct('user');
-        $user = new UserEntity();
-        $this->setObject($user)->
+        $this->setObject($loggedInUser)->
         setHydrator(new ClassMethods(false));
 
         $this->add(array(
@@ -64,7 +74,7 @@ class User extends Form
             'type' => 'Select',
             'options' => array(
                 'label' => 'Role',
-                'value_options' => $user->getRoleOptions()
+                'value_options' => $loggedInUser->getAllowedRoleOptions()
             )
         ));
 
@@ -123,7 +133,7 @@ class User extends Form
         ), 'password_repeat');
     }
 
-    public function isValid($action = null, $currentUserName = null, $currentEmail = null, $userEntityClassName = null)
+    public function isValid($action = null, $currentUserName = null, $currentEmail = null)
     {
         if($action == 'edit'){
             $this->getInputFilter()->get('password')->setRequired(false);
@@ -131,7 +141,7 @@ class User extends Form
         if(!empty($this->get('password')->getValue()))
             $this->getInputFilter()->get('password_repeat')->setRequired(true);
 
-        $userEntityClassName = $userEntityClassName ?: get_class(new \Application\Model\Entity\User());
+        $userEntityClassName = get_class($this->loggedInUser);
 
         //region attach NoRecordExists validator to the user name
         $field = 'uname';

@@ -192,7 +192,10 @@ return array(
         'allow' => array(),
         'deny' => array(),
         'defaults' => array(
-            'role' => 'guest'
+            'role' => array(
+                'guest' => 'guest',
+                'admin' => 'admin'
+            )
         ),
         'modules' => array(
             'Application', 'Admin'

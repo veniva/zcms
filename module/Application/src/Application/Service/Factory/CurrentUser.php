@@ -15,11 +15,11 @@ class CurrentUser implements FactoryInterface
 
         if($auth->hasIdentity()){
             $user = $auth->getIdentity();
-            if(empty($user->getRole())) $user->setRole($config['acl']['admin']);
+            if(empty($user->getRole())) $user->setRoleFromName($config['acl']['defaults']['role']['admin']);
         }else{
             $user = $serviceLocator->get('user-entity');
             $user->setId(null);
-            $user->setRole($config['acl']['defaults']['role']);
+            $user->setRoleFromName($config['acl']['defaults']['role']['guest']);
         }
         return $user;
     }

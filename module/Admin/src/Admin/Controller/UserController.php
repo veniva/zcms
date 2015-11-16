@@ -58,24 +58,33 @@ class UserController extends AbstractActionController
     public function addEditUser($id, $page)
     {
         $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $user = $this->getServiceLocator()->get('user-entity');//accessed it from service manager as this way the User::setPasswordAdapter() is initialized
         if($id){
-            $userEntity = new User();
-            $user = $entityManager->find(get_class($userEntity), $id);
+            $user = $entityManager->find(get_class($user), $id);
             if(!$user)
                 return $this->redirMissingUser($id, $page);
-        }else{
-            $user = $this->getServiceLocator()->get('user-entity');//accessed from service manager as this way the User::setPasswordAdapter() is initialized
         }
+
+        $loggedInUser = $this->getServiceLocator()->get('current-user');
+        //security check - is the edited user really having a role equal or less privileged to the editing user
+        if(!$loggedInUser->canEdit($user->getRole()))
+            return $this->redirToList($page, 'You have no right to edit this user', 'error');
+
         $action = $id ? 'edit' : 'add';
         $currentUserName = $user->getUname();
         $currentEmail = $user->getEmail();
-        $form = new \Admin\Form\User($this->getServiceLocator()->get('entity-manager'));
+        $form = new \Admin\Form\User($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
         $form->bind($user);
 
         $request = $this->getRequest();
         if($request->isPost()){
             $form->setData($request->getPost());
-            if($form->isValid($action, $currentUserName, $currentEmail, get_class($user))){
+            if($form->isValid($action, $currentUserName, $currentEmail)){
+                //security check - is the new role equal or less privileged to the editing user
+                $newRole = $form->getData()->getRole();
+                if(!$loggedInUser->canEdit($newRole))
+                    return $this->redirToList($page, 'You have no right to assign this user role', 'error');
+
                 $newPassword = $form->getInputFilter()->get('password')->getValue();
                 if($newPassword)
                     $user->setUpass($form->getInputFilter()->get('password')->getValue());
@@ -123,10 +132,12 @@ class UserController extends AbstractActionController
 
     protected function redirToList($page = null, $message = null, $messageType = 'success')
     {
-        if(!in_array($messageType, ['success', 'error', 'info', 'default']))
+        if(!in_array($messageType, ['success', 'error', 'info']))
             throw new \InvalidArgumentException('Un-existing message type');
 
-        $this->flashMessenger()->{'add'.$messageType.'Message'}($this->translator->translate($message));
+        if($message)
+            $this->flashMessenger()->addMessage($this->translator->translate($message), $messageType);
+
         return $this->redir()->toRoute('admin/default', [
             'controller' => 'user',
             'page' => $page,

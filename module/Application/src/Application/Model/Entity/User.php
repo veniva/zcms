@@ -13,10 +13,10 @@ class User implements PasswordAwareInterface
     const PASS_MIN_LENGTH = 8;
     const PASS_MAX_LENGTH = 255;
 
-    const USER_SUPER_ADMIN  = 'super-admin';
-    const USER_ADMIN        = 'admin';
-    const USER_USER         = 'user';
-    const USER_GUEST        = 'guest';
+    const USER_SUPER_ADMIN  = 1;//'super-admin'
+    const USER_ADMIN        = 2;//'admin'
+    const USER_USER         = 3;//'user'
+    const USER_GUEST        = 4;//'guest'
     /**
      * @Id @GeneratedValue @Column(type="integer")
      */
@@ -40,7 +40,7 @@ class User implements PasswordAwareInterface
     /**
      * @Column(type="string")
      */
-    protected $role = 'guest';
+    protected $role = 4;
 
     /**
      * @Column(type="datetime", name="reg_date")
@@ -121,12 +121,25 @@ class User implements PasswordAwareInterface
         return $this->role;
     }
 
+    public function getRoleName()
+    {
+        if($this->role)
+            return $this->getRoleOptions()[$this->role];
+        else
+            return null;
+    }
+
     /**
      * @param mixed $role
      */
     public function setRole($role)
     {
         $this->role = $role;
+    }
+
+    public function setRoleFromName($roleName)
+    {
+        $this->role = array_flip($this->getRoleOptions())[$roleName];
     }
 
     /**
@@ -208,13 +221,46 @@ class User implements PasswordAwareInterface
 
     }
 
-    public function getRoleOptions()
+    public static function getRoleOptions()
     {
         return [
-            self::USER_SUPER_ADMIN => self::USER_SUPER_ADMIN,
-            self::USER_ADMIN => self::USER_ADMIN,
-            self::USER_USER => self::USER_USER,
-            self::USER_GUEST => self::USER_GUEST
+            self::USER_SUPER_ADMIN => 'super-admin',//v_todo - create a separate Database table for user role names
+            self::USER_ADMIN => 'admin',
+            self::USER_USER => 'user',
+            self::USER_GUEST => 'guest'
         ];
+    }
+
+    //returns only options that are allowed to be edited by the user with the current role
+    public function getAllowedRoleOptions()
+    {
+        $options = [];
+        foreach(self::getRoleOptions() as $k => $option){
+            if($k >= $this->getRole()){
+                $options[$k] = $option;
+            }
+        }
+        return $options;
+    }
+
+    /**
+     * Check if the editor user has editing rights on to the edited user
+     * @param int|null|bool $editedRole
+     * @return bool
+     */
+    public function canEdit($editedRole)
+    {
+        if(!is_numeric($editedRole) && !is_null($editedRole) && !is_bool($editedRole))
+            throw new \InvalidArgumentException('Wrong argument type');
+
+        $editorRole = $this->getRole();
+
+        $editorRole = (int) $editorRole;
+        $editedRole = (int) $editedRole;
+
+        if(!$editorRole) return false;
+        if(!$editedRole) return true;
+
+        return $editorRole <= $editedRole;
     }
 }
