@@ -101,6 +101,7 @@ class UserController extends AbstractActionController
             'action' => $action,
             'page' => $page,
             'form' => $form,
+            'editOwn' => $this->params()->fromQuery('edit_own', false),
         ]);
     }
 

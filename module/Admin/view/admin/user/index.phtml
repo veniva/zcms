@@ -1,3 +1,4 @@
+<?php $auth = new \Zend\Authentication\AuthenticationService()?>
 <div class="header_cont">
     <div class="title"><?=$this->translate('Users')?></div>
     <div style="float:right;">
@@ -17,7 +18,12 @@
         <?php foreach($this->users as $user): ?>
             <tr>
                 <td><?=$user->getId()?></td>
-                <td><?=$user->getUname()?></td>
+                <td>
+                    <?=$user->getUname()?>
+                    <?php if($auth->getIdentity()->getId() == $user->getId()): ?>
+                        <span style="font-weight: bold">(<?=$this->translate('You')?>)</span>
+                    <?php endif; ?>
+                </td>
                 <td><?=$user->getEmail()?></td>
                 <td><?=$user->getRoleName()?></td>
                 <td><?=$user->getRegDate('m-d-Y')?></td>

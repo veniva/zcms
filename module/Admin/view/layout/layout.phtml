@@ -58,8 +58,11 @@ $auth = new \Zend\Authentication\AuthenticationService();
                     <div id="subMenu2">
                         <a href="<?=$this->langUrl('admin/default', ['controller'=>'language'])?>"><?=$this->translate('Languages')?></a>
                         <a href="<?=$this->langUrl('admin/default', ['controller'=>'user'])?>"><?=$this->translate('Users')?></a>
-                        <a href=""><?=$this->translate('Change password')?></a>
-                        <a href=""><?=$this->translate('Change email')?></a>
+                        <a href="<?=$this->langUrl('admin/default', [
+                            'controller'=>'user',
+                            'action' => 'edit',
+                            'id' => $auth->getIdentity()->getId()
+                        ], ['query' => ['edit_own' => 1]])?>"><?=$this->translate('Account settings')?></a>
                     </div>
                 </li>
             </ul>

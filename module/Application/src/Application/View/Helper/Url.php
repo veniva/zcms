@@ -16,15 +16,15 @@ class Url extends Helper\AbstractHelper
         $this->routeMatch = $routeMatch;
     }
 
-    public function __invoke($name, $options = [])
+    public function __invoke($name, $params = [], $options = [])
     {
         $view = $this->getView();
         if($this->routeMatch){
             $lang = $this->routeMatch->getParam('lang');
             if($lang)
-                $options['lang'] = $lang;
+                $params['lang'] = $lang;
         }
 
-        return $view->url($name, $options);
+        return $view->url($name, $params, $options);
     }
 }

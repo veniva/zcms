@@ -13,8 +13,7 @@ class UserRepository extends EntityRepository
         $qb = $this->createQueryBuilder('u');
         $qb->select('u');
         if($auth->hasIdentity()){
-            $qb->where('u.id != '.$auth->getIdentity()->getId());
-            $qb->andWhere('u.role >='.$auth->getIdentity()->getRole());
+            $qb->where('u.role >='.$auth->getIdentity()->getRole());
         }
         return new Paginator(new \Application\Paginator\DoctrineAdapter($qb->getQuery()));
     }

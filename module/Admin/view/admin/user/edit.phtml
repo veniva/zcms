@@ -1,6 +1,11 @@
 <?php $this->form->prepare()?>
 <div class="header_cont">
-    <div class="title"><?=$this->translate(ucfirst($this->action)." a user")?></div>
+    <div class="title">
+        <?php if(!$this->editOwn):?>
+            <?=$this->translate(ucfirst($this->action)." a user")?></div>
+        <?php else: ?>
+    <?=$this->translate('Account settings')?></div>
+        <?php endif; ?>
 </div>
 <div class="body_cont">
     <?=$this->form()->openTag($this->form)?>
