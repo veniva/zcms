@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Ventsislav Ivanov
+ * Date: 16/11/2015
+ * Time: 19:52
+ */
 
 namespace AdminTest\Controller;
 
@@ -11,7 +17,7 @@ use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
-class ListingControllerTest extends AbstractHttpControllerTestCase
+class UserControllerTest extends AbstractHttpControllerTestCase
 {
     /** @var ListingController */
     protected $controller;
@@ -25,7 +31,7 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
         $serviceManager = Bootstrap::getServiceManager();
         $this->controller = new ListingController(new \Zend\i18n\Translator\Translator());
         $this->request    = new Request();
-        $this->routeMatch = new RouteMatch(array('controller' => 'listing'));
+        $this->routeMatch = new RouteMatch(array('controller' => 'user'));
         $this->event      = new MvcEvent();
         $config = $serviceManager->get('config');
         $routerConfig = isset($config['router']) ? $config['router'] : array();
@@ -42,9 +48,9 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
         parent::setUp();
     }
 
-    public function testListActionCanBeAccessed()
+    public function testIndexActionCanBeAccessed()
     {
-        $this->routeMatch->setParam('action', 'list');
+        $this->routeMatch->setParam('action', 'index');
 
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
@@ -55,11 +61,11 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
     public function testEditActionCanBeAccessed()
     {
         $this->routeMatch->setParam('action', 'edit');
-        $this->routeMatch->setParam('id', 19);//requires an actual listing ID v_todo - refactor this
+        $this->routeMatch->setParam('id', 1);//requires an actual listing ID v_todo - refactor this
 
         try{
             $this->controller->dispatch($this->request);
-        }catch(ExtensionNotLoadedException $e){}
+        }catch(\Exception $e){}
         $response = $this->controller->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -71,7 +77,7 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
 
         try{
             $this->controller->dispatch($this->request);
-        }catch(ExtensionNotLoadedException $e){}
+        }catch(\Exception $e){}
         $response = $this->controller->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());

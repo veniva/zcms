@@ -34,7 +34,11 @@ class Bootstrap
         $config = array(
             'module_listener_options' => array(
                 'module_paths' => $zf2ModulePaths,
+                'config_glob_paths' => array(
+                    dirname(dirname(dirname(__DIR__))).'/config/autoload/{,*.}{global,local}.php',
+                ),
             ),
+
             'modules' => array(
                 'Application',
                 'Admin',
