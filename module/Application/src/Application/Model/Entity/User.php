@@ -199,7 +199,7 @@ class User implements PasswordAwareInterface
      * Specifications: 8 chars; 1 Upper case letter + 6 letters + 1 number
      * v_todo - keep this updated when creating/updating user password
      */
-    public function generateRandomPassword()
+    public static function generateRandomPassword()
     {
         $letters = 'abcdefghijklmnopqrstuvwxyz';
         $min = 0; $max = strlen($letters)-1;
@@ -216,7 +216,6 @@ class User implements PasswordAwareInterface
         //generate one random short number
         $number = mt_rand(1, 9);
         $generatedPassword = $upper.$lower.$number;
-        $this->setUpass($generatedPassword);
         return $generatedPassword;
 
     }

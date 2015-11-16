@@ -96,7 +96,7 @@ $auth = new \Zend\Authentication\AuthenticationService();
                         }
                         $style = $namespace != 'error' ? array('alert', 'alert-dismissible', 'alert-'.$namespace) :
                             array('alert', 'alert-dismissible', 'alert-danger');
-                        echo $this->flashMessenger()->render($namespace, $style);//V_TODO - use $this->flashmessenger()->renderCurrent() to show not only redirect msgs., also make sure not to display those twice in case of redirection
+                        echo $this->flashMessenger()->render($namespace, $style);
                     endforeach; ?>
                 </div>
                 <div class="container">

@@ -121,7 +121,7 @@ class Listing extends Form
                     ),
                 ),
                 array(
-                    'name' => 'File\ImageSize',//v_todo - when file is not image this throws notice.
+                    'name' => 'File\ImageSize',
                     'options' => array(
                         'maxWidth' => 300,
                         'maxHeight' => 300

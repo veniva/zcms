@@ -83,7 +83,7 @@ class LogController extends AbstractActionController
     }
 
     public function forgottenAction()
-    {
+    {//v_todo - improve the way for password retrieval
         $email = new Element\Email('email');
         $email->setLabel('Registered email');
         $email->setAttribute('required', 'required');
@@ -114,14 +114,15 @@ class LogController extends AbstractActionController
                 }else{
                     //Check if the user is administrator
                     $accessControlList = $this->getServiceLocator()->get('acl');
-                    $allowed = $accessControlList->isAllowed($user->getRole(), 'index');
+                    $allowed = $accessControlList->isAllowed($user->getRoleName(), 'index');
                     if(!$allowed){
                         $this->flashMessenger()->addErrorMessage(sprintf("The user with email %s does not have administrative privileges", $email));
                         $this->redirect()->toRoute('admin', array('controller' => 'log', 'action' => 'forgotten'));
 
                     }else{
                         //generate new password memorize it in the DB and send it to the given email
-                        $newPassword = $user->generateRandomPassword();
+                        $newPassword = $userEntity::generateRandomPassword();
+                        $user->setUpass($newPassword);
                         $entityManager->persist($user);
                         $entityManager->flush();
 
