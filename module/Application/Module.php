@@ -17,7 +17,6 @@ use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\Validator\AbstractValidator;
 use Zend\View\Model\ViewModel;
-use Zend\Permissions\Acl\Exception\ExceptionInterface as AclException;
 
 class Module
 {

@@ -77,7 +77,10 @@ $auth = new \Zend\Authentication\AuthenticationService();
                                     'action' => $this->action,
                                     'id' => $this->id,
                                     'page' => $this->page,
-                                    'lang' => $lang['isoCode']])?>" <?=$selected?>><?=$lang['name']?></option>
+                                    'lang' => $lang['isoCode']
+                                ])?>" <?=$selected?>>
+                                    <?=$lang['name']?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </span>

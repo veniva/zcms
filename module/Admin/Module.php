@@ -14,6 +14,17 @@ class Module
 
         $eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'setLayout'));
 
+        //if routed to admin but no controller found, show admin error page (not front-end error page)
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function(MvcEvent $event) {
+            if($route = $event->getRouteMatch()){
+                if($route->getMatchedRouteName() == 'admin/default'){
+                    $viewModel = $event->getViewModel();
+                    $viewModel->setTemplate('admin/layout');
+                }
+            }
+
+        }, -200);
+
         $serviceManager->get('ViewHelperManager')->setFactory('formSelectCategory', function(){
             return new Form\View\Helper\SelectCategory();
         });
