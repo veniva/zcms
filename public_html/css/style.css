@@ -1,7 +1,6 @@
 body{
     margin-left: 0;
     margin-top: 0;
-    font-family: Arial, sans-serif;
     font-weight:normal;
     background:url(../img/back2.png);
 }
@@ -12,7 +11,8 @@ h1{
 }
 
 h2{
-    font-size: 20px;
+    font-size: 17px;
+    color: #535353;
 }
 
 table th, table td{
@@ -80,4 +80,8 @@ footer a {
 
 .content img{
     margin: 0 5px 5px 0;
+}
+
+span.bold{
+    font-weight: bold;
 }
