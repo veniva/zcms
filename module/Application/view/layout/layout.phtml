@@ -17,7 +17,9 @@ echo $this->doctype(); ?>
 
     <?=$this->headScript()
         ->prependFile($this->basePath() . '/js/bootstrap.min.js')
-        ->prependFile($this->basePath() . '/js/jquery-2.1.4.min.js')?>
+        ->prependFile($this->basePath() . '/js/jquery-2.1.4.min.js')
+        ->appendFile($this->basePath() . '/js/jscript.js');
+    ?>
     <style type="text/css">
         body, html{
             height:100%;
@@ -87,7 +89,7 @@ echo $this->doctype(); ?>
         </div>
         <div class="col-sm-2">right</div>
     </div>
-    <footer>
+    <footer id="footer">
         Powered by <a href="http://libretto.artwebonline.com" target="_blank">ZCMS
     </footer>
 
