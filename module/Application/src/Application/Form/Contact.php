@@ -11,9 +11,9 @@ use Zend\InputFilter\InputFilterInterface;
 
 class Contact extends Form
 {
-    public function __construct($urlCaptcha, $name = 'contact_form')
+    public function __construct($urlCaptcha, $publicHtml=null)
     {
-        parent::__construct($name);
+        parent::__construct('contact_form');
 
         $this->add(array(
             'name' => 'name',
@@ -42,8 +42,8 @@ class Contact extends Form
             'options' => array(
                 'label' => 'Security code',
                 'captcha' => new Image(array(
-                    'font' => './public/fonts/PTN77F.ttf',
-                    'imgDir' => 'public/img/captcha/',
+                    'font' => $publicHtml.'/fonts/PTN77F.ttf',
+                    'imgDir' => $publicHtml.'/img/captcha/',
                     'imgUrl' => $urlCaptcha,
                     'dotNoiseLevel' => 20,
                     'lineNoiseLevel' => 3,
