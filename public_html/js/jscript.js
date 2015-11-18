@@ -4,10 +4,9 @@ $(function(){
         minHeight: window.innerHeight,
         position: 'relative'
     });
-    $('#footer').css({
-        position: 'absolute',
-        bottom:0
+    $('#main-content').css({
+        minHeight: window.innerHeight-102,
+        position: 'relative'
     });
-
 
 });

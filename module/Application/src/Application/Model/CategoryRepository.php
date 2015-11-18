@@ -41,7 +41,7 @@ class CategoryRepository extends ORM\EntityRepository
             AND $parent
             AND co.lang = $langId
             AND lc.lang = $langId
-            ORDER BY c.id, c.sort, l.sort, l.id
+            ORDER BY c.sort, c.id, l.sort, l.id
 TAG;
         $query = $this->getEntityManager()->createQuery($dql);
         $categories = $query->getArrayResult();

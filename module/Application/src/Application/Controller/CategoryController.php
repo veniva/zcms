@@ -29,8 +29,11 @@ class CategoryController extends AbstractActionController
         $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias($alias);
         if(!$categoryContent){
             $this->getResponse()->setStatusCode(404);
-            return;
+            return [];
         }
+        $this->layout()->setVariables([
+            'meta_title' => $categoryContent->getTitle()
+        ]);
 
         $subCategories = $entityManager->getRepository(get_class($categoryEntity))->findByParent($categoryContent->getCategory());
 

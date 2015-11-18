@@ -22,6 +22,7 @@ class Contact extends Form
             ),
             'attributes' => array(
                 'required' => true,
+                'class' => 'form-control'
             ),
         ));
 
@@ -33,6 +34,7 @@ class Contact extends Form
             ),
             'attributes' => array(
                 'required' => true,
+                'class' => 'form-control'
             ),
         ));
 
@@ -60,6 +62,7 @@ class Contact extends Form
             ),
             'attributes' => array(
                 'required' => true,
+                'class' => 'form-control'
             ),
         ));
 

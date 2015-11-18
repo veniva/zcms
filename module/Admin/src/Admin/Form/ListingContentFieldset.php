@@ -11,6 +11,7 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 class ListingContentFieldset extends Fieldset implements InputFilterProviderInterface
 {
     protected $aliasMaxLength = 255;
+    protected $titleMaxLength = 255;
     protected $linkMaxLength = 20;
 
     public function __construct($name = 'content', array $options = [])
@@ -45,7 +46,7 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
                 'label' => 'Page title',
             ),
             'attributes'=> array(
-                'maxlength' => $this->linkMaxLength,
+                'maxlength' => $this->titleMaxLength,
             ),
         ));
 
@@ -108,7 +109,7 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
                     array(
                         'name' => 'StringLength',
                         'options' => array(
-                            'max' => $this->linkMaxLength,
+                            'max' => $this->titleMaxLength,
                         ),
                     )
                 ),

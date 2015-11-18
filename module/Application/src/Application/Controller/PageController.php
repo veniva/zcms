@@ -14,17 +14,26 @@ class PageController extends AbstractActionController
         $alias = $params->fromRoute('alias', null);
         if(!$alias){
             $this->getResponse()->setStatusCode(404);
-            return;
+            return [];
         }
-        $listingContentEntity = $this->serviceLocator->get('listing-content-entity');
+        $listingEntity = $this->serviceLocator->get('listing-entity');
         $entityManager = $this->serviceLocator->get('entity-manager');
 
-        $repository = $entityManager->getRepository(get_class($listingContentEntity));
-        $listingContent = $repository->findOneBy(['alias' => urldecode($alias), 'lang' => Misc::getCurrentLang()]);
-        if(!$listingContent) $this->getResponse()->setStatusCode(404);
+        $listing = $entityManager->getRepository(get_class($listingEntity))->getListingByAlias(urldecode($alias), Misc::getCurrentLang()->getId());
+        if(!$listing){
+            $this->getResponse()->setStatusCode(404);
+            return [];
+        }
+        $content = $listing->getSingleListingContent(Misc::getCurrentLang()->getId());
+        $metaData = $listing->getSingleMetadata(Misc::getCurrentLang()->getId());
+        $this->layout()->setVariables([
+            'meta_title' => $metaData->getMetaTitle(),
+            'meta_description' => $metaData->getMetaDescription(),
+            'meta_keywords' => $metaData->getMetaKeywords(),
+        ]);
 
         return new ViewModel([
-            'listing_content' => $listingContent
+            'listing_content' => $content
         ]);
     }
 }
