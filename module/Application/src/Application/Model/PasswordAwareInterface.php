@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Ventsislav Ivanov
- * Date: 15/09/2015
- * Time: 16:26
+ * ZCMS - a light weight CMS
+ *
+ * @copyright Copyright (c) 2015 Ventsislav Ivanov
+ * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
 namespace Application\Model;

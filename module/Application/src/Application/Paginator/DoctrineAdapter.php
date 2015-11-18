@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Ventsislav Ivanov
- * Date: 03/10/2015
- * Time: 21:35
- */
 
 namespace Application\Paginator;
-
 
 use Zend\Paginator\Adapter\AdapterInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
