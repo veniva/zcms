@@ -198,7 +198,7 @@ return array(
             )
         ),
         'modules' => array(
-            'Application', 'Admin'
+            'Admin'
         ),
     ),
     'view_helper_config' => array(

@@ -126,13 +126,10 @@ msgid "The input %s is more than %%max%% characters long"
 msgstr "Полето %s е по-дълго от позволените %%max%% символа"
 
 msgid "Are you sure you want to delete this category and all listings in it?"
-msgstr "Сигурен ли сте че искате да премахнете тази категория и всички елементи (страници) в нея?"
+msgstr "Сигурни ли сте че искате да премахнете тази категория и всички елементи (страници) в нея?"
 
 msgid "The category and all listings in it was removed successfully"
 msgstr "Категорията и всички елементи в нея бяха премахнати успешно"
-
-msgid "The input must contain only digits"
-msgstr "Полето трябва да съдържа само цифри"
 
 msgid "Add a category"
 msgstr "Добавяне на категория"
@@ -154,3 +151,143 @@ msgstr "Действие"
 
 msgid "Delete"
 msgstr "Изтрии"
+
+msgid "Edit"
+msgstr "Редактирай"
+
+msgid "Are you sure you want to delete these pages"
+msgstr "Сигурни ли сте че искате да изтриете тези страници"
+
+msgid "Are you sure you want to delete this user?"
+msgstr "Сигурни ли сте че искате да изтриете този потребител?"
+
+msgid "You must choose at least one item to delete"
+msgstr "Трябва да изберете поне една страница за изтриване"
+
+msgid "Page image"
+msgstr "Изображение"
+
+msgid "Remove image"
+msgstr "Премахване на изображението"
+
+msgid "Submit"
+msgstr "Изпрати"
+
+msgid "Cancel"
+msgstr "Откажи"
+
+msgid "Logged as"
+msgstr "Потребител"
+
+msgid "Account settings"
+msgstr "Настрйки на акаунта"
+
+msgid "You must create at least one category in order to add pages"
+msgstr "Трябва да създадете поне една категория в която да добавяте страници"
+
+msgid "The page has been %s successfully"
+msgstr "Страницата беше %s успешно"
+
+msgid "edited"
+msgstr "редактирана"
+
+msgid "added"
+msgstr "добавена"
+
+msgid "Please check the form for errors"
+msgstr "Моля проверете формата за грешки"
+
+msgid "The pages have been deleted successfully"
+msgstr "Страниците бяха изтрити успешно"
+
+# Zend\Validator\NotEmpty
+msgid "Value is required and can't be empty"
+msgstr "Полето е задължително"
+
+# Zend\Validator\File\Extension
+msgid "File has an incorrect extension"
+msgstr "Файла е с погрешно разширение"
+
+# Zend\Validator\File\Extension
+msgid "File is not readable or does not exist"
+msgstr "Файла не може да бъде отворен или не съществува"
+
+# Zend\Validator\File\FileSize
+msgid "All files in sum should have a maximum size of '%max%' but '%size%' were detected"
+msgstr "Сумата от качените файлове не трабва да надвишава '%max%' а тя възлиза на '%size%'"
+
+# Zend\Validator\File\FileSize
+msgid "All files in sum should have a minimum size of '%min%' but '%size%' were detected"
+msgstr "Сумата от качените файлове не трабва е минимум '%max%' а тя възлиза на '%size%'"
+
+# Zend\Validator\File\FileSize
+msgid "One or more files can not be read"
+msgstr "Един или повече файлове не можаха да бъдат отворени"
+
+# Zend\Validator\File\Size
+msgid "Maximum allowed size for file is '%max%' but '%size%' detected"
+msgstr "Максималния позволен размер на файла е в размер на '%max%' а той възлиза на '%size%'"
+
+# Zend\Validator\File\Size
+msgid "Minimum expected size for file is '%min%' but '%size%' detected"
+msgstr "Минималния позволен размер на файла е в размер на '%min%' а той възлиза на '%size%'"
+
+# Zend\Validator\File\ImageSize
+msgid "Maximum allowed width for image should be '%maxwidth%' but '%width%' detected"
+msgstr "Максимално позволената ширина на файла е в размер на '%maxwidth%' а тя възлиза на '%width%'"
+
+# Zend\Validator\File\ImageSize
+msgid "Minimum expected width for image should be '%minwidth%' but '%width%' detected"
+msgstr "Минималната ширина на изображението трябва да е в размер на '%minwidth%' а тя възлиза на '%width%'"
+
+# Zend\Validator\File\ImageSize
+msgid "Maximum allowed height for image should be '%maxheight%' but '%height%' detected"
+msgstr "Максимално позволената височина на изображението е в размер на '%maxheight%' а тя възлиза на '%height%'"
+
+# Zend\Validator\File\ImageSize
+msgid "Minimum expected height for image should be '%minheight%' but '%height%' detected"
+msgstr "Минималната височина на изображението трябва да е в размер на '%minheight%' а тя възлиза на '%height%'"
+
+# Zend\Validator\File\ImageSize
+msgid "The size of image could not be detected"
+msgstr "Размера на изображението не можа да бъде определен"
+
+# Zend\Validator\Digits
+msgid "The input must contain only digits"
+msgstr "Полето трябва да съдържа само цифри"
+
+# Zend\Validator\Digits
+msgid "The input is an empty string"
+msgstr "Полето е празно"
+
+# Zend\Validator\Digits
+msgid "Invalid type given. String, integer or float expected"
+msgstr "Невалиден вид на стойността на полето. Очакван вид: текст или цифри"
+
+# Zend\Validator\StringLength
+msgid "Invalid type given. String expected"
+msgstr "Невалиден вид на стойността на полето. Очакван вид: текст"
+
+# Zend\Validator\StringLength
+msgid "The input is less than %min% characters long"
+msgstr "Стойността трябва да е по-голяма от %min% символа"
+
+# Zend\Validator\StringLength
+msgid "The input is more than %max% characters long"
+msgstr "Стойността трябва да е не надвишава %max% символа"
+
+# Admin\Validator\Password
+msgid "There must be at least one lower case letter"
+msgstr "Паролата трябва да съдържа поне една малка буква"
+
+# Admin\Validator\Password
+msgid "There must be at least one upper case letter"
+msgstr "Паролата трябва да съдържа поне една главна буква"
+
+# Admin\Validator\Password
+msgid "There must be at least one number"
+msgstr "Паролата трябва да съдържа поне една цифра"
+
+# Zend\Validator\Identical
+msgid "The two given tokens do not match"
+msgstr "Стойността на полетата не съвпада"

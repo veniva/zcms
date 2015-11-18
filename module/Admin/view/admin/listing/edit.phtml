@@ -98,10 +98,10 @@ $this->form->prepare();
     <div class="form-group">&nbsp;</div>
     <div class="form-group">
         <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
-        <small> or <a href="<?=$this->langUrl('admin/listing', [
+        <small> &nbsp; <a href="<?=$this->langUrl('admin/listing', [
                 'id' => $this->filter,
                 'page' => $this->page,
-            ])?>">Cancel</a></small>
+            ])?>"><?=$this->translate('Cancel')?></a></small>
         <?=$this->form()->closeTag()?>
         <div style="height:100px;">&nbsp;</div>
     </div>

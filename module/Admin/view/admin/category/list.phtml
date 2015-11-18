@@ -44,12 +44,12 @@
                         'id' => $category->getId(),
                         'page' => $this->page,
                     ))?>">
-                        <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
+                        <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('Edit')?>" />
                     </a>
                     <a class="img del_button" href="#" data-href="<?=$this->langUrl('admin/category', [
                         'action' => 'delete', 'id' => $category->getId(), 'page' => $this->page,
                     ])?>">
-                        <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
+                        <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('Delete')?>" />
                     </a>
                 </td>
             </tr>

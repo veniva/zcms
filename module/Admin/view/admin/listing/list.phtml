@@ -43,7 +43,7 @@
                             'page' => $this->page,
                             'filter' => $this->parentCategory,
                         ))?>">
-                            <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
+                            <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('Edit')?>" />
                         </a>
                     </td>
                 </tr>
@@ -70,7 +70,7 @@
     });
 
     $('#del_button').click(function(){
-        if(confirm('<?=$this->translate('Are you sure you want to delete these pages?')?>')){
+        if(confirm('<?=$this->translate('Are you sure you want to delete these pages')?>?')){
             var elements = $(document.listings).find('input[name="lid[]"]');
             var values = [];
             elements.each(function(){
