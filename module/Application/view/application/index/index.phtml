@@ -1,10 +1,15 @@
 <h2><?=$this->translate('Welcome to ZCMS')?></h2>
-<h2><small><?=$this->translate('A light weight CMS based on Zend Framework 2')?></small></h2>
+<h2><small><?=$this->translate('A light weight CMS based on Zend Framework 2 and Doctrine 2 ORM')?></small></h2>
 <?=$this->translate('If your preferred PHP framework is Zend Framework 2, then this is a good starting point for further web development for wide range of websites and applications - from simple to enterprise class.')?>
 <hr />
 <p><?=$this->translate('List of features')?>:</p>
 <ul>
-    <li><?=sprintf($this->translate('%s add/edit/delete different languages'), '<span class="bold">'.$this->translate('multi-language support:').'</span>')?></li>
+    <li>
+        <?=sprintf($this->translate('%s add/edit/delete different languages'), '<span class="bold">'.$this->translate('multi-language support:').'</span>')?>
+        <ul>
+            <li><?=$this->translate('Translated into 3 languages: English, Spanish and Bulgarian')?></li>
+        </ul>
+    </li>
     <li><?=$this->translate('add/edit/delete')?> <?=sprintf($this->translate('nested %s which contain the website content'), '<span class="bold">'.$this->translate('categories').'</span>')?></li>
     <li><?=$this->translate('add/edit/delete')?> <span class="bold"><?=$this->translate('content pages')?></span></li>
     <li><?=$this->translate('Sort pages and categories by desired order')?></li>

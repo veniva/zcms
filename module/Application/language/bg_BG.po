@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "POT-Creation-Date: 2012-07-05 22:17-0700\n"
-"PO-Revision-Date: 2015-11-18 12:28+0200\n"
+"PO-Revision-Date: 2015-11-18 15:05+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,8 +25,8 @@ msgstr "Форма за контакти"
 msgid "Welcome to ZCMS"
 msgstr "Добре дошли в ZCMS"
 
-msgid "A light weight CMS based on Zend Framework 2"
-msgstr "Лека платформа за ръководене на съдържанието, базирана на Zend Framework 2"
+msgid "A light weight CMS based on Zend Framework 2 and Doctrine 2 ORM"
+msgstr "Лека платформа за ръководене на съдържанието, базирана на Zend Framework 2 и Doctrine 2 ORM"
 
 msgid "If your preferred PHP framework is Zend Framework 2, then this is a good starting point for further web development for wide range of websites and applications - from simple to enterprise class."
 msgstr "Ако любимия ви PHP фреймуърк е Zend Framework 2, то това е добър старт за по нататъчна разработка на уебсайтове и приложения с различен размер: от малки до ентърпрайс"
@@ -75,3 +75,6 @@ msgstr "Информация"
 
 msgid "Contact"
 msgstr "За контакти"
+
+msgid "Translated into 3 languages: English, Spanish and Bulgarian"
+msgstr "Преведена на 3 езика: английски, испански и българси"
