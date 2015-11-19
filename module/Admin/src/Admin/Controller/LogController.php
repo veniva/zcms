@@ -122,7 +122,7 @@ class LogController extends AbstractActionController
                     $allowed = $accessControlList->isAllowed($user->getRoleName(), 'index');
                     if(!$allowed){
                         $this->flashMessenger()->addErrorMessage(sprintf("The user with email %s does not have administrative privileges", $email));
-                        $this->redirect()->toRoute('admin', array('controller' => 'log', 'action' => 'forgotten'));
+                        $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
 
                     }else{
                         //generate new password memorize it in the DB and send it to the given email
@@ -144,7 +144,7 @@ class LogController extends AbstractActionController
                         $transport->send($message);
 
                         $this->flashMessenger()->addSuccessMessage("A new password was generated and sent to ".$email);
-                        $this->redirect()->toRoute('admin', array('controller' => 'log', 'action' => 'in'));
+                        $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
                     }
                 }
 
