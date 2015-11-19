@@ -40,6 +40,9 @@ class CustomPageController extends AbstractActionController
             }
         }
 
-        return array('contact_form' => $form);
+        return array(
+            'formActive' => $adminEmail ? true : false,
+            'contact_form' => $form
+        );
     }
 }

@@ -60,6 +60,7 @@ class User extends Form
 
         $this->add(array(
             'name' => 'password_repeat',
+            'type' => 'password',
             'options' => array(
                 'label' => 'Password repeat'
             ),

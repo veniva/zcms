@@ -57,7 +57,7 @@ class Misc
         $userEntity = self::getStaticServiceLocator()->get('user-entity');
 
         $admin = $entityManager->getRepository(get_class($userEntity))->findOneById(1);
-        return $admin->getEmail();
+        return $admin ? $admin->getEmail() : null;
     }
 
     public static function setActiveLangs()
