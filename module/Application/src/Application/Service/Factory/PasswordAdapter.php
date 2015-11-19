@@ -19,7 +19,8 @@ class PasswordAdapter implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $config = $serviceLocator->get('config');
-        $adapter =  new Bcrypt($config['bcrypt']);
+        $options = isset($config['bcrypt']) ? $config['bcrypt'] : array();
+        $adapter =  new Bcrypt($options);
         return $adapter;
     }
 }
