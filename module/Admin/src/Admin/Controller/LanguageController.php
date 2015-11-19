@@ -96,7 +96,7 @@ class LanguageController extends AbstractActionController
             $form->setData($post);
             if($form->isValid($post['isoCode'], $oldIso, $language->isDefault())){
                 //if this is the new default language, change the old default to status active, and populate the missing content in the new default lang
-                if(isset($post['status']) && $oldStatus != $post['status'] && $language->isDefault($post['status'])){
+                if(isset($post['status']) && $oldStatus != $post['status'] && $language->isDefault($post['status']) && $oldDefaultLanguage){
 
                     //region fill missing content in categories
                     $oldDefaultLanguageId = $oldDefaultLanguage->getId();
@@ -194,12 +194,6 @@ class LanguageController extends AbstractActionController
         if($lang instanceof Lang){
             $entityManager->remove($lang);
             $entityManager->flush();
-
-            //remove flag image if existing
-            $publicDir = $this->getServiceLocator()->get('config')['public-path'];
-            $flagsDir = $publicDir.$this->flagsDir;
-            $imgName = $flagsDir.$lang->getIsoCode().'.png';
-            if(file_exists($imgName)) unlink($imgName);
         }
         return $this->redir()->toRoute('admin/default', ['controller' => 'language', 'page' => $page]);
 

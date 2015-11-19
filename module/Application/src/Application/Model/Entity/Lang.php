@@ -13,12 +13,12 @@ class Lang
     const STATUS_DEFAULT    = 2;
 
     /**
-     * @Id @GeneratedValue @Column(type="integer")
+     * @Id @GeneratedValue @Column(type="integer", options={"unsigned": true})
      */
     protected $id;
 
     /**
-     * @Column(type="string", name="iso_code")
+     * @Column(type="string", length=2, name="iso_code", options={"fixed":true})
      */
     protected $isoCode;
 
@@ -28,7 +28,7 @@ class Lang
     protected $name;
 
     /**
-     * @Column(type="integer")
+     * @Column(type="integer", options={"default": 1, "comment":"2- default; 1-active;"})
      */
     protected $status = self::STATUS_ACTIVE;
 
@@ -116,7 +116,7 @@ class Lang
         return !is_null($this->status) ? $this->getStatusOptions()[$this->status] : null;
     }
 
-    public function getStatusOptions()
+    public static function getStatusOptions()
     {
         return [
             self::STATUS_ACTIVE => 'active',

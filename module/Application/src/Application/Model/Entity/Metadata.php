@@ -23,9 +23,9 @@ class Metadata
     protected $metaTitle = null;
 
     /**
-     * @Column(type="string", name="meta_description")
+     * @Column(type="text", name="meta_description", length=255, nullable=true)
      */
-    protected $metaDescription = null;//v_todo - annotate all the ORM with the full set of options: http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html#annref-column
+    protected $metaDescription = null;
 
     /**
      * @Column(type="string", name="meta_keywords", nullable=true)

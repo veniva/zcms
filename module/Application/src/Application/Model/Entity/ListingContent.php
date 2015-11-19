@@ -38,7 +38,7 @@ class ListingContent
     protected $title;
 
     /**
-     * @Column(type="string")
+     * @Column(type="text")
      */
     protected $text;
 

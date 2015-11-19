@@ -52,12 +52,13 @@ class CategoryTree
                 if($in)
                     $indent .= '-';
             }
+            $title = $category->getSingleCategoryContent() ? $category->getSingleCategoryContent()->getTitle() : '';
             $this->categories[$category->getId()] = [
                 'id' => $category->getId(),
-                'title' => $category->getSingleCategoryContent()->getTitle(),
+                'title' => $title,
                 'indent' => $indent
             ];
-            $this->categoriesAsOptions[$category->getId()] = $indent.$category->getSingleCategoryContent()->getTitle();
+            $this->categoriesAsOptions[$category->getId()] = $indent.$title;
 
             $this->setCategories($category->getId(), $level+1);
         }

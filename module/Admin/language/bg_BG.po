@@ -128,7 +128,7 @@ msgstr "Полето %s е по-дълго от позволените %%max%% �
 msgid "Are you sure you want to delete this category and all listings in it?"
 msgstr "Сигурни ли сте че искате да премахнете тази категория и всички елементи (страници) в нея?"
 
-msgid "The category and all listings in it was removed successfully"
+msgid "The category and all the listings in it was removed successfully"
 msgstr "Категорията и всички елементи в нея бяха премахнати успешно"
 
 msgid "Add a category"

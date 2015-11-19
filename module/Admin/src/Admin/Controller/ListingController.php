@@ -84,11 +84,11 @@ class ListingController extends AbstractActionController
             $categoryEntity = new Entity\Category();
             $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAllOfType(1);
             if(!$categoryNumber){
-                $this->flashMessenger()->addErrorMessage($this->translator->translate("You must create at least one category in order to add pages"));
-                return $this->redir()->toRoute('admin/listing', [
-                    'id' => $parentFilter,
-                    'page' => $page,
-                ]);
+                    $this->flashMessenger()->addErrorMessage($this->translator->translate("You must create at least one category in order to add pages"));
+                    return $this->redir()->toRoute('admin/listing', [
+                        'id' => $parentFilter,
+                        'page' => $page,
+                    ]);
             }
         }
 
@@ -278,7 +278,7 @@ class ListingController extends AbstractActionController
         $publicDir = $this->getServiceLocator()->get('config')['public-path'];
         $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
 
-        foreach($listingIds as $listingId){
+        foreach($listingIds as $listingId){//v_todo - create an ORM event listener, or a tool "on demand", to delete images of listings removed on category deletion
             $listing = $entityManager->find(get_class($listingEntity), $listingId);
             $entityManager->remove($listing);
             if($listing->getListingImage())

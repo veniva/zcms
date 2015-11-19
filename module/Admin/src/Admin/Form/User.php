@@ -52,11 +52,9 @@ class User extends Form
 
         $this->add(array(
             'name' => 'password',
+            'type' => 'password',
             'options' => array(
                 'label' => 'Password'
-            ),
-            'attributes' => array(
-                'pattern' => '.{0}|.{'.UserEntity::PASS_MIN_LENGTH.','.UserEntity::PASS_MAX_LENGTH.'}',
             )
         ));
 
@@ -105,6 +103,9 @@ class User extends Form
                     'options' => array(
                         'max' => $this->nameMaxLength,
                     ),
+                ),
+                array(
+                    'name' => 'Zend\I18n\Validator\Alnum'
                 )
             ),
         ), 'uname');

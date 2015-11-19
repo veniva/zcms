@@ -18,32 +18,32 @@ class User implements PasswordAwareInterface
     const USER_USER         = 3;//'user'
     const USER_GUEST        = 4;//'guest'
     /**
-     * @Id @GeneratedValue @Column(type="integer")
+     * @Id @GeneratedValue @Column(type="integer", options={"unsigned": true})
      */
     protected $id;
 
     /**
-     * @Column(type="string")
+     * @Column(type="string", nullable=false)
      */
     protected $uname;
 
     /**
-     * @Column(type="string")
+     * @Column(type="string", nullable=false)
      */
     protected $upass;
 
     /**
-     * @Column(type="string")
+     * @Column(type="string", nullable=false)
      */
     protected $email;
 
     /**
-     * @Column(type="string")
+     * @Column(type="integer", options={"default": 4})
      */
     protected $role = 4;
 
     /**
-     * @Column(type="datetime", name="reg_date")
+     * @Column(type="datetime", name="reg_date", nullable=true)
      */
     protected $regDate;
 

@@ -26,6 +26,10 @@ class Language extends Form
             setHydrator(new ClassMethods(false));
 
         $fm = $serviceManager->get('flag-codes');
+        //check if there is any languages in the DB, and if there are none, then require that this first entry be with status "default"
+        $entityManager = $serviceManager->get('entity-manager');
+        $langCount = $entityManager->getRepository(get_class($lang))->countLanguages();
+        $statusOptions = $langCount ? $lang->getStatusOptions() : [Lang::STATUS_DEFAULT => Lang::getStatusOptions()[Lang::STATUS_DEFAULT]];
 
         $this->add(array(
             'name' => 'name',
@@ -55,7 +59,7 @@ class Language extends Form
             'type' => 'Select',
             'options' => array(
                 'label' => 'Status',
-                'value_options' => $lang->getStatusOptions()
+                'value_options' => $statusOptions
             ),
         ));
 

@@ -11,6 +11,7 @@ namespace Admin\Controller;
 use Admin\Form\Category as CategoryForm;
 use Application\Model\Entity\Category;
 use Application\Model\Entity\CategoryContent;
+use Application\Model\Entity\Lang;
 use Application\Service\Invokable\Misc;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -110,6 +111,13 @@ class CategoryController extends AbstractActionController
         $page = $this->params()->fromRoute('page', 1);
 
         $entityManager = $this->getServiceLocator()->get('entity-manager');
+
+        //check if there is an existing language before entering new category
+        $langs = $entityManager->getRepository(get_class(new Lang()))->countLanguages();
+        if(!$langs){
+            $this->flashMessenger()->addErrorMessage($this->translator->translate("You must insert at least one language in order to add categories"));
+            return $this->redir()->toRoute('admin/category');
+        }
         $categoryEntity = new Category();
         $languages = Misc::getActiveLangs();
 
@@ -121,7 +129,10 @@ class CategoryController extends AbstractActionController
         if($parentCategory){
             $relatedParentCategories = $categoryRepository->getParentCategories($parentCategory);
             $categoryEntity->setParents($relatedParentCategories);
-            $categoryEntity->setParent($parentCategory);
+            $categoryEntity->setParent($parentCategory->getId());
+            foreach($relatedParentCategories as $parentCategory){
+                $parentCategory->addChild($categoryEntity);
+            }
         }
 
         //add empty language content to the collection, so that input fields are created
@@ -197,7 +208,7 @@ class CategoryController extends AbstractActionController
         $entityManager->remove($category);//contained listings are cascade removed from the ORM!!
         $entityManager->flush();
 
-        $this->flashMessenger()->addSuccessMessage($this->translator->translate('The category and all listings in it was removed successfully'));
+        $this->flashMessenger()->addSuccessMessage($this->translator->translate('The category and all the listings in it was removed successfully'));
         $this->redir()->toRoute('admin/category', [
             'id' => isset($parentCategory) ? $parentCategory->getId() : null,
             'page' => $page,

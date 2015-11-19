@@ -27,4 +27,12 @@ class LangRepository extends EntityRepository
         $qb->select('l')->orderBy('l.status', 'desc')->addOrderBy('l.id');
         return new Paginator(new \Application\Paginator\DoctrineAdapter($qb->getQuery()));
     }
+
+    public function countLanguages()
+    {
+        $qb = $this->createQueryBuilder('l');
+        $qb->select($qb->expr()->count('l'));
+        $query = $qb->getQuery();
+        return $qb->getQuery()->getSingleScalarResult();
+    }
 }

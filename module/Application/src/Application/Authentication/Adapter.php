@@ -19,7 +19,7 @@ class Adapter extends AbstractAdapter implements ServiceManager\ServiceLocatorAw
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $userEntity = $this->getServiceLocator()->get('user-entity');
         $user = $entityManager->getRepository(get_class($userEntity))->findOneByUname($this->getIdentity());
-        if($user && $user->checkPassword($this->getCredential())){
+        if($user && $user->getRole() <= $user::USER_ADMIN && $user->checkPassword($this->getCredential())){
             return new Result(Result::SUCCESS, $user);
         }
 

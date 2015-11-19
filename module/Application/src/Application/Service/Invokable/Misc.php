@@ -92,7 +92,8 @@ class Misc
         $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
         $language = $entityManager->getRepository(get_class($languageEntity))->findOneByIsoCode($langISO);
         self::$lang = $language;
-        self::$langID = $language->getId();
+        if($language)
+            self::$langID = $language->getId();
     }
 
     /**
@@ -116,8 +117,9 @@ class Misc
         $entityManager = self::getStaticServiceLocator()->get('entity-manager');
         $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
         $language = $entityManager->getRepository(get_class($languageEntity))->findOneByStatus(Lang::STATUS_DEFAULT);
-        self::$defaultLangID = $language->getId();
         self::$defaultLang = $language;
+        if($language)
+            self::$defaultLangID = $language->getId();
     }
 
     /**

@@ -11,12 +11,12 @@ use Application\Service\Invokable\Misc;
 class Listing
 {
     /**
-     * @Id @GeneratedValue @Column(type="integer")
+     * @Id @GeneratedValue @Column(type="integer", options={"unsigned": true})
      */
     protected $id;
 
     /**
-     * @Column(type="integer")
+     * @Column(type="integer", options={"default": 0})
      */
     protected $sort = 0;
 

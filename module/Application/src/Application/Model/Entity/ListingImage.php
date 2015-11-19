@@ -8,7 +8,7 @@ namespace Application\Model\Entity;
 class ListingImage
 {
     /**
-     * @Id @GeneratedValue @Column(type="integer")
+     * @Id @GeneratedValue @Column(type="integer", options={"unsigned": true})
      */
     protected $id;
 

@@ -16,14 +16,14 @@ class Category
     /**
      * @Annotation\Exclude()
      *
-     * @Id @GeneratedValue @Column(type="integer")
+     * @Id @GeneratedValue @Column(type="integer", options={"unsigned": true})
      */
     protected $id;
 
     /**
      * @Annotation\Exclude()
      *
-     * @Column(type="integer")
+     * @Column(type="integer", options={"comment":"Category type. 1 - pages, 2 - listings, 3 ..."})
      */
     protected $type = 1;
 
@@ -33,7 +33,7 @@ class Category
      * @Annotation\Options({"label": "Sort"})
      * @Annotation\Attributes({"maxlength": 3, "class": "numbers"})
      *
-     * @Column(type="integer")
+     * @Column(type="integer", options={"default": 0})
      */
     protected $sort = 0;
 
@@ -41,9 +41,9 @@ class Category
      * @Annotation\Exclude()
      *
      * @ManyToMany(targetEntity="Category", cascade={"remove", "persist"})
-     * @JoinTable(name="category_rel",
-     *      joinColumns={@JoinColumn(name="parent_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="category_id", referencedColumnName="id")}
+     * @JoinTable(name="category_children",
+     *      joinColumns={@JoinColumn(name="category_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="child_id", referencedColumnName="id")}
      *      )
      */
     protected $children;
@@ -52,7 +52,7 @@ class Category
      * @Annotation\Exclude()
      *
      * @ManyToMany(targetEntity="Category", cascade={"persist"})
-     * @JoinTable(name="category_rel",
+     * @JoinTable(name="category_parents",
      *      joinColumns={@JoinColumn(name="category_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="parent_id", referencedColumnName="id")}
      *      )
@@ -62,7 +62,7 @@ class Category
     /**
      * @Annotation\Exclude()
      *
-     * @OneToOne(targetEntity="Category")
+     * @Column(type="integer", name="parent_id", options={"unsigned": true}, nullable=true)
      */
     protected $parent;
 
@@ -114,7 +114,7 @@ class Category
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getParent()
     {
@@ -122,11 +122,11 @@ class Category
     }
 
     /**
-     * @param mixed $parent
+     * @param int $parentId
      */
-    public function setParent(Category $parent)
+    public function setParent($parentId)
     {
-        $this->parent = $parent;
+        $this->parent = $parentId;
     }
 
     public function getContent()
@@ -140,7 +140,7 @@ class Category
      */
     public function getSingleCategoryContent($langId = null)
     {
-        if(is_null($langId))
+        if(is_null($langId) && Misc::getDefaultLanguage())
             $langId = Misc::getDefaultLanguage()->getId();
         //return a content in concrete language only if desired
         if($langId){
@@ -181,6 +181,11 @@ class Category
     public function setChildren(ArrayCollection $children)
     {
         $this->children = $children;
+    }
+
+    public function addChild(Category $child)
+    {
+        $this->children[] = $child;
     }
 
     /**
