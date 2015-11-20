@@ -21,20 +21,22 @@
         <tr>
             <td>
                 <div style="margin-top:20px; width:100%;"></div>
-                <form action="" method="get">
-                <span class="text">
-                    <?= $this->translate('Language') ?>:
-                    <select name="lang" onChange="switchLanguage(this.value)">
-                        <?php foreach(Invokable\Misc::getActiveLangsArray() as $lang):
-                            $selected = Invokable\Misc::getLangID() == $lang['id'] ? 'selected="selected"' : '';?>
-                            <option value="<?=$this->url('admin/default', [
-                                'controller' => 'log',
-                                'action' => $this->action,
-                                'lang' => $lang['isoCode']])?>" <?=$selected?>><?=$lang['name']?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </span>
-                </form>
+                <?php if($this->action != 'initial'):?>
+                    <form action="" method="get">
+                    <span class="text">
+                        <?= $this->translate('Language') ?>:
+                        <select name="lang" onChange="switchLanguage(this.value)">
+                            <?php foreach(Invokable\Misc::getActiveLangsArray() as $lang):
+                                $selected = Invokable\Misc::getLangID() == $lang['id'] ? 'selected="selected"' : '';?>
+                                <option value="<?=$this->url('admin/default', [
+                                    'controller' => 'log',
+                                    'action' => $this->action,
+                                    'lang' => $lang['isoCode']])?>" <?=$selected?>><?=$lang['name']?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </span>
+                    </form>
+                <?php endif; ?>
             </td>
         </tr>
         <tr>

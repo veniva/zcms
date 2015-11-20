@@ -51,6 +51,11 @@ class EntityManager implements FactoryInterface
             }
         }
 
+        if($doctrineDbSettings['driver'] == 'pdo_sqlite'){//it is very important to make sure foreign keys are on with SQLite
+            $query = $doctrineEntityManager->createNativeQuery("pragma foreign_keys=1", new \Doctrine\ORM\Query\ResultSetMapping());
+            $query->execute();
+        }
+
         return $doctrineEntityManager;
     }
 }

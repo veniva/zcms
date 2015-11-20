@@ -40,6 +40,18 @@ class Module
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setRouteMatch'), -1);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'accessControl'), -2);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'globalLayoutVars'), -3);
+        //use the error template of the currently used module
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function(MvcEvent $event)use($serviceManager) {
+            if($route = $event->getRouteMatch()){
+                $moduleName = strtolower(strstr($route->getParam('__NAMESPACE__'), '\\', true));
+
+                }
+                $layoutName = $moduleName == 'application' ? 'layout' : $moduleName;
+                if(isset($serviceManager->get('config')['view_manager']['template_map'][$layoutName.'/layout'])){
+                    $event->getViewModel()->setTemplate($layoutName.'/layout');
+                }
+
+        }, -200);
 
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);

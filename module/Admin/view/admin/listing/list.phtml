@@ -70,23 +70,23 @@
     });
 
     $('#del_button').click(function(){
-        if(confirm('<?=$this->translate('Are you sure you want to delete these pages')?>?')){
-            var elements = $(document.listings).find('input[name="lid[]"]');
-            var values = [];
-            elements.each(function(){
-                if(this.checked == true){
-                    values.push(this.value);
-                }
-            });
+        var elements = $(document.listings).find('input[name="lid[]"]');
+        var values = [];
+        elements.each(function(){
+            if(this.checked == true){
+                values.push(this.value);
+            }
+        });
+        if(values.length){
+            if(confirm('<?=$this->translate('Are you sure you want to delete these pages')?>?')){
 
-            if(values.length){
                 document.form_delete.elements['ids'].value = values;
                 document.form_delete.submit();
-            }else{
-                alert('<?=$this->translate('You must choose at least one item to delete')?>');
             }
-
+        }else{
+            alert('<?=$this->translate('You must choose at least one item to delete')?>');
         }
+
         return false;
     });
 </script>
