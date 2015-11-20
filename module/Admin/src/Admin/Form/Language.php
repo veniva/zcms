@@ -15,8 +15,7 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 
 class Language extends Form
 {
-    protected $nameMaxLength = 15;
-    protected $isoCodeMaxLength = 2;
+    const NAME_MAX_LENGTH = 15;
 
     public function __construct(ServiceLocatorInterface $serviceManager)
     {
@@ -37,7 +36,7 @@ class Language extends Form
                 'label' => 'Name'
             ),
             'attributes' => array(
-                'maxlength' => $this->nameMaxLength,
+                'maxlength' => self::NAME_MAX_LENGTH,
             )
         ));
 
@@ -78,7 +77,7 @@ class Language extends Form
                 array(
                     'name' => 'StringLength',
                     'options' => array(
-                        'max' => $this->nameMaxLength,
+                        'max' => self::NAME_MAX_LENGTH,
                     ),
                 )
             ),
@@ -86,7 +85,7 @@ class Language extends Form
 
     }
 
-    public function isValid($newIso = null, $oldIso = null, $isDefault = null)
+    public function isValid($isDefault = null)
     {
         if($isDefault === true){//if the edited language is default, make the status not required as it'll be missing
             $this->getInputFilter()->get('status')->setRequired(false);

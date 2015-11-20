@@ -105,7 +105,7 @@ class Listing
     }
 
     /**
-     * @param null $langId If null, then an entity of the default language is returned
+     * @param null|int $langId If null, then an entity of the default language is returned
      * @return Metadata|null
      */
     public function getSingleMetadata($langId = null)
@@ -120,7 +120,7 @@ class Listing
                 }
             }
         }
-        return $this->metadata;
+        return null;
     }
 
     /**

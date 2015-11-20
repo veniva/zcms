@@ -59,7 +59,7 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
 
         try{
             $this->controller->dispatch($this->request);
-        }catch(ExtensionNotLoadedException $e){}
+        }catch(\Exception $e){}
         $response = $this->controller->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -71,7 +71,7 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
 
         try{
             $this->controller->dispatch($this->request);
-        }catch(ExtensionNotLoadedException $e){}
+        }catch(\Exception $e){}
         $response = $this->controller->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());

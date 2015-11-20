@@ -80,23 +80,21 @@ class LanguageController extends AbstractActionController
             $language = new Lang();
         }
         $oldDefaultLanguage = $entityManager->getRepository(get_class($language))->findOneByStatus(Lang::STATUS_DEFAULT);
-        $form = new LanguageForm($this->getServiceLocator());
-        $form->bind($language);
-        $oldIso = null;
         $oldStatus = null;
         if($language->getId()){
-            $oldIso = $language->getIsoCode();
             $oldStatus = $language->getStatus();
         }
+        $form = new LanguageForm($this->getServiceLocator());
+        $form->bind($language);
 
         if($this->getRequest()->isPost()){
             $post = $this->getRequest()->getPost()->toArray();
             if($language->isDefault()) unset($post['status']);//ensures no status can be changed if lang is default
 
             $form->setData($post);
-            if($form->isValid($post['isoCode'], $oldIso, $language->isDefault())){
+            if($form->isValid($language->isDefault($oldStatus))){
                 //if this is the new default language, change the old default to status active, and populate the missing content in the new default lang
-                if(isset($post['status']) && $oldStatus != $post['status'] && $language->isDefault($post['status']) && $oldDefaultLanguage){
+                if(isset($post['status']) && $language->isDefault($post['status']) && $oldDefaultLanguage){
 
                     //region fill missing content in categories
                     $oldDefaultLanguageId = $oldDefaultLanguage->getId();

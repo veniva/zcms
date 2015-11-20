@@ -26,7 +26,7 @@ class ListingRepository extends EntityRepository
         return new Paginator(new \Application\Paginator\DoctrineAdapter($qb->getQuery()));
     }
 
-    public function getListingByAlias($alias, $lang)
+    public function getListingByAliasAndLang($alias, $lang)
     {
         $qb = $this->createQueryBuilder('l');
         $qb->select('l')

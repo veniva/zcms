@@ -20,7 +20,6 @@ return array(
                     'defaults' => array(
                         'controller' => 'Application\Controller\Index',
                         'action'     => 'index',
-                        'lang'       => 'en',
                     ),
                 ),
             ),
@@ -36,7 +35,6 @@ return array(
                         '__NAMESPACE__' => 'Application\Controller',
                         'controller'    => 'Index',
                         'action'        => 'index',
-                        'lang'          => 'en',
                     ),
                 ),
                 'may_terminate' => true,
@@ -69,7 +67,6 @@ return array(
                         'controller' => 'Application\Controller\Category',
                         'action' => 'show',
                         'alias' => 'home',
-                        'lang' => 'en',
                     ),
                 ),
             ),
@@ -84,7 +81,6 @@ return array(
                     'defaults' => array(
                         'controller' => 'Application\Controller\Page',
                         'action' => 'show',
-                        'lang' => 'en',
                     ),
                 ),
             ),

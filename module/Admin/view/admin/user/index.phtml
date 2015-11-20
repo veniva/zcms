@@ -36,6 +36,7 @@
                     ))?>">
                         <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
                     </a>
+                    <?php if($auth->getIdentity()->getId() != $user->getId()):?>
                     <a class="img del_button" href="#" data-href="<?=$this->langUrl('admin/default', [
                         'controller' => 'user',
                         'action' => 'delete',
@@ -44,6 +45,7 @@
                     ])?>">
                         <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
                     </a>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>

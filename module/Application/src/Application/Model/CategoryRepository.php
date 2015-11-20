@@ -54,7 +54,7 @@ TAG;
         return $categories;
     }
 
-    public function translateCategoryTitles(array $categories, $displayLang)
+    public function translateCategoryTitles(array $categories, $languageId)
     {
         //replace the title of the categories with the display language category titles (if existing)
         $categoryQueryBuilder = $this->createQueryBuilder('c');
@@ -64,8 +64,8 @@ TAG;
             ->join('c.listings', 'cl')
             ->join('cl.content', 'lc')
             ->where('c.id = ?1')
-            ->andWhere('co.lang = '.$displayLang)
-            ->andWhere('lc.lang = '.$displayLang);
+            ->andWhere('co.lang = '.$languageId)
+            ->andWhere('lc.lang = '.$languageId);
         foreach($categories as &$category){
             $categoryQueryBuilder->setParameter(1, $category['id']);
             $query = $categoryQueryBuilder->getQuery();
@@ -156,5 +156,19 @@ TAG;
     protected function andCategoryParent(QueryBuilder $qb, $parent)
     {
         return $parent = empty($parent) ? '('.$qb->expr()->isNull('c.parent').' OR c.parent=0)' : 'c.parent='.$parent;
+    }
+
+    public function getCategoryByAliasAndLang($alias, $lang)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('c', 'co')
+            ->join('c.content', 'co')
+            ->where('co.alias=\''.$alias.'\'')
+            ->andWhere('co.lang='.$lang);
+        $result = null;
+        try{
+            $result = $qb->getQuery()->getSingleResult();
+        }catch(\Exception $ex){}
+        return $result;
     }
 }

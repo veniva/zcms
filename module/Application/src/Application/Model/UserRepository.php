@@ -8,6 +8,7 @@
 
 namespace Application\Model;
 
+use Application\Model\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Paginator\Paginator;
@@ -23,5 +24,13 @@ class UserRepository extends EntityRepository
             $qb->where('u.role >='.$auth->getIdentity()->getRole());
         }
         return new Paginator(new \Application\Paginator\DoctrineAdapter($qb->getQuery()));
+    }
+
+    public function countUsers()
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->select($qb->expr()->count('u'))
+            ->where('u.role <='.User::USER_ADMIN);
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

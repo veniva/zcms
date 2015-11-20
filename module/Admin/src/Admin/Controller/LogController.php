@@ -8,6 +8,9 @@
 
 namespace Admin\Controller;
 
+use Admin\Form\Language;
+use Application\Model\Entity\Lang;
+use Application\Model\Entity\User;
 use Zend\Form\Element;
 use Zend\Form\Form;
 use Zend\I18n\Translator\Translator;
@@ -25,11 +28,18 @@ class LogController extends AbstractActionController
 
     public function indexAction()
     {
-        $this->redirect()->toRoute('admin', ['controller' => 'log', 'action' => 'in']);
+        $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'in']);
     }
 
     public function inAction()
     {
+        //check for the existence of any users, and if none, it means it is a new installation, then redirect to user registration
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $countAdministrators = $entityManager->getRepository(get_class(new User()))->countUsers();
+        if(!$countAdministrators){
+            $this->flashMessenger()->addInfoMessage('Here you can create the first user for the system');
+            $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'initial']);
+        }
         $uname = new Element\Text('uname');
         $uname->setLabel('User name');
         $uname->setAttribute('required', 'required');
@@ -67,11 +77,11 @@ class LogController extends AbstractActionController
                 $user = $result->getIdentity();
                 if($result->isValid()){
                     $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate("Welcome %s. You have been logged in successfully"), $user->getUname()));
-                    $this->redir()->toRoute('admin', array('controller' => 'index'));
+                    $this->redir()->toRoute('admin/default', array('controller' => 'index'));
 
                 }else{
                     $this->flashMessenger()->addErrorMessage($this->translator->translate('Wrong details'));
-                    $this->redir()->toRoute('admin', array('controller' => 'log', 'action' => 'in'));
+                    $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
                 }
             }
         }
@@ -84,7 +94,7 @@ class LogController extends AbstractActionController
         $auth = $this->getServiceLocator()->get('auth');
         $auth->clearIdentity();
         $this->flashMessenger()->addSuccessMessage($this->translator->translate('You have been logged out successfully'));
-        return $this->redir()->toRoute('admin');
+        return $this->redir()->toRoute('admin/default');
     }
 
     public function forgottenAction()
@@ -152,5 +162,53 @@ class LogController extends AbstractActionController
         }
 
         return array('form' => $form);
+    }
+
+    public function initialAction()
+    {
+        $serviceLocator = $this->getServiceLocator();
+        $entityManager = $serviceLocator->get('entity-manager');
+        $user = $serviceLocator->get('user-entity');
+        $form = new \Admin\Form\User($user, $entityManager);
+
+        //region add language name + select flag
+        $languageForm = new Language($this->getServiceLocator());
+        $form->add($languageForm->get('isoCode'));
+        $languageName = $languageForm->get('name');
+        $languageName->setName('language_name');
+        $form->add($languageName);
+        $form->getInputFilter()->add($languageForm->getInputFilter()->get('isoCode'));
+        $languageNameInputFilter = $languageForm->getInputFilter()->get('name');
+        $languageNameInputFilter->setName($languageName->getName());
+        $form->getInputFilter()->add($languageNameInputFilter);
+        //endregion
+
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $form->setData($request->getPost());
+            //set the role field to not required
+            $form->getInputFilter()->get('role')->setRequired(false);
+            if($form->isValid()){
+                $newPassword = $form->getInputFilter()->get('password')->getValue();
+                if($newPassword)
+                    $user->setUpass($form->getInputFilter()->get('password')->getValue());
+                $user->setRegDate();
+                $user->setRole(User::USER_SUPER_ADMIN);
+                $entityManager->persist($user);
+                $lang = new Lang();
+                $lang->setIsoCode($form->getInputFilter()->getInputs()['isoCode']->getValue());
+                $lang->setName($form->getInputFilter()->getInputs()['language_name']->getValue());
+                $lang->setStatus($lang::STATUS_DEFAULT);
+                $entityManager->persist($lang);
+
+                $entityManager->flush();
+                $this->flashMessenger()->addSuccessMessage("The user has been added successfully. Please log below.");
+                $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'in']);
+            }
+        }
+        return [
+            'form' => $form,
+            'flagCode' => $this->getRequest()->isPost() ? $this->params()->fromPost('isoCode') : null
+        ];
     }
 }

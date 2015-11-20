@@ -9,7 +9,6 @@
 namespace Application\Service\Invokable;
 
 use Application\Model\Entity\Lang;
-use Doctrine\Common\Collections\Criteria;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class Misc
@@ -19,11 +18,11 @@ class Misc
      */
     protected static $staticServiceLocator;
     protected static $staticRoute;
-    protected static $lang;
-    protected static $langID;
+    protected static $currentLanguage;
+    protected static $currentLanguageId;
     protected static $defaultLangID;
-    protected static $defaultLang;
-    protected static $languages;
+    protected static $defaultLanguage;
+    protected static $activeLanguages;
 
     /**
      * @return mixed
@@ -60,18 +59,21 @@ class Misc
         return $admin ? $admin->getEmail() : null;
     }
 
-    public static function setActiveLangs()
+    public static function setActiveLanguages($activeLanguages)
     {
-        $entityManager = self::getStaticServiceLocator()->get('entity-manager');
-        $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
-        $criteria = new Criteria();
-        $criteria->where($criteria->expr()->gt('status', 0));
-        self::$languages = $entityManager->getRepository(get_class($languageEntity))->matching($criteria);
+        self::$activeLanguages = $activeLanguages;
     }
-
+    /**
+     * @deprecated Use getActiveLanguages() instead
+     */
     public static function getActiveLangs()
     {
-        return self::$languages;
+        return self::$activeLanguages;
+    }
+
+    public static function getActiveLanguages()
+    {
+        return self::$activeLanguages;
     }
 
     /**
@@ -85,41 +87,37 @@ class Misc
         return $languages;
     }
 
-    public static function setLangID()
+    /**
+     * @deprecated Use getCurrentLanguage() instead
+     */
+    public static function getCurrentLang()
     {
-        $langISO = self::$staticRoute->getParam('lang', 'en');
-        $entityManager = self::getStaticServiceLocator()->get('entity-manager');
-        $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
-        $language = $entityManager->getRepository(get_class($languageEntity))->findOneByIsoCode($langISO);
-        self::$lang = $language;
-        if($language)
-            self::$langID = $language->getId();
+        return self::$currentLanguage;
     }
 
     /**
      * @return \Application\Model\Entity\Lang
      */
-    public static function getCurrentLang()
+    public static function getCurrentLanguage()
     {
-        return self::$lang;
+        return self::$currentLanguage;
     }
 
     /**
-     * @deprecated Use Misc::getCurrentLang()->getId() instead
+     * @param Lang $currentLanguage Either the matched entity, or new (empty) entity
+     */
+    public static function setCurrentLanguage($currentLanguage)
+    {
+        self::$currentLanguage = $currentLanguage;
+        self::$currentLanguageId = $currentLanguage->getId();
+    }
+
+    /**
+     * @deprecated Use Misc::getCurrentLanguage()->getId() instead
      */
     public static function getLangID()
     {
-        return self::$langID;
-    }
-
-    public static function setDefaultLanguage()
-    {
-        $entityManager = self::getStaticServiceLocator()->get('entity-manager');
-        $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
-        $language = $entityManager->getRepository(get_class($languageEntity))->findOneByStatus(Lang::STATUS_DEFAULT);
-        self::$defaultLang = $language;
-        if($language)
-            self::$defaultLangID = $language->getId();
+        return self::$currentLanguageId;
     }
 
     /**
@@ -127,7 +125,13 @@ class Misc
      */
     public static function getDefaultLanguage()
     {
-        return self::$defaultLang;
+        return self::$defaultLanguage;
+    }
+
+    public static function setDefaultLanguage($language)
+    {
+        self::$defaultLanguage = $language;
+        self::$defaultLangID = $language->getId();
     }
 
     /**

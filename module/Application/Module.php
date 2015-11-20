@@ -17,9 +17,14 @@ use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\Validator\AbstractValidator;
 use Zend\View\Model\ViewModel;
+use Doctrine\Common\Collections\Criteria;
+use Application\Model\Entity\Lang;
 
 class Module
 {
+    /**
+     * @var \Zend\Mvc\Router\RouteMatch
+     */
     private $routeMatch;
 
     public function init(ModuleManager $moduleManager)
@@ -35,7 +40,6 @@ class Module
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setRouteMatch'), -1);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'accessControl'), -2);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'globalLayoutVars'), -3);
-        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setStaticHelpers'), -4);
 
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);
@@ -68,20 +72,17 @@ class Module
         );
     }
 
+    /**
+     * Defines some layout variables that can be easily used i a layout.phtml
+     * This is an alternative to Misc::getStaticRoute()->getParam('some-param')
+     * @param MvcEvent $e
+     */
     public function globalLayoutVars(MvcEvent $e)
     {
         if(!$e->getResponse()->contentSent()){
             $viewModel = $e->getViewModel();
             if($viewModel instanceof ViewModel){
                 $routeMatch = $this->routeMatch;
-
-                $serviceManager = $e->getApplication()->getServiceManager();
-                $translator = $serviceManager->get('translator');
-                $lang = $routeMatch->getParam('lang');
-                $locale = ($lang != 'en') ? $lang.'_'.strtoupper($lang) : 'en_US';
-                $translator->setLocale($locale);
-                $serviceManager->get('ViewHelperManager')->get('translate')
-                    ->setTranslator($translator);
 
                 $controller = $routeMatch->getParam('controller');
                 $controller = strtolower(substr($controller, strrpos($controller, '\\')+1));
@@ -101,8 +102,6 @@ class Module
                 if($page)
                     $setArray['page'] = $page;
 
-                $setArray['lang'] = ($lang && $lang != 'en') ? $lang : '';
-
                 $viewModel->setVariables($setArray);
             }
         }
@@ -118,11 +117,12 @@ class Module
         }
         Misc::setStaticRoute($routeMatch);
         $this->routeMatch = $routeMatch;
+        $this->setLanguages($e, $this->routeMatch);
     }
 
     public function accessControl(MvcEvent $e)
     {
-        $routeMatch = $e->getRouteMatch();
+        $routeMatch = $e->getRouteMatch();//v_todo - see if thes is not better to be taken from $this->routeMatch
         if(!$routeMatch) return;
 
         $serviceManager = $e->getApplication()->getServiceManager();
@@ -176,10 +176,35 @@ class Module
             $routeMatch->setParam('lang', $lang);
     }
 
-    public function setStaticHelpers()
+    public function setLanguages(MvcEvent $e, RouteMatch $routeMatch)
     {
-        Misc::setLangID();
-        Misc::setDefaultLanguage();
-        Misc::setActiveLangs();
+        $serviceManager = $e->getApplication()->getServiceManager();
+        $entityManager = $serviceManager->get('entity-manager');
+        $languageEntity = $serviceManager->get('lang-entity');
+
+        $defaultLanguage = $entityManager->getRepository(get_class($languageEntity))->findOneByStatus(Lang::STATUS_DEFAULT);
+        $defaultLanguage = $defaultLanguage ?: new Lang();
+        Misc::setDefaultLanguage($defaultLanguage);
+
+        //set current language
+        $matchedLangIso = $routeMatch->getParam('lang', $defaultLanguage->getIsoCode());//first, coming from parameter; if none - coming from default language; if none then null
+        if($matchedLangIso)
+            $currentLanguage = $entityManager->getRepository(get_class($languageEntity))->findOneByIsoCode($matchedLangIso);
+        $currentLanguage = isset($currentLanguage) ? $currentLanguage : new Lang();
+        Misc::setCurrentLanguage($currentLanguage);
+
+        //set the translator's locale - the "locale" is the name of the translation files located in "languages"
+        $currentLanguageIso = $currentLanguage->getIsoCode();
+        $translator = $serviceManager->get('translator');
+        $locale = ($currentLanguageIso != 'en') ? $currentLanguageIso.'_'.strtoupper($currentLanguageIso) : 'en_US';
+        $translator->setLocale($locale);
+        $serviceManager->get('ViewHelperManager')->get('translate')
+            ->setTranslator($translator);
+
+        //set active languages
+        $criteria = new Criteria();
+        $criteria->where($criteria->expr()->gt('status', 0));
+        $activeLanguages = $entityManager->getRepository(get_class($languageEntity))->matching($criteria);
+        Misc::setActiveLanguages($activeLanguages);
     }
 }

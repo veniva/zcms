@@ -18,23 +18,25 @@ class PageController extends AbstractActionController
     {
         $params = $this->params();
         $alias = $params->fromRoute('alias', null);
-        if(!$alias || !Misc::getCurrentLang()){
+        if(!$alias || !Misc::getCurrentLanguage()){
             $this->getResponse()->setStatusCode(404);
             return [];
         }
         $listingEntity = $this->serviceLocator->get('listing-entity');
         $entityManager = $this->serviceLocator->get('entity-manager');
 
-        $listing = $entityManager->getRepository(get_class($listingEntity))->getListingByAlias(urldecode($alias), Misc::getCurrentLang()->getId());
+        $listing = $entityManager->getRepository(get_class($listingEntity))->getListingByAliasAndLang(urldecode($alias), Misc::getCurrentLanguage()->getId());
         if(!$listing){
             $this->getResponse()->setStatusCode(404);
             return [];
         }
-        $metaData = $listing->getSingleMetadata(Misc::getCurrentLang()->getId());
+        $metaData = $listing->getSingleMetadata(Misc::getCurrentLanguage()->getId());
+        if(!$metaData) $metaData = $listing->getSingleMetadata(Misc::getDefaultLanguage()->getId());
+
         $this->layout()->setVariables([
-            'meta_title' => $metaData->getMetaTitle(),
-            'meta_description' => $metaData->getMetaDescription(),
-            'meta_keywords' => $metaData->getMetaKeywords(),
+            'meta_title' => $metaData ? $metaData->getMetaTitle() : null,
+            'meta_description' => $metaData ? $metaData->getMetaDescription() : null,
+            'meta_keywords' => $metaData ? $metaData->getMetaKeywords() : null,
         ]);
         $listingImage = $listing->getListingImage();
 

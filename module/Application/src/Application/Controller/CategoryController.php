@@ -9,6 +9,7 @@
 namespace Application\Controller;
 
 
+use Application\Service\Invokable\Misc;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -26,18 +27,20 @@ class CategoryController extends AbstractActionController
         $categoryContentEntity = $this->serviceLocator->get('category-content-entity');
         $categoryEntity = $this->serviceLocator->get('category-entity');
 
-        $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias($alias);
-        if(!$categoryContent){
+        $category = $entityManager->getRepository(get_class($categoryEntity))->getCategoryByAliasAndLang($alias, Misc::getCurrentLanguage()->getId());
+        if(!$category){
             $this->getResponse()->setStatusCode(404);
             return [];
         }
+        $categoryContent = $category->getSingleCategoryContent(Misc::getCurrentLanguage()->getId());
         $this->layout()->setVariables([
             'meta_title' => $categoryContent->getTitle()
         ]);
 
-        $subCategories = $entityManager->getRepository(get_class($categoryEntity))->findByParent($categoryContent->getCategory());
+        $subCategories = $entityManager->getRepository(get_class($categoryEntity))->findByParent($category);
 
         return new ViewModel([
+            'category' => $category,
             'category_content' => $categoryContent,
             'sub_categories' => $subCategories,
         ]);

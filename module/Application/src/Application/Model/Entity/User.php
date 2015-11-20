@@ -234,9 +234,11 @@ class User implements PasswordAwareInterface
     public function getAllowedRoleOptions()
     {
         $options = [];
-        foreach(self::getRoleOptions() as $k => $option){
-            if($k >= $this->getRole()){
-                $options[$k] = $option;
+        if($this->getRole() !== null){//if we have an assigned user
+            foreach(self::getRoleOptions() as $k => $option){
+                if($k >= $this->getRole()){
+                    $options[$k] = $option;
+                }
             }
         }
         return $options;

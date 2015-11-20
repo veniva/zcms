@@ -11,7 +11,7 @@
 
 <h2>Pages:</h2>
 <section id="category-pages">
-    <?php foreach($this->category_content->getCategory()->getListings() as $listing): ?>
+    <?php foreach($this->category->getListings() as $listing): ?>
         <a href="<?=$this->url('page', ['alias' => $listing->getSingleListingContent()->getAlias()])?>">
             <?=$listing->getSingleListingContent()->getLink(); ?>
         </a>
