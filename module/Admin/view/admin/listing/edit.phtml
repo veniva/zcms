@@ -7,7 +7,7 @@ $this->form->prepare();
 </div>
 <div class="body_cont">
     <?=$this->form()->openTag($this->form)?>
-    <div class="tabs">
+    <div class="main-tabs">
         <ul>
             <li><a href="#tabs-1"><?=$this->translate('Content')?></a></li>
             <li><a href="#tabs-2"><?=$this->translate('Meta tags')?></a></li>
@@ -16,7 +16,7 @@ $this->form->prepare();
             <div class="tabs">
                 <ul>
                     <?php $initiallyOpenedTabIndex = 0;?>
-                    <?php $i=0; foreach(Misc::getActiveLangs() as $lang):?>
+                    <?php $i=0; foreach(Misc::getActiveLanguages() as $lang):?>
                         <li>
                             <a href="#tabs-1-<?=$lang->getId()?>">
                                 <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getName()?>" />
@@ -70,7 +70,7 @@ $this->form->prepare();
         <div id="tabs-2">
             <div class="tabs">
                 <ul>
-                    <?php foreach(Misc::getActiveLangs() as $lang):?>
+                    <?php foreach(Misc::getActiveLanguages() as $lang):?>
                         <li>
                             <a href="#tabs-2-<?=$lang->getId()?>">
                                 <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getName()?>" />
@@ -114,6 +114,7 @@ $this->form->prepare();
     <script type="text/javascript" src="<?=$this->basePath().'/js/admin/summernote/lang/summernote-'.$locale.'.js'?>"></script>
 <?php endif; ?>
 <script type="text/javascript">
+    $('.main-tabs').tabs();
     $('.tabs').tabs({active: <?=$initiallyOpenedTabIndex?>});
     $('.summernote').summernote({
         height: 300,
