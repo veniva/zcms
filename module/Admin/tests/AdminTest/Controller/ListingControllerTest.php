@@ -9,6 +9,7 @@ use Admin\Controller\ListingController;
 use Zend\Http\Request;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class ListingControllerTest extends AbstractHttpControllerTestCase
@@ -59,7 +60,10 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
 
         try{
             $this->controller->dispatch($this->request);
-        }catch(\Exception $e){}
+        }
+        catch(ExtensionNotLoadedException $ex){}
+        catch(ServiceNotFoundException $ex){}
+
         $response = $this->controller->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -71,7 +75,10 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
 
         try{
             $this->controller->dispatch($this->request);
-        }catch(\Exception $e){}
+        }
+        catch(ExtensionNotLoadedException $ex){}
+        catch(ServiceNotFoundException $ex){}
+
         $response = $this->controller->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());

@@ -2,7 +2,6 @@
 
 namespace AdminTest\Controller;
 
-
 use ApplicationTest\Bootstrap;
 use Zend\Mvc\Router\Http\TreeRouteStack as HttpRouter;
 use Admin\Controller\CategoryController;
@@ -11,6 +10,7 @@ use Zend\Http\Response;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
 use PHPUnit_Framework_TestCase;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
 
 class CategoryControllerTest extends PHPUnit_Framework_TestCase
 {
@@ -56,7 +56,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
 
         try{
             $this->controller->dispatch($this->request);
-        }catch(\Exception $e){}
+        }catch(ServiceNotFoundException $ex){}
         $response = $this->controller->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -67,7 +67,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
 
         try{
             $this->controller->dispatch($this->request);
-        }catch(\Exception $e){}
+        }catch(ServiceNotFoundException $ex){}
         $response = $this->controller->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
