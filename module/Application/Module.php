@@ -168,7 +168,7 @@ class Module
 //        }
         $lang = $routeMatch->getParam('lang');
         $e->getResponse()->setStatusCode(403);
-        $e->setRouteMatch(new RouteMatch(array('application')));
+        $e->setRouteMatch(new RouteMatch(array('home')));
         $routeMatch = $e->getRouteMatch();
         $routeMatch->setParam('controller', 'Admin\Controller\Log');//v_todo - redirect to Action prohibited location instead
         $routeMatch->setParam('action', 'in');

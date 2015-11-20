@@ -11,30 +11,12 @@ return array(
     'router' => array(
         'routes' => array(
             'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
-                    'route'    => '/[:lang]',
-                    'constraints' => array(
-                        'lang'    => '[a-zA-Z]{2}',
-                    ),
+                    'route'    => '/',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Index',
                         'action'     => 'index',
-                    ),
-                ),
-            ),
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
-            'application' => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/app',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'index',
                     ),
                 ),
                 'may_terminate' => true,
@@ -42,18 +24,23 @@ return array(
                     'default' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/[:lang/][:controller[/:action]]',
+                            'route'    => '[:lang/][:controller[/:action]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'lang'       => '[a-zA-Z]{2}',
                             ),
                             'defaults' => array(
+                                '__NAMESPACE__' => 'Application\Controller'
                             ),
                         ),
                     ),
                 ),
             ),
+            // The following is a route to simplify getting started creating
+            // new controllers and actions without needing to create a new
+            // module. Simply drop new controllers in, and you can access them
+            // using the path /application/:controller/:action
             //http://framework.zend.com/manual/current/en/modules/zend.mvc.routing.html
             'category' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',

@@ -92,7 +92,7 @@ class ListingController extends AbstractActionController
             }
         }
 
-        $languages = Misc::getActiveLangs();
+        $languages = Misc::getActiveLanguages();
 
         if($action == 'edit'){
             $listing = $listingRepository->findOneBy(['id' => $listingId]);
@@ -182,7 +182,8 @@ class ListingController extends AbstractActionController
                     \move_uploaded_file($post['listingImage']['tmp_name'], $uploadDir.'/'.$post['listingImage']['name']);
                 }
 
-                $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate('The page has been %s successfully'), $action.'ed'));
+                $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate('The page has been %s successfully'),
+                        $this->translator->translate($action.'ed')));
 
                 return $this->redir()->toRoute('admin/listing', [
                     'id' => $parentFilter,

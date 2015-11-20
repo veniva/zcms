@@ -28,11 +28,11 @@ echo $this->doctype(); ?>
     <div id="header">
         <div class="main">
             <div class="col-sm-2">
-                <h3><a class="btn btn-default" href="<?=$this->langUrl('home')?>">ZCMS</a></h3>
+                <h3><a class="btn btn-default" href="<?=$this->langUrl('home/default')?>">ZCMS</a></h3>
             </div>
             <div class="col-sm-10" style="text-align: right;padding:10px;">
                 <?php foreach(Invokable\Misc::getActiveLangsArray() as $lang):?>
-                    <a href="<?=$this->url('home', [
+                    <a href="<?=$this->url('home/default', [
                         'lang' => $lang['isoCode'] != Invokable\Misc::getDefaultLanguage()->getIsoCode() ? $lang['isoCode'] : null,//if the language is the default, then do not append with language route
                     ])?>"><img src="<?=$this->basePath().'/img/flags/'.$lang['isoCode']?>.png" /></a>
                 <?php endforeach; ?>
@@ -67,7 +67,7 @@ echo $this->doctype(); ?>
                     </div>
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <a href="<?=$this->langUrl('application/default', ['controller' => 'customPage', 'action' => 'contact'])?>"><?=$this->translate('Contact')?></a>
+                            <a href="<?=$this->langUrl('home/default', ['controller' => 'customPage', 'action' => 'contact'])?>"><?=$this->translate('Contact')?></a>
                         </li>
                     </ul>
                 </div>

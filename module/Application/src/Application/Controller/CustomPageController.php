@@ -36,7 +36,7 @@ class CustomPageController extends AbstractActionController
                 $transport->send($message);
 
                 $this->flashMessenger()->addSuccessMessage("The message has been successfully sent. We'll review it and will answer shortly");
-                $this->redirect()->toRoute('application/default', array('controller' => 'customPage', 'action' => 'contact'));
+                $this->redir()->toRoute('home/default', array('controller' => 'customPage', 'action' => 'contact'));
             }
         }
 

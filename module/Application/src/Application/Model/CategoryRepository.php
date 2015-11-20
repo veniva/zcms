@@ -29,6 +29,7 @@ class CategoryRepository extends ORM\EntityRepository
         $category = new Category();
         $categoryClassName = get_class($category);
         $parent = $this->andCategoryParent($this->createQueryBuilder('c'), $parent);
+        if(!$langId) return [];
 
         $dql = <<<TAG
             SELECT
