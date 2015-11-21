@@ -159,7 +159,9 @@ return array(
         ),
         'initializers' => array(
             'Application\Service\Initializer\Password'
-        )
+        ),
+        'proxy_dir' => __DIR__.'/../../../doctrine-proxy',
+        'is_dev_mode' => false,
     ),
     'other' => array(
         'no-reply' => !empty($_SERVER['SERVER_NAME']) ? 'no-reply@'.$_SERVER['SERVER_NAME'] : '',

@@ -38,7 +38,10 @@ class EntityManager implements FactoryInterface
         $doctrineDbSettings['host'] = isset($config['db']['hostname']) ? $config['db']['hostname'] : null;
         $doctrineDbSettings['user'] = isset($config['db']['username']) ? $config['db']['username'] : null;
 
-        $doctrineConfig = Setup::createAnnotationMetadataConfiguration($config['doctrine']['entity_path']);
+        $proxyPath = isset($config['doctrine']['proxy_dir']) ? $config['doctrine']['proxy_dir'] : null;
+        $isDevMode = isset($config['doctrine']['is_dev_mode']) ? $config['doctrine']['proxy_dir'] : false;
+
+        $doctrineConfig = Setup::createAnnotationMetadataConfiguration($config['doctrine']['entity_path'], $isDevMode, $proxyPath);
         $doctrineConfig->setAutoGenerateProxyClasses(true);
         $doctrineEntityManager = DocEManager::create($doctrineDbSettings, $doctrineConfig);
 
