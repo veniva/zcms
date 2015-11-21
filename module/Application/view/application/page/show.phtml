@@ -1,5 +1,5 @@
-<h1><?=$this->listing->getSingleListingContent()->getTitle()?></h1>
+<h1><?=$this->content->getTitle()?></h1>
 <?php if($this->thumbnail):?>
 <img width="150" class="img-thumbnail" src="<?=$this->basePath()?>/img/listing_img/<?=$this->listing->getId()?>/<?=$this->thumbnail?>" />
 <?php endif;?>
-<p><?=$this->listing->getSingleListingContent()->getText()?></p>
+<p><?=$this->content->getText()?></p>

@@ -18,6 +18,7 @@ class PageController extends AbstractActionController
     {
         $params = $this->params();
         $alias = $params->fromRoute('alias', null);
+        $currentLanguageId = Misc::getCurrentLanguage()->getId();
         if(!$alias || !Misc::getCurrentLanguage()){
             $this->getResponse()->setStatusCode(404);
             return [];
@@ -25,13 +26,13 @@ class PageController extends AbstractActionController
         $listingEntity = $this->serviceLocator->get('listing-entity');
         $entityManager = $this->serviceLocator->get('entity-manager');
 
-        $listing = $entityManager->getRepository(get_class($listingEntity))->getListingByAliasAndLang(urldecode($alias), Misc::getCurrentLanguage()->getId());
+        $listing = $entityManager->getRepository(get_class($listingEntity))->getListingByAliasAndLang(urldecode($alias), $currentLanguageId);
         if(!$listing){
             $this->getResponse()->setStatusCode(404);
             return [];
         }
-        $metaData = $listing->getSingleMetadata(Misc::getCurrentLanguage()->getId());
-        if(!$metaData) $metaData = $listing->getSingleMetadata(Misc::getDefaultLanguage()->getId());
+        $metaData = $listing->getSingleMetadata($currentLanguageId);
+        if(!$metaData) $metaData = $listing->getSingleMetadata($currentLanguageId);
 
         $this->layout()->setVariables([
             'meta_title' => $metaData ? $metaData->getMetaTitle() : null,
@@ -42,6 +43,7 @@ class PageController extends AbstractActionController
 
         return new ViewModel([
             'listing' => $listing,
+            'content' => $listing->getSingleListingContent($currentLanguageId),
             'thumbnail' => $listingImage ? $listingImage->getImageName() : null
         ]);
     }

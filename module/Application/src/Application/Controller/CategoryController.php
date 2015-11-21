@@ -24,15 +24,15 @@ class CategoryController extends AbstractActionController
         }
 
         $entityManager = $this->serviceLocator->get('entity-manager');
-        $categoryContentEntity = $this->serviceLocator->get('category-content-entity');
+        $currentLanguageId = Misc::getCurrentLanguage()->getId();
         $categoryEntity = $this->serviceLocator->get('category-entity');
 
-        $category = $entityManager->getRepository(get_class($categoryEntity))->getCategoryByAliasAndLang($alias, Misc::getCurrentLanguage()->getId());
+        $category = $entityManager->getRepository(get_class($categoryEntity))->getCategoryByAliasAndLang(urldecode($alias), $currentLanguageId);
         if(!$category){
             $this->getResponse()->setStatusCode(404);
             return [];
         }
-        $categoryContent = $category->getSingleCategoryContent(Misc::getCurrentLanguage()->getId());
+        $categoryContent = $category->getSingleCategoryContent($currentLanguageId);
         $this->layout()->setVariables([
             'meta_title' => $categoryContent->getTitle()
         ]);
@@ -43,6 +43,7 @@ class CategoryController extends AbstractActionController
             'category' => $category,
             'category_content' => $categoryContent,
             'sub_categories' => $subCategories,
+            'langID' => $currentLanguageId
         ]);
     }
 }

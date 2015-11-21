@@ -47,7 +47,7 @@ return array(
                 'options' => array(
                     'route' => '/[:lang/]category[/][:alias]',
                     'constraints' => array(
-                        'alias'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+//                        'alias'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'lang'     => '[a-zA-Z]{2}',
                     ),
                     'defaults' => array(
