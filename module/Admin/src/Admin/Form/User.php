@@ -141,13 +141,15 @@ class User extends Form
         ), 'password_repeat');
     }
 
-    public function isValid($action = null, $currentUserName = null, $currentEmail = null)
+    public function isValid($action = null, $currentUserName = null, $currentEmail = null, $editOwn = false)
     {
         if($action == 'edit'){
             $this->getInputFilter()->get('password')->setRequired(false);
         }
         if(!empty($this->get('password')->getValue()))
             $this->getInputFilter()->get('password_repeat')->setRequired(true);
+        if($editOwn)
+            $this->getInputFilter()->get('role')->setRequired(false);
 
         $userEntityClassName = get_class($this->loggedInUser);
 

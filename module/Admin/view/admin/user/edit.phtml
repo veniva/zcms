@@ -1,7 +1,7 @@
 <?php $this->form->prepare()?>
 <div class="header_cont">
     <div class="title">
-        <?php if(!$this->editOwn):?>
+        <?php if(!$this->account_settings):?>
             <?=$this->translate(ucfirst($this->action)." a user")?></div>
         <?php else: ?>
     <?=$this->translate('Account settings')?></div>
@@ -31,10 +31,14 @@
         <tr>
             <td><label><?=$this->translate($this->form->get('role')->getLabel())?></label></td>
             <td>
-                <?=$this->formSelect($this->form->get('role'))?>
-                <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('role'))?>
-                </div>
+                <?php if(!$this->editOwn): ?>
+                    <?=$this->formSelect($this->form->get('role'))?>
+                    <div class="form-error">
+                        <?=$this->formElementErrors($this->form->get('role'))?>
+                    </div>
+                <?php else: ?>
+                    <?=$this->user->getRoleName()?>
+                <?php endif; ?>
             </td>
         </tr>
         <?php if($this->action == 'edit'): ?>

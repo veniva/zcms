@@ -71,6 +71,7 @@ class UserController extends AbstractActionController
         }
 
         $loggedInUser = $this->getServiceLocator()->get('current-user');
+        $editOwn = $loggedInUser->getId() == $user->getId();
         //security check - is the edited user really having a role equal or less privileged to the editing user
         if(!$loggedInUser->canEdit($user->getRole()))
             return $this->redirToList($page, 'You have no right to edit this user', 'error');
@@ -84,11 +85,14 @@ class UserController extends AbstractActionController
         $request = $this->getRequest();
         if($request->isPost()){
             $form->setData($request->getPost());
-            if($form->isValid($action, $currentUserName, $currentEmail)){
+            if($form->isValid($action, $currentUserName, $currentEmail, $editOwn)){
                 //security check - is the new role equal or less privileged to the editing user
                 $newRole = $form->getData()->getRole();
                 if(!$loggedInUser->canEdit($newRole))
                     return $this->redirToList($page, 'You have no right to assign this user role', 'error');
+
+                if($editOwn && $request->getPost()['role'])
+                    return $this->redirToList($page, 'You have no right to assign new role to yourself', 'error');
 
                 $newPassword = $form->getInputFilter()->get('password')->getValue();
                 if($newPassword)
@@ -106,7 +110,9 @@ class UserController extends AbstractActionController
             'action' => $action,
             'page' => $page,
             'form' => $form,
-            'editOwn' => $this->params()->fromQuery('edit_own', false),
+            'editOwn' => $editOwn,
+            'user' => $user,
+            'account_settings' => $this->params()->fromQuery('account_settings', false),
         ]);
     }
 

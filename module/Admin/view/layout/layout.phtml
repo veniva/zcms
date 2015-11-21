@@ -62,7 +62,7 @@ $auth = new \Zend\Authentication\AuthenticationService();
                             'controller'=>'user',
                             'action' => 'edit',
                             'id' => $auth->getIdentity()->getId()
-                        ], ['query' => ['edit_own' => 1]])?>"><?=$this->translate('Account settings')?></a>
+                        ], ['query' => ['account_settings' => 1]])?>"><?=$this->translate('Account settings')?></a>
                     </div>
                 </li>
             </ul>
