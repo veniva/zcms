@@ -44,12 +44,13 @@ class Module
         $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function(MvcEvent $event)use($serviceManager) {
             if($route = $event->getRouteMatch()){
                 $moduleName = strtolower(strstr($route->getParam('__NAMESPACE__'), '\\', true));
-
-                }
                 $layoutName = $moduleName == 'application' ? 'layout' : $moduleName;
                 if(isset($serviceManager->get('config')['view_manager']['template_map'][$layoutName.'/layout'])){
                     $event->getViewModel()->setTemplate($layoutName.'/layout');
                 }
+            }else{//show blank error page
+                $event->getViewModel()->setTemplate('layout/blank');
+            }
 
         }, -200);
 

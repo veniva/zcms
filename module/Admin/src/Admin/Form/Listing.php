@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManager;
 use Zend\Form\Form;
 use Zend\Validator;
 use Zend\Stdlib\Hydrator\ClassMethods;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Class Listing
@@ -154,8 +155,8 @@ class Listing extends Form
             'exclude' => null,
         ];
 
-        //if the listing's content is edited, don't compare it's aliases
-        if($listingContent[0]){
+        //if the listing's content is being edited, don't compare it's aliases
+        if($listingContent  instanceof Collection){
             foreach($listingContent as $content){
                 $validatorOptions['exclude'][] = array('field' => 'id', 'value' => $content->getId());
             }

@@ -3,43 +3,28 @@ namespace Application\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Application\Service\Invokable\Misc;
-use Zend\Form\Annotation;
 
 /**
- * @Annotation\Name("category")
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ClassMethods")
- *
  * @Entity(repositoryClass="\Application\Model\CategoryRepository") @Table(name="categories")
  */
 class Category
 {
     /**
-     * @Annotation\Exclude()
-     *
      * @Id @GeneratedValue @Column(type="integer", options={"unsigned": true})
      */
     protected $id;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @Column(type="integer", options={"comment":"Category type. 1 - pages, 2 - listings, 3 ..."})
      */
     protected $type = 1;
 
     /**
-     * @Annotation\Type("number")
-     * @Annotation\Validator({"name": "Digits"})
-     * @Annotation\Options({"label": "Sort"})
-     * @Annotation\Attributes({"maxlength": 3, "class": "numbers"})
-     *
      * @Column(type="integer", options={"default": 0})
      */
     protected $sort = 0;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @ManyToMany(targetEntity="Category", cascade={"remove", "persist"})
      * @JoinTable(name="category_children",
      *      joinColumns={@JoinColumn(name="category_id", referencedColumnName="id")},
@@ -49,8 +34,6 @@ class Category
     protected $children;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @ManyToMany(targetEntity="Category", cascade={"persist"})
      * @JoinTable(name="category_parents",
      *      joinColumns={@JoinColumn(name="category_id", referencedColumnName="id")},
@@ -60,22 +43,16 @@ class Category
     protected $parents;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @Column(type="integer", name="parent_id", options={"unsigned": true}, nullable=true)
      */
     protected $parent;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @OneToMany(targetEntity="CategoryContent", mappedBy="category", cascade={"remove", "persist"})
      */
     protected $content;
 
     /**
-     * @Annotation\Exclude()
-     *
      * @ManyToMany(targetEntity="Listing", mappedBy="categories", cascade={"remove", "persist"})
      */
     protected $listings;

@@ -74,8 +74,7 @@ class CategoryController extends AbstractActionController
         $this->addEmptyContent($category, $languages);
 
         //foreach active language add a content title field to the form
-        $formClass = new CategoryForm($categoryEntity, $languages);
-        $form = $formClass->getForm();
+        $form = new CategoryForm($entityManager, $category->getContent());
         $form->bind($category);
 
         $request = $this->getRequest();
@@ -138,8 +137,7 @@ class CategoryController extends AbstractActionController
         //add empty language content to the collection, so that input fields are created
         $this->addEmptyContent($categoryEntity, $languages);
 
-        $formClass = new CategoryForm($categoryEntity, $languages);
-        $form = $formClass->getForm();
+        $form = new CategoryForm($entityManager);
         $form->bind($categoryEntity);
 
         $request = $this->getRequest();
