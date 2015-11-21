@@ -3,8 +3,8 @@
 <h2>Sub-categories:</h2>
 <section id="sub-categories">
     <?php foreach($this->sub_categories as $subCategory): ?>
-        <a href="<?=$this->url('category', ['alias' => $subCategory->getSingleCategoryContent($this->langID)->getAlias()])?>">
-            <?=$subCategory->getSingleCategoryContent()->getTitle()?>
+        <a href="<?=$this->langUrl('category', ['alias' => urlencode($subCategory->getSingleCategoryContent($this->langID)->getAlias())])?>">
+            <?=$subCategory->getSingleCategoryContent($this->langID)->getTitle()?>
         </a>
     <?php endforeach; ?>
 </section>
@@ -12,7 +12,7 @@
 <h2>Pages:</h2>
 <section id="category-pages">
     <?php foreach($this->category->getListings() as $listing): ?>
-        <a href="<?=$this->url('page', ['alias' => $listing->getSingleListingContent($this->langID)->getAlias()])?>">
+        <a href="<?=$this->langUrl('page', ['alias' => urlencode($listing->getSingleListingContent($this->langID)->getAlias())])?>">
             <?=$listing->getSingleListingContent($this->langID)->getLink(); ?>
         </a>
     <?php endforeach; ?>
