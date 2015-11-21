@@ -30,6 +30,7 @@ class FileSystem
                 return  false;
             }
         }
+        closedir($handle);
         return  true;
     }
 }

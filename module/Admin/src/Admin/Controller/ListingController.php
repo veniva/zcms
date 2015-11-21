@@ -177,7 +177,7 @@ class ListingController extends AbstractActionController
                 if($upload){
                     $uploadDir = $publicDir.$imgDir.$listing->getId();
                     if(!file_exists($uploadDir) && !is_dir($uploadDir)){
-                        mkdir($publicDir.$imgDir.$listing->getId());
+                        mkdir($uploadDir);
                     }
                     \move_uploaded_file($post['listingImage']['tmp_name'], $uploadDir.'/'.$post['listingImage']['name']);
                 }
