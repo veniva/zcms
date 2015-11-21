@@ -291,3 +291,14 @@ msgstr "Паролата трябва да съдържа поне една ци
 # Zend\Validator\Identical
 msgid "The two given tokens do not match"
 msgstr "Стойността на полетата не съвпада"
+
+# Application\Validator\i18n\Alnum
+msgid "The input may contain only latin characters and numbers"
+msgstr "Полето може да съдържа само латински букви и цифри"
+
+# Application\Validator\Doctrine\NoRecordExists
+msgid "Another record already contains %value%"
+msgstr "Вече има запис със същата стойност."
+
+msgid "The user has been added successfully"
+msgstr "Потребителят беше добавен успешно"

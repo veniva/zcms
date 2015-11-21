@@ -43,10 +43,14 @@ class Module
         //use the error template of the currently used module
         $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function(MvcEvent $event)use($serviceManager) {
             if($route = $event->getRouteMatch()){
-                $moduleName = strtolower(strstr($route->getParam('__NAMESPACE__'), '\\', true));
-                $layoutName = $moduleName == 'application' ? 'layout' : $moduleName;
-                if(isset($serviceManager->get('config')['view_manager']['template_map'][$layoutName.'/layout'])){
-                    $event->getViewModel()->setTemplate($layoutName.'/layout');
+                if($event->getRouteMatch()->getParam('controller') == 'Admin\Controller\Log'){//show simple layout with this particular controller
+                    $event->getViewModel()->setTemplate('layout/blank');
+                }else{
+                    $moduleName = strtolower(strstr($route->getParam('__NAMESPACE__'), '\\', true));
+                    $layoutName = $moduleName == 'application' ? 'layout' : $moduleName;
+                    if(isset($serviceManager->get('config')['view_manager']['template_map'][$layoutName.'/layout'])){
+                        $event->getViewModel()->setTemplate($layoutName.'/layout');
+                    }
                 }
             }else{//show blank error page
                 $event->getViewModel()->setTemplate('layout/blank');

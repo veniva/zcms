@@ -290,3 +290,14 @@ msgstr ""
 # Zend\Validator\Identical
 msgid "The two given tokens do not match"
 msgstr ""
+
+# Application\Validator\i18n\Alnum
+msgid "The input may contain only latin characters and numbers"
+msgstr ""
+
+# Application\Validator\Doctrine\NoRecordExists
+msgid "Another record already contains %value%"
+msgstr "."
+
+msgid "The user has been added successfully"
+msgstr ""

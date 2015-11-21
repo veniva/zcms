@@ -58,7 +58,6 @@ class Password extends StringLength
                 return false;
             }
         }
-        $this->some = 6;
         return parent::isValid($value);
     }
 }

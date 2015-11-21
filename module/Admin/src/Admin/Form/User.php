@@ -106,7 +106,7 @@ class User extends Form
                     ),
                 ),
                 array(
-                    'name' => 'Zend\I18n\Validator\Alnum'
+                    'name' => 'Application\Validator\i18n\Alnum'
                 )
             ),
         ), 'uname');

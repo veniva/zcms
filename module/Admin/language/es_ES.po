@@ -288,3 +288,14 @@ msgstr "La contraseña tiene que contener porlomenos un dìgito"
 # Zend\Validator\Identical
 msgid "The two given tokens do not match"
 msgstr "Los campos deben coincidir"
+
+# Application\Validator\i18n\Alnum
+msgid "The input may contain only latin characters and numbers"
+msgstr "El campo puede contener solamente letras latinas y numeros, sin caracteres especiales"
+
+# Application\Validator\Doctrine\NoRecordExists
+msgid "Another record already contains %value%"
+msgstr "Ya exeste un record con èste valor."
+
+msgid "The user has been added successfully"
+msgstr "El usuario ha sido añadido con exito"
