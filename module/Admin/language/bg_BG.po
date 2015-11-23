@@ -323,3 +323,6 @@ msgstr "Езикът беше премахнат успешно"
 
 msgid "Are you sure you want to delete this language?"
 msgstr "Сигурни ли сте че искате да премахнете този език?"
+
+msgid "The email entered is not present in our database"
+msgstr "Въведеният email не присъства в нашата база данни"

@@ -322,3 +322,6 @@ msgstr ""
 
 msgid "Are you sure you want to delete this language?"
 msgstr ""
+
+msgid "The email entered is not present in our database"
+msgstr ""

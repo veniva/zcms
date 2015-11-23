@@ -125,7 +125,7 @@ class LogController extends AbstractActionController
                 $user = $entityManager->getRepository(get_class($userEntity))->findOneByEmail($email);
                 if(!$user){
                     $this->flashMessenger()->addErrorMessage("The email entered is not present in our database");
-                    return $this->redirect()->toRoute('admin', array('controller' => 'log', 'action' => 'forgotten'));
+                    return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
                 }else{
                     //Check if the user is administrator
                     $accessControlList = $this->getServiceLocator()->get('acl');
