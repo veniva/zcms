@@ -325,3 +325,15 @@ msgstr ""
 
 msgid "The email entered is not present in our database"
 msgstr ""
+
+msgid "A new password was generated and sent to %s"
+msgstr ""
+
+msgid "The user has been added successfully. Please log below."
+msgstr ""
+
+msgid "The user with email %s does not have administrative privileges"
+msgstr ""
+
+msgid "Parent category"
+msgstr ""

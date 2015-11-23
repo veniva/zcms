@@ -124,14 +124,14 @@ class LogController extends AbstractActionController
                 $userEntity = $this->getServiceLocator()->get('user-entity');
                 $user = $entityManager->getRepository(get_class($userEntity))->findOneByEmail($email);
                 if(!$user){
-                    $this->flashMessenger()->addErrorMessage("The email entered is not present in our database");
+                    $this->flashMessenger()->addErrorMessage($this->translator->translate("The email entered is not present in our database"));
                     return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
                 }else{
                     //Check if the user is administrator
                     $accessControlList = $this->getServiceLocator()->get('acl');
                     $allowed = $accessControlList->isAllowed($user->getRoleName(), 'index');
                     if(!$allowed){
-                        $this->flashMessenger()->addErrorMessage(sprintf("The user with email %s does not have administrative privileges", $email));
+                        $this->flashMessenger()->addErrorMessage(sprintf($this->translator->translate("The user with email %s does not have administrative privileges"), $email));
                         return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
 
                     }else{
@@ -153,7 +153,7 @@ class LogController extends AbstractActionController
                         $transport = new Mail\Transport\Sendmail();
                         $transport->send($message);
 
-                        $this->flashMessenger()->addSuccessMessage("A new password was generated and sent to ".$email);
+                        $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate("A new password was generated and sent to %s"), $email));
                         return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
                     }
                 }
@@ -202,7 +202,9 @@ class LogController extends AbstractActionController
                 $entityManager->persist($lang);
 
                 $entityManager->flush();
-                $this->flashMessenger()->addSuccessMessage("The user has been added successfully. Please log below.");
+                $langCode = $lang->getIsoCode();
+                $locale = $locale = ($langCode != 'en') ? $langCode.'_'.strtoupper($langCode) : 'en_US';
+                $this->flashMessenger()->addSuccessMessage($this->translator->translate("The user has been added successfully. Please log below.", 'default', $locale));
                 return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'in']);
             }
         }

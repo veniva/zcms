@@ -36,7 +36,7 @@ $this->form->prepare();
             </td>
         </tr>
         <tr>
-            <td>Parent category:</td>
+            <td><?=$this->translate('Parent category')?>:</td>
             <td><?=($this->parentCategory instanceof \Application\Model\Entity\Category) ?
                     $this->parentCategory->getSingleCategoryContent()->getTitle() :
                     $this->translate('Top')?></td><!--v_todo - insert a category tree select input here-->
@@ -44,10 +44,10 @@ $this->form->prepare();
         <tr>
             <td colspan="2">
                 <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
-                <small> or <a href="<?=$this->langUrl('admin/category', [
+                <small> <a href="<?=$this->langUrl('admin/category', [
                         'id' => isset($this->parentCategory) ? $this->parentCategory->getId() : null,
                         'page' => $this->page,
-                    ])?>">Cancel</a></small>
+                    ])?>"><?=$this->translate('Cancel')?></a></small>
             </td>
         </tr>
     </table>

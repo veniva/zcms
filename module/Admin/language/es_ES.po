@@ -323,3 +323,15 @@ msgstr "¿Està seguro de que quiere eliminar este idioma?"
 
 msgid "The email entered is not present in our database"
 msgstr "El email no existe en nuestra base de datos"
+
+msgid "A new password was generated and sent to %s"
+msgstr "Una contraseña nueva fue generada y enviada a %s"
+
+msgid "The user has been added successfully. Please log below."
+msgstr "El usuario nuevo ha sido añadido con exito."
+
+msgid "The user with email %s does not have administrative privileges"
+msgstr "El usuario con email %s no tiene previlegios administrativos."
+
+msgid "Parent category"
+msgstr "Contenida en"

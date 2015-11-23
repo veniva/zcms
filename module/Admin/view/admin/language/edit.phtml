@@ -41,10 +41,10 @@
         <tr>
             <td colspan="2">
                 <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate(ucfirst($this->action))?></button>
-                <small> or <a href="<?=$this->langUrl('admin/default', [
+                <small> <a href="<?=$this->langUrl('admin/default', [
                         'controller' => 'language',
                         'page' => $this->page,
-                    ])?>">Cancel</a></small>
+                    ])?>"><?=$this->translate('Cancel')?></a></small>
             </td>
         </tr>
     </table>

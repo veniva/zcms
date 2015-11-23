@@ -326,3 +326,15 @@ msgstr "Сигурни ли сте че искате да премахнете �
 
 msgid "The email entered is not present in our database"
 msgstr "Въведеният email не присъства в нашата база данни"
+
+msgid "A new password was generated and sent to %s"
+msgstr "Беше генерирана нова парола и изпратена на %s"
+
+msgid "The user has been added successfully. Please log below."
+msgstr "Потребителя беше добавен успешно."
+
+msgid "The user with email %s does not have administrative privileges"
+msgstr "Потребителят с email %s не е с превилегия на администратор."
+
+msgid "Parent category"
+msgstr "Съдържаща категория"
