@@ -1,6 +1,6 @@
-<h1><?=$this->category_content->getTitle()?></h1>
+<h2><?=$this->category_content->getTitle()?></h2>
 
-<h2>Sub-categories:</h2>
+<h3><?=$this->translate('Sub-categories')?>:</h3>
 <section id="sub-categories">
     <?php foreach($this->sub_categories as $subCategory): ?>
         <a href="<?=$this->langUrl('category', ['alias' => urlencode($subCategory->getSingleCategoryContent($this->langID)->getAlias())])?>">
@@ -8,8 +8,9 @@
         </a>
     <?php endforeach; ?>
 </section>
+<?php if(!count($this->sub_categories)){echo $this->translate('none');}?>
 
-<h2>Pages:</h2>
+<h3><?=$this->translate('Pages')?>:</h3>
 <section id="category-pages">
     <?php foreach($this->category->getListings() as $listing): ?>
         <a href="<?=$this->langUrl('page', ['alias' => urlencode($listing->getSingleListingContent($this->langID)->getAlias())])?>">
@@ -17,6 +18,7 @@
         </a>
     <?php endforeach; ?>
 </section>
+<?php if(!count($this->category->getListings())){echo $this->translate('none');}?>
 <script type="text/javascript">
     function separate(selector){
         var subCategories = selector;

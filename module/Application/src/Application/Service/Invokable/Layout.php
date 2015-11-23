@@ -40,7 +40,7 @@ class Layout
         $categoryContentEntity = Misc::getStaticServiceLocator()->get('category-content-entity');
 
         //if category
-        $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias($alias);
+        $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias(urldecode($alias));
         if(!$categoryContent) return [];
 
         $categoryParents = $categoryContent->getCategory()->getParents();
