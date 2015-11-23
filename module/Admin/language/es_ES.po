@@ -20,6 +20,9 @@ msgstr "Bienvenidos"
 msgid "Administration Login"
 msgstr "Acceso Administrativo"
 
+msgid "User name"
+msgstr "Nombre de usuario"
+
 msgid "Password"
 msgstr "Contraseña"
 
@@ -153,10 +156,10 @@ msgid "Edit"
 msgstr "Editar"
 
 msgid "Are you sure you want to delete these pages"
-msgstr "Està seguro de que quiere eliminar estas paginas"
+msgstr "¿Està seguro de que quiere eliminar estas paginas"
 
 msgid "Are you sure you want to delete this user?"
-msgstr "Està seguro de que quiere eliminar este usuario?"
+msgstr "¿Està seguro de que quiere eliminar este usuario?"
 
 msgid "You must choose at least one item to delete"
 msgstr "Tiene que elegir porlomenos un artìculo"
@@ -299,3 +302,21 @@ msgstr "Ya exeste un record con èste valor."
 
 msgid "The user has been added successfully"
 msgstr "El usuario ha sido añadido con exito"
+
+msgid "The user has been edited successfully"
+msgstr "El usuario ha sido editado con exito"
+
+msgid "The user was removed successfully"
+msgstr "El usuario ha sido eliminado con exito"
+
+msgid "The language has been added successfully"
+msgstr "El idioma ha sido añadido con exito"
+
+msgid "The language has been edited successfully"
+msgstr "El idioma ha sido editado con exito"
+
+msgid "The language has been deleted successfully"
+msgstr "El idioma ha sido eliminado con exito"
+
+msgid "Are you sure you want to delete this language?"
+msgstr "¿Està seguro de que quiere eliminar este idioma?"

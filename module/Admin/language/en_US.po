@@ -19,6 +19,9 @@ msgstr ""
 msgid "Administration Login"
 msgstr ""
 
+msgid "User name"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -297,7 +300,25 @@ msgstr ""
 
 # Application\Validator\Doctrine\NoRecordExists
 msgid "Another record already contains %value%"
-msgstr "."
+msgstr ""
 
 msgid "The user has been added successfully"
+msgstr ""
+
+msgid "The user has been edited successfully"
+msgstr ""
+
+msgid "The user was removed successfully"
+msgstr ""
+
+msgid "The language has been added successfully"
+msgstr ""
+
+msgid "The language has been edited successfully"
+msgstr ""
+
+msgid "The language has been deleted successfully"
+msgstr ""
+
+msgid "Are you sure you want to delete this language?"
 msgstr ""

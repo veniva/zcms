@@ -70,6 +70,7 @@ class LanguageController extends AbstractActionController
 
     protected function addEditLanguage($id, $page)
     {
+        $action = $id ? 'edit' : 'add';
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         if($id){
             $languageEntity = new Lang();
@@ -158,7 +159,7 @@ class LanguageController extends AbstractActionController
                 $entityManager->persist($language);
                 $entityManager->flush();
 
-                $this->flashMessenger()->addSuccessMessage($this->translator->translate('The language has been edited successfully'));
+                $this->flashMessenger()->addSuccessMessage($this->translator->translate('The language has been '.$action.'ed successfully'));
                 return $this->redir()->toRoute('admin/default', [
                     'controller' => 'language',
                     'page' => $page
@@ -167,7 +168,7 @@ class LanguageController extends AbstractActionController
         }
 
         return new ViewModel([
-            'action' => $id ? 'edit' : 'add',
+            'action' => $action,
             'page' => $page,
             'form' => $form,
             'lang' => !empty($language->getIsoCode()) ? $language : null,
@@ -193,6 +194,7 @@ class LanguageController extends AbstractActionController
             $entityManager->remove($lang);
             $entityManager->flush();
         }
+        $this->flashMessenger()->addSuccessMessage($this->translator->translate('The language has been deleted successfully'));
         return $this->redir()->toRoute('admin/default', ['controller' => 'language', 'page' => $page]);
 
     }

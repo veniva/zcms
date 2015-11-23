@@ -20,6 +20,9 @@ msgstr "Добре Дошли"
 msgid "Administration Login"
 msgstr "Контролен панел"
 
+msgid "User name"
+msgstr "Потребител"
+
 msgid "Password"
 msgstr "Парола"
 
@@ -302,3 +305,21 @@ msgstr "Вече има запис със същата стойност."
 
 msgid "The user has been added successfully"
 msgstr "Потребителят беше добавен успешно"
+
+msgid "The user has been edited successfully"
+msgstr "Потребителят беше редактиран успешно"
+
+msgid "The user was removed successfully"
+msgstr "Потребителят беше премахнат успешно"
+
+msgid "The language has been added successfully"
+msgstr "Езикът беше добавен успешно"
+
+msgid "The language has been edited successfully"
+msgstr "Езикът беше редактиран успешно"
+
+msgid "The language has been deleted successfully"
+msgstr "Езикът беше премахнат успешно"
+
+msgid "Are you sure you want to delete this language?"
+msgstr "Сигурни ли сте че искате да премахнете този език?"

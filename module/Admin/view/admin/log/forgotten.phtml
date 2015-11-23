@@ -1,8 +1,6 @@
 <?php $this->layout('admin/login');//change the default layout to the login layout
 
 $form  = $this->form;
-$form->setAttribute('action', $this->langUrl('admin/default', array('controller' => 'log', 'action' => 'forgotten')))
-    ->setAttribute('method', 'post');
 $form->prepare();
 $email = $form->get('email');
 $errors = $this->formElementErrors($email);

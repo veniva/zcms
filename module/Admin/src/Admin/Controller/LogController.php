@@ -28,7 +28,7 @@ class LogController extends AbstractActionController
 
     public function indexAction()
     {
-        $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'in']);
+        return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'in']);
     }
 
     public function inAction()
@@ -38,7 +38,7 @@ class LogController extends AbstractActionController
         $countAdministrators = $entityManager->getRepository(get_class(new User()))->countUsers();
         if(!$countAdministrators){
             $this->flashMessenger()->addInfoMessage('Here you can create the first user for the system');
-            $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'initial']);
+            return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'initial']);
         }
         $uname = new Element\Text('uname');
         $uname->setLabel('User name');
@@ -77,7 +77,7 @@ class LogController extends AbstractActionController
                 $user = $result->getIdentity();
                 if($result->isValid()){
                     $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate("Welcome %s. You have been logged in successfully"), $user->getUname()));
-                    $this->redir()->toRoute('admin/default', array('controller' => 'index'));
+                    return $this->redir()->toRoute('admin/default', array('controller' => 'index'));
 
                 }else{
                     $this->flashMessenger()->addErrorMessage($this->translator->translate('Wrong details'));
@@ -125,14 +125,14 @@ class LogController extends AbstractActionController
                 $user = $entityManager->getRepository(get_class($userEntity))->findOneByEmail($email);
                 if(!$user){
                     $this->flashMessenger()->addErrorMessage("The email entered is not present in our database");
-                    $this->redirect()->toRoute('admin', array('controller' => 'log', 'action' => 'forgotten'));
+                    return $this->redirect()->toRoute('admin', array('controller' => 'log', 'action' => 'forgotten'));
                 }else{
                     //Check if the user is administrator
                     $accessControlList = $this->getServiceLocator()->get('acl');
                     $allowed = $accessControlList->isAllowed($user->getRoleName(), 'index');
                     if(!$allowed){
                         $this->flashMessenger()->addErrorMessage(sprintf("The user with email %s does not have administrative privileges", $email));
-                        $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
+                        return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
 
                     }else{
                         //generate new password memorize it in the DB and send it to the given email
@@ -154,7 +154,7 @@ class LogController extends AbstractActionController
                         $transport->send($message);
 
                         $this->flashMessenger()->addSuccessMessage("A new password was generated and sent to ".$email);
-                        $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
+                        return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
                     }
                 }
 
@@ -203,7 +203,7 @@ class LogController extends AbstractActionController
 
                 $entityManager->flush();
                 $this->flashMessenger()->addSuccessMessage("The user has been added successfully. Please log below.");
-                $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'in']);
+                return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'in']);
             }
         }
         return [

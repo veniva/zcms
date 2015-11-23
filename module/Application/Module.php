@@ -139,7 +139,7 @@ class Module
 
     public function accessControl(MvcEvent $e)
     {
-        $routeMatch = $e->getRouteMatch();//v_todo - see if thes is not better to be taken from $this->routeMatch
+        $routeMatch = $this->routeMatch;
         if(!$routeMatch) return;
 
         $serviceManager = $e->getApplication()->getServiceManager();
@@ -185,7 +185,7 @@ class Module
 //        }
         $lang = $routeMatch->getParam('lang');
         $e->getResponse()->setStatusCode(403);
-        $e->setRouteMatch(new RouteMatch(array('home')));
+        $e->setRouteMatch(new RouteMatch(array('admin/default')));
         $routeMatch = $e->getRouteMatch();
         $routeMatch->setParam('controller', 'Admin\Controller\Log');//v_todo - redirect to Action prohibited location instead
         $routeMatch->setParam('action', 'in');
