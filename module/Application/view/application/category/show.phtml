@@ -24,13 +24,13 @@
         var subCategories = selector;
         var elements = subCategories.find('a');
         subCategories.html('');
-        for(var index in elements){
-            if(elements[index].tagName != undefined && elements[index].tagName.toLowerCase() == 'a'){
-                subCategories.append(elements[index]);
+        elements.each(function(index){
+            if(this.tagName.toLowerCase() == 'a'){
+                subCategories.append(this);
                 if(index < (elements.length-1))
                     subCategories.append('<span style="color:grey; font-size:0.8em"> | </span>');
             }
-        }
+        });
     }
 
     separate($('#sub-categories'));//decorate the sub categories with a separator
