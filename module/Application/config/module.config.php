@@ -160,7 +160,7 @@ return array(
         'initializers' => array(
             'Application\Service\Initializer\Password'
         ),
-        'proxy_dir' => __DIR__.'/../../../doctrine-proxy',
+        'proxy_dir' => __DIR__.'/../../../data/doctrine-proxy',
         'is_dev_mode' => false,
     ),
     'other' => array(

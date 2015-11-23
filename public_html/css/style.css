@@ -1,8 +1,14 @@
+body{
+    font-size:13px;
+}
+.panel-title{
+    font-size:15px;
+}
 table th, table td{
     padding: 5px;
 }
 .main{
-    width:1050px;
+    width:950px;
     margin-left:auto;
     margin-right:auto;
 }
