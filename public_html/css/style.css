@@ -29,10 +29,11 @@ h1, h2, h3{
     height: 23px;
     position: absolute;
     bottom:42px;
+    color: #808080;
 }
 
 #footer a {
-    color: #A2A2B9;
+    color: #848484;
     font-size: 12px;
 }
 
