@@ -57,6 +57,8 @@ class Category
      */
     protected $listings;
 
+    protected $isContentSorted = false;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -108,7 +110,30 @@ class Category
 
     public function getContent()
     {
-        return $this->content;//return collection of content v_todo - sort by language status
+        if(!$this->isContentSorted) $this->sortContent();
+        return $this->content;//return collection of content
+    }
+
+    /**
+     * Sort the Category content according to the language status - the default language first.
+     */
+    public function sortContent()
+    {
+        $categoryContentStatus = [];
+        foreach($this->content as $content){
+            if(!in_array($content->getId(), $categoryContentStatus)){
+                $categoryContentStatus[$content->getId()] = $content->getLang()->getStatus();
+            }
+        }
+        arsort($categoryContentStatus);
+        $contentCollection = clone $this->content;
+        $this->content->clear();
+        foreach($categoryContentStatus as $cID => $status){
+            foreach($contentCollection as $content){
+                if($content->getId() == $cID) $this->content->add($content);
+            }
+        }
+        $this->isContentSorted = true;
     }
 
     /**

@@ -20,6 +20,7 @@ class CategoryContent
 
     /**
      * @ManyToOne(targetEntity="Lang", inversedBy="categoryContent")
+     * @OrderBy({"status" = "DESC"})
      */
     protected $lang;
 

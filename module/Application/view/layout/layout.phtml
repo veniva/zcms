@@ -31,10 +31,10 @@ echo $this->doctype(); ?>
                 <h3><a class="btn btn-default" href="<?=$this->langUrl('home/default')?>">ZCMS</a></h3>
             </div>
             <div class="col-sm-10" style="text-align: right;padding:10px;">
-                <?php foreach(Invokable\Misc::getActiveLangsArray() as $lang):?>
+                <?php foreach(Invokable\Misc::getActiveLanguages() as $lang):?>
                     <a href="<?=$this->url('home/default', [
-                        'lang' => $lang['isoCode'] != Invokable\Misc::getDefaultLanguage()->getIsoCode() ? $lang['isoCode'] : null,//if the language is the default, then do not append with language route
-                    ])?>"><img src="<?=$this->basePath().'/img/flags/'.$lang['isoCode']?>.png" title="<?=$lang['isoCode']?>" /></a>
+                        'lang' => $lang->getIsoCode() != Invokable\Misc::getDefaultLanguage()->getIsoCode() ? $lang->getIsoCode() : null,//if the language is the default, then do not append with language route
+                    ])?>"><img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getIsoCode()?>" /></a>
                 <?php endforeach; ?>
             </div>
         </div>

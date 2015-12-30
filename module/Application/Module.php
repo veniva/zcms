@@ -220,7 +220,7 @@ class Module
 
         //set active languages
         $criteria = new Criteria();
-        $criteria->where($criteria->expr()->gt('status', 0));
+        $criteria->where($criteria->expr()->gt('status', 0))->orderBy(['status' => Criteria::DESC]);
         $activeLanguages = $entityManager->getRepository(get_class($languageEntity))->matching($criteria);
         Misc::setActiveLanguages($activeLanguages);
     }
