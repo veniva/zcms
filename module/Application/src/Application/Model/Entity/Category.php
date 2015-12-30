@@ -121,7 +121,7 @@ class Category
     {
         $categoryContentStatus = [];
         foreach($this->content as $content){
-            if(!in_array($content->getId(), $categoryContentStatus)){
+            if(!array_key_exists($content->getId(), $categoryContentStatus)){
                 $categoryContentStatus[$content->getId()] = $content->getLang()->getStatus();
             }
         }
