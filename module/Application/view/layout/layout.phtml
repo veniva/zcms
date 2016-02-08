@@ -24,87 +24,85 @@ echo $this->doctype(); ?>
 
 </head>
 <body>
-<div id="main">
-    <div id="header">
-        <div class="main">
-            <div class="col-sm-2">
-                <h3><a class="btn btn-default" href="<?=$this->langUrl('home/default')?>">ZCMS</a></h3>
-            </div>
-            <div class="col-sm-10" style="text-align: right;padding:10px;">
-                <?php foreach(Invokable\Misc::getActiveLanguages() as $lang):?>
-                    <a href="<?=$this->url('home/default', [
-                        'lang' => $lang->getIsoCode() != Invokable\Misc::getDefaultLanguage()->getIsoCode() ? $lang->getIsoCode() : null,//if the language is the default, then do not append with language route
-                    ])?>"><img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getIsoCode()?>" /></a>
-                <?php endforeach; ?>
-            </div>
+<nav id="header" class="navbar">
+    <div class="container">
+        <div class="col-xs-2">
+            <h3><a class="btn btn-default" href="<?=$this->langUrl('home/default')?>">ZCMS</a></h3>
+        </div>
+        <div class="col-xs-10" style="text-align: right;padding:10px;">
+            <?php foreach(Invokable\Misc::getActiveLanguages() as $lang):?>
+                <a href="<?=$this->url('home/default', [
+                    'lang' => $lang->getIsoCode() != Invokable\Misc::getDefaultLanguage()->getIsoCode() ? $lang->getIsoCode() : null,//if the language is the default, then do not append with language route
+                ])?>"><img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getIsoCode()?>" /></a>
+            <?php endforeach; ?>
         </div>
     </div>
-    <div id="main-content" class="main" style="border-left:1px solid #E1E1E1;border-right:1px solid #E1E1E1;">
-        <div>
-            <div class="col-sm-3" style="margin-top: 20px;">
-                <?php foreach(Invokable\Layout::getTopCategories() as $category):?>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><a href="<?=$this->langUrl('category', ['alias' => urlencode($category['content']['alias'])])?>"><?=$category['content']['title']?></a></h3>
-                        </div>
-                        <ul class="list-group">
-                            <?php foreach($category['listings'] as $listing):?>
-                                <li class="list-group-item">
-                                    <a  href="<?=$this->langUrl('page', ['alias' => urlencode($listing['content']['alias'])])?>">
-                                        <?=$listing['content']['link']?>
-                                    </a>
-                                </li>
-
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                <?php endforeach; ?>
-
-                <!--custom pages-->
+</nav>
+<div id="main" class="container">
+    <div id="main-content" style="border-left:1px solid #E1E1E1;border-right:1px solid #E1E1E1;">
+        <div class="col-sm-3" style="margin-top: 20px;">
+            <?php foreach(Invokable\Layout::getTopCategories() as $category):?>
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><?=$this->translate('Information')?></h3>
+                        <h3 class="panel-title"><a href="<?=$this->langUrl('category', ['alias' => urlencode($category['content']['alias'])])?>"><?=$category['content']['title']?></a></h3>
                     </div>
                     <ul class="list-group">
-                        <li class="list-group-item">
-                            <a href="<?=$this->langUrl('home/default', ['controller' => 'customPage', 'action' => 'contact'])?>"><?=$this->translate('Contact')?></a>
-                        </li>
+                        <?php foreach($category['listings'] as $listing):?>
+                            <li class="list-group-item">
+                                <a  href="<?=$this->langUrl('page', ['alias' => urlencode($listing['content']['alias'])])?>">
+                                    <?=$listing['content']['link']?>
+                                </a>
+                            </li>
+
+                        <?php endforeach; ?>
                     </ul>
                 </div>
-            </div>
-            <div class="col-sm-9">
-                <div class="bcrumb">
-                    <?php if($crumb = Invokable\Layout::breadcrumb($title)): ?>
-                        <?php $bCrumb = [];
-                        foreach($crumb as $bItem):?>
-                            <?php $bCrumb[] = !$bItem ? '<a href="'.$this->langUrl('home').'">'.$this->translate('Top').'</a>' : '<a href="'.$this->langUrl('category', ['alias' => $bItem['alias']]).'">'.$bItem['title'].'</a>'?>
-                        <?php endforeach; ?>
-                        <?=implode(' &gt; ', $bCrumb)?> &gt; <?=$title?>
-                    <?php endif; ?>
+            <?php endforeach; ?>
+
+            <!--custom pages-->
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><?=$this->translate('Information')?></h3>
                 </div>
-                <div class="messages">
-                    <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
-                        $flashMessages = $this->flashmessenger()->render($namespace);
-                        $namespace = $namespace == 'error' ? 'danger' : $namespace;/*adjust bootstrap to ZF2*/
-                        if (!empty($flashMessages)):?>
-                            <div class="alert alert-<?= $namespace ?>">
-                                <?= $flashMessages ?>
-                            </div>
-                        <?php endif;
-                    endforeach; ?>
-                </div>
-                <div class="content">
-                    <?=$this->content?>
-                </div>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <a href="<?=$this->langUrl('home/default', ['controller' => 'customPage', 'action' => 'contact'])?>"><?=$this->translate('Contact')?></a>
+                    </li>
+                </ul>
             </div>
         </div>
-<div class="clearfix"></div>
+        <div class="col-sm-9">
+            <div class="bcrumb">
+                <?php if($crumb = Invokable\Layout::breadcrumb($title)): ?>
+                    <?php $bCrumb = [];
+                    foreach($crumb as $bItem):?>
+                        <?php $bCrumb[] = !$bItem ? '<a href="'.$this->langUrl('home').'">'.$this->translate('Top').'</a>' : '<a href="'.$this->langUrl('category', ['alias' => $bItem['alias']]).'">'.$bItem['title'].'</a>'?>
+                    <?php endforeach; ?>
+                    <?=implode(' &gt; ', $bCrumb)?> &gt; <?=$title?>
+                <?php endif; ?>
+            </div>
+            <div class="messages">
+                <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
+                    $flashMessages = $this->flashmessenger()->render($namespace);
+                    $namespace = $namespace == 'error' ? 'danger' : $namespace;/*adjust bootstrap to ZF2*/
+                    if (!empty($flashMessages)):?>
+                        <div class="alert alert-<?= $namespace ?>">
+                            <?= $flashMessages ?>
+                        </div>
+                    <?php endif;
+                endforeach; ?>
+            </div>
+            <div class="content">
+                <?=$this->content?>
+            </div>
+        </div>
+        <div class="clearfix"></div>
     </div>
-    <footer id="footer">
-        <hr />
-        &copy; <?=date('Y')?> <a href="https://github.com/veniva/zcms">ZCMS - A light weight CMS</a>, released under the <a target="_blank" href="http://www.gnu.org/licenses/gpl-3.0.en.html">GNU/GPL 3.0 licence</a>
-    </footer>
 </div>
-
+<nav class="footer navbar">
+    <div class="container">
+        &copy; <?=date('Y')?> <a href="https://github.com/veniva/zcms">ZCMS - A light weight CMS</a>, released under the <a target="_blank" href="http://www.gnu.org/licenses/gpl-3.0.en.html">GNU/GPL 3.0 licence</a>
+    </div>
+</nav>
 </body>
 </html>

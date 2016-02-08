@@ -7,32 +7,27 @@ body{
 table th, table td{
     padding: 5px;
 }
-.main{
-    width:950px;
-    margin-left:auto;
-    margin-right:auto;
-}
+
 h1, h2, h3{
     color: rgb(51, 122, 183);
 }
 #header{
-    width:100%;
     height: 65px;
     background-color: rgb(51, 122, 183);
+    border-radius: 0;
+    margin-bottom: 0;
 }
 
-#footer {
-    width: 100%;
+.footer {
+    border-top:1px solid #E1E1E1;
     text-align: center;
     padding-top: 7px;
     font-size: 12px;
     height: 23px;
-    position: absolute;
-    bottom:42px;
     color: #808080;
 }
 
-#footer a {
+.footer a {
     color: #848484;
     font-size: 12px;
 }
@@ -53,14 +48,6 @@ h1, h2, h3{
 .page_link a{
     display: block;
     color: #50468a;
-}
-
-.page_link .bullet{
-    float: left;
-    width: 7px;
-    height: 8px;
-    background: url("../img/arrow_bullet.png");
-    margin:5px 5px 0 0;
 }
 
 .padded_text{

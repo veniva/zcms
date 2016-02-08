@@ -129,7 +129,7 @@ class UserController extends AbstractActionController
 
         $user = $entityManager->find(get_class(new User), $id);
         if(!$user instanceof User){
-            return $this->redirToList($page, 'There is no user with id = '.$id, 'error');
+            return $this->redirMissingUser($id, $page);
         }
         $entityManager->remove($user);//contained listings are cascade removed from the ORM!!
         $entityManager->flush();
