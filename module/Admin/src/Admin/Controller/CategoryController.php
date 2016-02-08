@@ -14,22 +14,15 @@ use Application\Model\Entity\CategoryContent;
 use Application\Model\Entity\Lang;
 use Application\Service\Invokable\Misc;
 use Doctrine\ORM\EntityManager;
+use Zend\I18n\Translator\TranslatorAwareInterface;
+use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\i18n\Translator\Translator;
 use Zend\Stdlib\ArrayUtils;
 use Zend\View\Model\ViewModel;
 
-class CategoryController extends AbstractActionController
+class CategoryController extends AbstractActionController implements TranslatorAwareInterface
 {
-    /**
-     * @var Translator
-     */
-    protected $translator;
-
-    public function __construct(Translator $translator)
-    {
-        $this->translator = $translator;
-    }
+    use TranslatorAwareTrait;
 
     public function listAction()
     {

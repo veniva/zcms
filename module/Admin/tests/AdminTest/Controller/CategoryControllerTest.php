@@ -24,7 +24,8 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $serviceManager = Bootstrap::getServiceManager();
-        $this->controller = new CategoryController(new \Zend\i18n\Translator\Translator());
+        $this->controller = new CategoryController();
+        $this->controller->setTranslator(new \Zend\i18n\Translator\Translator());
         $this->request    = new Request();
         $this->routeMatch = new RouteMatch(array('controller' => 'category'));
         $this->event      = new MvcEvent();

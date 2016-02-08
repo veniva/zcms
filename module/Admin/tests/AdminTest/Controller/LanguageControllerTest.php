@@ -23,7 +23,8 @@ class LanguageControllerTest extends AbstractHttpControllerTestCase
     public function setUp()
     {
         $serviceManager = Bootstrap::getServiceManager();
-        $this->controller = new ListingController(new \Zend\i18n\Translator\Translator());
+        $this->controller = new ListingController();
+        $this->controller->setTranslator(new \Zend\i18n\Translator\Translator());
         $this->request    = new Request();
         $this->routeMatch = new RouteMatch(array('controller' => 'language'));
         $this->event      = new MvcEvent();

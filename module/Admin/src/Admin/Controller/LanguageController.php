@@ -10,27 +10,17 @@ namespace Admin\Controller;
 
 use Admin\Form\Language as LanguageForm;
 use Application\Model\Entity\Category;
-use Application\Model\Entity\CategoryContent;
 use Application\Model\Entity\Lang;
-use Application\Model\Entity\ListingContent;
-use Application\Model\Entity\Metadata;
+use Zend\I18n\Translator\TranslatorAwareInterface;
+use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\i18n\Translator\Translator;
 use Zend\View\Model\ViewModel;
 
-class LanguageController extends AbstractActionController
+class LanguageController extends AbstractActionController implements TranslatorAwareInterface
 {
-    /**
-     * @var Translator
-     */
-    protected $translator;
+    use TranslatorAwareTrait;
 
     protected $flagsDir = '/img/flags/';
-
-    public function __construct(Translator $translator)
-    {
-        $this->translator = $translator;
-    }
 
     public function indexAction()
     {

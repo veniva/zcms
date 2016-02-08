@@ -13,18 +13,17 @@ use Application\Model\Entity\Lang;
 use Application\Model\Entity\User;
 use Zend\Form\Element;
 use Zend\Form\Form;
-use Zend\I18n\Translator\Translator;
+use Zend\I18n\Translator\TranslatorAwareInterface;
+use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator;
 use Zend\Mail;
 
-class LogController extends AbstractActionController
+class LogController extends AbstractActionController implements TranslatorAwareInterface
 {
-    public function __construct(Translator $translator){
-        $this->translator = $translator;
-    }
+    use TranslatorAwareTrait;
 
     public function indexAction()
     {

@@ -14,22 +14,15 @@ use Application\Model\Entity\ListingImage;
 use Application\Model\Entity\Metadata;
 use Application\Model\Entity;
 use Application\Service\Invokable\Misc;
+use Zend\I18n\Translator\TranslatorAwareInterface;
+use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\i18n\Translator\Translator;
 use Zend\Form\Element;
 use Zend\View\Model\ViewModel;
 
-class ListingController extends AbstractActionController
+class ListingController extends AbstractActionController implements TranslatorAwareInterface
 {
-    /**
-     * @var Translator
-     */
-    protected $translator;
-
-    public function __construct(Translator $translator)
-    {
-        $this->translator = $translator;
-    }
+    use TranslatorAwareTrait;
 
     public function listAction()
     {

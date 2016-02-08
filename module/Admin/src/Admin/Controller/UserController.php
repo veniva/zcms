@@ -9,21 +9,14 @@
 namespace Admin\Controller;
 
 use Application\Model\Entity\User;
+use Zend\I18n\Translator\TranslatorAwareInterface;
+use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\i18n\Translator\Translator;
 use Zend\View\Model\ViewModel;
 
-class UserController extends AbstractActionController
+class UserController extends AbstractActionController implements TranslatorAwareInterface
 {
-    /**
-     * @var Translator
-     */
-    protected $translator;
-
-    public function __construct(Translator $translator)
-    {
-        $this->translator = $translator;
-    }
+    use TranslatorAwareTrait;
 
     public function indexAction()
     {

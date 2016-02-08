@@ -105,28 +105,14 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Admin\Controller\Index' => 'Admin\Controller\IndexController',
+            'Admin\Controller\Category' => 'Admin\Controller\CategoryController',
+            'Admin\Controller\Listing' => 'Admin\Controller\ListingController',
+            'Admin\Controller\Language' => 'Admin\Controller\LanguageController',
+            'Admin\Controller\User' => 'Admin\Controller\UserController',
+            'Admin\Controller\Log' => 'Admin\Controller\LogController',
         ),
-        'factories' => array(
-            'Admin\Controller\Log' => function(ServiceLocatorAwareInterface $sm){
-                $translator = $sm->getServiceLocator()->get('translator');
-                return new Controller\LogController($translator);
-            },
-            'Admin\Controller\Category' => function(ServiceLocatorAwareInterface $sm){
-                $translator = $sm->getServiceLocator()->get('translator');
-                return new Controller\CategoryController($translator);
-            },
-            'Admin\Controller\Listing' => function(ServiceLocatorAwareInterface $sm){
-                $translator = $sm->getServiceLocator()->get('translator');
-                return new Controller\ListingController($translator);
-            },
-            'Admin\Controller\Language' => function(ServiceLocatorAwareInterface $sm){
-                $translator = $sm->getServiceLocator()->get('translator');
-                return new Controller\LanguageController($translator);
-            },
-            'Admin\Controller\User' => function(ServiceLocatorAwareInterface $sm){
-                $translator = $sm->getServiceLocator()->get('translator');
-                return new Controller\UserController($translator);
-            },
+        'initializers' => array(
+            'Admin\Controller\Initializer\Translator',
         ),
     ),
     'view_manager' => array(
