@@ -67,7 +67,7 @@ class CategoryController extends AbstractActionController
         $category = $this->getCategoryAndParent($id, $entityManager, $categoryEntity, $parentCategory);
         if(!$category)
             return $this->redir()->toRoute('admin/category');
-        $languages = Misc::getActiveLangs();
+        $languages = Misc::getActiveLanguages();
 
         //add empty language content to the collection, so that input fields are created
         $this->addEmptyContent($category, $languages);
@@ -116,7 +116,7 @@ class CategoryController extends AbstractActionController
             return $this->redir()->toRoute('admin/category');
         }
         $categoryEntity = new Category();
-        $languages = Misc::getActiveLangs();
+        $languages = Misc::getActiveLanguages();
 
         $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
         $parentCategory = ($parentCategoryID) ?

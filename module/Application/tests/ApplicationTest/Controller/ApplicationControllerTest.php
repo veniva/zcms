@@ -21,7 +21,7 @@ class ApplicationControllerTest extends AbstractHttpControllerTestCase
     public function testLanguages()
     {
         $this->dispatch('/');
-        $langs = Invokable\Misc::getActiveLangs();
+        $langs = Invokable\Misc::getActiveLanguages();
 
         //test if it is array or Traversable
         if(!$langs instanceof \Traversable && !is_array($langs)){
