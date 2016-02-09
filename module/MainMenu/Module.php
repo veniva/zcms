@@ -16,15 +16,16 @@ class Module
     public function addMenu(MvcEvent $event)
     {
         $viewModel = $event->getViewModel();
-        $menuView = new ViewModel(['categories'=>$this->getTopCategories()]);
+        $menuView = new ViewModel(['categories'=>$this->getTopCategories($event)]);
         $menuView->setTemplate('menu/layout');
         $viewModel->addChild($menuView, 'mainMenu');
     }
 
-    public static function getTopCategories()
+    public static function getTopCategories(MvcEvent $event)
     {
-        $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
-        $categoryEntity = Misc::getStaticServiceLocator()->get('category-entity');
+        $serviceManager = $event->getApplication()->getServiceManager();
+        $entityManager = $serviceManager->get('entity-manager');
+        $categoryEntity = $serviceManager->get('category-entity');
         $categRepo = $entityManager->getRepository(get_class($categoryEntity));
         $topCategs = [];
         if(!empty(Misc::getDefaultLanguage()->getId())){
