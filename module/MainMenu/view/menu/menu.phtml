@@ -1,0 +1,18 @@
+<?php
+foreach($this->categories as $category):?>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title"><a href="<?=$this->langUrl('category', ['alias' => urlencode($category['content']['alias'])])?>"><?=$category['content']['title']?></a></h3>
+        </div>
+        <ul class="list-group">
+            <?php foreach($category['listings'] as $listing):?>
+                <li class="list-group-item">
+                    <a  href="<?=$this->langUrl('page', ['alias' => urlencode($listing['content']['alias'])])?>">
+                        <?=$listing['content']['link']?>
+                    </a>
+                </li>
+
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endforeach; ?>

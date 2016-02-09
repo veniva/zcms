@@ -12,21 +12,6 @@ namespace Application\Service\Invokable;
 class Layout
 {
 
-    public static function getTopCategories()
-    {
-        $entityManager = Misc::getStaticServiceLocator()->get('entity-manager');
-        $categoryEntity = Misc::getStaticServiceLocator()->get('category-entity');
-        $categRepo = $entityManager->getRepository(get_class($categoryEntity));
-        $topCategs = [];
-        if(!empty(Misc::getDefaultLanguage()->getId())){
-            $topCategs = $categRepo->getCategoriesListings(0, Misc::getCurrentLanguage()->getId());
-//            if(Misc::getCurrentLanguage()->getId() != Misc::getDefaultLanguage()->getId())//v_todo - fill in the missing content in newly added languages
-//                $topCategs = $categRepo->translateCategoryTitles($topCategs, Misc::getCurrentLanguage()->getId());
-        }
-
-        return $topCategs;
-    }
-
     public static function breadcrumb(&$title = null, $alias = null)
     {//V_TODO - rework all this breadcrumb with better approach
         if(!$alias){

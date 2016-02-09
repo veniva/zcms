@@ -9,5 +9,8 @@
         <testsuite name="Administration Test Suite">
             <directory>./../../Admin/tests/AdminTest</directory>
         </testsuite>
+        <testsuite name="MainMenu Test Suite">
+            <directory>./../../MainMenu/tests/MainMenuTest</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

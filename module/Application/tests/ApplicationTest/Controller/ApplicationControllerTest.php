@@ -29,17 +29,6 @@ class ApplicationControllerTest extends AbstractHttpControllerTestCase
         }
     }
 
-    public function testCategories()
-    {
-        $this->dispatch('/');
-        $categories = Invokable\Layout::getTopCategories();
-        $this->assertInternalType('array', $categories);
-
-        foreach($categories as $category){
-            $this->assertInternalType('array', $category['listings']);
-        }
-    }
-
     public function testBreadcrumb()
     {
         $this->dispatch('/');
