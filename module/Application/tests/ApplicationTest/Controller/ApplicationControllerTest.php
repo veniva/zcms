@@ -4,14 +4,17 @@ namespace ApplicationTest\Controller;
 
 
 use Application\Service\Invokable;
+use ApplicationTest\Bootstrap;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class ApplicationControllerTest extends AbstractHttpControllerTestCase
 {
     protected $traceError = true;
+    protected $serviceManager;
 
     public function setUp()
     {
+        $this->serviceManager = Bootstrap::getServiceManager();
         $this->setApplicationConfig(
             include __DIR__.'/../../../../../config/application.config.php'
         );
@@ -21,7 +24,8 @@ class ApplicationControllerTest extends AbstractHttpControllerTestCase
     public function testLanguages()
     {
         $this->dispatch('/');
-        $langs = Invokable\Misc::getActiveLanguages();
+        $language = $this->serviceManager->get('language');
+        $langs = $language->getActiveLanguages();
 
         //test if it is array or Traversable
         if(!$langs instanceof \Traversable && !is_array($langs)){

@@ -17,7 +17,6 @@ use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\Validator\AbstractValidator;
 use Zend\View\Model\ViewModel;
-use Doctrine\Common\Collections\Criteria;
 use Application\Model\Entity\Lang;
 
 class Module
@@ -219,9 +218,8 @@ class Module
             ->setTranslator($translator);
 
         //set active languages
-        $criteria = new Criteria();
-        $criteria->where($criteria->expr()->gt('status', 0))->orderBy(['status' => Criteria::DESC]);
-        $activeLanguages = $entityManager->getRepository(get_class($languageEntity))->matching($criteria);
+        $langService = $serviceManager->get('language');
+        $activeLanguages = $langService->getActiveLanguages();
         Misc::setActiveLanguages($activeLanguages);
     }
 }

@@ -16,7 +16,7 @@ $this->form->prepare();
             <div class="tabs">
                 <ul>
                     <?php $initiallyOpenedTabIndex = 0;?>
-                    <?php $i=0; foreach(Misc::getActiveLanguages() as $lang):?>
+                    <?php $i=0; foreach($this->activeLanguages as $lang):?>
                         <li>
                             <a href="#tabs-1-<?=$lang->getId()?>">
                                 <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getName()?>" />
@@ -70,7 +70,7 @@ $this->form->prepare();
         <div id="tabs-2">
             <div class="tabs">
                 <ul>
-                    <?php foreach(Misc::getActiveLanguages() as $lang):?>
+                    <?php foreach($this->activeLanguages as $lang):?>
                         <li>
                             <a href="#tabs-2-<?=$lang->getId()?>">
                                 <img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getName()?>" />

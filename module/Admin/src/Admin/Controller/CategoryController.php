@@ -55,12 +55,14 @@ class CategoryController extends AbstractActionController implements TranslatorA
         if(empty($id))
             return $this->redir()->toRoute('admin/category');
 
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $serviceLocator = $this->getServiceLocator();
+        $entityManager = $serviceLocator->get('entity-manager');
         $categoryEntity = new Category();
         $category = $this->getCategoryAndParent($id, $entityManager, $categoryEntity, $parentCategory);
         if(!$category)
             return $this->redir()->toRoute('admin/category');
-        $languages = Misc::getActiveLanguages();
+        $languagesService = $serviceLocator->get('language');
+        $languages = $languagesService->getActiveLanguages();
 
         //add empty language content to the collection, so that input fields are created
         $this->addEmptyContent($category, $languages);
@@ -99,8 +101,8 @@ class CategoryController extends AbstractActionController implements TranslatorA
     {
         $parentCategoryID = $this->params()->fromRoute('id', 0);
         $page = $this->params()->fromRoute('page', 1);
-
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $serviceLocator = $this->getServiceLocator();
+        $entityManager = $serviceLocator->get('entity-manager');
 
         //check if there is an existing language before entering new category
         $langs = $entityManager->getRepository(get_class(new Lang()))->countLanguages();
@@ -109,7 +111,8 @@ class CategoryController extends AbstractActionController implements TranslatorA
             return $this->redir()->toRoute('admin/category');
         }
         $categoryEntity = new Category();
-        $languages = Misc::getActiveLanguages();
+        $languagesService = $serviceLocator->get('language');
+        $languages = $languagesService->getActiveLanguages();
 
         $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
         $parentCategory = ($parentCategoryID) ?

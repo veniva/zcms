@@ -1,0 +1,5 @@
+<?php foreach($this->languages->getActiveLanguages() as $lang):?>
+    <a href="<?=$this->url('home/default', [
+        'lang' => $lang->getIsoCode() != $this->languages->getDefaultLanguage()->getIsoCode() ? $lang->getIsoCode() : null,//if the language is the default, then do not append with language route
+    ])?>"><img src="<?=$this->basePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getIsoCode()?>" /></a>
+<?php endforeach; ?>

@@ -84,6 +84,7 @@ return array(
             'current-user' => 'Application\Service\Factory\CurrentUser',
             'acl' => 'Application\Service\Factory\Acl',
             'validator-messages' => 'Application\Service\Factory\ValidatorMessages',
+            'language' => 'Application\Service\Factory\Language',
         ),
         'invokables' => array(
             'misc' => 'Application\Service\Invokable\Misc',

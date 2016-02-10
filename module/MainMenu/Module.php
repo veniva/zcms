@@ -3,6 +3,7 @@ namespace MainMenu;
 
 use Application\Service\Invokable\Misc;
 use Zend\Mvc\MvcEvent;
+use Zend\ServiceManager\ServiceManager;
 use Zend\View\Model\ViewModel;
 
 class Module
@@ -16,14 +17,14 @@ class Module
     public function addMenu(MvcEvent $event)
     {
         $viewModel = $event->getViewModel();
-        $menuView = new ViewModel(['categories'=>$this->getTopCategories($event)]);
+        $serviceManager = $event->getApplication()->getServiceManager();
+        $menuView = new ViewModel(['categories'=>$this->getTopCategories($serviceManager)]);
         $menuView->setTemplate('menu/layout');
         $viewModel->addChild($menuView, 'mainMenu');
     }
 
-    public static function getTopCategories(MvcEvent $event)
+    public static function getTopCategories(ServiceManager $serviceManager)
     {
-        $serviceManager = $event->getApplication()->getServiceManager();
         $entityManager = $serviceManager->get('entity-manager');
         $categoryEntity = $serviceManager->get('category-entity');
         $categRepo = $entityManager->getRepository(get_class($categoryEntity));

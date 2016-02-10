@@ -85,7 +85,8 @@ class ListingController extends AbstractActionController implements TranslatorAw
             }
         }
 
-        $languages = Misc::getActiveLanguages();
+        $languagesService = $this->getServiceLocator()->get('language');
+        $languages = $languagesService->getActiveLanguages();
 
         if($action == 'edit'){
             $listing = $listingRepository->findOneBy(['id' => $listingId]);
@@ -194,7 +195,8 @@ class ListingController extends AbstractActionController implements TranslatorAw
             'listing' => $listing,
             'action' => ucfirst($action),
             'image' => $listing->getListingImage() ? $imgDir.$listing->getId().'/'.$listing->getListingImage()->getImageName() : null,
-            'locale' => $this->translator->getLocale()
+            'locale' => $this->translator->getLocale(),
+            'activeLanguages' => $languages,
         ]);
         return $viewModel;
     }
