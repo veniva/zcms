@@ -3,7 +3,6 @@
 namespace Application\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Application\Service\Invokable\Misc;
 
 /**
  * @Entity(repositoryClass="\Application\Model\ListingRepository") @Table(name="listings")
@@ -81,8 +80,6 @@ class Listing
      */
     public function getSingleListingContent($langId = null)
     {
-        if(is_null($langId))
-            $langId = Misc::getDefaultLanguage()->getId();
         //return a content in concrete language only if desired
         if($langId){
             foreach($this->content as $content){
@@ -110,8 +107,6 @@ class Listing
      */
     public function getSingleMetadata($langId = null)
     {
-        if(is_null($langId))
-            $langId = Misc::getDefaultLanguage()->getId();
         //return a content in concrete language only if desired
         if($langId){
             foreach($this->metadata as $metadata){

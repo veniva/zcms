@@ -36,7 +36,9 @@ class CategoryController extends AbstractActionController implements TranslatorA
         $categoriesPaginated->setCurrentPageNumber($page);
 
         $category = $parent ? $categoryRepository->findOneById($parent) : null;
-        $categoryAlias = $category ? $category->getSingleCategoryContent()->getAlias() : null;
+        $languageService = $this->getServiceLocator()->get('language');
+        $defaultLangId = $languageService->getDefaultLanguage()->getId();
+        $categoryAlias = $category ? $category->getSingleCategoryContent($defaultLangId)->getAlias() : null;
 
         return [
             'title' => 'Categories',
@@ -44,7 +46,8 @@ class CategoryController extends AbstractActionController implements TranslatorA
             'parent_id' => $parent,
             'category_alias' => $categoryAlias,
             'page' => $page,
-            'categoryRepo' => $categoryRepository
+            'categoryRepo' => $categoryRepository,
+            'defaultLangId' => $defaultLangId
         ];
     }
 
@@ -93,7 +96,8 @@ class CategoryController extends AbstractActionController implements TranslatorA
             'form' => $form,
             'parentCategory' => $parentCategory,
             'page' => $page,
-            'action' => 'Edit'
+            'action' => 'Edit',
+            'defaultLangId' => $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId()
         ];
     }
 
@@ -168,9 +172,10 @@ class CategoryController extends AbstractActionController implements TranslatorA
     {
         $contentIDs = [];
         $defaultContent = null;
+        $language = $this->getServiceLocator()->get('language');
         foreach($category->getContent() as $content){
             $contentIDs[] = $content->getLang()->getId();
-            if($content->getLang()->getId() == Misc::getDefaultLanguage()->getId())
+            if($content->getLang()->getId() == $language->getDefaultLanguage()->getId())
                 $defaultContent = $content;
         }
 

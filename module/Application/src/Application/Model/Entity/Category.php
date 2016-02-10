@@ -2,7 +2,6 @@
 namespace Application\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Application\Service\Invokable\Misc;
 
 /**
  * @Entity(repositoryClass="\Application\Model\CategoryRepository") @Table(name="categories")
@@ -142,8 +141,6 @@ class Category
      */
     public function getSingleCategoryContent($langId = null)
     {
-        if(is_null($langId) && Misc::getDefaultLanguage())
-            $langId = Misc::getDefaultLanguage()->getId();
         //return a content in concrete language only if desired
         if($langId){
             foreach($this->content as $content){

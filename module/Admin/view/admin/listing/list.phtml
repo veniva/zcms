@@ -29,10 +29,10 @@
                             'id' => $listing->getId(),
                             'page' => $this->page,
                             'filter' => $this->parentCategory,
-                        ])?>"><?=$listing->getSingleListingContent()->getLink()?></a></td>
+                        ])?>"><?=$listing->getSingleListingContent($this->defaultLanguageID)->getLink()?></a></td>
                     <td>
                         <?php foreach($listing->getCategories() as $category):?>
-                            [<?=$category->getId()?>] <?=$category->getSingleCategoryContent()->getTitle()?>
+                            [<?=$category->getId()?>] <?=$category->getSingleCategoryContent($this->defaultLanguageID)->getTitle()?>
                         <?php endforeach; ?>
                     </td>
                     <td><?=$listing->getSort()?></td>

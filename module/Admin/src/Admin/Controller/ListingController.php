@@ -42,6 +42,7 @@ class ListingController extends AbstractActionController implements TranslatorAw
             'parentCategory' => $parentCategory,
             'page' => $page,
             'categoryTree' => $categoryTree,
+            'defaultLanguageID' => $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId()
         ];
     }
 
@@ -97,7 +98,7 @@ class ListingController extends AbstractActionController implements TranslatorAw
                 ]);
             }
         }else{
-            $listing = new Entity\Listing();
+            $listing = $this->getServiceLocator()->get('listing-entity');
         }
 
         //add empty language content to the collection, so that input fields are created
@@ -205,9 +206,10 @@ class ListingController extends AbstractActionController implements TranslatorAw
     {
         $contentLangIDs = [];
         $defaultContent = null;
+        $lang = $this->getServiceLocator()->get('language');
         foreach($listing->getContent() as $content){
             $contentLangIDs[] = $content->getLang()->getId();
-            if($content->getLang()->getId() == Misc::getDefaultLanguage()->getId())
+            if($content->getLang()->getId() == $lang->getDefaultLanguage()->getId())
                 $defaultContent = $content;
         }
 
@@ -215,7 +217,7 @@ class ListingController extends AbstractActionController implements TranslatorAw
         $defaultMeta = null;
         foreach($listing->getMetadata() as $metadata){
             $metaLangIDs[] = $metadata->getLang()->getId();
-            if($metadata->getLang()->getId() == Misc::getDefaultLanguage()->getId())
+            if($metadata->getLang()->getId() == $lang->getDefaultLanguage()->getId())
                 $defaultMeta = $metadata;
         }
 

@@ -26,7 +26,7 @@ class Language
     }
 
     /**
-     * @return mixed
+     * @return \Application\Model\Entity\Lang
      */
     public function getDefaultLanguage()
     {

@@ -35,7 +35,7 @@
         <tr>
             <td><?=$this->translate('Parent category')?>:</td>
             <td><?=($this->parentCategory instanceof \Application\Model\Entity\Category) ?
-                    $this->parentCategory->getSingleCategoryContent()->getTitle() :
+                    $this->parentCategory->getSingleCategoryContent($this->defaultLangId)->getTitle() :
                     $this->translate('Top')?></td><!--v_todo - insert a category tree select input here-->
         </tr>
         <tr>

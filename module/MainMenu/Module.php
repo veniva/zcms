@@ -28,8 +28,9 @@ class Module
         $entityManager = $serviceManager->get('entity-manager');
         $categoryEntity = $serviceManager->get('category-entity');
         $categRepo = $entityManager->getRepository(get_class($categoryEntity));
+        $language = $serviceManager->get('language');
         $topCategs = [];
-        if(!empty(Misc::getDefaultLanguage()->getId())){
+        if(!empty($language->getDefaultLanguage()->getId())){
             $topCategs = $categRepo->getCategoriesListings(0, Misc::getCurrentLanguage()->getId());
 //            if(Misc::getCurrentLanguage()->getId() != Misc::getDefaultLanguage()->getId())//v_todo - fill in the missing content in newly added languages
 //                $topCategs = $categRepo->translateCategoryTitles($topCategs, Misc::getCurrentLanguage()->getId());

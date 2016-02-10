@@ -36,7 +36,7 @@ class Layout
             if(!$categoryParent->getId())
                 break;
 
-            $parentCategoryContent = $categoryParent->getSingleCategoryContent();
+            $parentCategoryContent = $categoryParent->getSingleCategoryContent(Misc::getStaticServiceLocator()->get('language')->getDefaultLanguage()->getId());
 
             if($alias != $parentCategoryContent->getAlias())
                 $aBcrumb[] = [

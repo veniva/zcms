@@ -28,8 +28,14 @@ class CategoryTree
      */
     protected $categoryRepo;
 
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceManager;
+
     public function __construct(ServiceLocatorInterface $serviceManager, $parentId = null)
     {
+        $this->serviceManager = $serviceManager;
         $entityManager = $serviceManager->get('entity-manager');
         $this->categoryRepo = $entityManager->getRepository(get_class(new Category()));
 
@@ -45,6 +51,8 @@ class CategoryTree
      */
     protected function setCategories($parentId = null, $level = 0)
     {
+        $languageService = $this->serviceManager->get('language');
+        $defaultLangID = $languageService->getDefaultLanguage()->getId();
         $childrenCategories = $this->categoryRepo->findBy(['parent' => $parentId]);
         foreach($childrenCategories as $category){
             $indent = '';
@@ -52,7 +60,7 @@ class CategoryTree
                 if($in)
                     $indent .= '-';
             }
-            $title = $category->getSingleCategoryContent() ? $category->getSingleCategoryContent()->getTitle() : '';
+            $title = $category->getSingleCategoryContent($defaultLangID) ? $category->getSingleCategoryContent($defaultLangID)->getTitle() : '';
             $this->categories[$category->getId()] = [
                 'id' => $category->getId(),
                 'title' => $title,

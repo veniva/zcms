@@ -63,21 +63,9 @@ class Misc
     {
         self::$activeLanguages = $activeLanguages;
     }
-    /**
-     * @deprecated Use getActiveLanguages() instead
-     */
-    public static function getActiveLangs()
-    {
-        return self::$activeLanguages;
-    }
-
-    public static function getActiveLanguages()
-    {
-        return self::$activeLanguages;
-    }
 
     /**
-     * @deprecated
+     * @deprecated Create Module instead
      */
     public static function getActiveLangsArray()
     {
@@ -85,14 +73,6 @@ class Misc
         $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
         $languages = $entityManager->getRepository(get_class($languageEntity))->getActiveLangs();//v_todo - also remove the repo class
         return $languages;
-    }
-
-    /**
-     * @deprecated Use getCurrentLanguage() instead
-     */
-    public static function getCurrentLang()
-    {
-        return self::$currentLanguage;
     }
 
     /**
