@@ -18,11 +18,6 @@ class Misc
      */
     protected static $staticServiceLocator;
     protected static $staticRoute;
-    protected static $currentLanguage;
-    protected static $currentLanguageId;
-    protected static $defaultLangID;
-    protected static $defaultLanguage;
-    protected static $activeLanguages;
 
     /**
      * @return mixed
@@ -57,69 +52,6 @@ class Misc
 
         $admin = $entityManager->getRepository(get_class($userEntity))->findOneById(1);
         return $admin ? $admin->getEmail() : null;
-    }
-
-    public static function setActiveLanguages($activeLanguages)
-    {
-        self::$activeLanguages = $activeLanguages;
-    }
-
-    /**
-     * @deprecated Create Module instead
-     */
-    public static function getActiveLangsArray()
-    {
-        $entityManager = self::getStaticServiceLocator()->get('entity-manager');
-        $languageEntity = self::getStaticServiceLocator()->get('lang-entity');
-        $languages = $entityManager->getRepository(get_class($languageEntity))->getActiveLangs();//v_todo - also remove the repo class
-        return $languages;
-    }
-
-    /**
-     * @return \Application\Model\Entity\Lang
-     */
-    public static function getCurrentLanguage()
-    {
-        return self::$currentLanguage;
-    }
-
-    /**
-     * @param Lang $currentLanguage Either the matched entity, or new (empty) entity
-     */
-    public static function setCurrentLanguage($currentLanguage)
-    {
-        self::$currentLanguage = $currentLanguage;
-        self::$currentLanguageId = $currentLanguage->getId();
-    }
-
-    /**
-     * @deprecated Use Misc::getCurrentLanguage()->getId() instead
-     */
-    public static function getLangID()
-    {
-        return self::$currentLanguageId;
-    }
-
-    /**
-     * @return \Application\Model\Entity\Lang
-     */
-    public static function getDefaultLanguage()
-    {
-        return self::$defaultLanguage;
-    }
-
-    public static function setDefaultLanguage($language)
-    {
-        self::$defaultLanguage = $language;
-        self::$defaultLangID = $language->getId();
-    }
-
-    /**
-     * @deprecated Use getDefaultLanguage()->getId() instead
-     */
-    public static function getDefaultLanguageID()
-    {
-        return self::$defaultLangID;
     }
 
     public static function alias($str) {

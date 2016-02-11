@@ -15,14 +15,28 @@ class Language implements FactoryInterface
         $entityManager = $serviceLocator->get('entity-manager');
         $languageEntity = $serviceLocator->get('lang-entity');
 
+
         $criteria = new Criteria();
         $criteria->where($criteria->expr()->gt('status', 0))->orderBy(['status' => Criteria::DESC]);
         $language = new \Application\Service\Invokable\Language();
-        $activeLanguages = $entityManager->getRepository(get_class($languageEntity))->matching($criteria);
+        $languageClassName = get_class($languageEntity);
+
+        $activeLanguages = $entityManager->getRepository($languageClassName)->matching($criteria);
         $language->setActiveLanguages($activeLanguages);
-        $defaultLanguage = $entityManager->getRepository(get_class($languageEntity))->findOneByStatus(Lang::STATUS_DEFAULT);
+
+        $defaultLanguage = $entityManager->getRepository($languageClassName)->findOneByStatus(Lang::STATUS_DEFAULT);
         $defaultLanguage = $defaultLanguage ?: new Lang();
         $language->setDefaultLanguage($defaultLanguage);
+
+        $request = $serviceLocator->get('Request');
+        $router = $serviceLocator->get('Router');
+        $match = $router->match($request);
+        $matchedLangIso = $match->getParam('lang', $defaultLanguage->getIsoCode());
+        if($matchedLangIso)
+            $currentLanguage = $entityManager->getRepository($languageClassName)->findOneByIsoCode($matchedLangIso);
+        $currentLanguage = isset($currentLanguage) ? $currentLanguage : new Lang();
+        $language->setCurrentLanguage($currentLanguage);
+
 
         return $language;
     }

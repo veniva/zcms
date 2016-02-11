@@ -31,7 +31,7 @@ class Module
         $language = $serviceManager->get('language');
         $topCategs = [];
         if(!empty($language->getDefaultLanguage()->getId())){
-            $topCategs = $categRepo->getCategoriesListings(0, Misc::getCurrentLanguage()->getId());
+            $topCategs = $categRepo->getCategoriesListings(0, $language->getCurrentLanguage()->getId());
 //            if(Misc::getCurrentLanguage()->getId() != Misc::getDefaultLanguage()->getId())//v_todo - fill in the missing content in newly added languages
 //                $topCategs = $categRepo->translateCategoryTitles($topCategs, Misc::getCurrentLanguage()->getId());
         }

@@ -24,7 +24,8 @@ class CategoryController extends AbstractActionController
         }
 
         $entityManager = $this->serviceLocator->get('entity-manager');
-        $currentLanguageId = Misc::getCurrentLanguage()->getId();
+        $languageService = $this->getServiceLocator()->get('language');
+        $currentLanguageId = $languageService->getCurrentLanguage()->getId();
         $categoryEntity = $this->serviceLocator->get('category-entity');
 
         $category = $entityManager->getRepository(get_class($categoryEntity))->getCategoryByAliasAndLang(urldecode($alias), $currentLanguageId);

@@ -89,6 +89,7 @@ class Module
     }
 
     /**
+     * @deprecated - v_todo schedule for removal
      * Defines some layout variables that can be easily used i a layout.phtml
      * This is an alternative to Misc::getStaticRoute()->getParam('some-param')
      * @param MvcEvent $e
@@ -123,6 +124,7 @@ class Module
         }
     }
 
+    //@deprecated v_todo - schedule for removal
     public function setRouteMatch(MvcEvent $e)
     {
         $routeMatch = $e->getRouteMatch();
@@ -192,6 +194,11 @@ class Module
             $routeMatch->setParam('lang', $lang);
     }
 
+    /**
+     * @deprecated v_todo - schedule for removal
+     * @param MvcEvent $e
+     * @param RouteMatch $routeMatch
+     */
     public function setLanguages(MvcEvent $e, RouteMatch $routeMatch)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
@@ -200,14 +207,12 @@ class Module
 
         $defaultLanguage = $entityManager->getRepository(get_class($languageEntity))->findOneByStatus(Lang::STATUS_DEFAULT);
         $defaultLanguage = $defaultLanguage ?: new Lang();
-        Misc::setDefaultLanguage($defaultLanguage);
 
         //set current language
         $matchedLangIso = $routeMatch->getParam('lang', $defaultLanguage->getIsoCode());//first, coming from parameter; if none - coming from default language; if none then null
         if($matchedLangIso)
             $currentLanguage = $entityManager->getRepository(get_class($languageEntity))->findOneByIsoCode($matchedLangIso);
         $currentLanguage = isset($currentLanguage) ? $currentLanguage : new Lang();
-        Misc::setCurrentLanguage($currentLanguage);
 
         //set the translator's locale - the "locale" is the name of the translation files located in "languages"
         $currentLanguageIso = $currentLanguage->getIsoCode();
@@ -216,10 +221,5 @@ class Module
         $translator->setLocale($locale);
         $serviceManager->get('ViewHelperManager')->get('translate')
             ->setTranslator($translator);
-
-        //set active languages
-        $langService = $serviceManager->get('language');
-        $activeLanguages = $langService->getActiveLanguages();
-        Misc::setActiveLanguages($activeLanguages);
     }
 }

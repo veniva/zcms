@@ -18,8 +18,9 @@ class PageController extends AbstractActionController
     {
         $params = $this->params();
         $alias = $params->fromRoute('alias', null);
-        $currentLanguageId = Misc::getCurrentLanguage()->getId();
-        if(!$alias || !Misc::getCurrentLanguage()){
+        $languageService = $this->getServiceLocator()->get('language');
+        $currentLanguageId = $languageService->getCurrentLanguage()->getId();
+        if(!$alias || !$currentLanguageId){
             $this->getResponse()->setStatusCode(404);
             return [];
         }

@@ -69,20 +69,7 @@ $auth = new \Zend\Authentication\AuthenticationService();
             <ul style="float:right;">
                 <li class="lang">
                     <span class="text lang">
-                        <select name="lang" onChange="goToHref(this.value)">
-                            <?php foreach(Invokable\Misc::getActiveLangsArray() as $lang):
-                                $selected = Invokable\Misc::getCurrentLanguage()->getId() == $lang['id'] ? 'selected="selected"' : '';?>
-                                <option value="<?=$this->url($this->route != 'admin' ? $this->route : 'admin/default', [
-                                    'controller' => $this->controller,
-                                    'action' => $this->action,
-                                    'id' => $this->id,
-                                    'page' => $this->page,
-                                    'lang' => $lang['isoCode'] != Invokable\Misc::getDefaultLanguage()->getIsoCode() ? $lang['isoCode'] : null,//if the language is the default, then do not append with language route
-                                ])?>" <?=$selected?>>
-                                    <?=$lang['name']?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <?=$this->activeAdminLanguages?>
                     </span>
                 </li>
             </ul>

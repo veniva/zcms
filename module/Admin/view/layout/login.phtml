@@ -11,6 +11,7 @@
         ."\n"
     ?>
     <?=$this->headScript()
+        ->prependFile($this->basePath() . '/js/admin/script.js')
         ->prependFile($this->basePath() . '/js/bootstrap.min.js')
         ->prependFile($this->basePath().'/js/jquery-2.1.4.min.js')
         ."\n"
@@ -25,15 +26,7 @@
                     <form action="" method="get">
                     <span class="text">
                         <?= $this->translate('Language') ?>:
-                        <select name="lang" onChange="switchLanguage(this.value)">
-                            <?php foreach(Invokable\Misc::getActiveLangsArray() as $lang):
-                                $selected = Invokable\Misc::getLangID() == $lang['id'] ? 'selected="selected"' : '';?>
-                                <option value="<?=$this->url('admin/default', [
-                                    'controller' => 'log',
-                                    'action' => $this->action,
-                                    'lang' => $lang['isoCode']])?>" <?=$selected?>><?=$lang['name']?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <?=$this->activeAdminLanguages?>
                     </span>
                     </form>
                 <?php endif; ?>
@@ -46,10 +39,5 @@
             </td>
         </tr>
     </table>
-    <script type="text/javascript">
-        function switchLanguage(value){
-            window.location.href = value;
-        }
-    </script>
 </body>
 </html>
