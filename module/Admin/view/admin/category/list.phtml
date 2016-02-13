@@ -7,17 +7,7 @@
 </div>
 <div class="body_cont">
     <div class="bcrumb lui-padding-5">
-        <?php if($crumb = Layout::breadcrumb($title, $this->category_alias)): ?>
-            <?php $items = [];
-            foreach($crumb as $item):?>
-                <?php $items[] = !$item ?
-                    '<a href="'.$this->langUrl('admin/category').'">'.$this->translate('Top').'</a>' :
-                    '<a href="'.$this->langUrl('admin/category', ['id' => $item['id']]).'">'.$item['title'].'</a>'?>
-            <?php endforeach; ?>
-            <?=implode(' &gt; ', $items)?> &gt; <?=$title?>
-        <?php else:?>
-            <?=$this->translate('Top')?>
-        <?php endif; ?>
+        <?=$this->breadcrumb()?>
     </div>
     <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
         <tr>

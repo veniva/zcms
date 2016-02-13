@@ -202,24 +202,13 @@ class Module
     public function setLanguages(MvcEvent $e, RouteMatch $routeMatch)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
-        $entityManager = $serviceManager->get('entity-manager');
-        $languageEntity = $serviceManager->get('lang-entity');
-
-        $defaultLanguage = $entityManager->getRepository(get_class($languageEntity))->findOneByStatus(Lang::STATUS_DEFAULT);
-        $defaultLanguage = $defaultLanguage ?: new Lang();
-
         //set current language
-        $matchedLangIso = $routeMatch->getParam('lang', $defaultLanguage->getIsoCode());//first, coming from parameter; if none - coming from default language; if none then null
-        if($matchedLangIso)
-            $currentLanguage = $entityManager->getRepository(get_class($languageEntity))->findOneByIsoCode($matchedLangIso);
-        $currentLanguage = isset($currentLanguage) ? $currentLanguage : new Lang();
+        $matchedLangIso = $routeMatch->getParam('lang', null);//first, coming from parameter; if none - coming from default language; if none then null
 
         //set the translator's locale - the "locale" is the name of the translation files located in "languages"
-        $currentLanguageIso = $currentLanguage->getIsoCode();
         $translator = $serviceManager->get('translator');
-        $locale = ($currentLanguageIso != 'en') ? $currentLanguageIso.'_'.strtoupper($currentLanguageIso) : 'en_US';
+        $locale = ($matchedLangIso != 'en') ? $matchedLangIso.'_'.strtoupper($matchedLangIso) : 'en_US';
         $translator->setLocale($locale);
-        $serviceManager->get('ViewHelperManager')->get('translate')
-            ->setTranslator($translator);
+        $serviceManager->get('ViewHelperManager')->get('translate')->setTranslator($translator);
     }
 }

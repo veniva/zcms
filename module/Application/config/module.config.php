@@ -144,14 +144,15 @@ return array(
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
+            'helper/breadcrumb'       => __DIR__ . '/../view/helper/breadcrumb.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
     ),
     'view_helpers' => array(
-        'invokables' => array(
-//            'langUrl' => 'Application\View\Helper\Url',
+        'factories' => array(
+            'breadcrumb' => 'Application\View\Helper\Factory\Breadcrumb',
         ),
     ),
     'doctrine' => array(

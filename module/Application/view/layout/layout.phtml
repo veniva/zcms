@@ -51,15 +51,6 @@ echo $this->doctype(); ?>
             </div>
         </div>
         <div class="col-sm-9">
-            <div class="bcrumb">
-                <?php if($crumb = Invokable\Layout::breadcrumb($title)): ?>
-                    <?php $bCrumb = [];
-                    foreach($crumb as $bItem):?>
-                        <?php $bCrumb[] = !$bItem ? '<a href="'.$this->langUrl('home').'">'.$this->translate('Top').'</a>' : '<a href="'.$this->langUrl('category', ['alias' => $bItem['alias']]).'">'.$bItem['title'].'</a>'?>
-                    <?php endforeach; ?>
-                    <?=implode(' &gt; ', $bCrumb)?> &gt; <?=$title?>
-                <?php endif; ?>
-            </div>
             <div class="messages">
                 <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
                     $flashMessages = $this->flashmessenger()->render($namespace);

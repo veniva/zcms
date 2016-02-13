@@ -4,6 +4,7 @@ namespace ApplicationTest\Controller;
 
 
 use Application\Service\Invokable;
+use Application\View\Helper\Breadcrumb;
 use ApplicationTest\Bootstrap;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
@@ -36,10 +37,13 @@ class ApplicationControllerTest extends AbstractHttpControllerTestCase
     public function testBreadcrumb()
     {
         $this->dispatch('/');
-        $this->assertEmpty(Invokable\Layout::breadcrumb());
-
+        $request = $this->serviceManager->get('Request');
+        $route = $this->serviceManager->get('Router');
+        $routeMatch = $route->match($request);
+        $bc = new Breadcrumb($this->serviceManager->get('ViewHelperManager'));
+        $this->assertEmpty($bc->build($routeMatch));
         $this->dispatch('/category');
-        $this->assertInternalType('array', Invokable\Layout::breadcrumb());
+        $this->assertInternalType('array', $bc->build($routeMatch));
     }
 
     public function testServices()

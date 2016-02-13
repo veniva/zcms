@@ -1,0 +1,11 @@
+<?php if($crumb = $this->breadcrumb): ?>
+    <?php $items = [];
+    foreach($crumb as $item):?>
+        <?php $items[] = !$item ?
+            '<a href="'.$this->langUrl($this->topRoute).'">'.$this->translate('Top').'</a>' :
+            '<a href="'.$this->langUrl($this->matchedRoute, ['id' => $item['id'], 'alias' => $item['alias']]).'">'.$item['title'].'</a>'?>
+    <?php endforeach; ?>
+    <?=implode(' &gt; ', $items)?> &gt; <?=$this->title?>
+<?php else:?>
+    <?=$this->translate('Top')?>
+<?php endif; ?>
