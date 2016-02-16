@@ -10,6 +10,7 @@ namespace Admin\Controller;
 
 use Admin\Form\Language;
 use Application\Model\Entity\Lang;
+use Application\Model\Entity\PasswordResets;
 use Application\Model\Entity\User;
 use Zend\Form\Element;
 use Zend\Form\Form;
@@ -97,7 +98,7 @@ class LogController extends AbstractActionController implements TranslatorAwareI
     }
 
     public function forgottenAction()
-    {//v_todo - improve the way for password retrieval
+    {
         $email = new Element\Email('email');
         $email->setLabel('Registered email');
         $email->setAttribute('required', 'required');
@@ -134,11 +135,23 @@ class LogController extends AbstractActionController implements TranslatorAwareI
                         return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
 
                     }else{
-                        //generate new password memorize it in the DB and send it to the given email
-                        $newPassword = $userEntity::generateRandomPassword();
-                        $user->setUpass($newPassword);
-                        $entityManager->persist($user);
+                        //generate token and send a link to the email
+                        $stdStrings = $this->getServiceLocator()->get('stdlib-strings');
+                        $token = $stdStrings->randomString(10);
+
+                        $passwordResetsEntity = new PasswordResets($email, $token);
+
+                        //use this request to also delete password requests older than 24 hours
+                        $entityManager->getRepository(get_class($passwordResetsEntity))->deleteOldRequests();
+
+                        $entityManager->persist($passwordResetsEntity);
                         $entityManager->flush();
+
+                        $uri = $this->getRequest()->getUri();
+                        $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
+                        $basePath = $renderer->basePath('/admin/log/reset');
+                        $baseUrl = sprintf('%s://%s', $uri->getScheme(), $uri->getHost());
+                        $link = $baseUrl . $basePath. '?email=' . urlencode($email) . '&token=' . $token;
 
                         //send email with the generated password
                         $config = $this->getServiceLocator()->get('config');
@@ -147,12 +160,12 @@ class LogController extends AbstractActionController implements TranslatorAwareI
                         $message->setFrom($config['other']['no-reply'])
                             ->setTo($email)
                             ->setSubject('New password')
-                            ->setBody(sprintf("Dear user, here is your new password: %s", $newPassword));
+                            ->setBody(sprintf($this->translator->translate("Dear user,%sFollowing the new password request, here is a link for you to visit in order to create a new password:%s%s"), "\n\n", "\n\n", $link));
 
                         $transport = new Mail\Transport\Sendmail();
                         $transport->send($message);
 
-                        $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate("A new password was generated and sent to %s"), $email));
+                        $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate("A link was generated and sent to %s"), $email));
                         return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
                     }
                 }
@@ -161,6 +174,68 @@ class LogController extends AbstractActionController implements TranslatorAwareI
         }
 
         return array('form' => $form);
+    }
+
+    public function resetAction()
+    {
+        $request = $this->getRequest();
+        $email = urldecode($request->getQuery()->email);
+        $token = $request->getQuery()->token;
+        if(empty($email) || empty($token)){
+            $this->flashMessenger()->addErrorMessage($this->translator->translate('The link you\'re using is broken'));
+            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
+        }
+        $sl = $this->getServiceLocator();
+        $entityManager = $sl->get('entity-manager');
+        //check if the token is valid
+        $passwordResetClassName = get_class(new PasswordResets(null,null));
+        $resetPassword = $entityManager->find($passwordResetClassName, ['email' => $email, 'token' => $token]);
+        if(!$resetPassword){
+            $this->flashMessenger()->addErrorMessage($this->translator->translate('The link you\'re using is out of date or corrupted, please create another password request'));
+            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
+        }
+        $createdAt = $resetPassword->getCreatedAt();
+        $date = new \DateTime();
+        $date->sub(new \DateInterval('PT24H'));
+        if($date > $createdAt){
+            $this->flashMessenger()->addErrorMessage($this->translator->translate('The link you\'re using is out of date, please create another password request'));
+            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
+        }
+        $userClassEntity = $sl->get('user-entity');
+        $user = $entityManager->getRepository(get_class($userClassEntity))->findOneByEmail('ven.iv@gmx.com');
+        if(!$user){
+            $this->flashMessenger()->addErrorMessage($this->translator->translate('There is no user with email: '.$email.'. You have probably changed the email recently.'));
+            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
+        }
+
+        $form = new Form('reset_password');
+        $form->add(array(
+            'type' => 'Admin\Form\UserPassword',
+            'name' => 'password_fields'
+        ));
+        $form->add(array(
+            'name' => 'submit',
+            'type' => 'Zend\Form\Element\Submit',
+            'attributes' => array(
+                'value' => 'Edit'
+            ),
+        ));
+        $form->getInputFilter()->get('password_fields')->get('password_repeat')->setRequired(true);
+
+        if($request->isPost()){
+            $form->setData($request->getPost());
+            if($form->isValid()){
+                $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
+                $entityManager->getRepository($passwordResetClassName)->deleteAllForEmail($email);
+                $entityManager->flush();
+                $this->flashMessenger()->addSuccessMessage('The password has been changed successfully.');
+                $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
+            }
+        }
+
+        return [
+            'form' => $form
+        ];
     }
 
     public function initialAction()

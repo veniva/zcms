@@ -8,7 +8,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 "Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: es_ES\n"
@@ -32,9 +32,6 @@ msgstr "Contraseña perdida"
 msgid "Enter"
 msgstr "Entre"
 
-msgid "Generate new password"
-msgstr "Generar contraseña nueva"
-
 msgid "Registered email"
 msgstr "Email registrado"
 
@@ -42,7 +39,7 @@ msgid "Back to login"
 msgstr "atras"
 
 msgid "Reset password"
-msgstr "Generar"
+msgstr "Recuperar contraseña"
 
 msgid "Admin panel"
 msgstr "Administración"
@@ -324,8 +321,14 @@ msgstr "¿Està seguro de que quiere eliminar este idioma?"
 msgid "The email entered is not present in our database"
 msgstr "El email no existe en nuestra base de datos"
 
-msgid "A new password was generated and sent to %s"
-msgstr "Una contraseña nueva fue generada y enviada a %s"
+msgid "A link was generated and sent to %s"
+msgstr "El link fue generado y enviado a %s"
+
+msgid "Dear user,%sFollowing the new password request, here is a link for you to visit in order to create a new password:%s%s"
+msgstr "Estimado usuario,%sDespues de la demanda de una contraseña nueva, ha sido generado este link que debe visitar para crear la contraseña nueva:%s%s"
+
+msgid "Send password reset link"
+msgstr "Envia el link"
 
 msgid "The user has been added successfully. Please log below."
 msgstr "El usuario nuevo ha sido añadido con exito."
@@ -335,3 +338,21 @@ msgstr "El usuario con email %s no tiene previlegios administrativos."
 
 msgid "Parent category"
 msgstr "Contenida en"
+
+msgid "Role"
+msgstr "Tipo"
+
+msgid "Password repeat"
+msgstr "Repite la contraseña"
+
+msgid "Fill in the following only if you want to change password"
+msgstr "Rellena lo siguiente solamente si nesesita cambiar la contraseña"
+
+msgid "Edit user"
+msgstr "Editar usuario"
+
+msgid "Add user"
+msgstr "Añadir usuario"
+
+msgid "Add"
+msgstr "Añadir"

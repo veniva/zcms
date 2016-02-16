@@ -8,7 +8,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 "Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: bg_BG\n"
@@ -32,9 +32,6 @@ msgstr "Забравена парола"
 msgid "Enter"
 msgstr "Вход"
 
-msgid "Generate new password"
-msgstr "Генериране на нова парола"
-
 msgid "Registered email"
 msgstr "Регистриран email"
 
@@ -42,7 +39,7 @@ msgid "Back to login"
 msgstr "Обратно към входа"
 
 msgid "Reset password"
-msgstr "Генерирай"
+msgstr "Възстанови парола"
 
 msgid "Admin panel"
 msgstr "Контролен панел"
@@ -327,8 +324,14 @@ msgstr "Сигурни ли сте че искате да премахнете �
 msgid "The email entered is not present in our database"
 msgstr "Въведеният email не присъства в нашата база данни"
 
-msgid "A new password was generated and sent to %s"
-msgstr "Беше генерирана нова парола и изпратена на %s"
+msgid "A link was generated and sent to %s"
+msgstr "Беше генериран линк и изпратена на %s"
+
+msgid "Dear user,%sFollowing the new password request, here is a link for you to visit in order to create a new password:%s%s"
+msgstr "Уважаеми потребител,%sСлед заявката за нова парола беше генериран следния линк който трябва да посетите за да я смените:%s%s"
+
+msgid "Send password reset link"
+msgstr "Изпрати линк"
 
 msgid "The user has been added successfully. Please log below."
 msgstr "Потребителя беше добавен успешно."
@@ -338,3 +341,21 @@ msgstr "Потребителят с email %s не е с превилегия н�
 
 msgid "Parent category"
 msgstr "Съдържаща категория"
+
+msgid "Role"
+msgstr "Тип"
+
+msgid "Password repeat"
+msgstr "Повторете паролата"
+
+msgid "Fill in the following only if you want to change password"
+msgstr "Попълнете само ако искате да смените паролата"
+
+msgid "Edit user"
+msgstr "Редакция на потребител"
+
+msgid "Add user"
+msgstr "Добавяне на потребител"
+
+msgid "Add"
+msgstr "Добави"

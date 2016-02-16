@@ -138,7 +138,7 @@ return array(
             'index' => null,
         ),
         'allow' => array(
-            array('guest', 'log', array('in', 'forgotten', 'initial')),
+            array('guest', 'log', array('in', 'forgotten', 'initial', 'reset')),
             array('admin', null, null),
             array('super-admin', null, null),
         ),

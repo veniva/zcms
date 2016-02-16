@@ -2,9 +2,8 @@
 
 $form  = $this->form;
 $form->prepare();
-$email = $form->get('email');
-$errors = $this->formElementErrors($email);
 ?>
+
 <div class="messages">
     <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
         $flashMessages = $this->flashmessenger()->render($namespace);
@@ -15,22 +14,27 @@ $errors = $this->formElementErrors($email);
             </div>
         <?php endif;
     endforeach; ?>
-    <?php if($errors):?>
-        <div class="alert alert-danger" role="alert">
-            <?=$errors?>
-        </div>
-    <?php endif;?>
 </div>
 
 <div class="login">
     <div class="login_font" style="margin-bottom:20px;"> <?=$this->translate('Reset password')?></div>
     <?=$this->form()->openTag($form)?>
-    <div class="uname"><?=$this->translate($email->getLabel())?>:</div>
+    <div class="uname"><?=$this->translate($form->get('password_fields')->get('password')->getLabel())?>:</div>
     <div class="uform">
-        <?=$this->formInput($email)?>
+        <?=$this->formInput($form->get('password_fields')->get('password'))?>
+        <div class="form-error">
+            <?=$this->formElementErrors($this->form->get('password_fields')->get('password'));?>
+        </div>
+    </div>
+    <div class="uname"><?=$this->translate($form->get('password_fields')->get('password_repeat')->getLabel())?>:</div>
+    <div class="uform">
+        <?=$this->formInput($form->get('password_fields')->get('password_repeat'))?>
+        <div class="form-error">
+            <?=$this->formElementErrors($this->form->get('password_fields')->get('password_repeat'));?>
+        </div>
     </div>
     <div class="uform">
-        <input type="submit" name="submit" value="<?=$this->translate('Send password reset link')?>" />
+        <input type="submit" name="submit" value="<?=$this->translate('Edit')?>" />
     </div>
     <?=$this->form()->closeTag()?>
     <div class="forgotten">

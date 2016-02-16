@@ -10,7 +10,7 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 "X-Poedit-SearchPath-0: ..\n"
 
 msgid "Welcome"
@@ -29,9 +29,6 @@ msgid "Password forgotten"
 msgstr ""
 
 msgid "Enter"
-msgstr ""
-
-msgid "Generate new password"
 msgstr ""
 
 msgid "Registered email"
@@ -326,7 +323,13 @@ msgstr ""
 msgid "The email entered is not present in our database"
 msgstr ""
 
-msgid "A new password was generated and sent to %s"
+msgid "A link was generated and sent to %s"
+msgstr ""
+
+msgid "Dear user,%sFollowing the new password request, here is a link for you to visit in order to create a new password:%s%s"
+msgstr ""
+
+msgid "Send password reset link"
 msgstr ""
 
 msgid "The user has been added successfully. Please log below."
@@ -336,4 +339,22 @@ msgid "The user with email %s does not have administrative privileges"
 msgstr ""
 
 msgid "Parent category"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Password repeat"
+msgstr ""
+
+msgid "Fill in the following only if you want to change password"
+msgstr ""
+
+msgid "Edit user"
+msgstr ""
+
+msgid "Add user"
+msgstr ""
+
+msgid "Add"
 msgstr ""

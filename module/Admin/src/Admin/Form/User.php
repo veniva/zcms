@@ -9,8 +9,9 @@
 namespace Admin\Form;
 
 use Application\Model\Entity\User as UserEntity;
+use Application\Validator\Doctrine\NoRecordExists;
 use Zend\Form\Form;
-use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Hydrator\ClassMethods;
 
 class User extends Form
 {
@@ -51,22 +52,6 @@ class User extends Form
         ));
 
         $this->add(array(
-            'name' => 'password',
-            'type' => 'password',
-            'options' => array(
-                'label' => 'Password'
-            )
-        ));
-
-        $this->add(array(
-            'name' => 'password_repeat',
-            'type' => 'password',
-            'options' => array(
-                'label' => 'Password repeat'
-            ),
-        ));
-
-        $this->add(array(
             'name' => 'email',
             'type' => 'Email',
             'options' => array(
@@ -84,6 +69,11 @@ class User extends Form
         ));
 
         $this->add(array(
+            'type' => 'Admin\Form\UserPassword',
+            'name' => 'password_fields'
+        ));
+
+        $this->add(array(
             'name' => 'submit',
             'type' => 'Zend\Form\Element\Submit',
             'attributes' => array(
@@ -91,6 +81,7 @@ class User extends Form
             ),
         ));
 
+        //Attach input filters
         $inputFilter = $this->getInputFilter();
 
         $inputFilter->add(array(
@@ -110,44 +101,15 @@ class User extends Form
                 )
             ),
         ), 'uname');
-
-        $inputFilter->add(array(
-            'filters'    => array(
-                array('name' => 'StripTags'),
-                array('name' => 'StringTrim')
-            ),
-            'validators' => array(
-                array(
-                    'name' => 'Admin\Validator\Password',
-                )
-            ),
-        ), 'password');
-
-        $inputFilter->add(array(
-            'filters'    => array(
-                array('name' => 'StripTags'),
-                array('name' => 'StringTrim')
-            ),
-            'validators' => array(
-                array(
-                    'name'    => 'identical',
-                    'options' => array(
-                        'token'    => 'password',
-                        'messages' => array('notSame' => 'The "Verify Password" field must match the "Password" field')
-                    )
-                )
-            ),
-            'required' => false,
-        ), 'password_repeat');
     }
 
     public function isValid($action = null, $currentUserName = null, $currentEmail = null, $editOwn = false)
     {
         if($action == 'edit'){
-            $this->getInputFilter()->get('password')->setRequired(false);
+            $this->getInputFilter()->get('password_fields')->get('password')->setRequired(false);
         }
-        if(!empty($this->get('password')->getValue()))
-            $this->getInputFilter()->get('password_repeat')->setRequired(true);
+        if(!empty($this->get('password_fields')->get('password')->getValue()) || $action != 'edit')
+            $this->getInputFilter()->get('password_fields')->get('password_repeat')->setRequired(true);
         if($editOwn)
             $this->getInputFilter()->get('role')->setRequired(false);
 
@@ -162,7 +124,7 @@ class User extends Form
         if($currentUserName)
             $validatorOptions['exclude'][] = array('field' => $field, 'value' => $currentUserName);
 
-        $validator = new \Application\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);
+        $validator = new NoRecordExists($this->entityManager, $validatorOptions);
         $this->getInputFilter()->get($field)->getValidatorChain()->attach($validator);
         //endregion
 
@@ -175,7 +137,7 @@ class User extends Form
         if($currentEmail)
             $validatorOptions['exclude'][] = array('field' => $field, 'value' => $currentEmail);
 
-        $validator = new \Application\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);
+        $validator = new NoRecordExists($this->entityManager, $validatorOptions);
         $this->getInputFilter()->get($field)->getValidatorChain()->attach($validator);
         //endregion
 

@@ -39,11 +39,4 @@ class AdminTest extends AbstractHttpControllerTestCase
         $result = $validator->isValid('some-value');
         $this->assertInternalType('bool', $result);
     }
-
-    public function testRandomPasswordGenerator()
-    {
-        $passwordValidator = new \Admin\Validator\Password();
-        $user = $this->getApplicationServiceLocator()->get('user-entity');
-        $this->assertTrue($passwordValidator->isValid($user::generateRandomPassword()));
-    }
 }

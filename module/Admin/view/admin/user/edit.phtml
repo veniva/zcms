@@ -2,7 +2,7 @@
 <div class="header_cont">
     <div class="title">
         <?php if(!$this->account_settings):?>
-            <?=$this->translate(ucfirst($this->action)." a user")?></div>
+            <?=$this->translate(ucfirst($this->action)." user")?></div>
         <?php else: ?>
     <?=$this->translate('Account settings')?></div>
         <?php endif; ?>
@@ -43,24 +43,24 @@
         </tr>
         <?php if($this->action == 'edit'): ?>
             <tr>
-                <td colspan="2"><?=$this->translate('Fill in the following if only if you want to change password')?>:</td>
+                <td colspan="2"><?=$this->translate('Fill in the following only if you want to change password')?>:</td>
             </tr>
         <?php endif; ?>
         <tr>
-            <td><label><?=$this->translate($this->form->get('password')->getLabel())?></label></td>
+            <td><label><?=$this->translate($this->form->get('password_fields')->get('password')->getLabel())?></label></td>
             <td>
-                <?=$this->formInput($this->form->get('password'))?>
+                <?=$this->formInput($this->form->get('password_fields')->get('password'))?>
                 <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('password'))?>
+                    <?=$this->formElementErrors($this->form->get('password_fields')->get('password'))?>
                 </div>
             </td>
         </tr>
         <tr>
-            <td><label><?=$this->translate($this->form->get('password_repeat')->getLabel())?></label></td>
+            <td><label><?=$this->translate($this->form->get('password_fields')->get('password_repeat')->getLabel())?></label></td>
             <td>
-                <?=$this->formInput($this->form->get('password_repeat'))?>
+                <?=$this->formInput($this->form->get('password_fields')->get('password_repeat'))?>
                 <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('password_repeat'))?>
+                    <?=$this->formElementErrors($this->form->get('password_fields')->get('password_repeat'))?>
                 </div>
             </td>
         </tr>

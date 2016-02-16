@@ -95,7 +95,8 @@ return array(
             'user-entity' => 'Application\Model\Entity\User',
             'lang-entity' => 'Application\Model\Entity\Lang',
             'auth-adapter' => 'Application\Authentication\Adapter',
-            'stdlib-file-system' => 'Application\Stdlib\FileSystem'
+            'stdlib-file-system' => 'Application\Stdlib\FileSystem',
+            'stdlib-strings' => 'Application\Stdlib\Strings',
         ),
         'initializers' => array(
             'Application\Service\Initializer\Password',

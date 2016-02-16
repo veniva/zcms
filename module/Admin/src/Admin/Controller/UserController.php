@@ -87,9 +87,9 @@ class UserController extends AbstractActionController implements TranslatorAware
                 if($editOwn && $request->getPost()['role'])
                     return $this->redirToList($page, 'You have no right to assign new role to yourself', 'error');
 
-                $newPassword = $form->getInputFilter()->get('password')->getValue();
+                $newPassword = $form->getInputFilter()->get('password_fields')->get('password')->getValue();
                 if($newPassword)
-                    $user->setUpass($form->getInputFilter()->get('password')->getValue());
+                    $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
                 $user->setRegDate();
                 $entityManager->persist($user);
                 $entityManager->flush();

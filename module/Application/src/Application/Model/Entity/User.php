@@ -194,32 +194,6 @@ class User implements PasswordAwareInterface
         return $this->getPasswordAdapter()->create($password);
     }
 
-    /**
-     * Generate random password.
-     * Specifications: 8 chars; 1 Upper case letter + 6 letters + 1 number
-     * v_todo - keep this updated when creating/updating user password
-     */
-    public static function generateRandomPassword()
-    {
-        $letters = 'abcdefghijklmnopqrstuvwxyz';
-        $min = 0; $max = strlen($letters)-1;
-
-        //generate one random uppercase letter
-        $upper = strtoupper($letters[mt_rand($min, $max)]);
-
-        //generate 6 random letters
-        $lower = '';
-        for($i=1; $i<=(self::PASS_MIN_LENGTH-2); $i++){
-            $lower .= $letters[mt_rand($min, $max)];
-        }
-
-        //generate one random short number
-        $number = mt_rand(1, 9);
-        $generatedPassword = $upper.$lower.$number;
-        return $generatedPassword;
-
-    }
-
     public static function getRoleOptions()
     {
         return [
