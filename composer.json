@@ -1,4 +1,15 @@
 {
+  "name": "ZCMS - A light weight CMS",
+  "description": "A light weight CMS based on Zend Framework 2 and Doctrine 2 ORM",
+  "keywords": ["cms","micro-cms","zend framework", "doctrine"],
+  "homepage": "https://github.com/veniva/zcms",
+  "license": "GNU/GPL 3.0 licence",
+  "authors": [
+    {
+      "name": "Ventsislav Ivanov",
+      "homepage": "http://php-programming.net/"
+    }
+  ],
   "require": {
     "php": "~5.5",
     "zendframework/zendframework": "~2.5",
