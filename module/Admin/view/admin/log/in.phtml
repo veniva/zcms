@@ -1,45 +1,61 @@
 <?php $this->layout('admin/login');//change the default layout to the login layout
 
 $form  = $this->form;
+$form->setAttributes([
+    'class' => 'form-horizontal'
+]);
 $form->prepare();
 $uname = $form->get('uname');
+$uname->setAttributes([
+    'class' => 'form-control',
+]);
 $pass = $form->get('password');
+$pass->setAttributes([
+    'class' => 'form-control',
+]);
 $errors = $this->formElementErrors($uname);
 
 ?>
-<div class="messages">
-    <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
-        $flashMessages = $this->flashmessenger()->render($namespace);
-        $namespace = $namespace == 'error' ? 'danger' : $namespace;/*adjust bootstrap to ZF2*/
-        if (!empty($flashMessages)):?>
-            <div class="alert alert-<?=$namespace?>" role="alert">
-                <?= $flashMessages ?>
-            </div>
-        <?php endif;
-    endforeach; ?>
-    <?php if($errors):?>
-        <div class="alert alert-danger" role="alert">
-            <?=$errors?>
+<!--<link rel="stylesheet" type="text/css" href="../../../../../public_html/css/bootstrap.min.css">-->
+<?php foreach (array('error', 'success', 'info', 'default') as $namespace):
+    $flashMessages = $this->flashmessenger()->render($namespace);
+    $namespace = $namespace == 'error' ? 'danger' : $namespace;/*adjust bootstrap to ZF2*/
+    if (!empty($flashMessages)):?>
+        <div class="alert alert-<?=$namespace?>" role="alert">
+            <?= $flashMessages ?>
         </div>
-    <?php endif;?>
-</div>
+    <?php endif;
+endforeach; ?>
+<?php if($errors):?>
+    <div class="alert alert-danger" role="alert">
+        <?=$errors?>
+    </div>
+<?php endif;?>
 
-<div class="login">
-    <div class="login_font" style="margin-bottom:20px;"> <?=$this->translate('Administration Login')?></div>
-    <?=$this->form()->openTag($form)?>
-    <div class="uname"><?=$this->translate($uname->getLabel())?>:</div>
-    <div class="uform">
-        <?=$this->formInput($uname)?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <?=$this->translate('Administration Login')?>
     </div>
-    <div class="uname"><?=$this->translate($pass->getLabel())?>:</div>
-    <div class="uform">
-        <?=$this->formInput($pass)?>
-    </div>
-    <div class="uform">
-        <input type="submit" name="submit" value="<?=$this->translate('Enter')?>" />
-    </div>
-    <?=$this->form()->closeTag()?>
-    <div class="forgotten">
-        <a href="<?=$this->langUrl('admin/default', ['controller' => 'log', 'action' => 'forgotten'])?>"><?=$this->translate('Password forgotten')?></a>
+    <div class="panel-body">
+        <?=$this->form()->openTag($form)?>
+        <div class="form-group">
+            <label class="control-label col-md-4"><?=$this->translate($uname->getLabel())?>:</label>
+            <div class="col-md-8">
+                <?=$this->formInput($uname)?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4"><?=$this->translate($pass->getLabel())?>:</label>
+            <div class="col-md-8">
+                <?=$this->formInput($pass)?>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
+                <input class="btn btn-default" type="submit" name="submit" value="<?=$this->translate('Enter')?>" />
+                <a class="btn btn-link forgotten_link" href="<?=$this->langUrl('admin/default', ['controller' => 'log', 'action' => 'forgotten'])?>"><?=$this->translate('Password forgotten')?></a>
+            </div>
+        </div>
+        <?=$this->form()->closeTag()?>
     </div>
 </div>

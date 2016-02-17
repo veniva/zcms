@@ -16,12 +16,13 @@
         ->prependFile($this->basePath().'/js/jquery-2.1.4.min.js')
         ."\n"
     ?>
+<!--    <link rel="stylesheet" type="text/css" href="../../../../public_html/css/bootstrap.min.css">-->
 </head>
 <body>
-    <table align="center">
-        <tr>
-            <td>
-                <div style="margin-top:20px; width:100%;"></div>
+    <div class="container" style="margin-top:20px;">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
                 <?php if($this->action != 'initial'):?>
                     <form action="" method="get">
                     <span class="text">
@@ -30,14 +31,18 @@
                     </span>
                     </form>
                 <?php endif; ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="login-td">
-                <div style="margin-top:100px; width:100%;"></div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
+    <div class="container" style="margin-top:100px;">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
                 <?=$content?>
-            </td>
-        </tr>
-    </table>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
 </body>
 </html>

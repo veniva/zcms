@@ -3,37 +3,43 @@
 $form  = $this->form;
 $form->prepare();
 $email = $form->get('email');
+$email->setAttributes(['class' => 'form-control']);
 $errors = $this->formElementErrors($email);
 ?>
-<div class="messages">
-    <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
-        $flashMessages = $this->flashmessenger()->render($namespace);
-        $namespace = $namespace == 'error' ? 'danger' : $namespace;/*adjust bootstrap to ZF2*/
-        if (!empty($flashMessages)):?>
-            <div class="alert alert-<?=$namespace?>" role="alert">
-                <?= $flashMessages ?>
-            </div>
-        <?php endif;
-    endforeach; ?>
-    <?php if($errors):?>
-        <div class="alert alert-danger" role="alert">
-            <?=$errors?>
-        </div>
-    <?php endif;?>
-</div>
 
-<div class="login">
-    <div class="login_font" style="margin-bottom:20px;"> <?=$this->translate('Reset password')?></div>
-    <?=$this->form()->openTag($form)?>
-    <div class="uname"><?=$this->translate($email->getLabel())?>:</div>
-    <div class="uform">
-        <?=$this->formInput($email)?>
+<?php foreach (array('error', 'success', 'info', 'default') as $namespace):
+    $flashMessages = $this->flashmessenger()->render($namespace);
+    $namespace = $namespace == 'error' ? 'danger' : $namespace;/*adjust bootstrap to ZF2*/
+    if (!empty($flashMessages)):?>
+        <div class="alert alert-<?=$namespace?>" role="alert">
+            <?= $flashMessages ?>
+        </div>
+    <?php endif;
+endforeach; ?>
+<?php if($errors):?>
+    <div class="alert alert-danger" role="alert">
+        <?=$errors?>
     </div>
-    <div class="uform">
-        <input type="submit" name="submit" value="<?=$this->translate('Send password reset link')?>" />
+<?php endif;?>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <?=$this->translate('Reset password')?>
     </div>
-    <?=$this->form()->closeTag()?>
-    <div class="forgotten">
-        <a href="<?=$this->langUrl('admin/default', ['controller' => 'log', 'action' => 'in'])?>"><?=$this->translate('Back to login')?></a>
+    <div class="panel-body">
+        <?=$this->form()->openTag($form)?>
+        <div class="form-group">
+            <label class="control-label col-md-4"><?=$this->translate($email->getLabel())?>:</label>
+            <div class="col-md-8">
+                <?=$this->formInput($email)?>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
+                <input class="btn btn-default" type="submit" name="submit" value="<?=$this->translate('Send link')?>" />
+                <a class="btn btn-link forgotten_link" href="<?=$this->langUrl('admin/default', ['controller' => 'log', 'action' => 'in'])?>"><?=$this->translate('back to login')?></a>
+            </div>
+        </div>
     </div>
+
 </div>

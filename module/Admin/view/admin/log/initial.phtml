@@ -1,5 +1,18 @@
 <?php $this->layout('admin/login');
+$this->form->setAttribute('class', 'form-horizontal');
 $this->form->prepare();
+foreach($form->getElements() as $element){
+    if($element->getAttribute('type') != 'submit'){
+        $element->setAttribute('class', 'form-control');
+    }else{
+        $element->setAttribute('class', 'btn btn-default');
+    }
+}
+foreach($this->form->getFieldsets() as $fieldset){
+    foreach($fieldset->getElements() as $element){
+        $element->setAttribute('class', 'form-control');
+    }
+}
 ?>
 <div class="messages">
     <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
@@ -13,71 +26,72 @@ $this->form->prepare();
     endforeach; ?>
 </div>
 
-<div class="login" style="width:400px">
-    <?=$this->form()->openTag($this->form)?>
-    <table class="table" width="300" cellpadding="5" cellspacing="5">
-        <tr>
-            <td><label><?=$this->translate($this->form->get('uname')->getLabel())?></label></td>
-            <td>
+<div class="panel panel-default">
+    <div class="panel-heading">Initial setup</div>
+    <div class="panel-body">
+        <?=$this->form()->openTag($this->form)?>
+        <div class="form-group">
+            <label class="form-label col-md-4"><?=$this->translate($this->form->get('uname')->getLabel())?></label>
+            <div class="col-md-8">
                 <?=$this->formInput($this->form->get('uname'))?>
                 <div class="form-error">
                     <?=$this->formElementErrors($this->form->get('uname'))?>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td><label><?=$this->translate($this->form->get('email')->getLabel())?></label></td>
-            <td>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label col-md-4"><?=$this->translate($this->form->get('email')->getLabel())?></label>
+            <div class="col-md-8">
                 <?=$this->formInput($this->form->get('email'))?>
                 <div class="form-error">
                     <?=$this->formElementErrors($this->form->get('email'))?>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td><label><?=$this->translate('Language name')?></label></td>
-            <td>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label col-md-4"><?=$this->translate('Language name')?></label>
+            <div class="col-md-8">
                 <?=$this->formInput($this->form->get('language_name'))?>
                 <div class="form-error">
                     <?=$this->formElementErrors($this->form->get('language_name'))?>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td><label><?=$this->translate('Language code')?></label></td>
-            <td>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label col-md-4"><?=$this->translate('Language code')?></label>
+            <div class="col-md-6">
                 <?=$this->formSelect($this->form->get('isoCode'))?>
-                <img id="flag" src="<?=$this->basePath()?>/img/flags/<?=$this->flagCode?>.png" />
                 <div class="form-error">
                     <?=$this->formElementErrors($this->form->get('isoCode'))?>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td><label><?=$this->translate($this->form->get('password_fields')->get('password')->getLabel())?></label></td>
-            <td>
+            </div>
+            <div class="col-md-2"><img id="flag" src="<?=$this->basePath()?>/img/flags/<?=$this->flagCode?>.png" /></div>
+        </div>
+        <div class="form-group">
+            <label class="form-label col-md-4"><?=$this->translate($this->form->get('password_fields')->get('password')->getLabel())?></label>
+            <div class="col-md-8">
                 <?=$this->formInput($this->form->get('password_fields')->get('password'))?>
                 <div class="form-error">
                     <?=$this->formElementErrors($this->form->get('password_fields')->get('password'))?>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td><label><?=$this->translate($this->form->get('password_fields')->get('password_repeat')->getLabel())?></label></td>
-            <td>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label col-md-4"><?=$this->translate($this->form->get('password_fields')->get('password_repeat')->getLabel())?></label>
+            <div class="col-md-8">
                 <?=$this->formInput($this->form->get('password_fields')->get('password_repeat'))?>
                 <div class="form-error">
                     <?=$this->formElementErrors($this->form->get('password_fields')->get('password_repeat'))?>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
                 <?=$this->formSubmit($this->form->get('submit'))?>
-            </td>
-        </tr>
-    </table>
-    <?=$this->form()->closeTag()?>
+            </div>
+        </div>
+        <?=$this->form()->closeTag()?>
+    </div>
 </div>
 <script type="text/javascript">
     var $flagImg = $(document.getElementById('flag'));

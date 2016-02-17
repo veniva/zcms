@@ -2,6 +2,9 @@
 
 $form  = $this->form;
 $form->prepare();
+$form->setAttribute('class', 'form-horizontal');
+$this->form->get('password_fields')->get('password')->setAttribute('class', 'form-control');
+$this->form->get('password_fields')->get('password_repeat')->setAttribute('class', 'form-control');
 ?>
 
 <div class="messages">
@@ -15,29 +18,40 @@ $form->prepare();
         <?php endif;
     endforeach; ?>
 </div>
-
-<div class="login">
-    <div class="login_font" style="margin-bottom:20px;"> <?=$this->translate('Reset password')?></div>
-    <?=$this->form()->openTag($form)?>
-    <div class="uname"><?=$this->translate($form->get('password_fields')->get('password')->getLabel())?>:</div>
-    <div class="uform">
-        <?=$this->formInput($form->get('password_fields')->get('password'))?>
-        <div class="form-error">
-            <?=$this->formElementErrors($this->form->get('password_fields')->get('password'));?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <?=$this->translate('Reset password')?>
+    </div>
+    <div class="panel-body">
+        <?=$this->form()->openTag($form)?>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                <?=$this->translate($form->get('password_fields')->get('password')->getLabel())?>:
+            </label>
+            <div class="col-md-8">
+                <?=$this->formInput($form->get('password_fields')->get('password'))?>
+                <div class="form-error">
+                    <?=$this->formElementErrors($this->form->get('password_fields')->get('password'));?>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="uname"><?=$this->translate($form->get('password_fields')->get('password_repeat')->getLabel())?>:</div>
-    <div class="uform">
-        <?=$this->formInput($form->get('password_fields')->get('password_repeat'))?>
-        <div class="form-error">
-            <?=$this->formElementErrors($this->form->get('password_fields')->get('password_repeat'));?>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                <?=$this->translate($form->get('password_fields')->get('password_repeat')->getLabel())?>:
+            </label>
+            <div class="col-md-8">
+                <?=$this->formInput($form->get('password_fields')->get('password_repeat'))?>
+                <div class="form-error">
+                    <?=$this->formElementErrors($this->form->get('password_fields')->get('password_repeat'));?>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="uform">
-        <input type="submit" name="submit" value="<?=$this->translate('Edit')?>" />
-    </div>
-    <?=$this->form()->closeTag()?>
-    <div class="forgotten">
-        <a href="<?=$this->langUrl('admin/default', ['controller' => 'log', 'action' => 'in'])?>"><?=$this->translate('Back to login')?></a>
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
+                <input class="btn btn-default" type="submit" name="submit" value="<?=$this->translate('Edit')?>" />
+                <a class="btn btn-link forgotten_link" href="<?=$this->langUrl('admin/default', ['controller' => 'log', 'action' => 'in'])?>"><?=$this->translate('Back to login')?></a>
+            </div>
+        </div>
+        <?=$this->form()->closeTag()?>
     </div>
 </div>
