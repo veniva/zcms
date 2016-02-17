@@ -122,6 +122,14 @@ CREATE TABLE IF NOT EXISTS `metadata` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+CREATE TABLE IF NOT EXISTS `password_resets` (
+  `email` VARCHAR(255) NOT NULL COLLATE 'utf8_unicode_ci',
+  `token` VARCHAR(10) NOT NULL COLLATE 'utf8_unicode_ci',
+  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`email`, `token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,

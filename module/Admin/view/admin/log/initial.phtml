@@ -54,20 +54,20 @@ $this->form->prepare();
             </td>
         </tr>
         <tr>
-            <td><label><?=$this->translate($this->form->get('password')->getLabel())?></label></td>
+            <td><label><?=$this->translate($this->form->get('password_fields')->get('password')->getLabel())?></label></td>
             <td>
-                <?=$this->formInput($this->form->get('password'))?>
+                <?=$this->formInput($this->form->get('password_fields')->get('password'))?>
                 <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('password'))?>
+                    <?=$this->formElementErrors($this->form->get('password_fields')->get('password'))?>
                 </div>
             </td>
         </tr>
         <tr>
-            <td><label><?=$this->translate($this->form->get('password_repeat')->getLabel())?></label></td>
+            <td><label><?=$this->translate($this->form->get('password_fields')->get('password_repeat')->getLabel())?></label></td>
             <td>
-                <?=$this->formInput($this->form->get('password_repeat'))?>
+                <?=$this->formInput($this->form->get('password_fields')->get('password_repeat'))?>
                 <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('password_repeat'))?>
+                    <?=$this->formElementErrors($this->form->get('password_fields')->get('password_repeat'))?>
                 </div>
             </td>
         </tr>

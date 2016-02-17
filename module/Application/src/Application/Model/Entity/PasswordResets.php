@@ -8,12 +8,12 @@ namespace Application\Model\Entity;
 class PasswordResets
 {
     /**
-     * @Id @Column(type="text")
+     * @Id @Column(type="string", length=255)
      */
     protected $email;
 
     /**
-     * @Id @Column(type="text")
+     * @Id @Column(type="string", length=10)
      */
     protected $token;
 
@@ -26,6 +26,7 @@ class PasswordResets
     {
         $this->setEmail($email);
         $this->setToken($token);
+        $this->setCreatedAt(new \DateTime());
     }
 
     /**
@@ -71,8 +72,8 @@ class PasswordResets
     /**
      * @param mixed $createdAt
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTime $createdAt = null)
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = $createdAt ? clone $createdAt : $createdAt;
     }
 }

@@ -244,6 +244,7 @@ class LogController extends AbstractActionController implements TranslatorAwareI
         $entityManager = $serviceLocator->get('entity-manager');
         $user = $serviceLocator->get('user-entity');
         $form = new \Admin\Form\User($user, $entityManager);
+        $form->get('submit')->setValue('Submit');
 
         //region add language name + select flag
         $languageForm = new Language($this->getServiceLocator());
@@ -263,9 +264,9 @@ class LogController extends AbstractActionController implements TranslatorAwareI
             //set the role field to not required
             $form->getInputFilter()->get('role')->setRequired(false);
             if($form->isValid()){
-                $newPassword = $form->getInputFilter()->get('password')->getValue();
+                $newPassword = $form->getInputFilter()->get('password_fields')->get('password')->getValue();
                 if($newPassword)
-                    $user->setUpass($form->getInputFilter()->get('password')->getValue());
+                    $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
                 $user->setRegDate();
                 $user->setRole(User::USER_SUPER_ADMIN);
                 $entityManager->persist($user);
