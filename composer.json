@@ -3,7 +3,7 @@
   "description": "A light weight CMS based on Zend Framework 2 and Doctrine 2 ORM",
   "keywords": ["cms","micro-cms","zend framework", "doctrine"],
   "homepage": "https://github.com/veniva/zcms",
-  "license": "GNU/GPL 3.0 licence",
+  "license": "GPL-3.0+",
   "authors": [
     {
       "name": "Ventsislav Ivanov",
