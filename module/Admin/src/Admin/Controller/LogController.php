@@ -35,7 +35,7 @@ class LogController extends AbstractActionController implements TranslatorAwareI
     {
         //check for the existence of any users, and if none, it means it is a new installation, then redirect to user registration
         $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $countAdministrators = $entityManager->getRepository(get_class(new User()))->countUsers();
+        $countAdministrators = $entityManager->getRepository(get_class(new User()))->countAdminUsers();
         if(!$countAdministrators){
             $this->flashMessenger()->addInfoMessage('Here you can create the first user for the system');
             return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'initial']);
@@ -243,6 +243,12 @@ class LogController extends AbstractActionController implements TranslatorAwareI
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
         $user = $serviceLocator->get('user-entity');
+
+        //check if user already exists
+        $numberUsers = $entityManager->getRepository(get_class($user))->countAdminUsers();
+        if($numberUsers)
+            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
+
         $form = new \Admin\Form\User($user, $entityManager);
         $form->get('submit')->setValue('Submit');
 

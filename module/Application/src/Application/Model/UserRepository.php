@@ -26,7 +26,7 @@ class UserRepository extends EntityRepository
         return new Paginator(new \Application\Paginator\DoctrineAdapter($qb->getQuery()));
     }
 
-    public function countUsers()
+    public function countAdminUsers()
     {
         $qb = $this->createQueryBuilder('u');
         $qb->select($qb->expr()->count('u'))
