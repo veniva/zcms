@@ -40,6 +40,7 @@
 
         <tr>
             <td colspan="2">
+                <?=$this->formInput($this->form->get('language_csrf'))?>
                 <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate(ucfirst($this->action))?></button>
                 <small> <a href="<?=$this->langUrl('admin/default', [
                         'controller' => 'language',

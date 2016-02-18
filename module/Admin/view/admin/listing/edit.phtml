@@ -97,6 +97,7 @@ $this->form->prepare();
     </div>
     <div class="form-group">&nbsp;</div>
     <div class="form-group">
+        <?=$this->formInput($this->form->get('listing_csrf'))?>
         <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
         <small> &nbsp; <a href="<?=$this->langUrl('admin/listing', [
                 'id' => $this->filter,

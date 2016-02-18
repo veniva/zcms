@@ -66,6 +66,7 @@
         </tr>
         <tr>
             <td colspan="2">
+                <?=$this->formInput($this->form->get('user_csrf'))?>
                 <button class="btn btn-primary btn-xs" name="submit"><?=$this->translate(ucfirst($this->action))?></button>
                 <small> <a href="<?=$this->langUrl('admin/default', [
                         'controller' => 'user',

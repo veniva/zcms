@@ -90,6 +90,11 @@ class Listing extends Form
         ));
 
         $this->add(array(
+            'type' => 'csrf',
+            'name' => 'listing_csrf',
+        ));
+
+        $this->add(array(
             'name' => 'submit',
             'type' => 'Zend\Form\Element\Submit',
             'attributes' => array(

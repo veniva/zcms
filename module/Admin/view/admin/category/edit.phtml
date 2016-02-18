@@ -40,6 +40,7 @@
         </tr>
         <tr>
             <td colspan="2">
+                <?=$this->formInput($this->form->get('category_csrf'))?>
                 <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
                 <small> <a href="<?=$this->langUrl('admin/category', [
                         'id' => isset($this->parentCategory) ? $this->parentCategory->getId() : null,
