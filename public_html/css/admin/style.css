@@ -238,3 +238,7 @@ input.numbers{
 .ui-widget-content{
     font-size: 1em;
 }
+
+a.dashboard_buttons{
+    color: #2370A1
+}

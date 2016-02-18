@@ -8,12 +8,14 @@
 
 namespace Admin\Controller;
 
+use Zend\Authentication\AuthenticationService;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        return array();
+        $auth = new AuthenticationService();
+        return array('auth' => $auth);
     }
 }

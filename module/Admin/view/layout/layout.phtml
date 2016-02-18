@@ -8,17 +8,17 @@ $auth = new \Zend\Authentication\AuthenticationService();
     <meta charset="utf-8" />
     <?=$this->headTitle($this->translate('Administration panel'))."\n"?>
     <?=$this->headLink()
-        ->prependStylesheet($this->basePath().'/css/admin/style.css')
-        ->prependStylesheet($this->basePath().'/js/admin/jquery-ui-1.11.4.custom/jquery-ui.min.css')
-        ->prependStylesheet($this->basePath() .'/css/bootstrap-theme.min.css')
-        ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
+        ->appendStylesheet($this->basePath() . '/css/bootstrap.min.css')
+        ->appendStylesheet($this->basePath() .'/css/bootstrap-theme.min.css')
+        ->appendStylesheet($this->basePath().'/js/admin/jquery-ui-1.11.4.custom/jquery-ui.min.css')
+        ->appendStylesheet($this->basePath().'/css/admin/style.css')
     ."\n"
     ?>
     <?=$this->headScript()
-        ->prependFile($this->basePath() . '/js/admin/script.js')
-        ->prependFile($this->basePath() . '/js/admin/jquery-ui-1.11.4.custom/jquery-ui.min.js')
-        ->prependFile($this->basePath() . '/js/bootstrap.min.js')
-        ->prependFile($this->basePath().'/js/jquery-2.1.4.min.js')
+        ->appendFile($this->basePath().'/js/jquery-2.1.4.min.js')
+        ->appendFile($this->basePath() . '/js/bootstrap.min.js')
+        ->appendFile($this->basePath() . '/js/admin/jquery-ui-1.11.4.custom/jquery-ui.min.js')
+        ->appendFile($this->basePath() . '/js/admin/script.js')
     ."\n"
     ?>
 

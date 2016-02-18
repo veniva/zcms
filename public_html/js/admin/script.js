@@ -57,19 +57,6 @@ dropm = {
 document.onclick = dropm.mclose;
 //--drop-down end--
 
-var image;
-//image hover
-img_change = {
-    oldImg: '',
-    ov: function(id, image){
-        this.oldImg = id.src;
-        id.src = image + '-ov.png';
-    },
-    out: function(id){
-        id.src = this.oldImg;
-    }
-};
-
 function goToHref(href){
     window.location.href = href;
 }

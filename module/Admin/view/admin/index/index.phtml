@@ -2,18 +2,43 @@
     <div class="header_cont"><?=$this->translate('Dashboard')?></div>
     <div class="body_cont">
         <div class="icons">
-            <a href="<?=$this->url('admin/category')?>" title="<?=$this->translate('Categories')?>">
-                <img src="<?=$this->basePath()?>/img/admin/categories.png" alt="<?=$this->translate('Categories')?>" onMouseOver="img_change.ov(this, '<?=$this->basePath()?>/img/admin/categories');" onMouseOut="img_change.out(this);" border="0" />
+            <a class="btn btn-default btn-lg dashboard_buttons" href="<?=$this->langUrl('admin/listing')?>" title="<?=$this->translate('Pages')?>">
+                <span class="glyphicon glyphicon-font" aria-hidden="true"></span>
+            </a>
+            <br />
+            <?=$this->translate('Pages')?>
+        </div>
+        <div class="icons">
+            <a class="btn btn-default btn-lg dashboard_buttons" href="<?=$this->langUrl('admin/category')?>" title="<?=$this->translate('Categories')?>">
+                <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
             </a>
             <br />
             <?=$this->translate('Categories')?>
         </div>
         <div class="icons">
-            <a href="<?=$this->url('admin/listing')?>" title="<?=$this->translate('Pages')?>">
-                <img src="<?=$this->basePath()?>/img/admin/notepad.png" alt="<?=$this->translate('Pages')?>" onMouseOver="img_change.ov(this, '<?=$this->basePath()?>/img/admin/notepad');" onMouseOut="img_change.out(this);" border="0" />
+            <a class="btn btn-default btn-lg dashboard_buttons" href="<?=$this->langUrl('admin/default', ['controller'=>'language'])?>" title="<?=$this->translate('Languages')?>">
+                <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
             </a>
             <br />
-            <?=$this->translate('Pages')?>
+            <?=$this->translate('Languages')?>
+        </div>
+        <div class="icons">
+            <a class="btn btn-default btn-lg dashboard_buttons" href="<?=$this->langUrl('admin/default', ['controller'=>'user'])?>" title="<?=$this->translate('Users')?>">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            </a>
+            <br />
+            <?=$this->translate('Users')?>
+        </div>
+        <div class="icons">
+            <a class="btn btn-default btn-lg dashboard_buttons" href="<?=$this->langUrl('admin/default', [
+                'controller'=>'user',
+                'action' => 'edit',
+                'id' => $this->auth->getIdentity()->getId()
+            ], ['query' => ['account_settings' => 1]])?>" title="<?=$this->translate('Account settings')?>">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            </a>
+            <br />
+            <?=$this->translate('Account settings')?>
         </div>
         <div style="height:300px;">&nbsp;</div>
     </div>
