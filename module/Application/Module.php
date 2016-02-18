@@ -204,7 +204,7 @@ class Module
         $serviceManager = $e->getApplication()->getServiceManager();
         $languageService = $serviceManager->get('language');
 
-        $defaultLanguage = $languageService->getDefaultLanguage();
+        $defaultLanguage = $languageService->getCurrentLanguage();
         $languageIso = $defaultLanguage->getIsoCode();
 
         //set the translator's locale - the "locale" is the name of the translation files located in "languages"
