@@ -15,7 +15,11 @@ class Breadcrumb extends AbstractHelper
         $this->serviceManager = $serviceManager->getServiceLocator();
     }
 
-    public function __invoke()
+    /**
+     * @param $section - either "admin" or null
+     * @return string
+     */
+    public function __invoke($section = null)
     {
         $request = $this->serviceManager->get('Request');
         $route = $this->serviceManager->get('Router');
@@ -29,7 +33,9 @@ class Breadcrumb extends AbstractHelper
             'matchedRoute' => $matchedRoute,
             'topRoute' => $routeMatch->getParam('alias', null) ? 'home' : $matchedRoute
         ]);
-        $viewModel->setTemplate('helper/breadcrumb');
+
+        $template = ($section == 'admin') ? 'helper/breadcrumb_admin' : 'helper/breadcrumb';
+        $viewModel->setTemplate($template);
         return $this->view->render($viewModel);
     }
 

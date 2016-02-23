@@ -16,15 +16,21 @@ use Application\Service\Invokable\Misc;
 use Doctrine\ORM\EntityManager;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\Stdlib\ArrayUtils;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class CategoryController extends AbstractActionController implements TranslatorAwareInterface
+class CategoryController extends AbstractRestfulController implements TranslatorAwareInterface
 {
     use TranslatorAwareTrait;
 
     public function listAction()
+    {
+        return new ViewModel();
+    }
+
+    public function listJsonAction()
     {
         $parent = $this->params()->fromRoute('id', 0);
         $page = $this->params()->fromRoute('page', 1);
@@ -34,36 +40,54 @@ class CategoryController extends AbstractActionController implements TranslatorA
 
         $categoriesPaginated = $categoryRepository->getPaginatedCategories($parent);
         $categoriesPaginated->setCurrentPageNumber($page);
-
-        $category = $parent ? $categoryRepository->findOneById($parent) : null;
         $languageService = $this->getServiceLocator()->get('language');
         $defaultLangId = $languageService->getDefaultLanguage()->getId();
-        $categoryAlias = $category ? $category->getSingleCategoryContent($defaultLangId)->getAlias() : null;
 
-        return [
-            'title' => 'Categories',
-            'categories' => $categoriesPaginated,
-            'parent_id' => $parent,
-            'category_alias' => $categoryAlias,
+        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
+        $paginator = $renderer->paginationControl($categoriesPaginated, 'Sliding', 'paginator/sliding_ajax', ['id' => $parent]);
+
+        $categories = [];
+        $i = 0;
+        foreach($categoriesPaginated as $category){
+            $categories[$i]['id'] = $category->getId();
+            $categories[$i]['title'] = $category->getSingleCategoryContent($defaultLangId)->getTitle();
+            $categories[$i]['children_count'] = $categoryRepository->countChildren($category->getId());
+            $categories[$i]['sort'] = $category->getSort();
+            $i++;
+        }
+        return new JsonModel([
+            'title' => $this->translator->translate('Categories'),
+            'categories' => $categories,
             'page' => $page,
-            'categoryRepo' => $categoryRepository,
-            'defaultLangId' => $defaultLangId
-        ];
+            'paginator' => $paginator,
+            'breadcrumb' => $renderer->breadcrumb('admin'),
+            'parent_id' => $parent,
+        ]);
     }
 
-    public function editAction()
+    public function editJsonAction()
     {
         $id = $this->params()->fromRoute('id', 0);
         $page = $this->params()->fromRoute('page', 1);
-        if(empty($id))
-            return $this->redir()->toRoute('admin/category');
+        if(empty($id)){
+            return new JsonModel([
+                'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
+                'parent_id' => '0',
+                'page' => $page,
+            ]);
+        }
 
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
         $categoryEntity = new Category();
-        $category = $this->getCategoryAndParent($id, $entityManager, $categoryEntity, $parentCategory);
-        if(!$category)
-            return $this->redir()->toRoute('admin/category');
+        $category = $this->getCategoryAndParent($id, $entityManager, $categoryEntity, $parentCategoryID);
+        if(!$category){
+            return new JsonModel([
+                'message' => ['type' => 'error', 'text' => $this->translator->translate('Wrong category ID')],
+                'parent_id' => '0',
+                'page' => $page,
+            ]);
+        }
         $languagesService = $serviceLocator->get('language');
         $languages = $languagesService->getActiveLanguages();
 
@@ -84,24 +108,38 @@ class CategoryController extends AbstractActionController implements TranslatorA
                 $entityManager->persist($category);
                 $entityManager->flush();
 
-                $this->flashMessenger()->addSuccessMessage($this->translator->translate('The category has been edited successfully'));
-                return $this->redir()->toRoute('admin/category', [
-                    'id' => isset($parentCategory) ? $parentCategory->getId() : null,
+                return new JsonModel([
+                    'message' => ['type' => 'success', 'text' => $this->translator->translate('The category has been edited successfully')],
+                    'parent_id' => $parentCategoryID,
                     'page' => $page,
                 ]);
             }
         }
+        $defaultLangID = $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId();
+        $parentCategory = $entityManager->find(get_class($categoryEntity), $parentCategoryID);
+        $parentCategoryName = $parentCategory instanceof \Application\Model\Entity\Category ?
+            $parentCategory->getSingleCategoryContent($defaultLangID)->getTitle() :
+            $this->translator->translate('Top');
 
-        return [
+        $viewModel = new ViewModel([
+            'action' => 'edit',
+            'id' => $id,
             'form' => $form,
-            'parentCategory' => $parentCategory,
+            'parentCategoryName' => $parentCategoryName,
+            'parent_id' => $parentCategoryID,
             'page' => $page,
-            'action' => 'Edit',
-            'defaultLangId' => $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId()
-        ];
+        ]);
+        $viewModel->setTemplate('admin/category/edit');
+        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
+
+        return new JsonModel([
+            'title' => $this->translator->translate('Edit a category'),
+            'page' => $page,
+            'form' => $renderer->render($viewModel),
+        ]);
     }
 
-    public function addAction()
+    public function addJsonAction()
     {
         $parentCategoryID = $this->params()->fromRoute('id', 0);
         $page = $this->params()->fromRoute('page', 1);
@@ -111,8 +149,11 @@ class CategoryController extends AbstractActionController implements TranslatorA
         //check if there is an existing language before entering new category
         $langs = $entityManager->getRepository(get_class(new Lang()))->countLanguages();
         if(!$langs){
-            $this->flashMessenger()->addErrorMessage($this->translator->translate("You must insert at least one language in order to add categories"));
-            return $this->redir()->toRoute('admin/category');
+            return new JsonModel([
+                'message' => ['type' => 'error', 'text' => $this->translator->translate('You must insert at least one language in order to add categories')],
+                'parent_id' => $parentCategoryID,
+                'page' => $page,
+            ]);
         }
         $categoryEntity = new Category();
         $languagesService = $serviceLocator->get('language');
@@ -127,8 +168,8 @@ class CategoryController extends AbstractActionController implements TranslatorA
             $relatedParentCategories = $categoryRepository->getParentCategories($parentCategory);
             $categoryEntity->setParents($relatedParentCategories);
             $categoryEntity->setParent($parentCategory->getId());
-            foreach($relatedParentCategories as $parentCategory){
-                $parentCategory->addChild($categoryEntity);
+            foreach($relatedParentCategories as $parent){
+                $parent->addChild($categoryEntity);
             }
         }
 
@@ -148,24 +189,33 @@ class CategoryController extends AbstractActionController implements TranslatorA
             if($form->isValid()){
                 $entityManager->persist($categoryEntity);
                 $entityManager->flush();
-
-                $this->flashMessenger()->addSuccessMessage($this->translator->translate('The new category was added successfully'));
-                return $this->redir()->toRoute('admin/category', [
-                    'id' => $parentCategoryID,
+                return new JsonModel([
+                    'message' => ['type' => 'success', 'text' => $this->translator->translate('The new category was added successfully')],
+                    'parent_id' => $parentCategoryID,
                     'page' => $page,
                 ]);
             }
         }
+        $defaultLangID = $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId();
+        $parentCategoryName = $parentCategory instanceof \Application\Model\Entity\Category ?
+            $parentCategory->getSingleCategoryContent($defaultLangID)->getTitle() :
+            $this->translator->translate('Top');
 
         $viewModel = new ViewModel(array(
+            'action' => 'add',
             'form' => $form,
-            'parentCategory' => $parentCategory,
+            'parentCategoryName' => $parentCategoryName,
+            'parent_id' => $parentCategoryID,
             'page' => $page,
-            'action' => 'Add',
         ));
         $viewModel->setTemplate('admin/category/edit');
+        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
 
-        return $viewModel;
+        return new JsonModel([
+            'title' => $this->translator->translate('Add a category'),
+            'page' => $page,
+            'form' => $renderer->render($viewModel),
+        ]);
     }
 
     protected function addEmptyContent(Category $category, \Doctrine\Common\Collections\Collection $languages)
@@ -190,24 +240,30 @@ class CategoryController extends AbstractActionController implements TranslatorA
         }
     }
 
-    public function deleteAction()
+    public function deleteJsonAction()
     {
-        $id = $this->params()->fromRoute('id', 0);
-        $page = $this->params()->fromRoute('page', 1);
-        if(empty($id))
-            $this->redir()->toRoute('admin/category');
+        if(!$this->getRequest()->isPost()) return false;
+        $id = $this->params()->fromPost('id', 0);
+        $page = $this->params()->fromPost('page', 1);
+        if(empty($id)){
+            return new JsonModel([
+                'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
+                'parent_id' => '0',
+                'page' => $page,
+            ]);
+        }
 
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
 
         $categoryEntity = new Category();
-        $category = $this->getCategoryAndParent($id, $entityManager, $categoryEntity, $parentCategory);
+        $category = $this->getCategoryAndParent($id, $entityManager, $categoryEntity, $parentCategoryID);
         $entityManager->remove($category);//contained listings are cascade removed from the ORM!!
         $entityManager->flush();
 
-        $this->flashMessenger()->addSuccessMessage($this->translator->translate('The category and all the listings in it was removed successfully'));
-        $this->redir()->toRoute('admin/category', [
-            'id' => isset($parentCategory) ? $parentCategory->getId() : null,
+        return new JsonModel([
+            'message' => ['type' => 'success', 'text' => $this->translator->translate('The category and all the listings in it were removed successfully')],
+            'parent_id' => $parentCategoryID,
             'page' => $page,
         ]);
     }
@@ -216,17 +272,16 @@ class CategoryController extends AbstractActionController implements TranslatorA
      * @param int $id
      * @param EntityManager $entityManager
      * @param Category $categoryEntity
-     * @param $parentCategory
+     * @param $parentCategoryID
      * @return Category|null
      */
-    protected function getCategoryAndParent($id, EntityManager $entityManager, Category $categoryEntity, &$parentCategory)
+    protected function getCategoryAndParent($id, EntityManager $entityManager, Category $categoryEntity, &$parentCategoryID)
     {
         $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
         $category = $categoryRepository->findOneById($id);
         if(!$category) return null;
 
-        if($category->getParent() instanceof Category)
-            $parentCategory = $categoryRepository->findOneById($category->getParent()->getId());
+        $parentCategoryID = $category->getParent() ? $category->getParent() : '0';
         return $category;
     }
 }

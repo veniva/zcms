@@ -1,62 +1,69 @@
-<?php use Application\Service\Invokable\Layout; ?>
 <div class="header_cont">
-    <div class="title"><?=$this->translate($this->title)?></div>
-    <div style="float:right;">
-        <button type="button" id="add_button" class="btn btn-primary btn-xs"><?=$this->translate('New')?></button>
+    <div class="title" data-bind="text: title"></div>
+    <div data-bind="visible: action() == 'list'" style="float:right;">
+        <a type="button" class="btn btn-primary btn-xs" data-bind="attr: {href: $root.url+'#add/'+parentID()+'/'+page()}">
+            <?=$this->translate('New')?>
+        </a>
     </div>
 </div>
 <div class="body_cont">
-    <div class="bcrumb lui-padding-5">
-        <?=$this->breadcrumb()?>
-    </div>
-    <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
-        <tr>
-            <th width="20">#</th>
-            <th><?=$this->translate('Category')?></th>
-            <th width="20"><?=$this->translate('Sort')?></th>
-            <th width="70"><?=$this->translate('Action')?></th>
-        </tr>
-        <?php foreach($this->categories as $category): ?>
+    <!-- list action -->
+    <div data-bind="visible: action() == 'list'">
+        <div class="bcrumb lui-padding-5">
+        <span data-bind="html: breadcrumb">
+        </div>
+        <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
+            <thead>
             <tr>
-                <td><?php echo $category->getId(); ?></td>
+                <th width="20">#</th>
+                <th><?=$this->translate('Category')?></th>
+                <th width="20"><?=$this->translate('Sort')?></th>
+                <th width="70"><?=$this->translate('Action')?></th>
+            </tr>
+            </thead>
+            <tbody data-bind="visible: hasRecords() === true, foreach: categoryData">
+            <tr>
+                <td data-bind="text: id"></td>
                 <td>
-                    <a href="<?=$this->langUrl('admin/category', array('id' => $category->getId()))?>">
-                        <?php echo $category->getSingleCategoryContent($this->defaultLangId)->getTitle(); ?>
-                    </a>
-                    <small><?='(' . $this->categoryRepo->countChildren($category->getId()) . ')'?></small>
+                    <a data-bind="text: title, attr: {href: '#'+id+'/'+$root.page()}"></a>
+                    <small data-bind="text: '('+children_count+')'"></small>
                 </td>
+                <td data-bind="text: sort"></td>
                 <td>
-                    <?=$category->getSort(); ?>
-                </td>
-                <td>
-                    <a class="img" href="<?=$this->langUrl('admin/category', array(
-                        'action' => 'edit',
-                        'id' => $category->getId(),
-                        'page' => $this->page,
-                    ))?>">
+                    <a class="img" data-bind="attr: {href: $root.url+'#edit/'+id+'/'+$root.page()}">
                         <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('Edit')?>" />
                     </a>
-                    <a class="img del_button" href="#" data-href="<?=$this->langUrl('admin/category', [
-                        'action' => 'delete', 'id' => $category->getId(), 'page' => $this->page,
-                    ])?>">
+                    <a href="#" class="img del_button" data-bind="click: function(data, event){ clickDelete(id); }">
                         <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('Delete')?>" />
                     </a>
+                    <form method="POST" data-bind="attr: {action: '#delete/'+id+'/'+$root.page()}">
+                        <input type="hidden" name="id" data-bind="value: id" />
+                        <input type="hidden" name="page" data-bind="value: $root.page()" />
+                        <input type="submit" data-bind="attr: {id: 'del_'+id}, visible: false" />
+                    </form>
                 </td>
             </tr>
-        <?php endforeach; ?>
-    </table>
-    <?=$this->paginationControl($this->categories, 'Sliding', 'paginator/sliding', [
-        'route' => 'admin/category',
-        'id' => $this->parent_id])?>
+            </tbody>
+            <tbody data-bind="visible: hasRecords() === false">
+            <tr><td colspan="4"><?=$this->translate('No records found');//v_todo - translate?></td></tr>
+            </tbody>
+        </table>
+        <span data-bind="html: paginator"></span>
+    </div>
+
+    <!--edit action -->
+    <span data-bind="visible: action() == 'edit' || action() == 'add', html: form()"></span>
+
 </div>
+
+<div id="url" style="display:none"><?=$this->langUrl('admin/category')?></div>
+<script src="<?=$this->basepath() . '/js/admin/category.js'?>"></script>
+
 <script type="text/javascript">
-    $('#add_button').click(function(){
-        location.href='<?=$this->langUrl('admin/category', ['action' => 'add', 'id' => $this->parent_id, 'page' => $this->page,])?>';
-    });
-    $('.del_button').click(function(){
+    function clickDelete(id){
         if(confirm('<?=$this->translate('Are you sure you want to delete this category and all listings in it?')?>')){
-            location.href=this.dataset.href;
+            document.getElementById('del_'+id).click();
         }
         return false;
-    });
+    }
 </script>

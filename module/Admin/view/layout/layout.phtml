@@ -11,6 +11,7 @@ $auth = new \Zend\Authentication\AuthenticationService();
         ->appendStylesheet($this->basePath() . '/css/bootstrap.min.css')
         ->appendStylesheet($this->basePath() .'/css/bootstrap-theme.min.css')
         ->appendStylesheet($this->basePath().'/js/admin/jquery-ui-1.11.4.custom/jquery-ui.min.css')
+        ->appendStylesheet($this->basePath().'/css/bootstrap-extend.css')
         ->appendStylesheet($this->basePath().'/css/admin/style.css')
     ."\n"
     ?>
@@ -18,6 +19,11 @@ $auth = new \Zend\Authentication\AuthenticationService();
         ->appendFile($this->basePath().'/js/jquery-2.1.4.min.js')
         ->appendFile($this->basePath() . '/js/bootstrap.min.js')
         ->appendFile($this->basePath() . '/js/admin/jquery-ui-1.11.4.custom/jquery-ui.min.js')
+        ->appendFile($this->basePath() . '/js/sammy.js')
+        ->appendFile($this->basePath() . '/bower_components/knockout/dist/knockout.js')
+        ->appendFile($this->basePath() . '/js/jquery-extend.js')
+        ->appendFile($this->basePath() . '/js/admin/view_model.js')
+        ->appendFile($this->basePath() . '/js/lib.js')
         ->appendFile($this->basePath() . '/js/admin/script.js')
     ."\n"
     ?>
@@ -89,6 +95,14 @@ $auth = new \Zend\Authentication\AuthenticationService();
                         echo $this->flashMessenger()->render($namespace, $style);
                     endforeach; ?>
                 </div>
+                <div class="messages" data-bind="visible: messages().length > 0">
+                    <div data-bind="foreach: messages">
+                        <div data-bind="attr: {class: 'alert alert-dismissible alert-' + (type == 'error' ? 'danger' : type) + ' fade in' }">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <span data-bind="text: message"></span>
+                        </div>
+                    </div>
+                </div>
                 <div class="container">
                     <?=$this->content?>
                 </div>
@@ -101,5 +115,8 @@ $auth = new \Zend\Authentication\AuthenticationService();
         </footer>
         <div class="clearfix"></div>
     </div>
+    <script type="text/javascript">
+        ko.applyBindings(viewModel);
+    </script>
 </body>
 </html>

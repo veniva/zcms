@@ -120,15 +120,19 @@ return array(
         'display_exceptions'       => true,
         'doctype'                  => 'HTML5',
         'template_map' => array(
-            'admin/layout'       => __DIR__ . '/../view/layout/layout.phtml',
-            'admin/login'        => __DIR__ . '/../view/layout/login.phtml',
-            'admin/index/index'  => __DIR__ . '/../view/admin/index/index.phtml',
-            'error/404'          => __DIR__ . '/../view/error/404.phtml',
-            'error/index'        => __DIR__ . '/../view/error/index.phtml',
-            'paginator/sliding'  => __DIR__ . '/../view/paginator/sliding.phtml',
+            'admin/layout'              => __DIR__ . '/../view/layout/layout.phtml',
+            'admin/login'               => __DIR__ . '/../view/layout/login.phtml',
+            'admin/index/index'         => __DIR__ . '/../view/admin/index/index.phtml',
+            'error/404'                 => __DIR__ . '/../view/error/404.phtml',
+            'error/index'               => __DIR__ . '/../view/error/index.phtml',
+            'paginator/sliding'         => __DIR__ . '/../view/paginator/sliding.phtml',
+            'helper/breadcrumb_admin'   => __DIR__ . '/../view/helper/breadcrumb.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
+        ),
+        'strategies' => array(
+            'ViewJsonStrategy',
         ),
     ),
     'acl' => array(

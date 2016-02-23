@@ -109,7 +109,7 @@ class Category
 
     public function getContent()
     {
-        if(!$this->isContentSorted) $this->sortContent();
+        $this->sortContent();
         return $this->content;//return collection of content
     }
 
@@ -118,21 +118,23 @@ class Category
      */
     public function sortContent()
     {
-        $categoryContentStatus = [];
-        foreach($this->content as $content){
-            if(!array_key_exists($content->getId(), $categoryContentStatus)){
-                $categoryContentStatus[$content->getId()] = $content->getLang()->getStatus();
+        if(!$this->isContentSorted){
+            $categoryContentStatus = [];
+            foreach($this->content as $content){
+                if(!array_key_exists($content->getId(), $categoryContentStatus)){
+                    $categoryContentStatus[$content->getId()] = $content->getLang()->getStatus();
+                }
             }
-        }
-        arsort($categoryContentStatus);
-        $contentCollection = clone $this->content;
-        $this->content->clear();
-        foreach($categoryContentStatus as $cID => $status){
-            foreach($contentCollection as $content){
-                if($content->getId() == $cID) $this->content->add($content);
+            arsort($categoryContentStatus);
+            $contentCollection = clone $this->content;
+            $this->content->clear();
+            foreach($categoryContentStatus as $cID => $status){
+                foreach($contentCollection as $content){
+                    if($content->getId() == $cID) $this->content->add($content);
+                }
             }
+            $this->isContentSorted = true;
         }
-        $this->isContentSorted = true;
     }
 
     /**

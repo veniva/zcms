@@ -1,8 +1,7 @@
-<?php $this->form->prepare(); ?>
-<div class="header_cont">
-    <div class="title"><?=$this->translate($this->action." a category")?></div>
-</div>
-<div class="body_cont">
+<?php
+$this->form->prepare();
+$this->form->setAttribute('action', '#'.$this->action.'/'.($this->action == 'edit' ? $this->id : $this->parent_id).'/'.$this->page);
+?>
     <?=$this->form()->openTag($this->form)?>
     <table class="list_table" width="400" cellpadding="5" cellspacing="0">
         <?php foreach($this->form->get('content')->getFieldsets() as $fieldset):?>
@@ -34,21 +33,18 @@
         </tr>
         <tr>
             <td><?=$this->translate('Parent category')?>:</td>
-            <td><?=($this->parentCategory instanceof \Application\Model\Entity\Category) ?
-                    $this->parentCategory->getSingleCategoryContent($this->defaultLangId)->getTitle() :
-                    $this->translate('Top')?></td><!--v_todo - insert a category tree select input here-->
+            <td><?=$this->parentCategoryName?></td><!--v_todo - insert a category tree select input here-->
         </tr>
         <tr>
             <td colspan="2">
                 <?=$this->formInput($this->form->get('category_csrf'))?>
                 <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
-                <small> <a href="<?=$this->langUrl('admin/category', [
-                        'id' => isset($this->parentCategory) ? $this->parentCategory->getId() : null,
-                        'page' => $this->page,
-                    ])?>"><?=$this->translate('Cancel')?></a></small>
+                <small> <a href="<?=$this->langUrl('admin/category', [],
+                        ['fragment' => $this->parent_id.'/'.$this->page])?>">
+                        <?=$this->translate('Cancel')?></a>
+                </small>
             </td>
         </tr>
     </table>
     <?=$this->form()->closeTag()?>
     <div style="height:100px;">&nbsp;</div>
-</div>

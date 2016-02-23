@@ -1,0 +1,6 @@
+{
+  "name": "zcms-frontend",
+  "dependencies": {
+    "knockout": "^3.4.0"
+  }
+}
