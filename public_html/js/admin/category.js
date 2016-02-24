@@ -52,9 +52,14 @@
             viewModel.page('');
             viewModel.form('');
             lib.get(viewModel.url+'/'+action+'Json/'+this.params.id+'/'+this.params.page, function(data){
-                viewModel.title(data.title);
-                viewModel.page(data.page);
-                viewModel.form(data.form);
+                if(typeof data.message == 'object'){
+                    self.redirect(viewModel.url+'#'+data.parent_id+'/'+self.params.page);
+                    viewModel.flashMessages([{type: data.message.type, message: data.message.text}]);
+                }else{
+                    viewModel.title(data.title);
+                    viewModel.page(data.page);
+                    viewModel.form(data.form);
+                }
             });
         });
 

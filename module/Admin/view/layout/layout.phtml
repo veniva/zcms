@@ -62,7 +62,7 @@ $auth = new \Zend\Authentication\AuthenticationService();
                 </li>
                 <li><a rel="subMenu2" href="Javascript:void(0)"><?=$this->translate('Administration')?>&nbsp;|</a>
                     <div id="subMenu2">
-                        <a href="<?=$this->langUrl('admin/default', ['controller'=>'language'])?>"><?=$this->translate('Languages')?></a>
+                        <a href="<?=$this->langUrl('admin/language', ['action' => 'list'])?>"><?=$this->translate('Languages')?></a>
                         <a href="<?=$this->langUrl('admin/default', ['controller'=>'user'])?>"><?=$this->translate('Users')?></a>
                         <a href="<?=$this->langUrl('admin/default', [
                             'controller'=>'user',

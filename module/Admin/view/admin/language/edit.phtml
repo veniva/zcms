@@ -1,57 +1,52 @@
-<?php $this->form->prepare();?>
-<div class="header_cont">
-    <div class="title"><?=$this->translate(ucfirst($this->action)." a category")?></div>
-</div>
-<div class="body_cont">
-    <?=$this->form()->openTag($this->form)?>
-    <table class="list_table" width="400" cellpadding="5" cellspacing="0">
-        <tr>
-            <td><label><?=$this->translate($this->form->get('name')->getLabel())?></label></td>
-            <td>
-                <?=$this->formInput($this->form->get('name'))?>
+<?php
+$this->form->prepare();
+$this->form->setAttribute('action', '#'.$this->action.'/'.$this->page.($this->action == 'edit' ? '/'.$this->id : ''));
+?>
+<?=$this->form()->openTag($this->form)?>
+<table class="list_table" width="400" cellpadding="5" cellspacing="0">
+    <tr>
+        <td><label><?=$this->translate($this->form->get('name')->getLabel())?></label></td>
+        <td>
+            <?=$this->formInput($this->form->get('name'))?>
+            <div class="form-error">
+                <?=$this->formElementErrors($this->form->get('name'))?>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><label><?=$this->translate($this->form->get('isoCode')->getLabel())?></label></td>
+        <td>
+            <?=$this->formSelect($this->form->get('isoCode'))?>
+            <img id="flag" src="<?=$this->basePath()?>/img/flags/<?=$this->flagCode?>.png" />
+            <div class="form-error">
+                <?=$this->formElementErrors($this->form->get('isoCode'))?>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><label><?=$this->translate($this->form->get('status')->getLabel())?></label></td>
+        <td>
+            <?php if(!$this->lang || !$this->lang->isDefault()):?>
+                <?=$this->formSelect($this->form->get('status'))?>
                 <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('name'))?>
+                    <?=$this->formElementErrors($this->form->get('status'))?>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td><label><?=$this->translate($this->form->get('isoCode')->getLabel())?></label></td>
-            <td>
-                <?=$this->formSelect($this->form->get('isoCode'))?>
-                <img id="flag" src="<?=$this->basePath()?>/img/flags/<?=$this->flagCode?>.png" />
-                <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('isoCode'))?>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td><label><?=$this->translate($this->form->get('status')->getLabel())?></label></td>
-            <td>
-                <?php if(!$this->lang || !$this->lang->isDefault()):?>
-                    <?=$this->formSelect($this->form->get('status'))?>
-                    <div class="form-error">
-                        <?=$this->formElementErrors($this->form->get('status'))?>
-                    </div>
-                <?php else: ?>
-                    <?=$this->lang->getStatusName()?>
-                <?php endif; ?>
-            </td>
-        </tr>
+            <?php else: ?>
+                <?=$this->lang->getStatusName()?>
+            <?php endif; ?>
+        </td>
+    </tr>
 
-        <tr>
-            <td colspan="2">
-                <?=$this->formInput($this->form->get('language_csrf'))?>
-                <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate(ucfirst($this->action))?></button>
-                <small> <a href="<?=$this->langUrl('admin/default', [
-                        'controller' => 'language',
-                        'page' => $this->page,
-                    ])?>"><?=$this->translate('Cancel')?></a></small>
-            </td>
-        </tr>
-    </table>
-    <?=$this->form()->closeTag()?>
-    <div style="height:100px;">&nbsp;</div>
-</div>
+    <tr>
+        <td colspan="2">
+            <?=$this->formInput($this->form->get('language_csrf'))?>
+            <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate(ucfirst($this->action))?></button>
+            <small> <a href="#<?=$this->page?>"><?=$this->translate('Cancel')?></a></small>
+        </td>
+    </tr>
+</table>
+<?=$this->form()->closeTag()?>
+<div style="height:100px;">&nbsp;</div>
 <script type="text/javascript">
     var $flagImg = $(document.getElementById('flag'));
     $flagImg.attr('src', function(){
@@ -63,6 +58,9 @@
     });
 
     $(document.getElementById('flags_select')).change(function(){
-        $flagImg.attr('src', "<?=$this->basePath()?>/img/flags/"+this.value+".png")
+        if(this.value)
+            $flagImg.attr('src', "<?=$this->basePath()?>/img/flags/"+this.value+".png");
+        else
+            $flagImg.attr('src', "<?=$this->basePath()?>/img/pixel-trans.gif");
     });
 </script>

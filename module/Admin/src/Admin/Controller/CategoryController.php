@@ -44,7 +44,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         $defaultLangId = $languageService->getDefaultLanguage()->getId();
 
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
-        $paginator = $renderer->paginationControl($categoriesPaginated, 'Sliding', 'paginator/sliding_ajax', ['id' => $parent]);
+        $paginator = $renderer->paginationControl($categoriesPaginated, 'Sliding', 'paginator/sliding_category_ajax', ['id' => $parent]);
 
         $categories = [];
         $i = 0;
@@ -73,7 +73,6 @@ class CategoryController extends AbstractRestfulController implements Translator
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
                 'parent_id' => '0',
-                'page' => $page,
             ]);
         }
 
@@ -85,7 +84,6 @@ class CategoryController extends AbstractRestfulController implements Translator
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('Wrong category ID')],
                 'parent_id' => '0',
-                'page' => $page,
             ]);
         }
         $languagesService = $serviceLocator->get('language');
@@ -111,7 +109,6 @@ class CategoryController extends AbstractRestfulController implements Translator
                 return new JsonModel([
                     'message' => ['type' => 'success', 'text' => $this->translator->translate('The category has been edited successfully')],
                     'parent_id' => $parentCategoryID,
-                    'page' => $page,
                 ]);
             }
         }
@@ -152,7 +149,6 @@ class CategoryController extends AbstractRestfulController implements Translator
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('You must insert at least one language in order to add categories')],
                 'parent_id' => $parentCategoryID,
-                'page' => $page,
             ]);
         }
         $categoryEntity = new Category();
@@ -192,7 +188,6 @@ class CategoryController extends AbstractRestfulController implements Translator
                 return new JsonModel([
                     'message' => ['type' => 'success', 'text' => $this->translator->translate('The new category was added successfully')],
                     'parent_id' => $parentCategoryID,
-                    'page' => $page,
                 ]);
             }
         }

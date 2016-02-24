@@ -42,6 +42,24 @@ return array(
                             ),
                         ),
                     ),
+                    'language' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route'    => '[/:lang]/language[/:action][/:page[/:id]]',
+                            'constraints' => array(
+                                'lang'          => '[a-zA-Z]{2}',
+                                'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'page'          => '[0-9]*',
+                                'id'            => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                '__NAMESPACE__' => 'Admin\Controller',
+                                'controller'    => 'language',
+                                'action'        => null,
+                                'page'          => 1,
+                            ),
+                        ),
+                    ),
                     'category' => array(
                         'type' => 'Segment',
                         'options' => array(

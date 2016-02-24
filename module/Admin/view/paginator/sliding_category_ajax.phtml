@@ -9,7 +9,7 @@ See http://developer.yahoo.com/ypatterns/pattern.php?pattern=itempagination
 
         <!-- First page link -->
         <?php if (isset($this->previous)): ?>
-            <a href="#<?=$this->first?>">
+            <a href="#<?=$this->id?>/<?=$this->first?>">
                 <?=$this->translate('First')?>
             </a> |
         <?php else: ?>
@@ -18,7 +18,7 @@ See http://developer.yahoo.com/ypatterns/pattern.php?pattern=itempagination
 
         <!-- Previous page link -->
         <?php if (isset($this->previous)): ?>
-            <a href="#<?=$this->previous?>">
+            <a href="#<?=$this->id?>/<?=$this->previous?>">
                 &lt; <?=$this->translate('Previous')?>
             </a> |
         <?php else: ?>
@@ -27,8 +27,8 @@ See http://developer.yahoo.com/ypatterns/pattern.php?pattern=itempagination
 
         <!-- Next page link -->
         <?php if (isset($this->next)): ?>
-            <a href="#<?=$this->next?>">
-        <?=$this->translate('Next')?> &gt;
+            <a href="#<?=$this->id?>/<?=$this->next?>">
+                <?=$this->translate('Next')?> &gt;
             </a> |
         <?php else: ?>
             <span class="disabled"><?=$this->translate('Next')?> &gt;</span> |
@@ -36,8 +36,8 @@ See http://developer.yahoo.com/ypatterns/pattern.php?pattern=itempagination
 
         <!-- Last page link -->
         <?php if (isset($this->next)): ?>
-            <a href="#<?=$this->last?>">
-        <?=$this->translate('Last')?>
+            <a href="#<?=$this->id?>/<?=$this->last?>">
+                <?=$this->translate('Last')?>
             </a>
         <?php else: ?>
             <span class="disabled"><?=$this->translate('Last')?></span>
