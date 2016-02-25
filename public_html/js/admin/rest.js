@@ -5,9 +5,10 @@
     viewModel.url = document.getElementById('url').textContent;
 
     //list related
-    viewModel.languageData = ko.observableArray();
+    viewModel.listData = ko.observableArray();
     viewModel.hasRecords = ko.observable(null);
     viewModel.paginator = ko.observable();
+    viewModel.various = ko.observable();
 
     //edit related
     viewModel.form = ko.observable();
@@ -16,9 +17,11 @@
         lib.showMessages();
         viewModel.action('list');
         viewModel.title(data.title);
+        if(data.various)
+            viewModel.various(data.various);
 
-        if(data.languages.length){
-            viewModel.languageData(data.languages);
+        if(data.lists.length){
+            viewModel.listData(data.lists);
             viewModel.hasRecords(true);
         }else{
             viewModel.hasRecords(false)

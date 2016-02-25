@@ -1,80 +1,70 @@
-<?php $this->form->prepare()?>
-<div class="header_cont">
-    <div class="title">
-        <?php if(!$this->account_settings):?>
-            <?=$this->translate(ucfirst($this->action)." user")?></div>
-        <?php else: ?>
-    <?=$this->translate('Account settings')?></div>
-        <?php endif; ?>
-</div>
-<div class="body_cont">
-    <?=$this->form()->openTag($this->form)?>
-    <table class="list_table" width="400" cellpadding="5" cellspacing="0">
-        <tr>
-            <td><label><?=$this->translate($this->form->get('uname')->getLabel())?></label></td>
-            <td>
-                <?=$this->formInput($this->form->get('uname'))?>
-                <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('uname'))?>
-                </div>
-            </td>
-        </tr>
-        <tr>
-        <td><label><?=$this->translate($this->form->get('email')->getLabel())?></label></td>
+<?php
+$this->form->prepare();
+$this->form->setAttribute('action', '#'.$this->action.'/'.$this->page.($this->action == 'edit' ? '/'.$this->id : ''));
+?>
+<?=$this->form()->openTag($this->form)?>
+<table class="list_table" width="400" cellpadding="5" cellspacing="0">
+    <tr>
+        <td><label><?=$this->translate($this->form->get('uname')->getLabel())?></label></td>
         <td>
-                <?=$this->formInput($this->form->get('email'))?>
+            <?=$this->formInput($this->form->get('uname'))?>
+            <div class="form-error">
+                <?=$this->formElementErrors($this->form->get('uname'))?>
+            </div>
+        </td>
+    </tr>
+    <tr>
+    <td><label><?=$this->translate($this->form->get('email')->getLabel())?></label></td>
+    <td>
+            <?=$this->formInput($this->form->get('email'))?>
+            <div class="form-error">
+                <?=$this->formElementErrors($this->form->get('email'))?>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><label><?=$this->translate($this->form->get('role')->getLabel())?></label></td>
+        <td>
+            <?php if(!$this->editOwn): ?>
+                <?=$this->formSelect($this->form->get('role'))?>
                 <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('email'))?>
+                    <?=$this->formElementErrors($this->form->get('role'))?>
                 </div>
-            </td>
-        </tr>
+            <?php else: ?>
+                <?=$this->user->getRoleName()?>
+            <?php endif; ?>
+        </td>
+    </tr>
+    <?php if($this->action == 'edit'): ?>
         <tr>
-            <td><label><?=$this->translate($this->form->get('role')->getLabel())?></label></td>
-            <td>
-                <?php if(!$this->editOwn): ?>
-                    <?=$this->formSelect($this->form->get('role'))?>
-                    <div class="form-error">
-                        <?=$this->formElementErrors($this->form->get('role'))?>
-                    </div>
-                <?php else: ?>
-                    <?=$this->user->getRoleName()?>
-                <?php endif; ?>
-            </td>
+            <td colspan="2"><?=$this->translate('Fill in the following only if you want to change password')?>:</td>
         </tr>
-        <?php if($this->action == 'edit'): ?>
-            <tr>
-                <td colspan="2"><?=$this->translate('Fill in the following only if you want to change password')?>:</td>
-            </tr>
-        <?php endif; ?>
-        <tr>
-            <td><label><?=$this->translate($this->form->get('password_fields')->get('password')->getLabel())?></label></td>
-            <td>
-                <?=$this->formInput($this->form->get('password_fields')->get('password'))?>
-                <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('password_fields')->get('password'))?>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td><label><?=$this->translate($this->form->get('password_fields')->get('password_repeat')->getLabel())?></label></td>
-            <td>
-                <?=$this->formInput($this->form->get('password_fields')->get('password_repeat'))?>
-                <div class="form-error">
-                    <?=$this->formElementErrors($this->form->get('password_fields')->get('password_repeat'))?>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <?=$this->formInput($this->form->get('user_csrf'))?>
-                <button class="btn btn-primary btn-xs" name="submit"><?=$this->translate(ucfirst($this->action))?></button>
-                <small> <a href="<?=$this->langUrl('admin/default', [
-                        'controller' => 'user',
-                        'page' => $this->page,
-                    ])?>"><?=$this->translate('Cancel')?></a></small>
-            </td>
-        </tr>
-    </table>
-    <?=$this->form()->closeTag()?>
-    <div style="height:100px;">&nbsp;</div>
-</div>
+    <?php endif; ?>
+    <tr>
+        <td><label><?=$this->translate($this->form->get('password_fields')->get('password')->getLabel())?></label></td>
+        <td>
+            <?=$this->formInput($this->form->get('password_fields')->get('password'))?>
+            <div class="form-error">
+                <?=$this->formElementErrors($this->form->get('password_fields')->get('password'))?>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><label><?=$this->translate($this->form->get('password_fields')->get('password_repeat')->getLabel())?></label></td>
+        <td>
+            <?=$this->formInput($this->form->get('password_fields')->get('password_repeat'))?>
+            <div class="form-error">
+                <?=$this->formElementErrors($this->form->get('password_fields')->get('password_repeat'))?>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <?=$this->formInput($this->form->get('user_csrf'))?>
+            <button class="btn btn-primary btn-xs" name="submit"><?=$this->translate(ucfirst($this->action))?></button>
+            <small> <a href="#<?=$this->page?>"><?=$this->translate('Cancel')?></a></small>
+        </td>
+    </tr>
+</table>
+<?=$this->form()->closeTag()?>
+<div style="height:100px;">&nbsp;</div>

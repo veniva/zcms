@@ -54,7 +54,7 @@ class LanguageController extends AbstractRestfulController implements Translator
         return new JsonModel([
             'title' => $this->translator->translate('Languages'),
             'page' => $pageNumber,
-            'languages' => $languages,
+            'lists' => $languages,
             'paginator' => $paginator
         ]);
     }
@@ -80,8 +80,8 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     /**
      * Displays the form
-     * @param $id NULL - add ELSE edit
      * @param $page
+     * @param $id NULL - add ELSE edit
      * @return JsonModel
      */
     protected function addEditLanguage($page, $id = null)

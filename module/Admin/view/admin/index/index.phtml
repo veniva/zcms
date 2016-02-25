@@ -23,18 +23,16 @@
             <?=$this->translate('Languages')?>
         </div>
         <div class="icons">
-            <a class="btn btn-default btn-lg dashboard_buttons" href="<?=$this->langUrl('admin/default', ['controller'=>'user'])?>" title="<?=$this->translate('Users')?>">
+            <a class="btn btn-default btn-lg dashboard_buttons" href="<?=$this->langUrl('admin/user', ['action'=>'list'])?>" title="<?=$this->translate('Users')?>">
                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
             </a>
             <br />
             <?=$this->translate('Users')?>
         </div>
         <div class="icons">
-            <a class="btn btn-default btn-lg dashboard_buttons" href="<?=$this->langUrl('admin/default', [
-                'controller'=>'user',
-                'action' => 'edit',
-                'id' => $this->auth->getIdentity()->getId()
-            ], ['query' => ['account_settings' => 1]])?>" title="<?=$this->translate('Account settings')?>">
+            <a class="btn btn-default btn-lg dashboard_buttons" href="<?=$this->langUrl('admin/user', [
+                'action' => 'list',
+            ], ['fragment' => 'edit/1/'.$auth->getIdentity()->getId()])?>" title="<?=$this->translate('Account settings')?>">
                 <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
             </a>
             <br />

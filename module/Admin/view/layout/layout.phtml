@@ -63,12 +63,10 @@ $auth = new \Zend\Authentication\AuthenticationService();
                 <li><a rel="subMenu2" href="Javascript:void(0)"><?=$this->translate('Administration')?>&nbsp;|</a>
                     <div id="subMenu2">
                         <a href="<?=$this->langUrl('admin/language', ['action' => 'list'])?>"><?=$this->translate('Languages')?></a>
-                        <a href="<?=$this->langUrl('admin/default', ['controller'=>'user'])?>"><?=$this->translate('Users')?></a>
-                        <a href="<?=$this->langUrl('admin/default', [
-                            'controller'=>'user',
-                            'action' => 'edit',
-                            'id' => $auth->getIdentity()->getId()
-                        ], ['query' => ['account_settings' => 1]])?>"><?=$this->translate('Account settings')?></a>
+                        <a href="<?=$this->langUrl('admin/user', ['action'=>'list'])?>"><?=$this->translate('Users')?></a>
+                        <a href="<?=$this->langUrl('admin/user', [
+                            'action' => 'list',
+                        ], ['fragment' => 'edit/1/'.$auth->getIdentity()->getId()])?>"><?=$this->translate('Account settings')?></a>
                     </div>
                 </li>
             </ul>

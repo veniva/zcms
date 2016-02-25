@@ -9,16 +9,23 @@
 namespace Admin\Controller;
 
 use Application\Model\Entity\User;
+use Zend\Authentication\AuthenticationService;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\Controller\AbstractRestfulController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class UserController extends AbstractActionController implements TranslatorAwareInterface
+class UserController extends AbstractRestfulController implements TranslatorAwareInterface
 {
     use TranslatorAwareTrait;
 
-    public function indexAction()
+    public function listAction()
+    {
+        return new ViewModel();
+    }
+
+    public function getList()
     {
         $pageNumber = $this->params()->fromRoute('page');
         $entityManager = $this->getServiceLocator()->get('entity-manager');
@@ -27,49 +34,125 @@ class UserController extends AbstractActionController implements TranslatorAware
         $usersPaginated = $userRepo->getUsersPaginated();
         $usersPaginated->setCurrentPageNumber($pageNumber);
 
-        return [
+        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
+        $paginator = $renderer->paginationControl($usersPaginated, 'Sliding', 'paginator/sliding_ajax');
+
+        $i = 0;
+        $userData = [];
+        foreach($usersPaginated as $user){
+            $userData[$i]['id'] = $user->getId();
+            $userData[$i]['uname'] = $user->getUname();
+            $userData[$i]['email'] = $user->getEmail();
+            $userData[$i]['role'] = $user->getRoleName();
+            $userData[$i]['reg_date'] = $user->getRegDate('m-d-Y');
+            $i++;
+        }
+
+        $auth = new AuthenticationService();
+        return new JsonModel([
+            'title' => $this->getTranslator()->translate('Users'),
             'page' => $pageNumber,
-            'users' => $usersPaginated,
-        ];
+            'lists' => $userData,
+            'paginator' => $paginator,
+            'various' => ['identity_id' => $auth->getIdentity()->getId()]
+        ]);
     }
 
-    public function editAction(){
+    public function editJsonAction(){
         $id = $this->params()->fromRoute('id', null);
         $page = $this->params()->fromRoute('page');
-        if(!$id)
-            return $this->redir()->toRoute('admin/default', ['controller' => 'user', 'page' => $page]);
+        if(empty($id)){
+            return new JsonModel([
+                'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
+            ]);
+        }
 
-        return $this->addEditUser($id, $page);
+        return $this->addEditUser($page, $id);
     }
 
-    public function addAction()
+    public function addJsonAction()
     {
         $page = $this->params()->fromRoute('page');
-
-        $return = $this->addEditUser(null, $page);
-        if($return instanceof ViewModel) {
-            $return->setTemplate('admin/user/edit');
-        }
-        return $return;
+        return $this->addEditUser($page);
     }
 
-    public function addEditUser($id, $page)
+    /**
+     * Displays the form
+     * @param $page
+     * @param $id NULL - add ELSE edit
+     * @return JsonModel
+     */
+    public function addEditUser($page, $id = null)
     {
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $user = $this->getServiceLocator()->get('user-entity');//accessed it from service manager as this way the User::setPasswordAdapter() is initialized
         if($id){
             $user = $entityManager->find(get_class($user), $id);
             if(!$user)
-                return $this->redirMissingUser($id, $page);
+                return $this->redirMissingUser($id);
         }
 
         $loggedInUser = $this->getServiceLocator()->get('current-user');
         $editOwn = $loggedInUser->getId() == $user->getId();
         //security check - is the edited user really having a role equal or less privileged to the editing user
         if(!$loggedInUser->canEdit($user->getRole()))
-            return $this->redirToList($page, 'You have no right to edit this user', 'error');
+            return $this->redirToList('You have no right to edit this user', 'error');
 
         $action = $id ? 'edit' : 'add';
+        $form = new \Admin\Form\User($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
+        $form->bind($user);
+
+        return $this->renderData($action, $page, $form, $editOwn, $user);
+    }
+
+    protected function renderData($action, $page, \Admin\Form\User $form, $editOwn, User $user)
+    {
+        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
+        $viewModel = new ViewModel([
+            'action' => $action,
+            'id' => $user->getId(),
+            'page' => $page,
+            'form' => $form,
+            'editOwn' => $editOwn,
+            'user' => $user,
+        ]);
+        $viewModel->setTemplate('admin/user/edit');
+
+        return new JsonModel([
+            'title' => $this->translator->translate(ucfirst($action).' a user'),
+            'form' => $renderer->render($viewModel),
+            'page' => $page
+        ]);
+    }
+
+    public function update($id)
+    {
+        $page = $this->params()->fromRoute('page');
+        return $this->handleCreateUpdate($page, $id);
+    }
+
+    public function create()
+    {
+        $page = $this->params()->fromRoute('page');
+        return $this->handleCreateUpdate($page);
+    }
+
+    public function handleCreateUpdate($page, $id = null)
+    {
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $user = $this->getServiceLocator()->get('user-entity');//accessed it from service manager as this way the User::setPasswordAdapter() is initialized
+        if($id){
+            $user = $entityManager->find(get_class($user), $id);
+            if(!$user)
+                return $this->redirMissingUser($id);
+        }
+
+        $loggedInUser = $this->getServiceLocator()->get('current-user');
+        $editOwn = $loggedInUser->getId() == $user->getId();
+        //security check - is the edited user really having a role equal or less privileged to the editing user
+        if(!$loggedInUser->canEdit($user->getRole()))
+            return $this->redirToList('You have no right to edit this user', 'error');
+
         $currentUserName = $user->getUname();
         $currentEmail = $user->getEmail();
         $form = new \Admin\Form\User($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
@@ -77,44 +160,40 @@ class UserController extends AbstractActionController implements TranslatorAware
 
         $request = $this->getRequest();
         if($request->isPost()){
-            $form->setData($request->getPost());
-            if($form->isValid($action, $currentUserName, $currentEmail, $editOwn)){
-                //security check - is the new role equal or less privileged to the editing user
-                $newRole = $form->getData()->getRole();
-                if(!$loggedInUser->canEdit($newRole))
-                    return $this->redirToList($page, 'You have no right to assign this user role', 'error');
-
-                if($editOwn && $request->getPost()['role'])
-                    return $this->redirToList($page, 'You have no right to assign new role to yourself', 'error');
-
-                $newPassword = $form->getInputFilter()->get('password_fields')->get('password')->getValue();
-                if($newPassword)
-                    $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
-                $user->setRegDate();
-                $entityManager->persist($user);
-                $entityManager->flush();
-                return $this->redirToList($page, 'The user has been '.$action.'ed successfully');
-            }else{
-                $this->flashMessenger()->addErrorMessage($this->translator->translate("Please check the form for errors"));
-            }
+            $data = $request->getPost();
+        }else{//is PUT
+            $data = [];
+            parse_str($request->getContent(), $data);
         }
 
-        return new ViewModel([
-            'action' => $action,
-            'page' => $page,
-            'form' => $form,
-            'editOwn' => $editOwn,
-            'user' => $user,
-            'account_settings' => $this->params()->fromQuery('account_settings', false),
-        ]);
+        $form->setData($data);
+        $action = $id ? 'edit' : 'add';
+        if($form->isValid($action, $currentUserName, $currentEmail, $editOwn)){
+            //security check - is the new role equal or less privileged to the editing user
+            $newRole = $form->getData()->getRole();
+            if(!$loggedInUser->canEdit($newRole))
+                return $this->redirToList('You have no right to assign this user role', 'error');
+
+            if($editOwn && $request->getPost()['role'])
+                return $this->redirToList('You have no right to assign new role to yourself', 'error');
+
+            $newPassword = $form->getInputFilter()->get('password_fields')->get('password')->getValue();
+            if($newPassword)
+                $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
+            $user->setRegDate();
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirToList('The user has been '.$action.'ed successfully');
+        }
+
+        return $this->renderData($action, $page, $form, $editOwn, $user);
     }
 
-    public function deleteAction()
+    public function delete()
     {
         $id = $this->params()->fromRoute('id', null);
-        $page = $this->params()->fromRoute('page');
         if(empty($id)){
-            return $this->redirMissingUser($id, $page);
+            return $this->redirMissingUser($id);
         }
 
         $serviceLocator = $this->getServiceLocator();
@@ -122,30 +201,26 @@ class UserController extends AbstractActionController implements TranslatorAware
 
         $user = $entityManager->find(get_class(new User), $id);
         if(!$user instanceof User){
-            return $this->redirMissingUser($id, $page);
+            return $this->redirMissingUser($id);
         }
         $entityManager->remove($user);//contained listings are cascade removed from the ORM!!
         $entityManager->flush();
 
-        return $this->redirToList($page, 'The user was removed successfully');
+        return $this->redirToList('The user was removed successfully');
     }
 
-    protected function redirMissingUser($id, $page)
+    protected function redirMissingUser($id)
     {
-        return $this->redirToList($page, 'There is no user with id = '.$id, 'error');
+        return $this->redirToList('There is no user with id = '.$id, 'error');
     }
 
-    protected function redirToList($page = null, $message = null, $messageType = 'success')
+    protected function redirToList($message = null, $messageType = 'success')
     {
         if(!in_array($messageType, ['success', 'error', 'info']))
             throw new \InvalidArgumentException('Un-existing message type');
 
-        if($message)
-            $this->flashMessenger()->addMessage($this->translator->translate($message), $messageType);
-
-        return $this->redir()->toRoute('admin/default', [
-            'controller' => 'user',
-            'page' => $page,
+        return new JsonModel([
+            'message' => ['type' => $messageType, 'text' => $this->translator->translate($message)],
         ]);
     }
 }

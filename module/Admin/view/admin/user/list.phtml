@@ -10,23 +10,30 @@
             <thead>
             <tr>
                 <th width="20">#</th>
-                <th width="20"><?= $this->translate('Flag') ?></th>
-                <th><?= $this->translate('Language name') ?></th>
-                <th width="100"><?= $this->translate('Status') ?></th>
-                <th width="70"><?= $this->translate('Action') ?></th>
+                <th><?=$this->translate('User Name')?></th>
+                <th><?=$this->translate('Email')?></th>
+                <th width="100"><?=$this->translate('Role')?></th>
+                <th width="100"><?=$this->translate('Registered')?></th>
+                <th width="70"><?=$this->translate('Action')?></th>
             </tr>
             </thead>
             <tbody data-bind="visible: hasRecords() === true, foreach: listData">
             <tr>
                 <td data-bind="text: id"></td>
-                <td><img data-bind="attr: {src: '<?=$this->basePath()?>/img/flags/'+isoCode+'.png'}" /></td>
-                <td data-bind="text: name"></td>
-                <td data-bind="text: statusName"></td>
+                <td>
+                    <span data-bind="text: uname"></span>
+                    <span data-bind="if: $root.various().identity_id == id">
+                        <span style="font-weight: bold">(<?=$this->translate('You')?>)</span>
+                    </span>
+                </td>
+                <td data-bind="text: email"></td>
+                <td data-bind="text: role"></td>
+                <td data-bind="text: reg_date"></td>
                 <td>
                     <a class="img" data-bind="attr: {href: '#edit/'+$root.page()+'/'+id}">
                         <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
                     </a>
-                    <span data-bind="if: !isDefault">
+                    <span data-bind="if: $root.various().identity_id != id">
                         <a class="img del_button" href="#" data-bind="click: function(data, event){ clickDelete(id); }">
                             <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
                         </a>
@@ -39,20 +46,17 @@
                 </td>
             </tr>
             </tbody>
-            <tbody data-bind="visible: hasRecords() === false">
-            <tr><td colspan="4"><?=$this->translate('No records found');//v_todo - translate?></td></tr>
-            </tbody>
         </table>
         <span data-bind="html: paginator"></span>
     </div>
     <!--edit/add action -->
     <span data-bind="visible: action() == 'edit' || action() == 'add', html: form()"></span>
 </div>
-<span style="display:none" id="url"><?=$this->langUrl("admin/language")?></span>
+<span style="display:none" id="url"><?=$this->langUrl("admin/user")?></span>
 <script type="text/javascript" src="<?=$this->basePath()?>/js/admin/rest.js"></script>
 <script type="text/javascript">
     function clickDelete(id){
-        if(confirm('<?=$this->translate('Are you sure you want to delete this language?')?>')){
+        if(confirm('<?=$this->translate('Are you sure you want to delete this user?')?>')){
             document.getElementById('del_'+id).click();
         }
         return false;

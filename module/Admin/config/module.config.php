@@ -26,19 +26,16 @@ return array(
                     'default' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route'    => '/[:lang/][:controller[/:action][/:page[/:id]]]',
+                            'route'    => '/[:lang/][:controller[/:action]]',
                             'constraints' => array(
                                 'lang'          => '[a-zA-Z]{2}',
                                 'controller'    => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'page'          => '[0-9]*',
-                                'id'            => '[0-9]*',
                             ),
                             'defaults' => array(
                                 '__NAMESPACE__' => 'Admin\Controller',
                                 'controller'    => 'index',
                                 'action'        => 'index',
-                                'page'          => 1,
                             ),
                         ),
                     ),
@@ -55,6 +52,24 @@ return array(
                             'defaults' => array(
                                 '__NAMESPACE__' => 'Admin\Controller',
                                 'controller'    => 'language',
+                                'action'        => null,
+                                'page'          => 1,
+                            ),
+                        ),
+                    ),
+                    'user' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route'    => '[/:lang]/user[/:action][/:page[/:id]]',
+                            'constraints' => array(
+                                'lang'          => '[a-zA-Z]{2}',
+                                'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'page'          => '[0-9]*',
+                                'id'            => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                '__NAMESPACE__' => 'Admin\Controller',
+                                'controller'    => 'user',
                                 'action'        => null,
                                 'page'          => 1,
                             ),
