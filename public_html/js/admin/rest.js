@@ -28,6 +28,7 @@
         }
         viewModel.page(data.page);
         viewModel.paginator(data.paginator);
+        viewModel.form(null);
     };
 
     var handleAddEditResponse = function(data, self, removeOverlay){
@@ -63,7 +64,6 @@
             viewModel.action('edit');
             viewModel.title('');
             viewModel.page('');
-            viewModel.form('');
             lib.get(viewModel.url+'/'+action+'Json/'+this.params['page']+'/'+this.params['id'], function(data){
                 handleAddEditResponse(data, self);
             });
