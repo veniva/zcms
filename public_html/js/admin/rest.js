@@ -1,7 +1,7 @@
 (function(){
     viewModel.action = ko.observable();
     viewModel.title = ko.observable();
-    viewModel.page = ko.observable();
+    viewModel.page = ko.observable(1);
     viewModel.url = document.getElementById('url').textContent;
 
     //list related
@@ -26,18 +26,16 @@
         }else{
             viewModel.hasRecords(false)
         }
-        viewModel.page(data.page);
         viewModel.paginator(data.paginator);
         viewModel.form(null);
     };
 
     var handleAddEditResponse = function(data, self, removeOverlay){
         if(typeof data.message == 'object'){
-            self.redirect(viewModel.url+'/list#'+self.params['page']);
+            self.redirect(viewModel.url+'/list#'+viewModel.page());
             viewModel.flashMessages([{type: data.message.type, message: data.message.text}]);
         }else{
             viewModel.title(data.title);
-            viewModel.page(self.params['page']);
             viewModel.form(data.form);
             if(removeOverlay) lib.removeOverlay();
         }
@@ -46,31 +44,43 @@
     Sammy(function(){
         //calls getList() with no page number
         this.get(viewModel.url+'/list', function(){
-            lib.get(viewModel.url, function(data){
+            lib.get(viewModel.url, {page: viewModel.page()}, function(data){
                 handleListData(data);
             });
         });
         //calls getList() with page number
-        this.get(viewModel.url+'/list#:page', function(){
-            lib.get(viewModel.url+'/'+this.params.page, function(data){
+        this.get(/#([\d]+)/, function(){
+            var page = this.params['splat'][0];
+            viewModel.page(page);
+            lib.get(viewModel.url, {page: viewModel.page()}, function(data){
                 handleListData(data);
             });
         });
 
-        //calls editJson() or addJson() to display add/edit form
-        this.get('#:action/:page/:id', function(){
+        //calls editJson() to display edit form
+        this.get('#edit/:id', function(){
             var self = this;
-            var action = this.params['action'];
+            viewModel.title(null);
             viewModel.action('edit');
-            viewModel.title('');
-            viewModel.page('');
-            lib.get(viewModel.url+'/'+action+'Json/'+this.params['page']+'/'+this.params['id'], function(data){
+            lib.get(viewModel.url+'/editJson', {
+                id: this.params['id']
+            }, function(data){
+                handleAddEditResponse(data, self);
+            });
+        });
+
+        //calls addJson() to display add form
+        this.get('#add', function(){
+            var self = this;
+            viewModel.action('add');
+            viewModel.title(null);
+            lib.get(viewModel.url+'/addJson', function(data){
                 handleAddEditResponse(data, self);
             });
         });
 
         //calls update()
-        this.post('#edit/:page/:id', function(){
+        this.post('#edit/:id', function(){
             var self = this;
             var formData = {};
             for(var prop in this.params){
@@ -79,7 +89,7 @@
             lib.overlay();
             $.ajax({
                 method: 'PUT',
-                url: viewModel.url+'/'+this.params['page']+'/'+this.params['id'],
+                url: viewModel.url+'/'+this.params['id'],
                 data: formData,
                 success: function(data){
                     handleAddEditResponse(data, self, true);
@@ -88,27 +98,27 @@
         });
 
         //calls create()
-        this.post('#add/:page', function(){
+        this.post('#add', function(){
             var self = this;
             var formData = {};
             for(var prop in this.params){
                 if(this.params.hasOwnProperty(prop)) formData[prop] = this.params[prop];
             }
             lib.overlay();
-            $.post(viewModel.url+'/'+this.params['page'], formData, function(data){
+            $.post(viewModel.url, formData, function(data){
                 handleAddEditResponse(data, self, true);
             });
         });
 
         //calls delete()
-        this.post('#delete/:page/:id', function(){
+        this.post('#delete/:id', function(){
             var self = this;
             lib.overlay();
             $.ajax({
                 method: 'DELETE',
-                url: viewModel.url+'/'+this.params['page']+'/'+this.params['id'],
+                url: viewModel.url+'/'+this.params['id'],
                 success: function(data){
-                    self.redirect(viewModel.url+'/list#'+self.params['page']);
+                    self.redirect(viewModel.url+'/list#'+viewModel.page());
                     viewModel.flashMessages([{type: data.message.type, message: data.message.text}]);
                 }
             });

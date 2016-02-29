@@ -70,7 +70,6 @@ class ListingController extends AbstractRestfulController implements TranslatorA
             'lists' => $listingsData,
             'paginator' => $paginator,
             'parentCategory' => $parentCategory,
-            'page' => $page,
             'defaultLanguageID' => $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId(),
         ]);
     }

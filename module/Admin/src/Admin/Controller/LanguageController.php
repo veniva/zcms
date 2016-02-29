@@ -30,7 +30,7 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function getList()
     {
-        $pageNumber = $this->params()->fromRoute('page');
+        $pageNumber = $this->params()->fromQuery('page', 1);
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $languageRepo = $entityManager->getRepository(get_class(new Lang()));
 
@@ -53,7 +53,6 @@ class LanguageController extends AbstractRestfulController implements Translator
 
         return new JsonModel([
             'title' => $this->translator->translate('Languages'),
-            'page' => $pageNumber,
             'lists' => $languages,
             'paginator' => $paginator
         ]);
@@ -61,30 +60,27 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function editJsonAction()
     {
-        $id = $this->params()->fromRoute('id', null);
-        $page = $this->params()->fromRoute('page');
+        $id = $this->params()->fromQuery('id', null);
         if(empty($id)){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
             ]);
         }
 
-        return $this->addEditLanguage($page, $id);
+        return $this->addEditLanguage($id);
     }
 
     public function addJsonAction()
     {
-        $page = $this->params()->fromRoute('page');
-        return $this->addEditLanguage($page);
+        return $this->addEditLanguage();
     }
 
     /**
      * Displays the form
-     * @param $page
      * @param $id NULL - add ELSE edit
      * @return JsonModel
      */
-    protected function addEditLanguage($page, $id = null)
+    protected function addEditLanguage($id = null)
     {
         $action = $id ? 'edit' : 'add';
         $entityManager = $this->getServiceLocator()->get('entity-manager');
@@ -102,17 +98,16 @@ class LanguageController extends AbstractRestfulController implements Translator
 
         $form = new LanguageForm($this->getServiceLocator());
         $form->bind($language);
-        return $this->renderData($action, $language, $page, $form);
+        return $this->renderData($action, $language, $form);
 
     }
 
-    protected function renderData($action, $language, $page, $form)
+    protected function renderData($action, $language, $form)
     {
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
         $viewModel = new ViewModel([
             'action' => $action,
             'id' => $language->getId(),
-            'page' => $page,
             'form' => $form,
             'lang' => !empty($language->getIsoCode()) ? $language : null,
             'flagCode' => $this->getRequest()->isPost() ? $this->params()->fromPost('isoCode') :
@@ -123,23 +118,20 @@ class LanguageController extends AbstractRestfulController implements Translator
         return new JsonModel([
             'title' => $this->translator->translate(ucfirst($action).' a language'),
             'form' => $renderer->render($viewModel),
-            'page' => $page
         ]);
     }
 
     public function update($id)
     {
-        $page = $this->params()->fromRoute('page');
-        return $this->handleCreateUpdate($page, $id);
+        return $this->handleCreateUpdate($id);
     }
 
     public function create()
     {
-        $page = $this->params()->fromRoute('page');
-        return $this->handleCreateUpdate($page);
+        return $this->handleCreateUpdate();
     }
 
-    public function handleCreateUpdate($page, $id = null)
+    public function handleCreateUpdate($id = null)
     {
         $action = $id ? 'edit' : 'add';
         $entityManager = $this->getServiceLocator()->get('entity-manager');
@@ -249,7 +241,7 @@ class LanguageController extends AbstractRestfulController implements Translator
             ]);
         }
 
-        return $this->renderData($action, $language, $page, $form);
+        return $this->renderData($action, $language, $form);
     }
 
     public function delete()

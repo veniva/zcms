@@ -27,7 +27,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
 
     public function getList()
     {
-        $pageNumber = $this->params()->fromRoute('page');
+        $pageNumber = $this->params()->fromQuery('page', 1);
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $userRepo = $entityManager->getRepository(get_class(new User()));
 
@@ -51,7 +51,6 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         $auth = new AuthenticationService();
         return new JsonModel([
             'title' => $this->getTranslator()->translate('Users'),
-            'page' => $pageNumber,
             'lists' => $userData,
             'paginator' => $paginator,
             'various' => ['identity_id' => $auth->getIdentity()->getId()]
@@ -59,30 +58,27 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
     }
 
     public function editJsonAction(){
-        $id = $this->params()->fromRoute('id', null);
-        $page = $this->params()->fromRoute('page');
+        $id = $this->params()->fromQuery('id', null);
         if(empty($id)){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
             ]);
         }
 
-        return $this->addEditUser($page, $id);
+        return $this->addEditUser($id);
     }
 
     public function addJsonAction()
     {
-        $page = $this->params()->fromRoute('page');
-        return $this->addEditUser($page);
+        return $this->addEditUser();
     }
 
     /**
      * Displays the form
-     * @param $page
      * @param $id NULL - add ELSE edit
      * @return JsonModel
      */
-    public function addEditUser($page, $id = null)
+    public function addEditUser($id = null)
     {
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $user = $this->getServiceLocator()->get('user-entity');//accessed it from service manager as this way the User::setPasswordAdapter() is initialized
@@ -102,16 +98,15 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         $form = new \Admin\Form\User($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
         $form->bind($user);
 
-        return $this->renderData($action, $page, $form, $editOwn, $user);
+        return $this->renderData($action, $form, $editOwn, $user);
     }
 
-    protected function renderData($action, $page, \Admin\Form\User $form, $editOwn, User $user)
+    protected function renderData($action, \Admin\Form\User $form, $editOwn, User $user)
     {
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
         $viewModel = new ViewModel([
             'action' => $action,
             'id' => $user->getId(),
-            'page' => $page,
             'form' => $form,
             'editOwn' => $editOwn,
             'user' => $user,
@@ -121,23 +116,20 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         return new JsonModel([
             'title' => $this->translator->translate(ucfirst($action).' a user'),
             'form' => $renderer->render($viewModel),
-            'page' => $page
         ]);
     }
 
     public function update($id)
     {
-        $page = $this->params()->fromRoute('page');
-        return $this->handleCreateUpdate($page, $id);
+        return $this->handleCreateUpdate($id);
     }
 
     public function create()
     {
-        $page = $this->params()->fromRoute('page');
-        return $this->handleCreateUpdate($page);
+        return $this->handleCreateUpdate();
     }
 
-    public function handleCreateUpdate($page, $id = null)
+    public function handleCreateUpdate($id = null)
     {
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $user = $this->getServiceLocator()->get('user-entity');//accessed it from service manager as this way the User::setPasswordAdapter() is initialized
@@ -186,7 +178,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
             return $this->redirToList('The user has been '.$action.'ed successfully');
         }
 
-        return $this->renderData($action, $page, $form, $editOwn, $user);
+        return $this->renderData($action, $form, $editOwn, $user);
     }
 
     public function delete()

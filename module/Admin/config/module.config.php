@@ -42,36 +42,32 @@ return array(
                     'language' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route'    => '[/:lang]/language[/:action][/:page[/:id]]',
+                            'route'    => '[/:lang]/language[/:action][/:id]',
                             'constraints' => array(
                                 'lang'          => '[a-zA-Z]{2}',
                                 'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'page'          => '[0-9]*',
                                 'id'            => '[0-9]*',
                             ),
                             'defaults' => array(
                                 '__NAMESPACE__' => 'Admin\Controller',
                                 'controller'    => 'language',
                                 'action'        => null,
-                                'page'          => 1,
                             ),
                         ),
                     ),
                     'user' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route'    => '[/:lang]/user[/:action][/:page[/:id]]',
+                            'route'    => '[/:lang]/user[/:action][/:id]',
                             'constraints' => array(
                                 'lang'          => '[a-zA-Z]{2}',
                                 'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'page'          => '[0-9]*',
                                 'id'            => '[0-9]*',
                             ),
                             'defaults' => array(
                                 '__NAMESPACE__' => 'Admin\Controller',
                                 'controller'    => 'user',
                                 'action'        => null,
-                                'page'          => 1,
                             ),
                         ),
                     ),
@@ -102,15 +98,11 @@ return array(
                                 'lang'      => '[a-zA-Z]{2}',
                                 'action'    => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id'        => '[0-9]*',
-                                'page'      => '[0-9]*',
-                                'filter'      => '[0-9]*',
                             ),
                             'defaults' => array(
                                 '__NAMESPACE__' => 'Admin\Controller',
                                 'controller'    => 'listing',
                                 'action'        => null,
-                                'page'          => 1,
-                                'filter'        => 0,
                             ),
                         ),
                     ),
