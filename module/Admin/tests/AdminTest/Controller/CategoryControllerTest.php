@@ -41,7 +41,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
 
     public function testIndexActionCanBeAccessed()
     {
-        $this->routeMatch->setParam('action', 'index');
+        $this->routeMatch->setParam('action', 'list');
 
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
@@ -52,7 +52,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
     public function testEditAndAddActionsCanBeAccessed()
     {
         //test edit
-        $this->routeMatch->setParam('action', 'edit');
+        $this->routeMatch->setParam('action', 'editJson');
         $this->routeMatch->setParam('id', 111);//requires an actual category ID v_todo - refactor this
 
         try{
@@ -63,7 +63,7 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         //test add
-        $this->routeMatch->setParam('action', 'add');
+        $this->routeMatch->setParam('action', 'addJson');
         $this->routeMatch->setParam('id', 0);
 
         try{

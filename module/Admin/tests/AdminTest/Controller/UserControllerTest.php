@@ -51,7 +51,7 @@ class UserControllerTest extends AbstractHttpControllerTestCase
 
     public function testIndexActionCanBeAccessed()
     {
-        $this->routeMatch->setParam('action', 'index');
+        $this->routeMatch->setParam('action', 'list');
 
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
@@ -61,7 +61,7 @@ class UserControllerTest extends AbstractHttpControllerTestCase
 
     public function testEditActionCanBeAccessed()
     {
-        $this->routeMatch->setParam('action', 'edit');
+        $this->routeMatch->setParam('action', 'editJson');
         $this->routeMatch->setParam('id', 1);//requires an actual listing ID v_todo - refactor this
 
         try{
@@ -74,7 +74,7 @@ class UserControllerTest extends AbstractHttpControllerTestCase
 
     public function testAddActionCanBeAccessed()
     {
-        $this->routeMatch->setParam('action', 'add');
+        $this->routeMatch->setParam('action', 'addJson');
 
         try{
             $this->controller->dispatch($this->request);

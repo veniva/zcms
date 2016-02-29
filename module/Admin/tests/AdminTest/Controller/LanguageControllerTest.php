@@ -45,7 +45,7 @@ class LanguageControllerTest extends AbstractHttpControllerTestCase
 
     public function testListActionCanBeAccessed()
     {
-        $this->routeMatch->setParam('action', 'index');
+        $this->routeMatch->setParam('action', 'list');
 
         try{
             $this->controller->dispatch($this->request);
@@ -57,7 +57,7 @@ class LanguageControllerTest extends AbstractHttpControllerTestCase
 
     public function testEditActionCanBeAccessed()
     {
-        $this->routeMatch->setParam('action', 'edit');
+        $this->routeMatch->setParam('action', 'editJson');
         $this->routeMatch->setParam('id', 1);//requires an actual listing ID v_todo - refactor this
 
         try{
@@ -70,7 +70,7 @@ class LanguageControllerTest extends AbstractHttpControllerTestCase
 
     public function testAddActionCanBeAccessed()
     {
-        $this->routeMatch->setParam('action', 'add');
+        $this->routeMatch->setParam('action', 'addJson');
 
         try{
             $this->controller->dispatch($this->request);

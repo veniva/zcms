@@ -163,17 +163,17 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         return new JsonModel($jsonModel);
     }
 
-    public function update($id)
+    public function update($id, $data)
     {
-        return $this->handleCreateUpdate($id);
+        return $this->handleCreateUpdate($data, $id);
     }
 
-    public function create()
+    public function create($data)
     {
-        return $this->handleCreateUpdate();
+        return $this->handleCreateUpdate($data);
     }
 
-    public function handleCreateUpdate($id = null){
+    public function handleCreateUpdate($data, $id = null){
         $parentFilter = $this->params()->fromPost('filter', 0);
         $action = !$id ? 'add' : 'edit';
         $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
@@ -186,15 +186,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
 
         }
 
-        $request = $this->getRequest();
-        if($request->isPost()){
-            $post = $request->getPost()->toArray();
-        }else{//is PUT
-            $post = [];
-            parse_str($request->getContent(), $post);
-        }
-
-        foreach($post['content'] as &$content){
+        foreach($data['content'] as &$content){
             if(empty($content['alias'])){
                 $content['alias'] = Misc::alias($content['title']);
             }else{
@@ -233,16 +225,16 @@ class ListingController extends AbstractRestfulController implements TranslatorA
             return $this->renderData($form, $listing, $action, $languages, $message);
         };
 
-        $hasImage = (!empty($post['listing_image']['base64']) && !empty($post['listing_image']['name']));
+        $hasImage = (!empty($data['listing_image']['base64']) && !empty($data['listing_image']['name']));
         //validate image
         if($hasImage){
             $messages = [];
-            $result = $form->validateBase64Image($post['listing_image']['name'], $post['listing_image']['base64'], $messages);
+            $result = $form->validateBase64Image($data['listing_image']['name'], $data['listing_image']['base64'], $messages);
             if(!$result)
                 return $returnError($this->translator->translate(implode('<br />', $messages)));//v_todo - translate
         }
 
-        $form->setData($post);
+        $form->setData($data);
         if($form->isValid()){
             $category = $entityManager->find(get_class($this->getServiceLocator()->get('category-entity')),
                 ['id' => $form->getInputFilter()->getValue('category')]);
@@ -252,7 +244,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
 
             //is the image scheduled for removal
             if($action == 'edit'){
-                if(!empty($post['image_remove']) && $listing->getListingImage()){
+                if(!empty($data['image_remove']) && $listing->getListingImage()){
                     $this->removeListingImage($listing->getListingImage(), $publicDir.$imgDir, $listing->getId());
                 }
             }
@@ -261,13 +253,13 @@ class ListingController extends AbstractRestfulController implements TranslatorA
             $upload = false;
             if($hasImage){
                 if($action == 'edit'){
-                    if(empty($post['image_remove']) && $listing->getListingImage()){
+                    if(empty($data['image_remove']) && $listing->getListingImage()){
                         $this->removeListingImage($listing->getListingImage(), $publicDir.$imgDir, $listing->getId());
                     }
                 }
 
                 $listingImage = new ListingImage($listing);
-                $listingImage->setImageName($post['listing_image']['name']);
+                $listingImage->setImageName($data['listing_image']['name']);
                 $upload = true;
             }
 
@@ -277,7 +269,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
                 if(!file_exists($uploadDir) && !is_dir($uploadDir)){
                     mkdir($uploadDir);
                 }
-                \file_put_contents($uploadDir.'/'.$post['listing_image']['name'], base64_decode($post['listing_image']['base64']));
+                \file_put_contents($uploadDir.'/'.$data['listing_image']['name'], base64_decode($data['listing_image']['base64']));
             }
 
             return new JsonModel([
