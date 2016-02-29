@@ -56,7 +56,6 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
 
     public function testEditActionCanBeAccessed()
     {
-        $this->routeMatch->setParam('action', 'editJson');
         $this->routeMatch->setParam('id', 19);//requires an actual listing ID v_todo - refactor this
 
         try{
