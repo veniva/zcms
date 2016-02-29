@@ -21,7 +21,9 @@ $auth = new \Zend\Authentication\AuthenticationService();
         ->appendFile($this->basePath() . '/js/admin/jquery-ui-1.11.4.custom/jquery-ui.min.js')
         ->appendFile($this->basePath() . '/js/sammy.js')
         ->appendFile($this->basePath() . '/bower_components/knockout/dist/knockout.js')
+        ->appendFile($this->basePath() . '/bower_components/knockout-file-bindings/knockout-file-bindings.js')
         ->appendFile($this->basePath() . '/js/jquery-extend.js')
+        ->appendFile($this->basePath() . '/js/knockout-extend.js')
         ->appendFile($this->basePath() . '/js/admin/view_model.js')
         ->appendFile($this->basePath() . '/js/lib.js')
         ->appendFile($this->basePath() . '/js/admin/script.js')
@@ -57,7 +59,7 @@ $auth = new \Zend\Authentication\AuthenticationService();
                 <li><a rel="subMenu0" href="Javascript:void(0)" ><?=$this->translate('Content')?> |</a>
                     <div id="subMenu0">
                         <a href="<?=$this->langUrl('admin/category')?>"><?=$this->translate('Categories')?></a>
-                        <a href="<?=$this->langUrl('admin/listing')?>"><?=$this->translate('Pages')?></a>
+                        <a href="<?=$this->langUrl('admin/listing', ['action' => 'list'])?>"><?=$this->translate('Pages')?></a>
                     </div>
                 </li>
                 <li><a rel="subMenu2" href="Javascript:void(0)"><?=$this->translate('Administration')?>&nbsp;|</a>

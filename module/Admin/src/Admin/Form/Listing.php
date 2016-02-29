@@ -8,6 +8,9 @@
 
 namespace Admin\Form;
 
+use Admin\Validator\Base64String;
+use Admin\Validator\Extension;
+use Admin\Validator\IsImage;
 use Application\Model\Entity;
 use Doctrine\ORM\EntityManager;
 use Zend\Form\Form;
@@ -21,6 +24,9 @@ use Doctrine\Common\Collections\Collection;
  */
 class Listing extends Form
 {
+    const MAX_IMAGE_SIZE = 50;//In Kb
+    const ALLOWED_EXTENSIONS = 'png,jpeg,gif,jpg';
+
     protected $entityManager;
     protected $listingContentCollection;
 
@@ -79,6 +85,9 @@ class Listing extends Form
             'options' => array(
                 'label' => 'Page image'
             ),
+            'attributes' => array(
+                'data-bind' => 'fileInput: fileData'
+            ),
         ));
 
         $this->add(array(
@@ -86,6 +95,7 @@ class Listing extends Form
             'type' => 'checkbox',
             'options' => array(
                 'label' => 'Remove image',
+                'use_hidden_element' => false,
             ),
         ));
 
@@ -118,32 +128,6 @@ class Listing extends Form
         ), 'category');
 
         $inputFilter->add(array(
-            'validators' => array(
-                array(
-                    'name' => 'File\Extension',
-                    'options' => array(
-                        'extension' => array('jpeg', 'jpg', 'png', 'gif')
-                    ),
-                    'break_chain_on_failure' => true,
-                ),
-                array(
-                    'name' => 'File\Size',
-                    'options' => array(
-                        'max' => '50Kb',
-                    ),
-                ),
-                array(
-                    'name' => 'File\ImageSize',
-                    'options' => array(
-                        'maxWidth' => 300,
-                        'maxHeight' => 300
-                    ),
-                ),
-            ),
-            'required' => false,
-        ), 'listingImage');
-
-        $inputFilter->add(array(
             'required' => false,
         ), 'image_remove');
     }
@@ -171,5 +155,38 @@ class Listing extends Form
         //endregion
 
         return parent::isValid();
+    }
+
+    public function validateBase64Image($imageName, $base64String, &$messages = null)
+    {
+        $validator = new Extension(['extensions' => self::ALLOWED_EXTENSIONS]);
+        if(!$validator->isValid($imageName)){
+            $messages = [];
+            foreach($validator->getMessages() as $message){
+                $messages[] = $message;
+            }
+            return false;
+        }
+
+        $validator = new IsImage();
+        if(!$validator->isValid(base64_decode($base64String))){
+            $messages = [];
+            foreach($validator->getMessages() as $message){
+                $messages[] = $message;
+            }
+            return false;
+        }
+
+        $validator = new Base64String(['max' => self::MAX_IMAGE_SIZE]);
+        if(!$validator->isValid($base64String)){
+            $messages = [];
+            foreach($validator->getMessages() as $message){
+                $messages[] = $message;
+            }
+            return false;
+        }
+
+
+        return true;
     }
 }

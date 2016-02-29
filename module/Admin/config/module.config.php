@@ -97,7 +97,7 @@ return array(
                     'listing' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '[/:lang]/listing[/:action][/:id[/:page[/:filter]]]',
+                            'route' => '[/:lang]/listing[/:action][/:id]',
                             'constraints' => array(
                                 'lang'      => '[a-zA-Z]{2}',
                                 'action'    => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -108,8 +108,7 @@ return array(
                             'defaults' => array(
                                 '__NAMESPACE__' => 'Admin\Controller',
                                 'controller'    => 'listing',
-                                'action'        => 'list',
-                                'id'            => 0,
+                                'action'        => null,
                                 'page'          => 1,
                                 'filter'        => 0,
                             ),

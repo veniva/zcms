@@ -359,3 +359,11 @@ msgstr "Добавяне на потребител"
 
 msgid "Add"
 msgstr "Добави"
+
+# Admin\Validator\Base64String
+msgid "The file is more than %max%%measure% long"
+msgstr "Файлът е по-голям от позволените %max%%measure%"
+
+# Admin\Validator\Extension
+msgid "File is of incorrect type. Allowed are: %extensions%"
+msgstr "Файлит е от грешен тип. Позволените са: %extensions%"

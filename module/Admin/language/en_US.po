@@ -358,3 +358,11 @@ msgstr ""
 
 msgid "Add"
 msgstr ""
+
+# Admin\Validator\Base64String
+msgid "The file is more than %max%%measure% long"
+msgstr ""
+
+# Admin\Validator\Extension
+msgid "File is of incorrect type. Allowed are: %extensions%"
+msgstr ""

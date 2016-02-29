@@ -30,11 +30,5 @@ var lib = {
     },
     showMessages: function(){
         viewModel.messages(viewModel.flashMessages());
-        window.setTimeout(function(){
-            $('.alert').alert('close').on('closed.bs.alert', function () {
-                viewModel.messages([]);
-                viewModel.flashMessages([]);
-            });
-        }, 3000);
     }
 };

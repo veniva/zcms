@@ -356,3 +356,11 @@ msgstr "Añadir usuario"
 
 msgid "Add"
 msgstr "Añadir"
+
+# Admin\Validator\Base64String
+msgid "The file is more than %max%%measure% long"
+msgstr "El archivo es mas grande de los permitidos %max%%measure%"
+
+# Admin\Validator\Extension
+msgid "File is of incorrect type. Allowed are: %extensions%"
+msgstr "El archivo es de tipo no acceptable. Los permitidos son: %extensions%"

@@ -1,72 +1,116 @@
 <div class="header_cont">
-    <div class="title"><?=$this->translate($this->title)?></div>
-    <div style="float:right;">
-        <button type="button" id="add_button" class="btn btn-primary btn-xs"><?=$this->translate('New')?></button>
+    <div class="title" data-bind="text: title()"></div>
+    <div data-bind="visible: action() == 'list'" style="float:right;">
+        <a type="button" href="#add" class="btn btn-primary btn-xs"><?=$this->translate('New')?></a>
         <button type="button" id="del_button" class="btn btn-primary btn-xs"><?=$this->translate('Delete')?></button>
     </div>
 </div>
 <div class="body_cont">
-    <div class="filter">
-        <label for="filter_category">Filter: </label>
-        <?=$this->formSelectCategory($this->categoryTree, $this->parentCategory, 'admin/listing')?>
-    </div>
-    <form name="listings">
-        <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
-            <tr>
-                <th style="width: 20px">#</th>
-                <th style="width: 20px">&nbsp;</th>
-                <th><?=$this->translate('Link Name')?></th>
-                <th style="width: 150px;"><?=$this->translate('Category')?></th>
-                <th style="width: 20px;"><?=$this->translate('Sort')?></th>
-                <th style="width: 20px;"><?=$this->translate('Action')?></th>
-            </tr>
-            <?php foreach($this->listings as $listing): ?>
+    <div data-bind="visible: action() == 'list'">
+        <div class="filter">
+            <label for="filter_category">Filter: </label>
+            <?=$this->formSelectCategory($this->categoryTree, '0')?>
+        </div>
+        <form name="listings">
+            <table class="list_table" width="100%" cellpadding="5" cellspacing="0">
+                <thead>
                 <tr>
-                    <td><?=$listing->getId()?></td>
-                    <td><input type="checkbox" name="lid[]" value="<?=$listing->getId()?>" /></td>
-                    <td><a href="<?=$this->langUrl('admin/listing', [
-                            'action' => 'edit',
-                            'id' => $listing->getId(),
-                            'page' => $this->page,
-                            'filter' => $this->parentCategory,
-                        ])?>"><?=$listing->getSingleListingContent($this->defaultLanguageID)->getLink()?></a></td>
+                    <th style="width: 20px">#</th>
+                    <th style="width: 20px">&nbsp;</th>
+                    <th><?=$this->translate('Link Name')?></th>
+                    <th style="width: 150px;"><?=$this->translate('Category')?></th>
+                    <th style="width: 20px;"><?=$this->translate('Sort')?></th>
+                    <th style="width: 20px;"><?=$this->translate('Action')?></th>
+                </tr>
+                </thead>
+                <tbody data-bind="visible: hasRecords() === true, foreach: listData">
+                <tr>
+                    <td data-bind="text: id"></td>
+                    <td><input type="checkbox" name="lid[]" data-bind="value: id" /></td>
+                    <td><a data-bind="attr: {href: '#edit/'+id}, text: link"></a></td>
                     <td>
-                        <?php foreach($listing->getCategories() as $category):?>
-                            [<?=$category->getId()?>] <?=$category->getSingleCategoryContent($this->defaultLanguageID)->getTitle()?>
-                        <?php endforeach; ?>
+                        <span data-bind="foreach: {data: categories, as: 'category'}">
+                            [<span data-bind="text: category.id"></span>] <span data-bind="text: category.title"></span>
+                        </span>
                     </td>
-                    <td><?=$listing->getSort()?></td>
+                    <td data-bind="text: sort"></td>
                     <td>
-                        <a class="img" href="<?=$this->langUrl('admin/listing', array(
-                            'action' => 'edit',
-                            'id' => $listing->getId(),
-                            'page' => $this->page,
-                            'filter' => $this->parentCategory,
-                        ))?>">
+                        <a class="img" data-bind="attr: {href: '#edit/'+id}">
                             <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('Edit')?>" />
                         </a>
                     </td>
                 </tr>
-            <?php endforeach; ?>
-        </table>
-    </form>
-    <?=$this->paginationControl($this->listings, 'Sliding', 'paginator/sliding', ['route' => 'admin/listing', 'id' => $this->parentCategory])?>
+                </tbody>
+
+            </table>
+        </form>
+        <span data-bind="html: paginator"></span>
+    </div>
+    <!--edit/add action -->
+    <span data-bind="if: action() == 'edit' || action() == 'add'">
+        <span data-bind="dynamicHtml: form()"></span>
+    </span>
 </div>
-<form name="form_delete" action="<?=$this->url('admin/listing', array(
-    'action' => 'delete',
-    'id' => $this->parentCategory,
-    'page' => $this->page
-))?>" method="post">
+<form name="form_delete" data-bind="attr: {action: '#delete'}" method="post">
     <div>
         <input type="hidden" name="ids" value="" />
+        <input type="submit" name="submit_delete" data-bind="visible: false" />
     </div>
 </form>
+<span style="display:none" id="url"><?=$this->langUrl("admin/listing")?></span>
 <script type="text/javascript">
-    $('#filter_category').change(function(){
-        goToHref(this.value);
+    //viewModel.fileData().file() - contains file info
+    viewModel.fileData = ko.observable({
+        base64String: ko.observable() //only base64 data
+//        dataURL: ko.observable() //the entire string including metadata
     });
-    $('#add_button').click(function(){
-        location.href='<?=$this->langUrl('admin/listing', ['action' => 'add', 'id' => 0, 'page' => $this->page, 'filter' => $this->parentCategory])?>';
+
+    var handleListData = function(data){
+        lib.showMessages();
+        viewModel.action('list');
+        viewModel.title(data.title);
+
+        if(data.lists && data.lists.length){
+            viewModel.listData(data.lists);
+            viewModel.hasRecords(true);
+        }else{
+            viewModel.hasRecords(false)
+        }
+        viewModel.paginator(data.paginator);
+        viewModel.form(null);
+    };
+
+    var handleAddEditResponse = function(data, self, removeOverlay){
+        if(typeof data.message == 'object'){
+            viewModel.flashMessages([{type: data.message.type, message: data.message.text}]);
+            if(!data.message.no_redir){
+                self.redirect(viewModel.url+'/list#'+viewModel.page());
+            }else{
+                viewModel.title(data.title);
+                viewModel.form(data.form);
+                if(removeOverlay) lib.removeOverlay();
+                lib.showMessages();
+            }
+        }else{
+            viewModel.title(data.title);
+            viewModel.form(data.form);
+            if(removeOverlay) lib.removeOverlay();
+        }
+    };
+
+    viewModel.filter = ko.observable(0);
+    var getList = function(page){
+        lib.get(viewModel.url,{
+            filter: viewModel.filter(),
+            page: page
+        }, function(data){
+            handleListData(data);
+        });
+    };
+
+    $('#filter_category').change(function(){
+        viewModel.filter(this.value);
+        getList(viewModel.page());
     });
 
     $('#del_button').click(function(){
@@ -81,7 +125,7 @@
             if(confirm('<?=$this->translate('Are you sure you want to delete these pages')?>?')){
 
                 document.form_delete.elements['ids'].value = values;
-                document.form_delete.submit();
+                document.form_delete.elements['submit_delete'].click();
             }
         }else{
             alert('<?=$this->translate('You must choose at least one item to delete')?>');
@@ -90,3 +134,9 @@
         return false;
     });
 </script>
+<script type="text/javascript" src="<?=$this->basePath()?>/js/admin/listing.js"></script>
+<script type="text/javascript" src="<?=$this->basePath().'/js/admin/summernote/summernote.min.js'?>"></script>
+<?php $locale = str_replace('_', '-', $this->locale);
+if($locale != 'en-US'):?>
+    <script type="text/javascript" src="<?=$this->basePath().'/js/admin/summernote/lang/summernote-'.$locale.'.js'?>"></script>
+<?php endif; ?>

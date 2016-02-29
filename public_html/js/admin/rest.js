@@ -20,7 +20,7 @@
         if(data.various)
             viewModel.various(data.various);
 
-        if(data.lists.length){
+        if(data.lists && data.lists.length){
             viewModel.listData(data.lists);
             viewModel.hasRecords(true);
         }else{
@@ -37,7 +37,7 @@
             viewModel.flashMessages([{type: data.message.type, message: data.message.text}]);
         }else{
             viewModel.title(data.title);
-            viewModel.page(data.page);
+            viewModel.page(self.params['page']);
             viewModel.form(data.form);
             if(removeOverlay) lib.removeOverlay();
         }
@@ -111,6 +111,13 @@
                     self.redirect(viewModel.url+'/list#'+self.params['page']);
                     viewModel.flashMessages([{type: data.message.type, message: data.message.text}]);
                 }
+            });
+        });
+
+        this.bind('run-route', function() {
+            $('.alert').alert('close').on('closed.bs.alert', function () {
+                viewModel.messages([]);
+                viewModel.flashMessages([]);
             });
         });
 
