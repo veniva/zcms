@@ -74,38 +74,34 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         ]);
     }
 
-    public function editJsonAction()
+    public function get($id)
     {
-        return $this->addEditListing('edit');
+        return $this->addEditListing($id);
     }
 
     public function addJsonAction()
     {
-        return $this->addEditListing('add');
+        return $this->addEditListing();
     }
 
-    protected function addEditListing($action)
+    protected function addEditListing($id = null)
     {
+        $action = $id ? 'edit' : 'add';
         $parentFilter = $this->params()->fromQuery('filter', 0);
         $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
-        if($action == 'edit'){
-            $listingId = $this->params()->fromQuery('id');
-            if(!$listingId) return $this->redirWrongParameter();
-
-        }else{
+        if($action == 'add'){
             //check if there is at least one category available
             $categoryEntity = new Entity\Category();
             $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAllOfType(1);
             if(!$categoryNumber)
                 return $this->redirToList('You must create at least one category in order to add pages', 'error');
-
         }
 
         $languagesService = $this->getServiceLocator()->get('language');
         $languages = $languagesService->getActiveLanguages();
 
         if($action == 'edit'){
-            $listing = $listingRepository->findOneBy(['id' => $listingId]);
+            $listing = $listingRepository->findOneBy(['id' => $id]);
             if(!$listing) return $this->redirWrongParameter();
 
         }else{

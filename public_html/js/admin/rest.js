@@ -62,9 +62,7 @@
             var self = this;
             viewModel.title(null);
             viewModel.action('edit');
-            lib.get(viewModel.url+'/editJson', {
-                id: this.params['id']
-            }, function(data){
+            lib.get(viewModel.url+'/'+this.params['id'], function(data){
                 handleAddEditResponse(data, self);
             });
         });

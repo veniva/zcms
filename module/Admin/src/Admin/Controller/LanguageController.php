@@ -58,9 +58,8 @@ class LanguageController extends AbstractRestfulController implements Translator
         ]);
     }
 
-    public function editJsonAction()
+    public function get($id)
     {
-        $id = $this->params()->fromQuery('id', null);
         if(empty($id)){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],

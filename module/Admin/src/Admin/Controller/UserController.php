@@ -57,8 +57,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         ]);
     }
 
-    public function editJsonAction(){
-        $id = $this->params()->fromQuery('id', null);
+    public function get($id){
         if(empty($id)){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
