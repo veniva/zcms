@@ -121,17 +121,17 @@ class LanguageController extends AbstractRestfulController implements Translator
         ]);
     }
 
-    public function update($id)
+    public function update($id, $data)
     {
-        return $this->handleCreateUpdate($id);
+        return $this->handleCreateUpdate($data, $id);
     }
 
-    public function create()
+    public function create($data)
     {
-        return $this->handleCreateUpdate();
+        return $this->handleCreateUpdate($data);
     }
 
-    public function handleCreateUpdate($id = null)
+    public function handleCreateUpdate($data, $id = null)
     {
         $action = $id ? 'edit' : 'add';
         $entityManager = $this->getServiceLocator()->get('entity-manager');
@@ -154,15 +154,6 @@ class LanguageController extends AbstractRestfulController implements Translator
         }
         $form = new LanguageForm($this->getServiceLocator());
         $form->bind($language);
-
-        $request = $this->getRequest();
-        if($request->isPost()){
-            $data = $this->getRequest()->getPost()->toArray();
-        }else{//is PUT
-            $data = [];
-            parse_str($this->getRequest()->getContent(), $data);
-        }
-
 
         if($language->isDefault()) unset($data['status']);//ensures no status can be changed if lang is default
 
@@ -233,7 +224,7 @@ class LanguageController extends AbstractRestfulController implements Translator
             $entityManager->persist($language);
             $entityManager->flush();
 
-            if($request->isPost()){
+            if($this->getRequest()->isPost()){
                 $this->getResponse()->setStatusCode(201);
             }
             return new JsonModel([

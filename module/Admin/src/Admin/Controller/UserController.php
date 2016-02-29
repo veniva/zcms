@@ -119,17 +119,17 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         ]);
     }
 
-    public function update($id)
+    public function update($id, $data)
     {
-        return $this->handleCreateUpdate($id);
+        return $this->handleCreateUpdate($data, $id);
     }
 
-    public function create()
+    public function create($data)
     {
-        return $this->handleCreateUpdate();
+        return $this->handleCreateUpdate($data);
     }
 
-    public function handleCreateUpdate($id = null)
+    public function handleCreateUpdate($data, $id = null)
     {
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $user = $this->getServiceLocator()->get('user-entity');//accessed it from service manager as this way the User::setPasswordAdapter() is initialized
@@ -151,12 +151,6 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         $form->bind($user);
 
         $request = $this->getRequest();
-        if($request->isPost()){
-            $data = $request->getPost();
-        }else{//is PUT
-            $data = [];
-            parse_str($request->getContent(), $data);
-        }
 
         $form->setData($data);
         $action = $id ? 'edit' : 'add';
@@ -166,7 +160,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
             if(!$loggedInUser->canEdit($newRole))
                 return $this->redirToList('You have no right to assign this user role', 'error');
 
-            if($editOwn && $request->getPost()['role'])
+            if($editOwn && $data['role'])
                 return $this->redirToList('You have no right to assign new role to yourself', 'error');
 
             $newPassword = $form->getInputFilter()->get('password_fields')->get('password')->getValue();
