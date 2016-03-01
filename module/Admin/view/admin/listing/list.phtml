@@ -51,68 +51,16 @@
         <span data-bind="dynamicHtml: form()"></span>
     </span>
 </div>
-<form name="form_delete" data-bind="attr: {action: '#delete'}" method="post">
+<form name="form_delete" action="#delete" method="post">
     <div>
         <input type="hidden" name="ids" value="" />
         <input type="submit" name="submit_delete" data-bind="visible: false" />
     </div>
 </form>
 <span style="display:none" id="url"><?=$this->langUrl("admin/listing")?></span>
+<script type="text/javascript" src="<?=$this->basePath()?>/js/admin/rest.js"></script>
+<script type="text/javascript" src="<?=$this->basePath()?>/js/admin/listing.js"></script>
 <script type="text/javascript">
-    //viewModel.fileData().file() - contains file info
-    viewModel.fileData = ko.observable({
-        base64String: ko.observable() //only base64 data
-//        dataURL: ko.observable() //the entire string including metadata
-    });
-
-    var handleListData = function(data){
-        lib.showMessages();
-        viewModel.action('list');
-        viewModel.title(data.title);
-
-        if(data.lists && data.lists.length){
-            viewModel.listData(data.lists);
-            viewModel.hasRecords(true);
-        }else{
-            viewModel.hasRecords(false)
-        }
-        viewModel.paginator(data.paginator);
-        viewModel.form(null);
-    };
-
-    var handleAddEditResponse = function(data, self, removeOverlay){
-        if(typeof data.message == 'object'){
-            viewModel.flashMessages([{type: data.message.type, message: data.message.text}]);
-            if(!data.message.no_redir){
-                self.redirect(viewModel.url+'/list#'+viewModel.page());
-            }else{
-                viewModel.title(data.title);
-                viewModel.form(data.form);
-                if(removeOverlay) lib.removeOverlay();
-                lib.showMessages();
-            }
-        }else{
-            viewModel.title(data.title);
-            viewModel.form(data.form);
-            if(removeOverlay) lib.removeOverlay();
-        }
-    };
-
-    viewModel.filter = ko.observable(0);
-    var getList = function(page){
-        lib.get(viewModel.url,{
-            filter: viewModel.filter(),
-            page: page
-        }, function(data){
-            handleListData(data);
-        });
-    };
-
-    $('#filter_category').change(function(){
-        viewModel.filter(this.value);
-        getList(viewModel.page());
-    });
-
     $('#del_button').click(function(){
         var elements = $(document.listings).find('input[name="lid[]"]');
         var values = [];
@@ -134,7 +82,7 @@
         return false;
     });
 </script>
-<script type="text/javascript" src="<?=$this->basePath()?>/js/admin/listing.js"></script>
+<script type="text/javascript" src="<?=$this->basePath()?>/js/admin/rest-call.js"></script>
 <script type="text/javascript" src="<?=$this->basePath().'/js/admin/summernote/summernote.min.js'?>"></script>
 <?php $locale = str_replace('_', '-', $this->locale);
 if($locale != 'en-US'):?>

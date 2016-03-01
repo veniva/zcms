@@ -53,7 +53,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
             'title' => $this->getTranslator()->translate('Users'),
             'lists' => $userData,
             'paginator' => $paginator,
-            'various' => ['identity_id' => $auth->getIdentity()->getId()]
+            'identity_id' => $auth->getIdentity()->getId()
         ]);
     }
 

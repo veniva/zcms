@@ -22,7 +22,7 @@
                 <td data-bind="text: id"></td>
                 <td>
                     <span data-bind="text: uname"></span>
-                    <span data-bind="if: $root.various().identity_id == id">
+                    <span data-bind="if: $root.identityId() == id">
                         <span style="font-weight: bold">(<?=$this->translate('You')?>)</span>
                     </span>
                 </td>
@@ -33,7 +33,7 @@
                     <a class="img" data-bind="attr: {href: '#edit/'+id}">
                         <img src="<?=$this->basePath()?>/img/admin/edit.gif" title="<?=$this->translate('edit')?>" />
                     </a>
-                    <span data-bind="if: $root.various().identity_id != id">
+                    <span data-bind="if: $root.identityId() != id">
                         <a class="img del_button" href="#" data-bind="click: function(data, event){ clickDelete(id); }">
                             <img src="<?=$this->basePath()?>/img/admin/delete.gif" title="<?=$this->translate('delete')?>" />
                         </a>
@@ -54,6 +54,10 @@
 <span style="display:none" id="url"><?=$this->langUrl("admin/user")?></span>
 <script type="text/javascript" src="<?=$this->basePath()?>/js/admin/rest.js"></script>
 <script type="text/javascript">
+    viewModel.identityId = ko.observable();
+    rest.setHandleMoreListData(function(data){
+        viewModel.identityId(data.identity_id);
+    });
     function clickDelete(id){
         if(confirm('<?=$this->translate('Are you sure you want to delete this user?')?>')){
             document.getElementById('del_'+id).click();
@@ -61,3 +65,4 @@
         return false;
     }
 </script>
+<script type="text/javascript" src="<?=$this->basePath()?>/js/admin/rest-call.js"></script>
