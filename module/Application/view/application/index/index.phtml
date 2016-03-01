@@ -17,4 +17,8 @@
     <li><?=sprintf($this->translate('%s URL\'s'), '<span class="bold">'.$this->translate('SEO friendly').'</span>')?></li>
 </ul>
 <hr />
-<p><a target="_blank" href="<?=$this->langUrl('admin/default')?>"><?=$this->translate('Link to the control panel')?></a></p>
+<p>
+    <a target="_blank" href="<?=$this->langUrl('admin/default', ['controller' => 'log', 'action' => 'in'])?>">
+        <?=$this->translate('Link to the control panel')?>
+    </a>
+</p>
