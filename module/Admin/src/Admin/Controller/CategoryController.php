@@ -30,10 +30,10 @@ class CategoryController extends AbstractRestfulController implements Translator
         return new ViewModel();
     }
 
-    public function listJsonAction()
+    public function getList()
     {
-        $parent = $this->params()->fromRoute('id', 0);
-        $page = $this->params()->fromRoute('page', 1);
+        $parent = $this->params()->fromQuery('parent_id', 0);
+        $page = $this->params()->fromQuery('page', 1);
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $categoryEntity = $this->getServiceLocator()->get('category-entity');
         $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
@@ -57,25 +57,15 @@ class CategoryController extends AbstractRestfulController implements Translator
         }
         return new JsonModel([
             'title' => $this->translator->translate('Categories'),
-            'categories' => $categories,
-            'page' => $page,
+            'lists' => $categories,
             'paginator' => $paginator,
             'breadcrumb' => $renderer->breadcrumb('admin'),
             'parent_id' => $parent,
         ]);
     }
 
-    public function editJsonAction()
+    protected function prepareGetData($id, &$form, &$category, &$categoryEntity, &$parentCategoryID)
     {
-        $id = $this->params()->fromRoute('id', 0);
-        $page = $this->params()->fromRoute('page', 1);
-        if(empty($id)){
-            return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
-                'parent_id' => '0',
-            ]);
-        }
-
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
         $categoryEntity = new Category();
@@ -83,7 +73,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         if(!$category){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('Wrong category ID')],
-                'parent_id' => '0',
+                'parent_id' => $parentCategoryID,
             ]);
         }
         $languagesService = $serviceLocator->get('language');
@@ -94,72 +84,90 @@ class CategoryController extends AbstractRestfulController implements Translator
 
         $form = new CategoryForm($entityManager, $category->getContent());
         $form->bind($category);
+        return true;
+    }
 
-        $request = $this->getRequest();
-        if($request->isPost()){
-            $post = $request->getPost()->toArray();
-            foreach($post['content'] as &$content){
-                $content['alias'] = Misc::alias($content['title']);
-            }
-            $form->setData($post);
-            if($form->isValid()){
-                $entityManager->persist($category);
-                $entityManager->flush();
-
-                return new JsonModel([
-                    'message' => ['type' => 'success', 'text' => $this->translator->translate('The category has been edited successfully')],
-                    'parent_id' => $parentCategoryID,
-                ]);
-            }
-        }
-        $defaultLangID = $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId();
-        $parentCategory = $entityManager->find(get_class($categoryEntity), $parentCategoryID);
-        $parentCategoryName = $parentCategory instanceof \Application\Model\Entity\Category ?
-            $parentCategory->getSingleCategoryContent($defaultLangID)->getTitle() :
-            $this->translator->translate('Top');
-
+    /**
+     * Helps to render the category form for add/edit actions
+     * @param $category
+     * @param $form
+     * @param $parentCategory
+     * @return JsonModel
+     */
+    protected function renderCategData($category, $form, $parentCategory)
+    {
         $viewModel = new ViewModel([
-            'action' => 'edit',
-            'id' => $id,
+            'action' => $category->getId() ? 'edit' : 'add',
+            'id' => $category->getId(),
             'form' => $form,
-            'parentCategoryName' => $parentCategoryName,
-            'parent_id' => $parentCategoryID,
-            'page' => $page,
+            'parentCategoryName' => $this->getParentCategoryName($parentCategory),
         ]);
         $viewModel->setTemplate('admin/category/edit');
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
 
-        return new JsonModel([
+        return new JsonModel(array(
             'title' => $this->translator->translate('Edit a category'),
-            'page' => $page,
             'form' => $renderer->render($viewModel),
-        ]);
+            'parent_id' => $parentCategory instanceof Category ? $parentCategory->getId() : 0,
+        ));
     }
 
-    public function addJsonAction()
+    public function get($id)
     {
-        $parentCategoryID = $this->params()->fromRoute('id', 0);
-        $page = $this->params()->fromRoute('page', 1);
+        $result = $this->prepareGetData($id, $form, $category, $categoryEntity, $parentCategoryID);
+        if($result !== true && $result instanceof JsonModel) return $result;
+
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $parentCategory = $entityManager->find(get_class($categoryEntity), $parentCategoryID);
+
+        return $this->renderCategData($category, $form, $parentCategory);
+    }
+
+    public function update($id, $data)
+    {
+        $result = $this->prepareGetData($id, $form, $category, $categoryEntity, $parentCategoryID);
+        if($result !== true && $result instanceof JsonModel) return $result;
+
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
+
+        foreach($data['content'] as &$content){
+            $content['alias'] = Misc::alias($content['title']);
+        }
+
+        $form->setData($data);
+        if($form->isValid()){
+            $entityManager->persist($category);
+            $entityManager->flush();
+
+            return new JsonModel([
+                'message' => ['type' => 'success', 'text' => $this->translator->translate('The category has been edited successfully')],
+                'parent_id' => $parentCategoryID,
+            ]);
+        }
+
+        $parentCategory = $entityManager->find(get_class($categoryEntity), $parentCategoryID);
+        return $this->renderCategData($category, $form, $parentCategory);
+    }
+
+    protected function prepareAddData($parentCategoryID, &$form, &$categoryEntity, &$parentCategory)
+    {
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
+        $categoryEntity = new Category();
+        $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
 
         //check if there is an existing language before entering new category
         $langs = $entityManager->getRepository(get_class(new Lang()))->countLanguages();
         if(!$langs){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('You must insert at least one language in order to add categories')],
-                'parent_id' => $parentCategoryID,
+                'parent_id' => $parentCategoryID
             ]);
         }
-        $categoryEntity = new Category();
         $languagesService = $serviceLocator->get('language');
         $languages = $languagesService->getActiveLanguages();
 
-        $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
-        $parentCategory = ($parentCategoryID) ?
-            $categoryRepository->findOneById($parentCategoryID) :
-            null;
-
+        $parentCategory = ($parentCategoryID) ? $categoryRepository->findOneById($parentCategoryID) : null;
         if($parentCategory){
             $relatedParentCategories = $categoryRepository->getParentCategories($parentCategory);
             $categoryEntity->setParents($relatedParentCategories);
@@ -174,43 +182,46 @@ class CategoryController extends AbstractRestfulController implements Translator
 
         $form = new CategoryForm($entityManager);
         $form->bind($categoryEntity);
+        return true;
+    }
 
-        $request = $this->getRequest();
-        if($request->isPost()){
-            $post = $request->getPost()->toArray();
-            foreach($post['content'] as &$content){
-                $content['alias'] = Misc::alias($content['title']);
-            }
-            $form->setData($post);
-            if($form->isValid()){
-                $entityManager->persist($categoryEntity);
-                $entityManager->flush();
-                return new JsonModel([
-                    'message' => ['type' => 'success', 'text' => $this->translator->translate('The new category was added successfully')],
-                    'parent_id' => $parentCategoryID,
-                ]);
-            }
+    public function addJsonAction()
+    {
+        $parentCategoryID = $this->params()->fromQuery('id', 0);
+        $result = $this->prepareAddData($parentCategoryID, $form, $categoryEntity, $parentCategory);
+        if($result !== true && $result instanceof JsonModel) return $result;
+
+        return $this->renderCategData($categoryEntity, $form, $parentCategory);
+    }
+
+    public function create($data)
+    {
+        $result = $this->prepareAddData($data['id'], $form, $categoryEntity, $parentCategory);
+        if($result !== true && $result instanceof JsonModel) return $result;
+
+        foreach($data['content'] as &$content){
+            $content['alias'] = Misc::alias($content['title']);
         }
+        $form->setData($data);
+        if($form->isValid()){
+            $entityManager = $this->getServiceLocator()->get('entity-manager');
+            $entityManager->persist($categoryEntity);
+            $entityManager->flush();
+            return new JsonModel([
+                'message' => ['type' => 'success', 'text' => $this->translator->translate('The new category was added successfully')],
+                'parent_id' => $data['id'],
+            ]);
+        }
+
+        return $this->renderCategData($categoryEntity, $form, $parentCategory);
+    }
+
+    protected function getParentCategoryName($parentCategory)
+    {
         $defaultLangID = $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId();
-        $parentCategoryName = $parentCategory instanceof \Application\Model\Entity\Category ?
+        return $parentCategory instanceof Category ?
             $parentCategory->getSingleCategoryContent($defaultLangID)->getTitle() :
             $this->translator->translate('Top');
-
-        $viewModel = new ViewModel(array(
-            'action' => 'add',
-            'form' => $form,
-            'parentCategoryName' => $parentCategoryName,
-            'parent_id' => $parentCategoryID,
-            'page' => $page,
-        ));
-        $viewModel->setTemplate('admin/category/edit');
-        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
-
-        return new JsonModel([
-            'title' => $this->translator->translate('Add a category'),
-            'page' => $page,
-            'form' => $renderer->render($viewModel),
-        ]);
     }
 
     protected function addEmptyContent(Category $category, \Doctrine\Common\Collections\Collection $languages)
@@ -235,19 +246,8 @@ class CategoryController extends AbstractRestfulController implements Translator
         }
     }
 
-    public function deleteJsonAction()
+    public function delete($id)
     {
-        if(!$this->getRequest()->isPost()) return false;
-        $id = $this->params()->fromPost('id', 0);
-        $page = $this->params()->fromPost('page', 1);
-        if(empty($id)){
-            return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
-                'parent_id' => '0',
-                'page' => $page,
-            ]);
-        }
-
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
 
@@ -259,7 +259,6 @@ class CategoryController extends AbstractRestfulController implements Translator
         return new JsonModel([
             'message' => ['type' => 'success', 'text' => $this->translator->translate('The category and all the listings in it were removed successfully')],
             'parent_id' => $parentCategoryID,
-            'page' => $page,
         ]);
     }
 

@@ -74,19 +74,16 @@ return array(
                     'category' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '[/:lang]/category[/:action][/:id[/:page]]',
+                            'route' => '[/:lang]/category[/:action][/:id]',
                             'constraints' => array(
                                 'lang'      => '[a-zA-Z]{2}',
                                 'action'    => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id'        => '[0-9]*',
-                                'page'      => '[0-9]*',
                             ),
                             'defaults' => array(
                                 '__NAMESPACE__' => 'Admin\Controller',
                                 'controller'    => 'category',
-                                'action'        => 'list',
-                                'id'            => 0,
-                                'page'          => 1,
+                                'action'        => null,
                             ),
                         ),
                     ),

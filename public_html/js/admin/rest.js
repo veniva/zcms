@@ -174,6 +174,11 @@ Rest.prototype.handleAddEditResponse = function(data, self, removeOverlay){
     }
 };
 
+Rest.prototype.setHandleAddEditResponse = function(callback){
+    if(typeof callback != 'function') throw 'Invalid callback provided';
+    this.handleAddEditResponse = callback;
+};
+
 Rest.prototype.handleMoreAddEditResponse = function(data){};
 
 Rest.prototype.setHandleMoreAddEditResponse = function(callback){

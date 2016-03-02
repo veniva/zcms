@@ -58,7 +58,7 @@ $auth = new \Zend\Authentication\AuthenticationService();
             <ul>
                 <li><a rel="subMenu0" href="Javascript:void(0)" ><?=$this->translate('Content')?> |</a>
                     <div id="subMenu0">
-                        <a href="<?=$this->langUrl('admin/category')?>"><?=$this->translate('Categories')?></a>
+                        <a href="<?=$this->langUrl('admin/category', ['action' => 'list'])?>"><?=$this->translate('Categories')?></a>
                         <a href="<?=$this->langUrl('admin/listing', ['action' => 'list'])?>"><?=$this->translate('Pages')?></a>
                     </div>
                 </li>

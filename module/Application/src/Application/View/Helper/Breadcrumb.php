@@ -45,10 +45,11 @@ class Breadcrumb extends AbstractHelper
         $entityManager = $serviceManager->get('entity-manager');
         $categoryContentEntity = $serviceManager->get('category-content-entity');
 
-        $id = $alias = $categoryContent = false;
+        $categoryContent = false;
         if($routeMatch){
             if($routeMatch->getMatchedRouteName() == 'admin/category'){
-                $id = $routeMatch->getParam('id', false);
+                $request = $this->serviceManager->get('Request');
+                $id = $request->getQuery('parent_id', false);
                 if($id !== false)
                     $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByCategory($id);
 
