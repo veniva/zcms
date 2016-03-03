@@ -52,7 +52,7 @@
     <span data-bind="visible: action() == 'edit' || action() == 'add', dynamicHtml: form()"></span>
 </div>
 
-<div id="url" style="display:none"><?=$this->langUrl('admin/category')?></div>
+<div id="url" style="display:none"><?=$this->langUrl('admin/rest', ['controller' => 'category'])?></div>
 <script type="text/javascript" src="<?=$this->basepath() . '/js/admin/rest.js'?>"></script>
 <script type="text/javascript" src="<?=$this->basepath() . '/js/admin/category.js'?>"></script>
 <script type="text/javascript">

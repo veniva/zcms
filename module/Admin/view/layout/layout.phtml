@@ -58,17 +58,18 @@ $auth = new \Zend\Authentication\AuthenticationService();
             <ul>
                 <li><a rel="subMenu0" href="Javascript:void(0)" ><?=$this->translate('Content')?> |</a>
                     <div id="subMenu0">
-                        <a href="<?=$this->langUrl('admin/category', ['action' => 'list'])?>"><?=$this->translate('Categories')?></a>
-                        <a href="<?=$this->langUrl('admin/listing', ['action' => 'list'])?>"><?=$this->translate('Pages')?></a>
+                        <a href="<?=$this->langUrl('admin/rest', ['controller' => 'category', 'action' => 'list'])?>"><?=$this->translate('Categories')?></a>
+                        <a href="<?=$this->langUrl('admin/rest', ['controller' => 'listing', 'action' => 'list'])?>"><?=$this->translate('Pages')?></a>
                     </div>
                 </li>
                 <li><a rel="subMenu2" href="Javascript:void(0)"><?=$this->translate('Administration')?>&nbsp;|</a>
                     <div id="subMenu2">
-                        <a href="<?=$this->langUrl('admin/language', ['action' => 'list'])?>"><?=$this->translate('Languages')?></a>
-                        <a href="<?=$this->langUrl('admin/user', ['action'=>'list'])?>"><?=$this->translate('Users')?></a>
-                        <a href="<?=$this->langUrl('admin/user', [
+                        <a href="<?=$this->langUrl('admin/rest', ['controller' => 'language', 'action' => 'list'])?>"><?=$this->translate('Languages')?></a>
+                        <a href="<?=$this->langUrl('admin/rest', ['controller' => 'user', 'action'=>'list'])?>"><?=$this->translate('Users')?></a>
+                        <a href="<?=$this->langUrl('admin/rest', [
+                            'controller' => 'user',
                             'action' => 'list',
-                        ], ['fragment' => 'edit/1/'.$auth->getIdentity()->getId()])?>"><?=$this->translate('Account settings')?></a>
+                        ], ['fragment' => 'edit/'.$auth->getIdentity()->getId()])?>"><?=$this->translate('Account settings')?></a>
                     </div>
                 </li>
             </ul>

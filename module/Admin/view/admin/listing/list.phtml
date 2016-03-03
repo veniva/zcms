@@ -57,7 +57,7 @@
         <input type="submit" name="submit_delete" data-bind="visible: false" />
     </div>
 </form>
-<span style="display:none" id="url"><?=$this->langUrl("admin/listing")?></span>
+<span style="display:none" id="url"><?=$this->langUrl("admin/rest", ['controller' => 'listing'])?></span>
 <script type="text/javascript" src="<?=$this->basePath()?>/js/admin/rest.js"></script>
 <script type="text/javascript" src="<?=$this->basePath()?>/js/admin/listing.js"></script>
 <script type="text/javascript">

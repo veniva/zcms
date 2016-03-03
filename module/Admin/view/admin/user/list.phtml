@@ -51,7 +51,7 @@
     <!--edit/add action -->
     <span data-bind="visible: action() == 'edit' || action() == 'add', dynamicHtml: form()"></span>
 </div>
-<span style="display:none" id="url"><?=$this->langUrl("admin/user")?></span>
+<span style="display:none" id="url"><?=$this->langUrl("admin/rest", ['controller' => 'user'])?></span>
 <script type="text/javascript" src="<?=$this->basePath()?>/js/admin/rest.js"></script>
 <script type="text/javascript">
     viewModel.identityId = ko.observable();

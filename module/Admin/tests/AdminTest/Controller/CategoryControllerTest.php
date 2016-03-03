@@ -52,7 +52,6 @@ class CategoryControllerTest extends PHPUnit_Framework_TestCase
     public function testEditAndAddActionsCanBeAccessed()
     {
         //test edit
-        $this->routeMatch->setParam('action', 'editJson');
         $this->routeMatch->setParam('id', 111);//requires an actual category ID v_todo - refactor this
 
         try{

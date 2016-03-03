@@ -39,66 +39,17 @@ return array(
                             ),
                         ),
                     ),
-                    'language' => array(
+                    'rest' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route'    => '[/:lang]/language[/:action][/:id]',
+                            'route'    => '[/:lang]/:controller[/:action][/:id]',
                             'constraints' => array(
                                 'lang'          => '[a-zA-Z]{2}',
+                                'controller'    => 'language|user|category|listing',
                                 'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id'            => '[0-9]*',
                             ),
                             'defaults' => array(
-                                '__NAMESPACE__' => 'Admin\Controller',
-                                'controller'    => 'language',
-                                'action'        => null,
-                            ),
-                        ),
-                    ),
-                    'user' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route'    => '[/:lang]/user[/:action][/:id]',
-                            'constraints' => array(
-                                'lang'          => '[a-zA-Z]{2}',
-                                'action'        => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id'            => '[0-9]*',
-                            ),
-                            'defaults' => array(
-                                '__NAMESPACE__' => 'Admin\Controller',
-                                'controller'    => 'user',
-                                'action'        => null,
-                            ),
-                        ),
-                    ),
-                    'category' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '[/:lang]/category[/:action][/:id]',
-                            'constraints' => array(
-                                'lang'      => '[a-zA-Z]{2}',
-                                'action'    => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id'        => '[0-9]*',
-                            ),
-                            'defaults' => array(
-                                '__NAMESPACE__' => 'Admin\Controller',
-                                'controller'    => 'category',
-                                'action'        => null,
-                            ),
-                        ),
-                    ),
-                    'listing' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '[/:lang]/listing[/:action][/:id]',
-                            'constraints' => array(
-                                'lang'      => '[a-zA-Z]{2}',
-                                'action'    => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id'        => '[0-9]*',
-                            ),
-                            'defaults' => array(
-                                '__NAMESPACE__' => 'Admin\Controller',
-                                'controller'    => 'listing',
                                 'action'        => null,
                             ),
                         ),
