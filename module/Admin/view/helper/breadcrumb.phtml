@@ -2,8 +2,8 @@
     <?php $items = [];
     foreach($crumb as $item):?>
         <?php $items[] = !$item ?
-            '<a href="'.$this->langUrl($this->topRoute, ['action' => 'list']).'">'.$this->translate('Top').'</a>' :
-            '<a href="'.$this->langUrl($this->matchedRoute, [], ['fragment' => $item['id'].'/1']).'">'.$item['title'].'</a>'?>
+            '<a href="'.$this->langUrl($this->topRoute, ['controller' => 'category', 'action' => 'list']).'">'.$this->translate('Top').'</a>' :
+            '<a href="'.$this->langUrl($this->matchedRoute, ['controller' => 'category'], ['fragment' => $item['id'].'/1']).'">'.$item['title'].'</a>'?>
     <?php endforeach; ?>
     <?=implode(' &gt; ', $items)?> &gt; <?=$this->title?>
 <?php else:?>

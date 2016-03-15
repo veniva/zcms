@@ -54,6 +54,11 @@ class Misc
         return $admin ? $admin->getEmail() : null;
     }
 
+    /**
+     * @deprecated Use \Application\Stdlib\Strings::alias() instead
+     * @param $str
+     * @return mixed|string
+     */
     public static function alias($str) {
         $str = preg_replace('/[\s]+/i', '-', str_replace(',', '', trim($str)));
         $alias = extension_loaded('mbstring') ? mb_strtolower($str) : strtolower($str);

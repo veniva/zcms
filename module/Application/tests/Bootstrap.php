@@ -3,6 +3,7 @@ namespace ApplicationTest;
 
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceManager;
 use RuntimeException;
 
@@ -16,6 +17,9 @@ define('ZF2_PATH', __DIR__.'/../../../vendor/zendframework');
  */
 class Bootstrap
 {
+    /**
+     * @var ServiceLocatorInterface
+     */
     protected static $serviceManager;
 
     public static function init()
@@ -30,17 +34,19 @@ class Bootstrap
 
         static::initAutoloader();
 
-// use ModuleManager to load this module and it's dependencies
+        // use ModuleManager to load this module and it's dependencies
         $config = array(
             'module_listener_options' => array(
                 'module_paths' => $zf2ModulePaths,
                 'config_glob_paths' => array(
                     dirname(dirname(dirname(__DIR__))).'/config/autoload/{,*.}{global,local}.php',
+                    __DIR__.'/config/{,*.}{global,local}.php',
                 ),
             ),
 
             'modules' => array(
                 'Application',
+                'MainMenu',
                 'Admin',
             )
         );

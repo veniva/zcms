@@ -48,7 +48,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
             $i++;
         }
 
-        $auth = new AuthenticationService();
+        $auth = $this->getServiceLocator()->get('auth');
         return new JsonModel([
             'title' => $this->getTranslator()->translate('Users'),
             'lists' => $userData,
@@ -90,8 +90,10 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         $loggedInUser = $this->getServiceLocator()->get('current-user');
         $editOwn = $loggedInUser->getId() == $user->getId();
         //security check - is the edited user really having a role equal or less privileged to the editing user
-        if(!$loggedInUser->canEdit($user->getRole()))
+        if(!$loggedInUser->canEdit($user->getRole())){
+            $this->getResponse()->setStatusCode(403);
             return $this->redirToList('You have no right to edit this user', 'error');
+        }
 
         $action = $id ? 'edit' : 'add';
         $form = new \Admin\Form\User($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
@@ -149,8 +151,6 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         $form = new \Admin\Form\User($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
         $form->bind($user);
 
-        $request = $this->getRequest();
-
         $form->setData($data);
         $action = $id ? 'edit' : 'add';
         if($form->isValid($action, $currentUserName, $currentEmail, $editOwn)){
@@ -159,7 +159,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
             if(!$loggedInUser->canEdit($newRole))
                 return $this->redirToList('You have no right to assign this user role', 'error');
 
-            if($editOwn && $data['role'])
+            if($editOwn && isset($data['role']))
                 return $this->redirToList('You have no right to assign new role to yourself', 'error');
 
             $newPassword = $form->getInputFilter()->get('password_fields')->get('password')->getValue();
@@ -168,19 +168,19 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
             $user->setRegDate();
             $entityManager->persist($user);
             $entityManager->flush();
+
+            if($this->getRequest()->isPost()){
+                $this->getResponse()->setStatusCode(201);
+            }
+
             return $this->redirToList('The user has been '.$action.'ed successfully');
         }
 
         return $this->renderData($action, $form, $editOwn, $user);
     }
 
-    public function delete()
+    public function delete($id)
     {
-        $id = $this->params()->fromRoute('id', null);
-        if(empty($id)){
-            return $this->redirMissingUser($id);
-        }
-
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
 
@@ -188,6 +188,12 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         if(!$user instanceof User){
             return $this->redirMissingUser($id);
         }
+        //make sure that the user cannot delete his own profile
+        $loggedInUser = $this->getServiceLocator()->get('current-user');
+        if($loggedInUser->getId() == $user->getId()){
+            $this->redirToList('You cannot delete your own profile', 'error');
+        }
+
         $entityManager->remove($user);//contained listings are cascade removed from the ORM!!
         $entityManager->flush();
 

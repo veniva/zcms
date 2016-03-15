@@ -47,7 +47,7 @@ class Breadcrumb extends AbstractHelper
 
         $categoryContent = false;
         if($routeMatch){
-            if($routeMatch->getMatchedRouteName() == 'admin/category'){
+            if($routeMatch->getMatchedRouteName() == 'admin/rest'){
                 $request = $this->serviceManager->get('Request');
                 $id = $request->getQuery('parent_id', false);
                 if($id !== false)

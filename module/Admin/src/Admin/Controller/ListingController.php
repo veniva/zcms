@@ -14,6 +14,7 @@ use Application\Model\Entity\ListingImage;
 use Application\Model\Entity\Metadata;
 use Application\Model\Entity;
 use Application\Service\Invokable\Misc;
+use Application\Stdlib\Strings;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Form\Element;
@@ -181,16 +182,6 @@ class ListingController extends AbstractRestfulController implements TranslatorA
 
         }
 
-        foreach($data['content'] as &$content){
-            if(empty($content['alias'])){
-                $content['alias'] = Misc::alias($content['title']);
-            }else{
-                $content['alias'] = Misc::alias($content['alias']);
-            }
-        }
-
-        $publicDir = $this->getServiceLocator()->get('config')['public-path'];
-        $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
         if($action == 'edit'){
             $listing = $listingRepository->findOneBy(['id' => $id]);
             if(!$listing) return $this->redirWrongParameter();
@@ -198,6 +189,19 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         }else{
             $listing = $this->getServiceLocator()->get('listing-entity');
         }
+
+        if(!empty($data['content'])){
+            foreach($data['content'] as &$content){
+                if(empty($content['alias'])){
+                    $content['alias'] = Strings::alias($content['title']);
+                }else{
+                    $content['alias'] = Strings::alias($content['alias']);
+                }
+            }
+        }
+
+        $publicDir = $this->getServiceLocator()->get('config')['public-path'];
+        $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
 
         $languagesService = $this->getServiceLocator()->get('language');
         $languages = $languagesService->getActiveLanguages();
@@ -265,6 +269,10 @@ class ListingController extends AbstractRestfulController implements TranslatorA
                     mkdir($uploadDir);
                 }
                 \file_put_contents($uploadDir.'/'.$data['listing_image']['name'], base64_decode($data['listing_image']['base64']));
+            }
+
+            if($this->getRequest()->isPost()){
+                $this->getResponse()->setStatusCode(201);
             }
 
             return new JsonModel([
@@ -349,9 +357,14 @@ class ListingController extends AbstractRestfulController implements TranslatorA
 
         foreach($listingIds as $listingId){//v_todo - create an ORM event listener, or a tool "on demand", to delete images of listings removed on category deletion
             $listing = $entityManager->find(get_class($listingEntity), $listingId);
-            $entityManager->remove($listing);
+            if(!$listing){
+                return $this->redirToList('Invalid listing ID passed', 'error');
+            }
+
             if($listing->getListingImage())
                 $this->removeListingImage($listing->getListingImage(), $publicDir.$imgDir, $listing->getId());
+
+            $entityManager->remove($listing);
         }
         $entityManager->flush();
         return $this->redirToList('The pages have been deleted successfully');

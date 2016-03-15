@@ -31,9 +31,12 @@ class Language implements FactoryInterface
         $request = $serviceLocator->get('Request');
         $router = $serviceLocator->get('Router');
         $match = $router->match($request);
-        $matchedLangIso = $match->getParam('lang', $defaultLanguage->getIsoCode());
-        if($matchedLangIso)
-            $currentLanguage = $entityManager->getRepository($languageClassName)->findOneByIsoCode($matchedLangIso);
+        if($match){
+            $matchedLangIso = $match->getParam('lang', $defaultLanguage->getIsoCode());
+            if($matchedLangIso)
+                $currentLanguage = $entityManager->getRepository($languageClassName)->findOneByIsoCode($matchedLangIso);
+        }
+
         $currentLanguage = isset($currentLanguage) ? $currentLanguage : new Lang();
         $language->setCurrentLanguage($currentLanguage);
 

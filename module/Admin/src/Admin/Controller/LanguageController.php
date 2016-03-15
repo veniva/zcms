@@ -37,7 +37,7 @@ class LanguageController extends AbstractRestfulController implements Translator
         $languagesPaginated = $languageRepo->getLanguagesPaginated();
         $languagesPaginated->setCurrentPageNumber($pageNumber);
 
-        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
+        $renderer = $this->getServiceLocator()->get('ViewRenderer');
         $paginator = $renderer->paginationControl($languagesPaginated, 'Sliding', 'paginator/sliding_ajax');
 
         $i = 0;
@@ -234,15 +234,8 @@ class LanguageController extends AbstractRestfulController implements Translator
         return $this->renderData($action, $language, $form);
     }
 
-    public function delete()
+    public function delete($id)
     {
-        $id = $this->params()->fromRoute('id', null);
-        if(empty($id)){
-            return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')]
-            ]);
-        }
-
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $lang = $entityManager->find(get_class(new Lang()), $id);
         if($lang->isDefault()){

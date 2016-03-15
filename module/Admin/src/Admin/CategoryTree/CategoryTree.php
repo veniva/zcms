@@ -84,4 +84,12 @@ class CategoryTree
     {
         return $this->categoriesAsOptions;
     }
+
+    /**
+     * Re-sets the whole category tree on demand
+     */
+    public function reSetCategories()
+    {
+        $this->setCategories();
+    }
 }

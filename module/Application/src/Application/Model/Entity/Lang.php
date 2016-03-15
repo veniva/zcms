@@ -57,10 +57,12 @@ class Lang
 
     /**
      * @param int $id
+     * @return $this
      */
     public function setId($id)
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -73,10 +75,12 @@ class Lang
 
     /**
      * @param string $isoCode
+     * @return $this
      */
     public function setIsoCode($isoCode)
     {
         $this->isoCode = $isoCode;
+        return $this;
     }
 
     /**
@@ -89,10 +93,12 @@ class Lang
 
     /**
      * @param string $name
+     * @return $this
      */
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -105,10 +111,12 @@ class Lang
 
     /**
      * @param integer $status
+     * @return $this
      */
     public function setStatus($status)
     {
         $this->status = $status;
+        return $this;
     }
 
     public function getStatusName()

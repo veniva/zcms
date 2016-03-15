@@ -44,7 +44,7 @@ class Category
     /**
      * @Column(type="integer", name="parent_id", options={"unsigned": true}, nullable=true)
      */
-    protected $parent;
+    protected $parent = null;
 
     /**
      * @OneToMany(targetEntity="CategoryContent", mappedBy="category", cascade={"remove", "persist"})
@@ -109,7 +109,7 @@ class Category
 
     public function getContent()
     {
-        $this->sortContent();
+        //$this->sortContent();//v_todo - this might create a db inconsistency - sometimes the wrong CategoryContent is being edited
         return $this->content;//return collection of content
     }
 

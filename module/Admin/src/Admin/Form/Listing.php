@@ -30,7 +30,7 @@ class Listing extends Form
     protected $entityManager;
     protected $listingContentCollection;
 
-    public function __construct(EntityManager $entityManager, $listingContentCollection)
+    public function __construct(EntityManager $entityManager, $listingContentCollection = null)
     {
         parent::__construct('listing');
         $this->entityManager = $entityManager;
