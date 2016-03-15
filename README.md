@@ -1,5 +1,4 @@
-To see list of features visit https://github.com/veniva/zcms/wiki  
-To see how to install visit https://github.com/veniva/zcms/wiki/Installation 
+To see list of features and install instructions please visit the [documentation page](http://zcms.readthedocs.org/en/latest/)
  
 To start a new project using composer run:  
 
