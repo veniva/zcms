@@ -10,8 +10,9 @@ namespace Admin\CategoryTree;
 
 use Application\Model\Entity\Category;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Form\Element\Select;
 
-class CategoryTree
+class CategoryTree extends Select
 {
     /**
      * @var array Categories as detailed array
@@ -33,13 +34,15 @@ class CategoryTree
      */
     protected $serviceManager;
 
-    public function __construct(ServiceLocatorInterface $serviceManager, $parentId = null)
+    public function __construct($name = null, $options = [], ServiceLocatorInterface $serviceManager, $parentId = null)
     {
         $this->serviceManager = $serviceManager;
         $entityManager = $serviceManager->get('entity-manager');
         $this->categoryRepo = $entityManager->getRepository(get_class(new Category()));
 
         $this->setCategories($parentId);
+
+        parent::__construct($name, $options);
     }
 
     /**
