@@ -15,5 +15,6 @@
     "zendframework/zendframework": "~2.5.2.0",
     "doctrine/orm": "~2.5",
     "symfony/filesystem": "~2.8"
-  }
+  },
+  "minimum-stability": "dev"
 }
