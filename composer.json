@@ -16,5 +16,6 @@
     "doctrine/orm": "~2.5",
     "symfony/filesystem": "~2.8"
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
