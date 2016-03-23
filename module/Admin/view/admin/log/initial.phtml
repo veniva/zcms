@@ -87,6 +87,7 @@ foreach($this->form->getFieldsets() as $fieldset){
         </div>
         <div class="form-group">
             <div class="col-md-8 col-md-offset-4">
+                <?=$this->formInput($this->form->get('user_csrf'))?>
                 <?=$this->formSubmit($this->form->get('submit'))?>
             </div>
         </div>
