@@ -10,9 +10,6 @@ rest.config({
     },
     getAddParams: {
         filter: viewModel.filter()
-    },
-    postAddParams: {
-        filter: viewModel.filter()
     }
 });
 
@@ -56,6 +53,14 @@ viewModel.fileData.subscribe(function(newValue){
 
 $('#filter_category').change(function(){
     viewModel.filter(this.value);
+    rest.config({
+        listParams: {
+            filter: viewModel.filter()
+        },
+        getAddParams: {
+            filter: viewModel.filter()
+        }
+    });
     lib.get(viewModel.url,{
         filter: viewModel.filter(),
         page: viewModel.page()

@@ -170,7 +170,6 @@ class ListingController extends AbstractRestfulController implements TranslatorA
     }
 
     public function handleCreateUpdate($data, $id = null){
-        $parentFilter = $this->params()->fromPost('filter', 0);
         $action = !$id ? 'add' : 'edit';
         $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
         if(!$id){
@@ -212,12 +211,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         $listingContent = $action == 'edit' ? $listing->getContent() : null;
         $form = new ListingForm($this->getServiceLocator()->get('entity-manager'), $listingContent);
         $form->bind($listing);
-        if($action == 'edit'){
-            if(isset($listing->getCategories()[0]))
-                $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($listing->getCategories()[0]->getId());
-        }else{
-            $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($parentFilter);
-        }
+        $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions());
 
         $returnError = function($message) use($form, $listing, $action, $languages){
             $message = ['type' => 'error', 'text' => $message, 'no_redir' => 1];
