@@ -6,7 +6,7 @@ viewModel.fileData = ko.observable({
 });
 rest.config({
     listParams: {
-        filter: viewModel.filter(),
+        filter: viewModel.filter()
     },
     getAddParams: {
         filter: viewModel.filter()

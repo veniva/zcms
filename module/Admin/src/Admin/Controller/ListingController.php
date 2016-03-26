@@ -122,6 +122,11 @@ class ListingController extends AbstractRestfulController implements TranslatorA
             $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($parentFilter);
         }
 
+        return $this->renderData($form, $listing, $action, $languages);
+    }
+
+    protected function renderData($form, $listing, $action, $languages, $message = null)
+    {
         //add form-control CSS class to some form elements
         foreach($form->getFieldsets() as $fieldset){
             foreach($fieldset->getFieldsets() as $subFieldset){
@@ -132,11 +137,6 @@ class ListingController extends AbstractRestfulController implements TranslatorA
             }
         }
 
-        return $this->renderData($form, $listing, $action, $languages);
-    }
-
-    protected function renderData($form, $listing, $action, $languages, $message = null)
-    {
         $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
         $viewModel = new ViewModel([
