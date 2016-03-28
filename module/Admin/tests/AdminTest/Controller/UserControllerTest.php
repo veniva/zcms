@@ -33,7 +33,10 @@ class UserControllerTest extends AbstractHttpControllerTestCase
     public function setUp()
     {
         $serviceManager = Bootstrap::getServiceManager();
-        $this->controller = new UserController();;
+        $this->setApplicationConfig(
+            $serviceManager->get('ApplicationConfig')
+        );
+        $this->controller = new UserController($this->getApplicationServiceLocator());;
         $this->controller->setTranslator($serviceManager->get('Translator'));
         $this->routeMatch = new RouteMatch(array('controller' => 'user'));
         $this->event      = new MvcEvent();
@@ -46,9 +49,6 @@ class UserControllerTest extends AbstractHttpControllerTestCase
         $this->controller->setEvent($this->event);
         $this->controller->setServiceLocator($serviceManager);
 
-        $this->setApplicationConfig(
-            $serviceManager->get('ApplicationConfig')
-        );
         parent::setUp();
     }
 

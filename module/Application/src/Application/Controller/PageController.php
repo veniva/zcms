@@ -8,12 +8,25 @@
 
 namespace Application\Controller;
 
-use Application\Service\Invokable\Misc;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Model\ViewModel;
 
 class PageController extends AbstractActionController
 {
+    use ServiceLocatorAwareTrait;
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator;
+
+    public function __construct(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->setServiceLocator($serviceLocator);
+    }
+
     public function showAction()
     {
         $params = $this->params();

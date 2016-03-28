@@ -19,12 +19,24 @@ use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Validator;
 use Zend\Mail;
 
 class LogController extends AbstractActionController implements TranslatorAwareInterface
 {
-    use TranslatorAwareTrait;
+    use TranslatorAwareTrait, ServiceLocatorAwareTrait;
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator;
+
+    public function __construct(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->setServiceLocator($serviceLocator);
+    }
 
     public function indexAction()
     {

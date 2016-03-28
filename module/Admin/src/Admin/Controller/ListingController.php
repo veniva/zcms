@@ -13,18 +13,24 @@ use Application\Model\Entity\ListingContent;
 use Application\Model\Entity\ListingImage;
 use Application\Model\Entity\Metadata;
 use Application\Model\Entity;
-use Application\Service\Invokable\Misc;
 use Application\Stdlib\Strings;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Form\Element;
 use Zend\Mvc\Controller\AbstractRestfulController;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class ListingController extends AbstractRestfulController implements TranslatorAwareInterface
 {
-    use TranslatorAwareTrait;
+    use TranslatorAwareTrait, ServiceLocatorAwareTrait;
+    
+    public function __construct(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->setServiceLocator($serviceLocator);
+    }
 
     public function listAction()
     {

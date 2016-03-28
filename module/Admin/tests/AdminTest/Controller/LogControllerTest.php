@@ -41,7 +41,10 @@ class LogControllerTest extends AbstractHttpControllerTestCase
     public function setUp()
     {
         $serviceManager = Bootstrap::getServiceManager();
-        $this->controller = new LogController();
+        $this->setApplicationConfig(
+            $serviceManager->get('ApplicationConfig')
+        );
+        $this->controller = new LogController($this->getApplicationServiceLocator());
         $this->controller->setTranslator($serviceManager->get('Translator'));
         $this->request    = new Request();
         $this->routeMatch = new RouteMatch(array('controller' => 'log'));
@@ -54,11 +57,6 @@ class LogControllerTest extends AbstractHttpControllerTestCase
         $this->event->setRouteMatch($this->routeMatch);
         $this->controller->setEvent($this->event);
 
-        $this->setApplicationConfig(
-            $serviceManager->get('ApplicationConfig')
-        );
-
-        $this->controller->setServiceLocator($this->getApplicationServiceLocator());
         $this->entityManager = $this->controller->getServiceLocator()->get('entity-manager');
         parent::setUp();
     }

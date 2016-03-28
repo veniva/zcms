@@ -32,7 +32,10 @@ class LanguageControllerTest extends AbstractHttpControllerTestCase
     public function setUp()
     {
         $serviceManager = Bootstrap::getServiceManager();
-        $this->controller = new LanguageController();
+        $this->setApplicationConfig(
+            $serviceManager->get('ApplicationConfig')
+        );
+        $this->controller = new LanguageController($this->getApplicationServiceLocator());
         $this->controller->setTranslator($serviceManager->get('translator'));
         $this->request    = new Request();
         $this->routeMatch = new RouteMatch(array('controller' => 'language'));
@@ -44,12 +47,6 @@ class LanguageControllerTest extends AbstractHttpControllerTestCase
         $this->event->setRouter($router);
         $this->event->setRouteMatch($this->routeMatch);
         $this->controller->setEvent($this->event);
-
-        $this->setApplicationConfig(
-            $serviceManager->get('ApplicationConfig')
-        );
-
-        $this->controller->setServiceLocator($this->getApplicationServiceLocator());
 
         parent::setUp();
     }

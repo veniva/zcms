@@ -14,12 +14,24 @@ use Application\Model\Entity\Lang;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractRestfulController;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class LanguageController extends AbstractRestfulController implements TranslatorAwareInterface
 {
-    use TranslatorAwareTrait;
+    use TranslatorAwareTrait, ServiceLocatorAwareTrait;
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator;
+
+    public function __construct(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->setServiceLocator($serviceLocator);
+    }
 
     protected $flagsDir = '/img/flags/';
 

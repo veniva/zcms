@@ -9,18 +9,21 @@
 namespace Application\Service\Factory;
 
 
-use Zend\Authentication\AuthenticationService;
+use Application\Authentication\Adapter;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class Authentication implements FactoryInterface
+class AuthenticationAdapterFactory implements FactoryInterface
 {
+
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return mixed
+     */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $authentication = new AuthenticationService();
-        $adapter = $serviceLocator->get('auth-adapter');
-        $authentication->setAdapter($adapter);
-
-        return $authentication;
+        return new Adapter($serviceLocator);
     }
 }

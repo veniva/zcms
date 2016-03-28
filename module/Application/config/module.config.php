@@ -85,6 +85,7 @@ return array(
             'acl' => 'Application\Service\Factory\Acl',
             'validator-messages' => 'Application\Service\Factory\ValidatorMessages',
             'language' => 'Application\Service\Factory\Language',
+            'auth-adapter' => 'Application\Service\Factory\AuthenticationAdapterFactory',
         ),
         'invokables' => array(
             'misc' => 'Application\Service\Invokable\Misc',
@@ -94,7 +95,6 @@ return array(
             'category-content-entity' => 'Application\Model\Entity\CategoryContent',
             'user-entity' => 'Application\Model\Entity\User',
             'lang-entity' => 'Application\Model\Entity\Lang',
-            'auth-adapter' => 'Application\Authentication\Adapter',
             'stdlib-file-system' => 'Application\Stdlib\FileSystem',
             'stdlib-strings' => 'Application\Stdlib\Strings',
         ),
@@ -123,9 +123,11 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Application\Controller\Index' => 'Application\Controller\IndexController',
-            'Application\Controller\Category' => 'Application\Controller\CategoryController',
-            'Application\Controller\Page' => 'Application\Controller\PageController',
-            'Application\Controller\CustomPage' => 'Application\Controller\CustomPageController',
+        ),
+        'factories' => array(
+            'Application\Controller\Page' => 'Application\Controller\Factory\PageControllerFactory',
+            'Application\Controller\Category' => 'Application\Controller\Factory\CategoryControllerFactory',
+            'Application\Controller\CustomPage' => 'Application\Controller\Factory\CustomPageControllerFactory',
         ),
     ),
     'controller_plugins' => array(

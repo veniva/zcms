@@ -9,7 +9,6 @@ use Zend\I18n\Translator\TranslatorAwareInterface;
 
 class Translator implements InitializerInterface
 {
-
     /**
      * Initialize
      *

@@ -6,21 +6,23 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Application\Service\Factory;
+namespace Application\Controller\Factory;
 
 
-use Zend\Authentication\AuthenticationService;
+use Application\Controller\PageController;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class Authentication implements FactoryInterface
+class PageControllerFactory implements FactoryInterface
 {
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return mixed
+     */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $authentication = new AuthenticationService();
-        $adapter = $serviceLocator->get('auth-adapter');
-        $authentication->setAdapter($adapter);
-
-        return $authentication;
+        return new PageController($serviceLocator);
     }
 }

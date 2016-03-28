@@ -41,7 +41,10 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
     public function setUp()
     {
         $serviceManager = Bootstrap::getServiceManager();
-        $this->controller = new CategoryController();
+        $this->setApplicationConfig(
+            $serviceManager->get('ApplicationConfig')
+        );
+        $this->controller = new CategoryController($this->getApplicationServiceLocator());
         $this->controller->setTranslator($serviceManager->get('Translator'));
         $this->routeMatch = new RouteMatch(array('controller' => 'category'));
         $this->event      = new MvcEvent();
@@ -53,11 +56,6 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         $this->event->setRouteMatch($this->routeMatch);
         $this->controller->setEvent($this->event);
 
-        $this->setApplicationConfig(
-            $serviceManager->get('ApplicationConfig')
-        );
-
-        $this->controller->setServiceLocator($this->getApplicationServiceLocator());
         $this->entityManager = $this->controller->getServiceLocator()->get('entity-manager');
 
         parent::setUp();

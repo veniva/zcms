@@ -13,9 +13,23 @@ use Application\Form\Contact;
 use Application\Service\Invokable\Misc;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mail;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class CustomPageController extends AbstractActionController
 {
+    use ServiceLocatorAwareTrait;
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator;
+
+    public function __construct(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->setServiceLocator($serviceLocator);
+    }
+    
     public function contactAction()
     {
         $adminEmail = Misc::getAdminEmail();

@@ -6,7 +6,6 @@
  * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Admin\Controller;
 return array(
     'router' => array(
@@ -77,14 +76,16 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Admin\Controller\Index' => 'Admin\Controller\IndexController',
-            'Admin\Controller\Category' => 'Admin\Controller\CategoryController',
-            'Admin\Controller\Listing' => 'Admin\Controller\ListingController',
-            'Admin\Controller\Language' => 'Admin\Controller\LanguageController',
-            'Admin\Controller\User' => 'Admin\Controller\UserController',
-            'Admin\Controller\Log' => 'Admin\Controller\LogController',
         ),
         'initializers' => array(
             'Admin\Controller\Initializer\Translator',
+        ),
+        'factories' => array(
+            'Admin\Controller\Category' => 'Admin\Controller\Factory\CategoryControllerFactory',
+            'Admin\Controller\Listing' => 'Admin\Controller\Factory\ListingControllerFactory',
+            'Admin\Controller\Log' => 'Admin\Controller\Factory\LogControllerFactory',
+            'Admin\Controller\Language' => 'Admin\Controller\Factory\LanguageControllerFactory',
+            'Admin\Controller\User' => 'Admin\Controller\Factory\UserControllerFactory',
         ),
     ),
     'view_manager' => array(

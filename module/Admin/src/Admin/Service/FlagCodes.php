@@ -8,11 +8,10 @@
 
 namespace Admin\Service;
 
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class FlagCodes implements ServiceLocatorAwareInterface
+class FlagCodes
 {
     use ServiceLocatorAwareTrait;
 

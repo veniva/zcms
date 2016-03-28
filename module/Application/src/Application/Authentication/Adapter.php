@@ -7,9 +7,14 @@ use Zend\Authentication\Adapter\AbstractAdapter;
 use Zend\Authentication\Result;
 use Zend\ServiceManager;
 
-class Adapter extends AbstractAdapter implements ServiceManager\ServiceLocatorAwareInterface
+class Adapter extends AbstractAdapter
 {
     use ServiceManager\ServiceLocatorAwareTrait;
+    
+    public function __construct(ServiceManager\ServiceLocatorInterface $serviceLocator)
+    {
+        $this->setServiceLocator($serviceLocator);
+    }
 
     /**
      * Authenticate against database credentials
