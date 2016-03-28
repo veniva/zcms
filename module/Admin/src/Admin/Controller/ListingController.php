@@ -14,6 +14,7 @@ use Application\Model\Entity\ListingImage;
 use Application\Model\Entity\Metadata;
 use Application\Model\Entity;
 use Application\Stdlib\Strings;
+use Symfony\Component\Filesystem\Filesystem;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Form\Element;
@@ -361,8 +362,10 @@ class ListingController extends AbstractRestfulController implements TranslatorA
                 return $this->redirToList('Invalid listing ID passed', 'error');
             }
 
-            if($listing->getListingImage())
-                $this->removeListingImage($listing->getListingImage(), $publicDir.$imgDir, $listing->getId());
+            if($listing->getListingImage()){
+                $fileSystem = new Filesystem();
+                $fileSystem->remove($publicDir.$imgDir.$listing->getId());
+            }
 
             $entityManager->remove($listing);
         }

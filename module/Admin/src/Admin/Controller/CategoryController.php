@@ -12,9 +12,8 @@ use Admin\Form\Category as CategoryForm;
 use Application\Model\Entity\Category;
 use Application\Model\Entity\CategoryContent;
 use Application\Model\Entity\Lang;
-use Application\Service\Invokable\Misc;
 use Application\Stdlib\Strings;
-use Doctrine\ORM\EntityManager;
+use Symfony\Component\Filesystem\Filesystem;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractRestfulController;
@@ -33,9 +32,15 @@ class CategoryController extends AbstractRestfulController implements Translator
      */
     protected $serviceLocator;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    /**
+     * @var Filesystem
+     */
+    protected $fileSystem;
+
+    public function __construct(ServiceLocatorInterface $serviceLocator, Filesystem $filesystem)
     {
         $this->setServiceLocator($serviceLocator);
+        $this->fileSystem = $filesystem;
     }
 
     public function listAction()
@@ -270,6 +275,13 @@ class CategoryController extends AbstractRestfulController implements Translator
             ]);
         }
 
+        //region Remove pages' images
+        $publicDir = $this->getServiceLocator()->get('config')['public-path'];
+        $imgDir = $this->getServiceLocator()->get('config')['listing']['img-path'];
+        $fileSystem = $this->fileSystem;
+        $this->deleteListingImages($category, $fileSystem, $publicDir.$imgDir);
+        //endregion
+
         $entityManager->remove($category);//contained listings are cascade removed from the ORM!!
         $entityManager->flush();
 
@@ -277,5 +289,17 @@ class CategoryController extends AbstractRestfulController implements Translator
             'message' => ['type' => 'success', 'text' => $this->translator->translate('The category and all the listings in it were removed successfully')],
             'parent_id' => (int)$category->getParent(),
         ]);
+    }
+
+    protected function deleteListingImages($category, Filesystem $fileSystem, $path)
+    {
+        //dept-first recursion
+        foreach($category->getChildren() as $subCategory){
+            $this->deleteListingImages($subCategory, $fileSystem, $path);
+        }
+
+        foreach($category->getListings() as $listing){
+            $fileSystem->remove($path.$listing->getId());
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace Admin\Controller\Factory;
 
 
 use Admin\Controller\CategoryController;
+use Symfony\Component\Filesystem\Filesystem;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -24,6 +25,6 @@ class CategoryControllerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new CategoryController($serviceLocator);
+        return new CategoryController($serviceLocator, new Filesystem());
     }
 }

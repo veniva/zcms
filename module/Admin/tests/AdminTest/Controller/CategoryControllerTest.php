@@ -16,7 +16,7 @@ use ApplicationTest\AuthorizationTrait;
 use ApplicationTest\Bootstrap;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Router\Http\TreeRouteStack as HttpRouter;
-use Admin\Controller\CategoryController;
+use Admin\Controller;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Mvc\MvcEvent;
@@ -29,7 +29,7 @@ use Zend\View\Model\JsonModel;
 class CategoryControllerTest extends AbstractHttpControllerTestCase
 {
     use AuthorizationTrait;
-    /** @var CategoryController */
+    /** @var Controller\CategoryController */
     protected $controller;
     protected $response;
     /** @var RouteMatch */
@@ -44,7 +44,8 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         $this->setApplicationConfig(
             $serviceManager->get('ApplicationConfig')
         );
-        $this->controller = new CategoryController($this->getApplicationServiceLocator());
+        $controllerFactory = new Controller\Factory\CategoryControllerFactory();
+        $this->controller = $controllerFactory->createService($this->getApplicationServiceLocator());
         $this->controller->setTranslator($serviceManager->get('Translator'));
         $this->routeMatch = new RouteMatch(array('controller' => 'category'));
         $this->event      = new MvcEvent();
