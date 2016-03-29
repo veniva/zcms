@@ -41,6 +41,7 @@ class Module
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setRouteMatch'), -1);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'accessControl'), -2);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'globalLayoutVars'), -3);
+        $eventManager->attach(MvcEvent::EVENT_BOOTSTRAP, array($this, 'bootstrapSession'), 100);
         //use the error template of the currently used module
         $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function(MvcEvent $event)use($serviceManager) {
             if($route = $event->getRouteMatch()){
@@ -72,8 +73,6 @@ class Module
             $viewHelper = new View\Helper\Url($e->getRouteMatch());
             return $viewHelper;
         });
-
-        $this->bootstrapSession($e);
     }
 
     public function getConfig()
