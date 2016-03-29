@@ -1,7 +1,6 @@
 <?php
 namespace MainMenu;
 
-use Application\Service\Invokable\Misc;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceManager;
 use Zend\View\Model\ViewModel;

@@ -110,6 +110,10 @@ return array(
             'lang-entity' => false,
         ),
     ),
+    'session' => array(
+        'use_cookies' => true,
+        'cookie_httponly' => true,
+    ),
     'translator' => array(
         'locale' => 'en_US',
         'translation_file_patterns' => array(

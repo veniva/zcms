@@ -15,9 +15,11 @@ use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
+use Zend\Session\Config\SessionConfig;
+use Zend\Session\Container;
+use Zend\Session\SessionManager;
 use Zend\Validator\AbstractValidator;
 use Zend\View\Model\ViewModel;
-use Application\Model\Entity\Lang;
 
 class Module
 {
@@ -70,6 +72,8 @@ class Module
             $viewHelper = new View\Helper\Url($e->getRouteMatch());
             return $viewHelper;
         });
+
+        $this->bootstrapSession($e);
     }
 
     public function getConfig()
@@ -212,5 +216,23 @@ class Module
         $locale = ($languageIso != 'en') ? $languageIso.'_'.strtoupper($languageIso) : 'en_US';
         $translator->setLocale($locale);
         $serviceManager->get('ViewHelperManager')->get('translate')->setTranslator($translator);
+    }
+
+    public function bootstrapSession(MvcEvent $e)
+    {
+        $serviceManager = $e->getApplication()->getServiceManager();
+        $sessionConfig = new SessionConfig();
+        $config = $serviceManager->get('Config');
+        $sessionConfig->setOptions($config['session']);
+        $sessionManager = new SessionManager($sessionConfig);
+        $sessionManager->start();
+        Container::setDefaultManager($sessionManager);
+
+        //prevent session fixation by generating new session id every 5 min
+        $session = new Container();//uses the "Default" namespace
+        if(!isset($session->generated) || $session->generated < (time() - 300)){
+            $sessionManager->regenerateId();
+            $session->generated = time();
+        }
     }
 }
