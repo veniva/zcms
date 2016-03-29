@@ -11,7 +11,7 @@ namespace Admin\Form;
 use Application\Model\Entity\ListingContent;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
-use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Hydrator\ClassMethods;
 
 class ListingContentFieldset extends Fieldset implements InputFilterProviderInterface
 {

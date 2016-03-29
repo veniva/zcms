@@ -11,7 +11,7 @@ namespace Admin\Form;
 use Application\Model\Entity\CategoryContent;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
-use Zend\Stdlib\Hydrator\ClassMethods as ClassMethodsHydrator;
+use Zend\Hydrator\ClassMethods as ClassMethodsHydrator;
 
 class CategoryContentFieldset extends Fieldset implements InputFilterProviderInterface
 {

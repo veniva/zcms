@@ -11,7 +11,7 @@ namespace Admin\Form;
 use Application\Model\Entity\User as UserEntity;
 use Application\Validator\Doctrine\NoRecordExists;
 use Zend\Form\Form;
-use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Hydrator\ClassMethods;
 
 class User extends Form
 {

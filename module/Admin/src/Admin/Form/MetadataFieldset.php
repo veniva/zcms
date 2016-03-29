@@ -12,7 +12,7 @@ use Application\Model\Entity\Metadata;
 use Zend\Filter\ToNull;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
-use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Hydrator\ClassMethods;
 
 class MetadataFieldset extends Fieldset implements InputFilterProviderInterface
 {

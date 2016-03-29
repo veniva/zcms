@@ -13,7 +13,7 @@ use Application\Model\Entity\CategoryContent;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use Zend\Form\Form;
-use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Hydrator\ClassMethods;
 use Zend\Validator;
 
 class Category extends Form

@@ -11,7 +11,7 @@ namespace Admin\Form;
 use Application\Model\Entity\Lang;
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Hydrator\ClassMethods;
 
 class Language extends Form
 {

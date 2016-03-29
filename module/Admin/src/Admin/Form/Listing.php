@@ -15,7 +15,7 @@ use Application\Model\Entity;
 use Doctrine\ORM\EntityManager;
 use Zend\Form\Form;
 use Zend\Validator;
-use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Hydrator\ClassMethods;
 use Doctrine\Common\Collections\Collection;
 
 /**
