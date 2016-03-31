@@ -1,0 +1,113 @@
+<?php
+$this->form->prepare();
+$this->form->setAttribute('action', '#'.$this->action.($this->action == 'edit' ? '/'.$this->id : ''));
+?>
+
+<?=$this->form()->openTag($this->form)?>
+<div class="main-tabs">
+    <ul>
+        <li><a href="#tabs-1"><?=$this->translate('Content')?></a></li>
+        <li><a href="#tabs-2"><?=$this->translate('Meta tags')?></a></li>
+    </ul>
+    <div id="tabs-1">
+        <div class="tabs">
+            <ul>
+                <?php $initiallyOpenedTabIndex = 0;?>
+                <?php $i=0; foreach($this->activeLanguages as $lang):?>
+                    <li>
+                        <a href="#tabs-1-<?=$lang->getId()?>">
+                            <img src="<?=$this->corePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getName()?>" />
+                            <span <?php if($lang->isDefault()):?>style="font-weight: bold;"<?php endif?>>
+                                <?=$lang->getIsoCode()?>
+                            </span>
+                        </a>
+                    </li>
+                    <?php if($lang->isDefault()) $initiallyOpenedTabIndex = $i;?>
+                <?php $i++; endforeach; ?>
+            </ul>
+            <?php foreach($this->form->getFieldsets()['content']->getFieldsets() as $fieldset): ?>
+                <div id="tabs-1-<?=$fieldset->getObject()->getLang()->getId()?>">
+                    <?php foreach($fieldset->getElements() as $element): ?>
+                        <div class="form-group">
+                            <label><?=$this->translate($element->getLabel())?>:</label>
+                            <?=$this->formElement($element)?>
+                            <div class="form-error"><?=$this->formElementErrors($element)?></div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="form-group">&nbsp;</div>
+        <div class="row form-group">
+            <label class="col-md-2"><?=$this->translate($this->form->get('category')->getLabel())?>:</label>
+            <div class="col-md-10"><?=$this->formElement($this->form->get('category'))?></div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-2"><?=$this->translate($this->form->get('sort')->getLabel())?>:</label>
+            <div class="col-md-10"><?=$this->formInput($this->form->get('sort'))?></div>
+            <div class="form-error">
+                <?=$this->formElementErrors($this->form->get('sort'))?>
+            </div>
+        </div>
+        <hr />
+        <div class="row form-group">
+            <label class="col-md-2"><?=$this->translate($this->form->get('listingImage')->getLabel())?></label>
+            <div class="col-md-10"><?=$this->formFile($this->form->get('listingImage'))?></div>
+            <div class="col-md-12 form-error">
+                <?=$this->formElementErrors($this->form->get('listingImage'))?>
+            </div>
+            <?php if($this->image):?>
+                <div class="col-md-12">
+                    <img style="width:100px;" src="<?=$this->corePath().'/img/listing_img/'.$this->image?>" />
+                    <?=$this->formCheckbox($this->form->get('image_remove'))?> <label><?=$this->translate($this->form->get('image_remove')->getLabel())?></label>
+                </div>
+            <?php endif?>
+        </div>
+    </div>
+    <div id="tabs-2">
+        <div class="tabs">
+            <ul>
+                <?php foreach($this->activeLanguages as $lang):?>
+                    <li>
+                        <a href="#tabs-2-<?=$lang->getId()?>">
+                            <img src="<?=$this->corePath().'/img/flags/'.$lang->getIsoCode()?>.png" title="<?=$lang->getName()?>" />
+                            <span <?php if($lang->isDefault()):?>style="font-weight: bold;"<?php endif?>>
+                                <?=$lang->getIsoCode()?>
+                            </span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+            <?php foreach($this->form->getFieldsets()['metadata']->getFieldsets() as $fieldset): ?>
+                <div id="tabs-2-<?=$fieldset->getObject()->getLang()->getId()?>">
+                    <?php foreach($fieldset->getElements() as $element): ?>
+                        <div class="form-group">
+                            <label><?=$this->translate($element->getLabel())?>:</label>
+                            <?=$this->formElement($element)?>
+                            <div class="form-error"><?=$this->formElementErrors($element)?></div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<div class="form-group">&nbsp;</div>
+<div class="form-group">
+    <?=$this->formInput($this->form->get('listing_csrf'))?>
+    <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate('Submit')?></button>
+    <small> &nbsp; <a data-bind="attr: {href: '#'+page()}"><?=$this->translate('Cancel')?></a></small>
+    <div style="height:100px;">&nbsp;</div>
+</div>
+<?=$this->form()->closeTag()?>
+<link media="screen" rel="stylesheet" type="text/css" href="<?=$this->corePath().'/css/font-awesome-4.4.0/css/font-awesome.min.css'?>" />
+<link media="screen" rel="stylesheet" type="text/css" href="<?=$this->corePath().'/css/admin/summernote.css'?>" />
+<?php $locale = str_replace('_', '-', $this->locale);?>
+<script type="text/javascript">
+    $('.main-tabs').tabs();
+    $('.tabs').tabs({active: <?=$initiallyOpenedTabIndex?>});
+    $('.summernote').summernote({
+        height: 300,
+        lang: '<?=$locale?>'
+    });
+</script>

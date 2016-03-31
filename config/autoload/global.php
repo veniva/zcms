@@ -11,6 +11,4 @@
  * file.
  */
 
-return array(
-    'public-path' => __DIR__.'/../../public_html'
-);
+return array();

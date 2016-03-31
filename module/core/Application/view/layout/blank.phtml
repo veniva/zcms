@@ -1,0 +1,48 @@
+<?php use Application\Service\Invokable;
+
+echo $this->doctype(); ?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <?=$this->headTitle($this->meta_title ?: $this->translate('ZCSM - a lightweight Content Management System'))."\n"?>
+    <?=$this->headMeta()
+        ->appendName('description', $this->meta_description ?: $this->translate('A CMS based on ZendFramework'))
+        ->appendName('keywords', $this->meta_keywords ?: $this->translate('ZCMS, CMS, content management system'))."\n"?>
+<!--<link rel="stylesheet" href="../../../../public/css/bootstrap.min.css" />--><!--V_TODO - remove--><!--V_TODO - remove--><!--V_TODO - remove-->
+    <?=$this->headLink()
+        ->prependStylesheet($this->corePath() .'/css/style.css')
+        ->prependStylesheet($this->corePath() .'/css/bootstrap-theme.min.css')
+        ->prependStylesheet($this->corePath() . '/css/bootstrap.min.css')
+    ?>
+
+    <?=$this->headScript()
+        ->prependFile($this->corePath() . '/js/bootstrap.min.js')
+        ->prependFile($this->corePath() . '/js/jquery-2.1.4.min.js')
+        ->appendFile($this->corePath() . '/js/jscript.js');
+    ?>
+
+</head>
+<body>
+<div id="main">
+    <div id="header">
+        <div class="main">
+            <div class="col-sm-2">
+                <h3><a class="btn btn-default" href="<?=$this->langUrl('home/default')?>">ZCMS</a></h3>
+            </div>
+        </div>
+    </div>
+    <div id="main-content" class="main" style="border-left:1px solid #E1E1E1;border-right:1px solid #E1E1E1;">
+        <div class="col-md-12">
+            <?=$this->content?>
+        </div>
+<div class="clearfix"></div>
+    </div>
+    <footer id="footer">
+        <hr />
+        &copy; <?=date('Y')?> ZCMS - released under the <a target="_blank" href="http://www.gnu.org/licenses/gpl-3.0.en.html">GNU/GPL 3.0 licence</a>
+    </footer>
+</div>
+
+</body>
+</html>

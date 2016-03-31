@@ -15,6 +15,7 @@ return array(
     ),
     'module_listener_options' => array(
         'module_paths' => array(
+            './module/core',
             './module',
             './vendor',
         ),

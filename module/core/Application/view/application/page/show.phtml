@@ -1,0 +1,5 @@
+<h1><?=$this->content->getTitle()?></h1>
+<?php if($this->thumbnail):?>
+<img width="150" class="img-thumbnail" src="<?=$this->corePath()?>/img/listing_img/<?=$this->listing->getId()?>/<?=$this->thumbnail?>" />
+<?php endif;?>
+<p><?=$this->content->getText()?></p>

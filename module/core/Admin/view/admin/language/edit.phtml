@@ -1,0 +1,66 @@
+<?php
+$this->form->prepare();
+$this->form->setAttribute('action', '#'.$this->action.($this->action == 'edit' ? '/'.$this->id : ''));
+?>
+<?=$this->form()->openTag($this->form)?>
+<table class="list_table" width="400" cellpadding="5" cellspacing="0">
+    <tr>
+        <td><label><?=$this->translate($this->form->get('name')->getLabel())?></label></td>
+        <td>
+            <?=$this->formInput($this->form->get('name'))?>
+            <div class="form-error">
+                <?=$this->formElementErrors($this->form->get('name'))?>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><label><?=$this->translate($this->form->get('isoCode')->getLabel())?></label></td>
+        <td>
+            <?=$this->formSelect($this->form->get('isoCode'))?>
+            <img id="flag" src="<?=$this->corePath()?>/img/flags/<?=$this->flagCode?>.png" />
+            <div class="form-error">
+                <?=$this->formElementErrors($this->form->get('isoCode'))?>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><label><?=$this->translate($this->form->get('status')->getLabel())?></label></td>
+        <td>
+            <?php if(!$this->lang || !$this->lang->isDefault()):?>
+                <?=$this->formSelect($this->form->get('status'))?>
+                <div class="form-error">
+                    <?=$this->formElementErrors($this->form->get('status'))?>
+                </div>
+            <?php else: ?>
+                <?=$this->lang->getStatusName()?>
+            <?php endif; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="2">
+            <?=$this->formInput($this->form->get('language_csrf'))?>
+            <button class="btn btn-primary btn-xs" name="categ_form"><?=$this->translate(ucfirst($this->action))?></button>
+            <small> <a data-bind="attr: {href: '#'+page()}"><?=$this->translate('Cancel')?></a></small>
+        </td>
+    </tr>
+</table>
+<?=$this->form()->closeTag()?>
+<div style="height:100px;">&nbsp;</div>
+<script type="text/javascript">
+    var $flagImg = $(document.getElementById('flag'));
+    $flagImg.attr('src', function(){
+        <?php if($this->flagCode):?>
+            return "<?=$this->corePath()?>/img/flags/<?=$this->flagCode?>.png";
+        <?php else: ?>
+            return "<?=$this->corePath()?>/img/pixel-trans.gif";
+        <?php endif; ?>
+    });
+
+    $(document.getElementById('flags_select')).change(function(){
+        if(this.value)
+            $flagImg.attr('src', "<?=$this->corePath()?>/img/flags/"+this.value+".png");
+        else
+            $flagImg.attr('src', "<?=$this->corePath()?>/img/pixel-trans.gif");
+    });
+</script>
