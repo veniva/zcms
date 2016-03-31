@@ -1,11 +1,13 @@
 To install a copy on your localhost is quite stright forward.
   
-Requirements:  
+**Requirements**  
+ 
 PHP 5.5+  
 Web server: all [handled byZF2](http://framework.zend.com/manual/current/en/ref/installation.html#web-server-setup), incl. Apache Nginx and more  
 Database: all [handled by Doctrine 2](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#driver), incl. MySQL, PostgreSQL, SQLite and more 
   
-Installation:  
+**Installation**  
+ 
 1. Download or using composer run:  
 `php composer.phar create-project veniva/zcms [my-app-name]`
 replacing the [my-app-name] with a name of a directory, and go to step 4  

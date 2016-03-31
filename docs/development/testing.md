@@ -21,7 +21,7 @@ This will use the file `/module/core/Application/tests/cli-config.php` as an ent
 
 To run the tests, open a terminal window, scroll to the project root and run the command:
 
-    vendor/bin/phpunit -c module/Application/tests/phpunit.xml
+    vendor/bin/phpunit -c module/core/Application/tests/phpunit.xml
 
 This will use the test configuration file located at `/module/core/Application/tests/phpunit.xml`.  
   
