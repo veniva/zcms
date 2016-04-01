@@ -18,11 +18,13 @@ Note: it contains three sample configurations. The second and third are respecti
 5. Setup DB, do one of the following:  
 - SQLite (good for quick demo) - copy install/zcms.sqlite to data/zcms.sqlite;  
 - MySQL - dump the install/mysql.sql data into your database and set the configuration in config/autoload/database.local.php;  
-- PostgreSQL - restore the backup located at install/PostgreSQL.backup and set the configuration in config/autoload/database.local.php;  
-Alternatively, you can use the Doctrine's SchemaTool to generate the database schema for you:  
+- PostgreSQL - restore the backup located at install/PostgreSQL.backup and set the configuration in config/autoload/database.local.php;
 
-    cd project/  
-     $ vendor/bin/doctrine orm:schema-tool:create
+Alternatively, you can use the Doctrine's SchemaTool to generate the database schema for you:
+
+    cd project/
+    $ vendor/bin/doctrine orm:schema-tool:create
+
 
 You'll find more documentation on this tool [here](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/getting-started.html#generating-the-database-schema).  
 6. It is recommended that you specify custom 'salt' and 'cost' for the bcrypt algorithm used for password encryption. To do so copy /config/autoload/crypt.local.php.dist to /config/autoload/crypt.local.php and make the necessary changes   

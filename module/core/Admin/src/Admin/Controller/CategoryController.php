@@ -28,11 +28,6 @@ class CategoryController extends AbstractRestfulController implements Translator
     use TranslatorAwareTrait, ServiceLocatorAwareTrait;
 
     /**
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator;
-
-    /**
      * @var Filesystem
      */
     protected $fileSystem;
@@ -69,7 +64,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         foreach($categoriesPaginated as $category){
             $categories[$i]['id'] = $category->getId();
             $categories[$i]['title'] = $category->getSingleCategoryContent($defaultLangId)->getTitle();
-            $categories[$i]['children_count'] = $categoryRepository->countChildren($category->getId());
+            $categories[$i]['children_count'] = $categoryRepository->countChildren($category);
             $categories[$i]['sort'] = $category->getSort();
             $i++;
         }
@@ -186,9 +181,6 @@ class CategoryController extends AbstractRestfulController implements Translator
             $relatedParentCategories = $categoryRepository->getParentCategories($parentCategory);
             $categoryEntity->setParents($relatedParentCategories);
             $categoryEntity->setParent($parentCategory->getId());
-            foreach($relatedParentCategories as $parent){
-                $parent->addChild($categoryEntity);
-            }
         }
 
         //add empty language content to the collection, so that input fields are created
@@ -201,7 +193,7 @@ class CategoryController extends AbstractRestfulController implements Translator
 
     public function addJsonAction()
     {
-        $parentCategoryID = $this->params()->fromQuery('id', 0);
+        $parentCategoryID = $this->params()->fromQuery('parent_id', 0);
         $result = $this->prepareAddData($parentCategoryID, $form, $categoryEntity, $parentCategory);
         if($result !== true && $result instanceof JsonModel) return $result;
 
@@ -210,7 +202,7 @@ class CategoryController extends AbstractRestfulController implements Translator
 
     public function create($data)
     {
-        $result = $this->prepareAddData($data['id'], $form, $categoryEntity, $parentCategory);
+        $result = $this->prepareAddData($data['parent_id'], $form, $categoryEntity, $parentCategory);
         if($result !== true && $result instanceof JsonModel) return $result;
 
         foreach($data['content'] as &$content){
@@ -224,7 +216,7 @@ class CategoryController extends AbstractRestfulController implements Translator
             $this->getResponse()->setStatusCode(201);
             return new JsonModel([
                 'message' => ['type' => 'success', 'text' => $this->translator->translate('The new category was added successfully')],
-                'parent_id' => $data['id'],
+                'parent_id' => $data['parent_id'],
             ]);
         }
 
@@ -292,8 +284,9 @@ class CategoryController extends AbstractRestfulController implements Translator
 
     protected function deleteListingImages($category, Filesystem $fileSystem, $path)
     {
+        $em = $this->getServiceLocator()->get('entity-manager');
         //dept-first recursion
-        foreach($category->getChildren() as $subCategory){
+        foreach($em->getRepository(get_class($category))->getChildren($category) as $subCategory){
             $this->deleteListingImages($subCategory, $fileSystem, $path);
         }
 

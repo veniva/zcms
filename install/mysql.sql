@@ -19,17 +19,6 @@ CREATE TABLE IF NOT EXISTS `categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-CREATE TABLE IF NOT EXISTS `category_children` (
-  `category_id` int(10) unsigned NOT NULL,
-  `child_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`category_id`,`child_id`),
-  KEY `IDX_16ED35C112469DE2` (`category_id`),
-  KEY `IDX_16ED35C1DD62C21B` (`child_id`),
-  CONSTRAINT `FK_16ED35C112469DE2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
-  CONSTRAINT `FK_16ED35C1DD62C21B` FOREIGN KEY (`child_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 CREATE TABLE IF NOT EXISTS `category_content` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `category_id` int(10) unsigned DEFAULT NULL,

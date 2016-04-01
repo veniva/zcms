@@ -62,6 +62,9 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         parent::setUp();
     }
 
+    /**
+     * @group basicCategory
+     */
     public function testIndexActionCanBeAccessed()
     {
         //remove redundant content
@@ -159,14 +162,9 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
      */
     public function testCannotAddNoLanguage()
     {
+        $postParams = $this->preparePostAddData();
+        $this->getRequest()->getPost()->fromArray($postParams);
         $this->getRequest()->setMethod(Request::METHOD_POST);
-        $form = new CategoryForm($this->entityManager);
-        $this->getRequest()->getPost()->fromArray([
-            'id' => 0,
-            'content' => [],
-            'sort' => 0,
-            'category_csrf' => $form->get('category_csrf')->getValue(),
-        ]);
 
         try{
             $jsonModel = $this->controller->dispatch($this->getRequest());
@@ -177,6 +175,9 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         $this->assertEquals('error', $jsonModel->getVariable('message')['type']);
     }
 
+    /**
+     * @group basicCategory
+     */
     public function testAddCategoryPost()
     {
         //add languages
@@ -195,6 +196,7 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
     }
 
     /**
+     * @group basicCategory
      * @depends testAddCategoryPost
      * @param array $postParams
      */
@@ -214,6 +216,30 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         $this->assertObjectHasAttribute('form', $content);
 
         return $insertedCategory->getId();
+    }
+
+    /**
+     * @group basicCategory
+     * @depends testGetCategory
+     * @param int $id
+     * @return string The new title as string
+     */
+    public function testGetChildrenCategories($id)
+    {
+        //add child category
+        $postParams = $this->preparePostAddData($id, 'ch');
+        $this->getRequest()->getPost()->fromArray($postParams);
+        $this->getRequest()->setMethod(Request::METHOD_POST);
+
+        $this->dispatchRequest();
+        $this->assertEquals(201, $this->controller->getResponse()->getStatusCode());
+        
+        //get the child categories
+        $className = get_class(new Category);
+        $category = $this->entityManager->find($className, $id);
+        $children = $this->entityManager->getRepository($className)->getChildren($category);
+        $this->assertInternalType('array', $children);
+        $this->assertInstanceOf(get_class(new Category()), $children[0]);
     }
 
     /**
@@ -373,17 +399,17 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         return $jsonModel;
     }
 
-    protected function preparePostAddData()
+    protected function preparePostAddData($parentId = 0, $uniqueToken = 'a')
     {
         $form = new CategoryForm($this->entityManager);
         $postParams = [
-            'id' => 0,
+            'parent_id' => $parentId,
             'sort' => 0,
             'category_csrf' => $form->get('category_csrf')->getValue(),
         ];
         $allLangs = $this->entityManager->getRepository(get_class(new Lang()))->findAll();
         foreach($allLangs as $lang){
-            $postParams['content'][] = ['title' => 'Title in '.$lang->getIsoCode()];
+            $postParams['content'][] = ['title' => 'Title in '.$lang->getIsoCode().$uniqueToken];
         }
 
         return $postParams;
@@ -410,14 +436,6 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         $this->entityManager->flush();
     }
 
-    //region Delete DB Content
-    protected function removeCategoryContent()
-    {
-        //truncate table category_content
-        $qb = $this->entityManager->getRepository(get_class(new CategoryContent()))->createQueryBuilder('co');
-        $qb->delete()->getQuery()->execute();
-    }
-
     protected function removeLanguage()
     {
         //truncate table lang
@@ -425,16 +443,18 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         $qb->delete()->getQuery()->execute();
     }
 
-    protected function removeCategory()
+    protected function removeCategories()
     {
-        $qb = $this->entityManager->getRepository(get_class(new Category()))->createQueryBuilder('c');
-        $qb->delete()->getQuery()->execute();
+        $categories = $this->entityManager->getRepository(get_class(new Category()))->findAll();
+        foreach($categories as $category){
+            $this->entityManager->remove($category);
+        }
+        $this->entityManager->flush();
     }
 
     protected function removeAllFromDB()
     {
-        $this->removeCategoryContent();
-        $this->removeCategory();
+        $this->removeCategories();
         $this->removeLanguage();
     }
     //endregion

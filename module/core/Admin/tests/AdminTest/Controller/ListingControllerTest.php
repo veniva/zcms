@@ -459,17 +459,14 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
     //endregion
 
     //region Delete DB Content
-    protected function removeCategoryContent()
-    {
-        //truncate table category_content
-        $qb = $this->entityManager->getRepository(get_class(new CategoryContent()))->createQueryBuilder('co');
-        $qb->delete()->getQuery()->execute();
-    }
 
     protected function removeCategories()
     {
-        $qb = $this->entityManager->getRepository(get_class(new Category()))->createQueryBuilder('c');
-        $qb->delete()->getQuery()->execute();
+        $categories = $this->entityManager->getRepository(get_class(new Category()))->findAll();
+        foreach($categories as $category){
+            $this->entityManager->remove($category);
+        }
+        $this->entityManager->flush();
     }
 
     protected function removeLanguages()
@@ -479,22 +476,8 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
         $qb->delete()->getQuery()->execute();
     }
 
-    protected function removeListingsContent()
+    protected function removeListingImageFiles()
     {
-        $qb = $this->entityManager->getRepository(get_class(new ListingContent()))->createQueryBuilder('lc');
-        $qb->delete()->getQuery()->execute();
-    }
-
-    protected function removeListingsMetadata()
-    {
-        $qb = $this->entityManager->getRepository(get_class(new Entity\Metadata()))->createQueryBuilder('mt');
-        $qb->delete()->getQuery()->execute();
-    }
-
-    protected function removeListingImages()
-    {
-        $qb = $this->entityManager->getRepository(get_class(new Entity\ListingImage()))->createQueryBuilder('l_img');
-        $qb->delete()->getQuery()->execute();
         //delete all from directory
         $config = $this->controller->getServiceLocator()->get('config');
         $listingImagesPath = $path = $config['public-path'].'img/listing_img';
@@ -510,20 +493,10 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
         $fileSystem->rename(dirname($listingImagesPath).'/.gitignore', $listingImagesPath.'/.gitignore');
     }
 
-    protected function removeListings()
-    {
-        $qb = $this->entityManager->getRepository(get_class(new Listing()))->createQueryBuilder('li');
-        $qb->delete()->getQuery()->execute();
-    }
-
     protected function removeAllFromDB()
     {
-        $this->removeCategoryContent();
         $this->removeCategories();
-        $this->removeListingsContent();
-        $this->removeListingsMetadata();
-        $this->removeListingImages();
-        $this->removeListings();
+        $this->removeListingImageFiles();
         $this->removeLanguages();
     }
     //endregion

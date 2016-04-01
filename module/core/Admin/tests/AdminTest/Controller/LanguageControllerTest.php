@@ -162,8 +162,11 @@ class LanguageControllerTest extends AbstractHttpControllerTestCase
     {
         //truncate table first
         $entityManager = $this->controller->getServiceLocator()->get('entity-manager');
-        $qb = $entityManager->getRepository(get_class(new Lang()))->createQueryBuilder('l');
-        $qb->delete()->getQuery()->execute();
+        $languages = $entityManager->getRepository(get_class(new Lang()))->findAll();
+        foreach($languages as $language){
+            $entityManager->remove($language);
+        }
+        $entityManager->flush();
 
         $serviceManager = $this->controller->getServiceLocator();
         $form = new Language($serviceManager);

@@ -7,11 +7,11 @@ ZCSM includes comprehensive unit tests based on the Zend framework's testing API
 
 ## Preparing the testing database ##
 
-The configuration of the tests is located in `/module/Application/tests/config` folder. There you have to copy 
+The configuration of the tests is located in `/module/core/Application/tests/config` folder. There you have to copy 
 the `database.local.php.dist` into  `database.local.php` and edit the file providing the name of an empty database MySQL database, 
 or if you're using different type of database then copy and modify the appropriate code from the previously 
-defined DB in `/config/autoload/database.local.php`.
-In order to populate the DB schema open a terminal, scroll to `/module/Application/tests/` and run:
+defined DB in `root/config/autoload/database.local.php`.
+In order to populate the DB schema open a terminal, scroll to `/module/core/Application/tests/` and run:
 
     ../../../../vendor/bin/doctrine orm:schema-tool:create
 

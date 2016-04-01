@@ -135,14 +135,14 @@ TAG;
         return $relatedParentCategories;
     }
 
-    public function countChildren($id)
+    public function countChildren($category)
     {
         $qb = $this->createQueryBuilder('c');
-        $qb->select($qb->expr()->count('ch'))
-            ->leftJoin('c.children', 'ch')
-            ->where('c.id ='.$id);
-        $query = $qb->getQuery();
-        return $query->getSingleScalarResult();
+        $qb->select($qb->expr()->count('c'))
+            ->join('c.parents', 'p')
+            ->where('p.id='.$category->getId());
+        
+        return $qb->getQuery()->getSingleScalarResult();
     }
 
     public function countAllOfType($type)
@@ -171,5 +171,14 @@ TAG;
             $result = $qb->getQuery()->getSingleResult();
         }catch(\Exception $ex){}
         return $result;
+    }
+
+    public function getChildren(Category $category)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('c')
+            ->join('c.parents', 'p')
+            ->where('p.id='.$category->getId());
+        return $qb->getQuery()->getResult();
     }
 }

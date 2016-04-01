@@ -4,8 +4,8 @@
 
     var setParentID = function(newId){
         rest.config({
-            getAddParams: {id: newId},
-            postAddParams: {id: newId}
+            getAddParams: {parent_id: newId},
+            postAddParams: {parent_id: newId}
         });
     };
     setParentID(viewModel.parentID());

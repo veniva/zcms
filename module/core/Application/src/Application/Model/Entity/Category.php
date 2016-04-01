@@ -24,15 +24,6 @@ class Category
     protected $sort = 0;
 
     /**
-     * @ManyToMany(targetEntity="Category", cascade={"remove", "persist"})
-     * @JoinTable(name="category_children",
-     *      joinColumns={@JoinColumn(name="category_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="child_id", referencedColumnName="id")}
-     *      )
-     */
-    protected $children;
-
-    /**
      * @ManyToMany(targetEntity="Category", cascade={"persist"})
      * @JoinTable(name="category_parents",
      *      joinColumns={@JoinColumn(name="category_id", referencedColumnName="id")},
@@ -166,27 +157,6 @@ class Category
     public function getListings()
     {
         return $this->listings;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getChildren()
-    {
-        return $this->children;
-    }
-
-    /**
-     * @param mixed $children
-     */
-    public function setChildren(ArrayCollection $children)
-    {
-        $this->children = $children;
-    }
-
-    public function addChild(Category $child)
-    {
-        $this->children[] = $child;
     }
 
     /**
