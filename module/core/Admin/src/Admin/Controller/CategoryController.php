@@ -105,8 +105,9 @@ class CategoryController extends AbstractRestfulController implements Translator
      */
     protected function renderCategData($category, $form, $parentCategory)
     {
+        $action = $category->getId() ? 'edit' : 'add';
         $viewModel = new ViewModel([
-            'action' => $category->getId() ? 'edit' : 'add',
+            'action' => $action,
             'id' => $category->getId(),
             'form' => $form,
             'parentCategoryName' => $this->getParentCategoryName($parentCategory),
@@ -115,7 +116,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
 
         return new JsonModel(array(
-            'title' => $this->translator->translate('Edit a category'),
+            'title' => $this->translator->translate(ucfirst($action).' a category'),
             'form' => $renderer->render($viewModel),
             'parent_id' => $parentCategory instanceof Category ? $parentCategory->getId() : 0,
         ));
