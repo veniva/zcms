@@ -1,18 +1,37 @@
 <?php
+/**
+ * ZCMS - a light weight CMS
+ *
+ * @copyright Copyright (c) 2015 Ventsislav Ivanov
+ * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
+ */
+
 namespace Application\View\Helper;
 
 use Zend\Mvc\Router\Http\RouteMatch;
-use Zend\view\HelperPluginManager;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Model\ViewModel;
 
 class Breadcrumb extends AbstractHelper
 {
+    /** @var  ServiceLocatorInterface */
     protected $serviceManager;
+    protected $template = 'helper/breadcrumb';
+    /** @var  RouteMatch */
+    protected $routeMatch;
 
-    public function __construct(HelperPluginManager $serviceManager)
+    /**
+     * Breadcrumb constructor.
+     * @param ServiceLocatorInterface $helperPluginManager NOTE: This argument is of type
+     * Zend\view\HelperPluginManager which is injected by the factory
+     */
+    public function __construct(ServiceLocatorInterface $helperPluginManager)
     {
-        $this->serviceManager = $serviceManager->getServiceLocator();
+        $this->serviceManager = $helperPluginManager->getServiceLocator();
+        $request = $this->serviceManager->get('Request');
+        $route = $this->serviceManager->get('Router');
+        $this->routeMatch = $route->match($request);
     }
 
     /**
@@ -21,45 +40,25 @@ class Breadcrumb extends AbstractHelper
      */
     public function __invoke($section = null)
     {
-        $request = $this->serviceManager->get('Request');
-        $route = $this->serviceManager->get('Router');
-        $routeMatch = $route->match($request);
-        $matchedRoute = $routeMatch->getMatchedRouteName();
+
+        $matchedRoute = $this->routeMatch->getMatchedRouteName();
         $title = '';
-        $breadcrumb = $this->build($routeMatch, $title);
+        $breadcrumb = $this->build($title);
         $viewModel = new ViewModel([
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'matchedRoute' => $matchedRoute,
-            'topRoute' => $routeMatch->getParam('alias', null) ? 'home' : $matchedRoute
+            'topRoute' => $this->routeMatch->getParam('alias', null) ? 'home' : $matchedRoute
         ]);
 
-        $template = ($section == 'admin') ? 'helper/breadcrumb_admin' : 'helper/breadcrumb';
-        $viewModel->setTemplate($template);
+        $viewModel->setTemplate($this->template);
         return $this->view->render($viewModel);
     }
 
-    public function build(RouteMatch $routeMatch, &$title = null)
+    public function build(&$title = null)
     {
         $serviceManager = $this->serviceManager;
-        $entityManager = $serviceManager->get('entity-manager');
-        $categoryContentEntity = $serviceManager->get('category-content-entity');
-
-        $categoryContent = false;
-        if($routeMatch){
-            if($routeMatch->getMatchedRouteName() == 'admin/rest'){
-                $request = $this->serviceManager->get('Request');
-                $id = $request->getQuery('parent_id', false);
-                if($id !== false)
-                    $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByCategory($id);
-
-            }elseif($routeMatch->getMatchedRouteName() == 'category'){
-                $alias = $routeMatch->getParam('alias', false);
-                if($alias !== false)
-                    $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias(urldecode($alias));
-            }
-        }
-
+        $categoryContent = $this->getCurrentCategory();
         if(!$categoryContent) return [];
 
         $categoryParents = $categoryContent->getCategory()->getParents();
@@ -81,5 +80,19 @@ class Breadcrumb extends AbstractHelper
         }
 
         return $aBcrumb;
+    }
+
+    protected function getCurrentCategory()
+    {
+        $serviceManager = $this->serviceManager;
+        $entityManager = $serviceManager->get('entity-manager');
+        $categoryContentEntity = $serviceManager->get('category-content-entity');
+
+        $categoryContent = null;
+        $alias = $this->routeMatch->getParam('alias', false);
+        if($alias !== false)
+            $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias(urldecode($alias));
+
+        return $categoryContent;
     }
 }

@@ -108,6 +108,11 @@ return array(
             'ViewJsonStrategy',
         ),
     ),
+    'view_helpers' => array(
+        'factories' => array(
+            'admin_breadcrumb' => 'Admin\View\Helper\Factory\Breadcrumb',
+        ),
+    ),
     'acl' => array(
         'resource' => array(
             'log' => null,

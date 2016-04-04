@@ -323,6 +323,14 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         $this->assertEquals('error', $jsonModel->getVariable('message')['type']);
     }
 
+    public function testBreadcrumb()
+    {
+        //test no parents
+        $this->dispatch('/admin/category');
+        $renderer = $this->controller->getServiceLocator()->get('ViewRenderer');
+        $this->assertEquals('Top', trim($renderer->admin_breadcrumb()));
+    }
+
     /**
      * Tests that the Breadcrumb will contain the containing <Category name>"
      * @depends testGetCategory
@@ -330,7 +338,7 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
      * @param int $id
      * @param string $categTitle The category title to look for in the breadcrumb
      */
-    public function testGetList($id, $categTitle)
+    public function testGetListAndBreadcrumb($id, $categTitle)
     {
         try{
             $this->mockLogin();

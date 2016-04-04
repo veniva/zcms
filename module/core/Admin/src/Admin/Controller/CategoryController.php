@@ -72,7 +72,7 @@ class CategoryController extends AbstractRestfulController implements Translator
             'title' => $this->translator->translate('Categories'),
             'lists' => $categories,
             'paginator' => $paginator,
-            'breadcrumb' => $renderer->breadcrumb('admin'),
+            'breadcrumb' => $renderer->admin_breadcrumb(),
             'parent_id' => $parent,
         ]);
     }

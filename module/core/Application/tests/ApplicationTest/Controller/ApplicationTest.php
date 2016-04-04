@@ -4,7 +4,6 @@ namespace ApplicationTest\Controller;
 
 
 use Application\Service\Invokable;
-use Application\View\Helper\Breadcrumb;
 use ApplicationTest\Bootstrap;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
@@ -17,7 +16,7 @@ class ApplicationTest extends AbstractHttpControllerTestCase
     {
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->setApplicationConfig(
-            include __DIR__.'/../../../../../../config/application.config.php'
+            $this->serviceManager->get('ApplicationConfig')
         );
         parent::setUp();
     }
@@ -32,18 +31,6 @@ class ApplicationTest extends AbstractHttpControllerTestCase
         if(!$langs instanceof \Traversable && !is_array($langs)){
             throw new \PHPUnit_Framework_AssertionFailedError('$langs is not of type array object');
         }
-    }
-
-    public function testBreadcrumb()
-    {
-        $this->dispatch('/');
-        $request = $this->serviceManager->get('Request');
-        $route = $this->serviceManager->get('Router');
-        $routeMatch = $route->match($request);
-        $bc = new Breadcrumb($this->serviceManager->get('ViewHelperManager'));
-        $this->assertEmpty($bc->build($routeMatch));
-        $this->dispatch('/category');
-        $this->assertInternalType('array', $bc->build($routeMatch));
     }
 
     public function testServices()
