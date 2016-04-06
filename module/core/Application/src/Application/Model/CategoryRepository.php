@@ -21,10 +21,9 @@ class CategoryRepository extends ORM\EntityRepository
      * Get the categories and the listings belonging to them in a particular parent category only
      * @param $parent
      * @param int $langId
-     * @param int $type
      * @return array
      */
-    public function getCategoriesListings($parent, $langId, $type = 1)
+    public function getCategoriesListings($parent, $langId)
     {
         $category = new Category();
         $categoryClassName = get_class($category);
@@ -38,8 +37,7 @@ class CategoryRepository extends ORM\EntityRepository
             JOIN c.content co
             JOIN c.listings l
             JOIN l.content lc
-            WHERE c.type = $type
-            AND $parent
+            WHERE $parent
             AND co.lang = $langId
             AND lc.lang = $langId
             ORDER BY c.sort, c.id, l.sort, l.id
@@ -95,26 +93,25 @@ TAG;
         return $categories;
     }
 
-    public function getCategoriesByParent($parent = 0, $type = 1)
+    public function getCategoriesByParent($parent = 0)
     {
-        $query = $this->categoriesDQL($parent, $type);
+        $query = $this->categoriesDQL($parent);
         return $query->getResult();
     }
 
-    public function getPaginatedCategories($parent = 0, $type = 1)
+    public function getPaginatedCategories($parent = 0)
     {
-        $query = $this->categoriesDQL($parent, $type);
+        $query = $this->categoriesDQL($parent);
         return new Paginator(new \Application\Paginator\DoctrineAdapter($query));
     }
 
-    protected function categoriesDQL($parent, $type)
+    protected function categoriesDQL($parent)
     {
         $qb = $this->createQueryBuilder('c');
         $parent = $this->andCategoryParent($qb, $parent);
         $qb->select('c', 'co')
             ->leftJoin('c.content', 'co')
-            ->where('c.type='.$type)
-            ->andWhere($parent)
+            ->where($parent)
             ->orderBy('c.id, c.sort');
         return $qb->getQuery();
     }
@@ -141,11 +138,10 @@ TAG;
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function countAllOfType($type)
+    public function countAll()
     {
         $qb = $this->createQueryBuilder('c');
-        $qb->select($qb->expr()->count('c'))
-            ->where('c.type='.$type);
+        $qb->select($qb->expr()->count('c'));
         $query = $qb->getQuery();
         return $query->getSingleScalarResult();
     }

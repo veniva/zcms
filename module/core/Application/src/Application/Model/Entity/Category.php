@@ -14,11 +14,6 @@ class Category
     protected $id;
 
     /**
-     * @Column(type="integer", options={"comment":"Category type. 1 - pages, 2 - listings, 3 ..."})
-     */
-    protected $type = 1;
-
-    /**
      * @Column(type="integer", options={"default": 0})
      */
     protected $sort = 0;
@@ -60,16 +55,6 @@ class Category
     public function getId()
     {
         return $this->id;
-    }
-
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    public function setType($type)
-    {
-        $this->type = $type;
     }
 
     public function getSort()

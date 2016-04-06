@@ -12,7 +12,6 @@
 
 CREATE TABLE IF NOT EXISTS `categories` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `type` int(11) NOT NULL COMMENT 'Category type. 1 - pages, 2 - listings, 3 ...',
   `sort` int(11) NOT NULL DEFAULT '0',
   `parent_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)

@@ -100,7 +100,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         if($action == 'add'){
             //check if there is at least one category available
             $categoryEntity = new Entity\Category();
-            $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAllOfType(1);
+            $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAll();
             if(!$categoryNumber)
                 return $this->redirToList('You must create at least one category in order to add pages', 'error');
         }
@@ -181,7 +181,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         if(!$id){
             //check if there is at least one category available
             $categoryEntity = new Entity\Category();
-            $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAllOfType(1);
+            $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAll();
             if(!$categoryNumber)
                 return $this->redirToList('You must create at least one category in order to add pages', 'error');
 
