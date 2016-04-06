@@ -95,14 +95,10 @@ TAG;
         return $categories;
     }
 
-    public function getCategories($parent = 0, $type = 1)
+    public function getCategoriesByParent($parent = 0, $type = 1)
     {
         $query = $this->categoriesDQL($parent, $type);
-        $categories = $query->getArrayResult();
-        foreach($categories as &$category){
-            $category['content'] = $category['content'][0];
-        }
-        return $categories;
+        return $query->getResult();
     }
 
     public function getPaginatedCategories($parent = 0, $type = 1)
@@ -116,7 +112,7 @@ TAG;
         $qb = $this->createQueryBuilder('c');
         $parent = $this->andCategoryParent($qb, $parent);
         $qb->select('c', 'co')
-            ->join('c.content', 'co')
+            ->leftJoin('c.content', 'co')
             ->where('c.type='.$type)
             ->andWhere($parent)
             ->orderBy('c.id, c.sort');
@@ -156,7 +152,7 @@ TAG;
 
     protected function andCategoryParent(QueryBuilder $qb, $parent)
     {
-        return $parent = empty($parent) ? '('.$qb->expr()->isNull('c.parent').' OR c.parent=0)' : 'c.parent='.$parent;
+        return empty($parent) ? $qb->expr()->isNull('c.parent').' OR c.parent=0' : 'c.parent='.$parent;
     }
 
     public function getCategoryByAliasAndLang($alias, $lang)

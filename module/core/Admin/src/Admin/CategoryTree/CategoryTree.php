@@ -56,7 +56,7 @@ class CategoryTree extends Select
     {
         $languageService = $this->serviceManager->get('language');
         $defaultLangID = $languageService->getDefaultLanguage()->getId();
-        $childrenCategories = $this->categoryRepo->findBy(['parent' => $parentId]);
+        $childrenCategories = $this->categoryRepo->getCategoriesByParent($parentId);
         foreach($childrenCategories as $category){
             $indent = '';
             foreach(range(0, $level) as $in){
