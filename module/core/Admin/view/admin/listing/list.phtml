@@ -9,7 +9,7 @@
     <div data-bind="visible: action() == 'list'">
         <div class="filter">
             <label for="filter_category">Filter: </label>
-            <?=$this->formSelectCategory($this->categoryTree, '0')?>
+            <?=$this->formSelectCategory($this->selectCategory, $this->categories, '0')?>
         </div>
         <form name="listings">
             <table class="list_table" width="100%" cellpadding="5" cellspacing="0">

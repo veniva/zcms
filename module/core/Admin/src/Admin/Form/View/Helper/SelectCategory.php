@@ -8,19 +8,14 @@
 
 namespace Admin\Form\View\Helper;
 
-
-use Zend\Form\Element\Select;
 use Zend\Form\View\Helper\FormSelect;
 use Zend\Form\ElementInterface;
 
 class SelectCategory extends FormSelect
 {
-    public function __invoke(ElementInterface $categoryTree = null, $selectedCategoryId = null, $route = null, $idRouteOption = 'id')
+    public function __invoke(ElementInterface $element = null, array $categories = [], $selectedCategoryId = null, $route = null, $idRouteOption = 'id')
     {
         $view = $this->getView();
-        $element = new Select('filter_category');
-        $element->setAttribute('id', 'filter_category');
-        $categories = $categoryTree->getCategories();
 
         $selected = null;
 

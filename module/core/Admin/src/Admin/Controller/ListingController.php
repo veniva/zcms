@@ -15,6 +15,7 @@ use Application\Model\Entity\Metadata;
 use Application\Model\Entity;
 use Application\Stdlib\Strings;
 use Symfony\Component\Filesystem\Filesystem;
+use Zend\Form\Element\Select;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Form\Element;
@@ -36,9 +37,11 @@ class ListingController extends AbstractRestfulController implements TranslatorA
     public function listAction()
     {
         $categoryTree = $this->getServiceLocator()->get('category-tree');
-
+        $selectCategoryElement = new Select('filter_category');
+        $selectCategoryElement->setAttribute('id', 'filter_category');
         return new ViewModel([
-            'categoryTree' => $categoryTree,
+            'selectCategory' => $selectCategoryElement,
+            'categories' => $categoryTree->getCategories(),
             'locale' => $this->translator->getLocale()
         ]);
     }
@@ -53,7 +56,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         $listingsPaginated->setCurrentPageNumber($page);
 
         $defaultLanguageID = $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId();
-        $renderer = $this->getSErviceLocator()->get('Zend\View\Renderer\RendererInterface');
+        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
         $paginator = $renderer->paginationControl($listingsPaginated, 'Sliding', 'paginator/sliding_ajax', ['id' => $parentCategory]);
 
         $i = 0;
@@ -124,7 +127,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         $form->bind($listing);
         if($action == 'edit'){
             if(isset($listing->getCategories()[0]))
-                $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($listing->getCategories()[0]->getId());
+                $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($listing->getCategories()[0]->getId());//v_todo - rework this to use \Admin\Form\View\Helper\SelectCategory
         }else{
             $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($parentFilter);
         }

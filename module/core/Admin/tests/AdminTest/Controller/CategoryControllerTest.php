@@ -254,7 +254,7 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
 
         $form = new CategoryForm($this->entityManager);
         $newTitle = 'Edited title';
-        $this->getRequest()->setContent('id=0&sort=1&content[0][title]='.urlencode($newTitle).'&category_csrf='.$form->get('category_csrf')->getValue());
+        $this->getRequest()->setContent('id=0&sort=1&content[0][title]='.urlencode($newTitle).'&parent='.'&category_csrf='.$form->get('category_csrf')->getValue());
 
         $jsonModel = $this->dispatchRequest();
 
@@ -279,6 +279,7 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
             'content' => [
                 ['title' => ''] //set empty title
             ],
+            'parent' => ''
         ]);
 
         $this->assertEquals(200, $this->getResponse()->getStatusCode());
@@ -300,6 +301,7 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
             'content' => [
                 ['title' => 'Some title'] //set empty title
             ],
+            'parent' => ''
         ]);
 
         $this->assertEquals(200, $this->getResponse()->getStatusCode());

@@ -435,11 +435,11 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
     //region Add DB Data
     protected function addLanguages()
     {
-        foreach([['iso' => 'en', 'name' => 'English'], ['iso' => 'es', 'name' => 'Spanish']] as $language){
+        foreach([['iso' => 'en', 'name' => 'English', 'status' => 2], ['iso' => 'es', 'name' => 'Spanish', 'status' => 1]] as $language){
             $lang = new Lang();
             $lang->setIsoCode($language['iso']);
             $lang->setName($language['name']);
-            $lang->setStatus(1);
+            $lang->setStatus($language['status']);
             $this->entityManager->persist($lang);
         }
     }

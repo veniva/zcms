@@ -59,6 +59,14 @@ class Category extends Form
         ));
 
         $this->add(array(
+            'name' => 'parent',
+            'type' => 'Select',
+            'options' => array(
+                'label' => 'Category'
+            ),
+        ));
+
+        $this->add(array(
             'type' => 'csrf',
             'name' => 'category_csrf',
         ));
@@ -79,6 +87,13 @@ class Category extends Form
                 array('name' => 'Digits')
             )
         ), 'sort');
+
+        $inputFilter->add(array(
+            'required' => false,
+            'filters' => array(
+                array('name' => 'ToNull')
+            ),
+        ), 'parent');
     }
 
     public function isValid()

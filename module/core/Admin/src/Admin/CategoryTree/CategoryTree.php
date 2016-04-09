@@ -81,11 +81,35 @@ class CategoryTree extends Select
     }
 
     /**
-     * @return array Categories array handy for setting select options [id] => intent+title
+     * @return array Categories array handy for setting form select options [id] => intent+title
      */
     public function getCategoriesAsOptions()
     {
         return $this->categoriesAsOptions;
+    }
+
+    /**
+     * Get all the categories except the current one and it's children
+     * @param Category $category
+     * @return array Categories array handy for setting form select options [id] => intent+title
+     */
+    public function getAllButChildren(Category $category)
+    {
+        $childIds = [];
+        if(!empty($category->getId())){
+            $categoryChildren = $this->categoryRepo->getChildren($category);
+            foreach($categoryChildren as $child){
+                $childIds[] = $child->getId();
+            }
+        }
+
+        $allButOwnCategs = [];
+        foreach($this->getCategories() as $categs){
+            if($categs['id'] != $category->getId() && !in_array($categs['id'], $childIds)){
+                $allButOwnCategs[$categs['id']] = $this->categories[$categs['id']];
+            }
+        }
+        return $allButOwnCategs;
     }
 
     /**

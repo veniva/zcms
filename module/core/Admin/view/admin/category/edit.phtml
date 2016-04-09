@@ -33,7 +33,12 @@ $this->form->setAttribute('action', '#'.$this->action.($this->action == 'edit' ?
     </tr>
     <tr>
         <td><?=$this->translate('Parent category')?>:</td>
-        <td><?=$this->parentCategoryName?></td><!--v_todo - insert a category tree select input here-->
+        <td>
+            <?=$this->formSelectCategory($this->form->get('parent'), $this->categoryOptions, $this->parentCategoryID)?>
+            <div class="form-error">
+                <?=$this->formElementErrors($this->form->get('parent'))?>
+            </div>
+        </td>
     </tr>
     <tr>
         <td colspan="2">

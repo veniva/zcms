@@ -114,21 +114,21 @@ class Category
     }
 
     /**
-     * @param null $langId If null, then an entity on the default language is returned
-     * @return CategoryContent|null
+     * @param null $langId
+     * @return CategoryContent|bool
+     * @throws \InvalidArgumentException
      */
-    public function getSingleCategoryContent($langId = null)
+    public function getSingleCategoryContent($langId)
     {
-        //return a content in concrete language only if desired
-        if($langId){
-            foreach($this->content as $content){
-                if($content->getLang()->getId() == $langId){
-                    return $content;//return single entity
-                }
+        if(!$langId) throw new \InvalidArgumentException('Invalid parameter $langId');
+
+        foreach($this->content as $content){
+            if($content->getLang()->getId() == $langId){
+                return $content;//return single entity
             }
         }
 
-        return null;
+        return false;
     }
 
     public function addCategoryContent(CategoryContent $categoryContent)

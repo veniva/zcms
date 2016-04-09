@@ -116,18 +116,6 @@ TAG;
         return $qb->getQuery();
     }
 
-    public function getParentCategories(Category $parentCategory)
-    {
-        $parents = $parentCategory->getParents();
-        $relatedParentCategories = new ArrayCollection();
-        foreach($parents as $parent){
-            $relatedParentCategories->add($parent);
-        }
-        $relatedParentCategories->add($parentCategory);
-
-        return $relatedParentCategories;
-    }
-
     public function countChildren($category)
     {
         $qb = $this->createQueryBuilder('c');

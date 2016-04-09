@@ -8,6 +8,7 @@
 
 namespace Application\View\Helper;
 
+use Application\Model\Entity\CategoryContent;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\AbstractHelper;
@@ -71,12 +72,14 @@ class Breadcrumb extends AbstractHelper
 
             $parentCategoryContent = $categoryParent->getSingleCategoryContent($serviceManager->get('language')->getDefaultLanguage()->getId());
 
-            if($categoryContent->getAlias() != $parentCategoryContent->getAlias())
-                $aBcrumb[] = [
-                    'alias' => $parentCategoryContent->getAlias(),
-                    'title' => $parentCategoryContent->getTitle(),
-                    'id'    => $parentCategoryContent->getCategory()->getId(),
-                ];
+            if($parentCategoryContent instanceof CategoryContent){
+                if($categoryContent->getAlias() != $parentCategoryContent->getAlias())
+                    $aBcrumb[] = [
+                        'alias' => $parentCategoryContent->getAlias(),
+                        'title' => $parentCategoryContent->getTitle(),
+                        'id'    => $parentCategoryContent->getCategory()->getId(),
+                    ];
+            }
         }
 
         return $aBcrumb;
