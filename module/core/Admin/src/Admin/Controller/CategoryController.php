@@ -46,7 +46,7 @@ class CategoryController extends AbstractRestfulController implements Translator
 
     public function getList()
     {
-        $parent = $this->params()->fromQuery('parent_id', 0);
+        $parent = $this->params()->fromQuery('parent', 0);
         $page = $this->params()->fromQuery('page', 1);
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $categoryEntity = $this->getServiceLocator()->get('category-entity');
@@ -75,12 +75,11 @@ class CategoryController extends AbstractRestfulController implements Translator
             'lists' => $categories,
             'paginator' => $paginator,
             'breadcrumb' => $renderer->admin_breadcrumb(),
-            'parent_id' => $parent,
+            'parent' => $parent,
         ]);
     }
 
     /**
-     * On edit/update
      * Adds empty content in various languages to the category entity if necessary
      * Instantiates the forms and binds it to the data
      * @param Category $category
@@ -127,7 +126,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         return new JsonModel(array(
             'title' => $this->translator->translate(ucfirst($action).' a category'),
             'form' => $renderer->render($viewModel),
-            'parent_id' => $parentCategoryID,
+            'parent' => $parentCategoryID,
         ));
     }
 
@@ -137,7 +136,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         if(!$category){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('Wrong category ID')],
-                'parent_id' => 0,
+                'parent' => 0,
             ]);
         }
         $this->prepareFormAndLanguage($category, $form);
@@ -153,7 +152,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         if(!$category){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('Wrong category ID')],
-                'parent_id' => 0,
+                'parent' => 0,
             ]);
         }
         $this->prepareFormAndLanguage($category, $form);
@@ -178,7 +177,7 @@ class CategoryController extends AbstractRestfulController implements Translator
 
             return new JsonModel([
                 'message' => ['type' => 'success', 'text' => $this->translator->translate('The category has been edited successfully')],
-                'parent_id' => (int)$category->getParent(),
+                'parent' => (int)$category->getParent(),
             ]);
         }
 
@@ -202,13 +201,13 @@ class CategoryController extends AbstractRestfulController implements Translator
 
     public function addJsonAction()
     {
-        $parentCategoryID = $this->params()->fromQuery('parent_id', null);
+        $parentCategoryID = $this->params()->fromQuery('parent', null);
         //check if there is an existing language before entering new category
         $langs = $this->getServiceLocator()->get('entity-manager')->getRepository(get_class(new Lang()))->countLanguages();
         if(!$langs){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('You must insert at least one language in order to add categories')],
-                'parent_id' => $parentCategoryID
+                'parent' => $parentCategoryID
             ]);
         }
         $category = new Category();
@@ -223,11 +222,11 @@ class CategoryController extends AbstractRestfulController implements Translator
         if(!$langs){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('You must insert at least one language in order to add categories')],
-                'parent_id' => $data['parent_id']
+                'parent' => $data['parent']
             ]);
         }
         $category = new Category();
-        $this->setParents($category, $data['parent_id']);
+        $this->setParents($category, $data['parent']);
 
         $this->prepareFormAndLanguage($category, $form);
 
@@ -242,11 +241,11 @@ class CategoryController extends AbstractRestfulController implements Translator
             $this->getResponse()->setStatusCode(201);
             return new JsonModel([
                 'message' => ['type' => 'success', 'text' => $this->translator->translate('The new category was added successfully')],
-                'parent_id' => $data['parent_id'],
+                'parent' => $data['parent'],
             ]);
         }
 
-        return $this->renderCategData($category, $form, $data['parent_id']);
+        return $this->renderCategData($category, $form, $data['parent']);
     }
 
     protected function addEmptyContent(Category $category)
@@ -281,7 +280,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         if(!$category){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $this->translator->translate('Category not found')],
-                'parent_id' => 0
+                'parent' => 0
             ]);
         }
 
@@ -296,7 +295,7 @@ class CategoryController extends AbstractRestfulController implements Translator
 
         return new JsonModel([
             'message' => ['type' => 'success', 'text' => $this->translator->translate('The category and all the listings in it were removed successfully')],
-            'parent_id' => (int)$category->getParent(),
+            'parent' => (int)$category->getParent(),
         ]);
     }
 

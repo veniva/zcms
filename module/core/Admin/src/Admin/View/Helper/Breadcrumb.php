@@ -28,7 +28,7 @@ class Breadcrumb extends AppBreadcrumb
 
         $categoryContent = null;
         $request = $this->serviceManager->get('Request');
-        $id = $request->getQuery('parent_id', false);
+        $id = $request->getQuery('parent', false);
         if($id !== false)
             $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByCategory($id);
         

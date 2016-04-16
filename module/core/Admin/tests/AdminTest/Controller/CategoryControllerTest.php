@@ -10,7 +10,6 @@ namespace AdminTest\Controller;
 
 use Admin\Form\Category as CategoryForm;
 use Application\Model\Entity\Category;
-use Application\Model\Entity\CategoryContent;
 use Application\Model\Entity\Lang;
 use ApplicationTest\AuthorizationTrait;
 use ApplicationTest\Bootstrap;
@@ -37,6 +36,7 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
     protected $event;
     /** @var EntityManager */
     protected $entityManager;
+    protected $categoryClassName;
 
     public function setUp()
     {
@@ -58,6 +58,7 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         $this->controller->setEvent($this->event);
 
         $this->entityManager = $this->controller->getServiceLocator()->get('entity-manager');
+        $this->categoryClassName = get_class(new Category);
 
         parent::setUp();
     }
@@ -222,9 +223,9 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
      * @group basicCategory
      * @depends testGetCategory
      * @param int $id
-     * @return string The new title as string
+     * @return int
      */
-    public function testGetChildrenCategories($id)
+    public function testAddChildCategories($id)
     {
         //add child category
         $postParams = $this->preparePostAddData($id, 'ch');
@@ -233,13 +234,99 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
 
         $this->dispatchRequest();
         $this->assertEquals(201, $this->controller->getResponse()->getStatusCode());
-        
+
+        return $id;
+    }
+
+    /**
+     * @group basicCategory
+     * @depends testAddChildCategories
+     * @param int $id
+     * @return int The new child category ID
+     */
+    public function testGetChildrenCategories($id)
+    {
         //get the child categories
-        $className = get_class(new Category);
-        $category = $this->entityManager->find($className, $id);
-        $children = $this->entityManager->getRepository($className)->getChildren($category);
+        $category = $this->entityManager->find($this->categoryClassName, $id);
+        $children = $this->entityManager->getRepository($this->categoryClassName)->getChildren($category);
         $this->assertInternalType('array', $children);
         $this->assertInstanceOf(get_class(new Category()), $children[0]);
+
+        $this->assertEquals($id, $children[0]->getParent());
+        return $children[0];
+    }
+
+    /**
+     * @depends testGetChildrenCategories
+     *
+     * @param Category $childCategory
+     */
+    public function testAddGrandChild($childCategory)
+    {
+        //add child to the child category
+        $this->mockLogin();
+        $postParams = $this->preparePostAddData($childCategory->getId(), 'ch2');
+        $this->dispatch('/admin/category/', Request::METHOD_POST, $postParams);
+        $this->assertEquals(201, $this->getResponse()->getStatusCode());
+        $grandChild = $this->entityManager->getRepository($this->categoryClassName)->getChildren($childCategory)[0];
+        $this->assertEquals($childCategory->getId(), $grandChild->getParent());
+
+        return $grandChild;
+    }
+
+    public function testAddCategoryPost2()
+    {
+        //add one more root category
+        $this->mockLogin();
+        $postParams = $this->preparePostAddData(null, 'b');
+        $this->dispatch('/admin/category/', Request::METHOD_POST, $postParams);
+        $this->assertEquals(201, $this->getResponse()->getStatusCode());
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb->select($qb->expr()->max('c.id'))->from(get_class(new Category), 'c');
+        $lastInsertedId = $qb->getQuery()->getSingleScalarResult();
+
+        return $lastInsertedId;
+    }
+
+    /**
+     * @depends testGetChildrenCategories
+     * @depends testAddCategoryPost2
+     * @param Category $childCategory
+     * @param $lastInsertedId
+     */
+    public function testChangeChild($childCategory, $lastInsertedId)
+    {
+        $childId = $childCategory->getId();
+        $categoryClassName = get_class(new Category);
+        $this->mockLogin();
+        $form = new CategoryForm($this->entityManager);
+        $this->dispatch('/admin/category/'.$childId, Request::METHOD_PUT, [
+            'sort' => 5,
+            'content[0][title]' => urlencode('Some title'),
+            'parent' => $lastInsertedId,
+            'category_csrf' => $form->get('category_csrf')->getValue(),
+        ]);
+        $this->assertEquals(200, $this->getResponse()->getStatusCode());
+
+        //check if the child category has changed it's direct parent
+        $childCategory = $this->entityManager->find($categoryClassName, $childId);
+        $this->assertEquals($lastInsertedId, $childCategory->getParent());
+
+        //check all the parents of the child category
+        $parentIDs = [];
+        foreach($childCategory->getParents() as $parent){
+            $parentIDs[] = $parent->getId();
+        }
+        $this->assertTrue(in_array($lastInsertedId, $parentIDs));
+
+        //check the child's child parents
+        $childChild = $this->entityManager->getRepository($categoryClassName)->getChildren($childCategory)[0];
+        $childParentIDs = [];
+        foreach($childChild->getParents() as $descendants){
+            $childParentIDs[] = $descendants->getId();
+        }
+        $this->assertTrue(in_array($lastInsertedId, $childParentIDs));
+        $this->assertEquals($childCategory->getId(), $childChild->getParent());//test the direct parent
     }
 
     /**
@@ -325,12 +412,16 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         $this->assertEquals('error', $jsonModel->getVariable('message')['type']);
     }
 
-    public function testBreadcrumb()
+    /**
+     * @depends testAddGrandChild
+     * @param $greatChild
+     */
+    public function testBreadcrumb($greatChild)
     {
-        //test no parents
-        $this->dispatch('/admin/category');
-        $renderer = $this->controller->getServiceLocator()->get('ViewRenderer');
-        $this->assertEquals('Top', trim($renderer->admin_breadcrumb()));
+        $this->mockLogin();
+        $this->dispatch('/admin/category', null, ['parent' => $greatChild->getId()]);
+        $content = json_decode($this->getResponse()->getContent());
+        $this->assertInternalType('array', explode('&gt', $content->breadcrumb));
     }
 
     /**
@@ -344,7 +435,7 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
     {
         try{
             $this->mockLogin();
-            $this->dispatch('/admin/category', null, ['parent_id' => $id]);
+            $this->dispatch('/admin/category', null, ['parent' => $id]);
         }catch(\Exception $e){
             echo "\n".__FILE__.':'.__LINE__.' Message: '.$e->getMessage();
         }
@@ -355,11 +446,7 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         $this->assertRegExp("/$categTitle/", $content->breadcrumb);//test the breadcrumb
     }
 
-    /**
-     * @depends testGetCategory
-     * @param int $id
-     */
-    public function testDeleteCategoryWrongID($id)
+    public function testDeleteCategoryWrongID()
     {
         $this->getRequest()->setMethod(Request::METHOD_DELETE);
         $this->routeMatch->setParam('id', 999);//set wrong ID
@@ -409,11 +496,16 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         return $jsonModel;
     }
 
-    protected function preparePostAddData($parentId = 0, $uniqueToken = 'a')
+    /**
+     * @param null $parentId
+     * @param string $uniqueToken This should be changed with every successful insertion to prevent validator errors
+     * @return array
+     */
+    protected function preparePostAddData($parentId = null, $uniqueToken = 'a')
     {
         $form = new CategoryForm($this->entityManager);
         $postParams = [
-            'parent_id' => $parentId,
+            'parent' => $parentId,
             'sort' => 0,
             'category_csrf' => $form->get('category_csrf')->getValue(),
         ];

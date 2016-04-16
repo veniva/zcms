@@ -9,6 +9,7 @@
 namespace Application\View\Helper;
 
 use Application\Model\Entity\CategoryContent;
+use Doctrine\Common\Collections\Collection;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\AbstractHelper;
@@ -41,15 +42,11 @@ class Breadcrumb extends AbstractHelper
      */
     public function __invoke($section = null)
     {
-
-        $matchedRoute = $this->routeMatch->getMatchedRouteName();
         $title = '';
         $breadcrumb = $this->build($title);
         $viewModel = new ViewModel([
             'breadcrumb' => $breadcrumb,
-            'title' => $title,
-            'matchedRoute' => $matchedRoute,
-            'topRoute' => $this->routeMatch->getParam('alias', null) ? 'home' : $matchedRoute
+            'title' => $title
         ]);
 
         $viewModel->setTemplate($this->template);
@@ -59,30 +56,52 @@ class Breadcrumb extends AbstractHelper
     public function build(&$title = null)
     {
         $serviceManager = $this->serviceManager;
+        $defaultLangId = $serviceManager->get('language')->getDefaultLanguage()->getId();
         $categoryContent = $this->getCurrentCategory();
         if(!$categoryContent) return [];
 
-        $categoryParents = $categoryContent->getCategory()->getParents();
+        $parentCategories = $categoryContent->getCategory()->getParents();
         $title = $categoryContent->getTitle();
 
+        $parentsArranged = $this->sortParents($parentCategories);
+
         $aBcrumb[] = '';//the Top category
-        foreach($categoryParents as $categoryParent){
-            if(!$categoryParent->getId())
+        foreach($parentsArranged as $parentCategory){
+            if(!$parentCategory->getId())
                 break;
 
-            $parentCategoryContent = $categoryParent->getSingleCategoryContent($serviceManager->get('language')->getDefaultLanguage()->getId());
+            $parentCategoryContent = $parentCategory->getSingleCategoryContent($defaultLangId);
 
             if($parentCategoryContent instanceof CategoryContent){
                 if($categoryContent->getAlias() != $parentCategoryContent->getAlias())
                     $aBcrumb[] = [
+                        'id'    => $parentCategory->getId(),
                         'alias' => $parentCategoryContent->getAlias(),
                         'title' => $parentCategoryContent->getTitle(),
-                        'id'    => $parentCategoryContent->getCategory()->getId(),
                     ];
             }
         }
 
         return $aBcrumb;
+    }
+
+    /**
+     * Sort the parent Categories by the top first order
+     * @param Collection $parentCategories The collection of parent categories
+     * @param null|int $next
+     * @return array
+     */
+    protected function sortParents($parentCategories, $next = null)
+    {
+        static $parentsArranged = [];
+        foreach($parentCategories as $parentCategory){
+            $parentOfParent = $parentCategory->getParent();
+            if($parentOfParent == $next){
+                $parentsArranged[] = $parentCategory;
+                $this->sortParents($parentCategories, $parentCategory->getId());
+            }
+        }
+        return $parentsArranged;
     }
 
     protected function getCurrentCategory()

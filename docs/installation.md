@@ -1,4 +1,4 @@
-To install a copy on your localhost is quite stright forward.
+To install a copy on your localhost is quite straight forward.
   
 **Requirements**  
  

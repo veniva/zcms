@@ -18,11 +18,11 @@ class Breadcrumb implements FactoryInterface
     /**
      * Create service
      *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ServiceLocatorInterface $helperPluginManager
      * @return mixed
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $helperPluginManager)
     {
-        return new \Admin\View\Helper\Breadcrumb($serviceLocator);
+        return new \Admin\View\Helper\Breadcrumb($helperPluginManager);
     }
 }
