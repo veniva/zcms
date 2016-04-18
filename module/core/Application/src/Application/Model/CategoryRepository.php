@@ -136,7 +136,7 @@ TAG;
 
     protected function andCategoryParent(QueryBuilder $qb, $parent)
     {
-        return empty($parent) ? $qb->expr()->isNull('c.parent').' OR c.parent=0' : 'c.parent='.$parent;
+        return empty($parent) ? '('.$qb->expr()->isNull('c.parent').' OR c.parent=0)' : 'c.parent='.$parent;
     }
 
     public function getCategoryByAliasAndLang($alias, $lang)
