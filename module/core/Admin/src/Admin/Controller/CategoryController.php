@@ -84,16 +84,18 @@ class CategoryController extends AbstractRestfulController implements Translator
      * Instantiates the forms and binds it to the data
      * @param Category $category
      * @param null &$form Referenced
+     * @param bool $isNew
      * @return bool|JsonModel
      */
-    protected function prepareFormAndLanguage($category, &$form)
+    protected function prepareFormAndLanguage($category, &$form, $isNew = false)
     {
         $serviceLocator = $this->getServiceLocator();
         $entityManager = $serviceLocator->get('entity-manager');
 
         //add empty language content to the collection, so that input fields are created
         $this->addEmptyContent($category);
-        $form = new CategoryForm($entityManager, $category->getContent());
+        $listingContent = !$isNew ? $category->getContent() : null;
+        $form = new CategoryForm($entityManager, $listingContent);
         $categories = $this->getServiceLocator()->get('category-tree')->getAllButChildren($category);
         $serviceLocator->get('ViewRenderer')->formSelectCategory($form->get('parent'), $categories);
 
@@ -211,7 +213,7 @@ class CategoryController extends AbstractRestfulController implements Translator
             ]);
         }
         $category = new Category();
-        $this->prepareFormAndLanguage($category, $form);
+        $this->prepareFormAndLanguage($category, $form, true);
 
         return $this->renderCategData($category, $form, $parentCategoryID);
     }
@@ -228,7 +230,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         $category = new Category();
         $this->setParents($category, $data['parent']);
 
-        $this->prepareFormAndLanguage($category, $form);
+        $this->prepareFormAndLanguage($category, $form, true);
 
         foreach($data['content'] as &$content){
             $content['alias'] = Strings::alias($content['title']);
@@ -251,22 +253,15 @@ class CategoryController extends AbstractRestfulController implements Translator
     protected function addEmptyContent(Category $category)
     {
         $contentIDs = [];
-        $defaultContent = null;
         $languagesService = $this->getServiceLocator()->get('language');
         foreach($category->getContent() as $content){
             $contentIDs[] = $content->getLang()->getId();
-            if($content->getLang()->getId() == $languagesService->getDefaultLanguage()->getId())
-                $defaultContent = $content;
         }
 
         $languages = $languagesService->getActiveLanguages();
         foreach($languages as $language){
             if(!in_array($language->getId(), $contentIDs)){
-                $newContent = new CategoryContent($category, $language);
-                if($defaultContent){
-                    $newContent->setAlias($defaultContent->getAlias());
-                    $newContent->setTitle($defaultContent->getTitle());
-                }
+                new CategoryContent($category, $language);
             }
         }
     }

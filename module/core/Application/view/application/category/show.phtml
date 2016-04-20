@@ -16,9 +16,11 @@
 <h3><?=$this->translate('Pages')?>:</h3>
 <section id="category-pages">
     <?php foreach($this->category->getListings() as $listing): ?>
+        <?php if($listing->getSingleListingContent($this->langID)): ?>
         <a href="<?=$this->langUrl('page', ['alias' => urlencode($listing->getSingleListingContent($this->langID)->getAlias())])?>">
             <?=$listing->getSingleListingContent($this->langID)->getLink(); ?>
         </a>
+        <?php endif; ?>
     <?php endforeach; ?>
 </section>
 <?php if(!count($this->category->getListings())){echo $this->translate('none');}?>

@@ -8,18 +8,12 @@ namespace Application\Model\Entity;
 class CategoryContent
 {
     /**
-     * @deprecated - v_todo Create a composite primary instead (keep in mind the NoRecordExists Validator)
-     * @Id @GeneratedValue @Column(type="integer")
-     */
-    protected $id;
-
-    /**
-     * @ManyToOne(targetEntity="Category", inversedBy="content")
+     * @Id @ManyToOne(targetEntity="Category", inversedBy="content")
      */
     protected $category;
 
     /**
-     * @ManyToOne(targetEntity="Lang", inversedBy="categoryContent")
+     * @Id @ManyToOne(targetEntity="Lang", inversedBy="categoryContent")
      * @OrderBy({"status" = "DESC"})
      */
     protected $lang;
@@ -41,11 +35,6 @@ class CategoryContent
 
         if($lang)
             $this->setLang($lang);
-    }
-
-    public function getId()
-    {
-        return $this->id;
     }
 
     public function getCategory()

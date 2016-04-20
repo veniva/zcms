@@ -110,7 +110,8 @@ class Category extends Form
 
         if($contentCollection instanceof Collection){
             foreach($contentCollection as $content){
-                $validatorOptions['exclude'][] = array('field' => 'id', 'value' => $content->getId());
+                $validatorOptions['exclude'][] = array('field' => 'category', 'value' => $content->getCategory());
+                break;
             }
         }
         $validator = new \Application\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);

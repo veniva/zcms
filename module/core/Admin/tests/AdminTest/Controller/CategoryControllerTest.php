@@ -491,7 +491,7 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
         try{
             $jsonModel = $this->controller->dispatch($this->getRequest());
         }catch(\Exception $e){
-            echo "\n".__FILE__.':'.__LINE__.' Message: '.$e->getMessage();
+            echo "\n".__FILE__.':'.__LINE__.' Message: '.$e->getMessage().' in '.$e->getFile().':'.$e->getLine();
         }
         return $jsonModel;
     }

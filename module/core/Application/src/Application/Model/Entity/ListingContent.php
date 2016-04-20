@@ -8,17 +8,12 @@ namespace Application\Model\Entity;
 class ListingContent
 {
     /**
-     * @Id @GeneratedValue @Column(type="integer")
-     */
-    protected $id;
-
-    /**
-     * @ManyToOne(targetEntity="Listing", inversedBy="content")
+     * @Id @ManyToOne(targetEntity="Listing", inversedBy="content")
      */
     protected $listing;
 
     /**
-     * @ManyToOne(targetEntity="Lang", inversedBy="listingContent")
+     * @Id @ManyToOne(targetEntity="Lang", inversedBy="listingContent")
      * @OrderBy({"status" = "DESC"})
      */
     protected $lang;
@@ -63,14 +58,6 @@ class ListingContent
     {
         $listing->addContent($this);
         $this->listing = $listing;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**

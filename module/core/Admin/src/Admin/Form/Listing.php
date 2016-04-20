@@ -147,7 +147,8 @@ class Listing extends Form
         //if the listing's content is being edited, don't compare it's aliases
         if($listingContent  instanceof Collection){
             foreach($listingContent as $content){
-                $validatorOptions['exclude'][] = array('field' => 'id', 'value' => $content->getId());
+                $validatorOptions['exclude'][] = array('field' => 'listing', 'value' => $content->getListing());
+                break;
             }
         }
         $validator = new \Application\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);
