@@ -120,7 +120,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         }
 
         //add empty language content to the collection, so that input fields are created
-        $this->addEmptyContent($listing, $languages);
+        $this->addEmptyContent($listing);
 
         $listingContent = $action == 'edit' ? $listing->getContent() : null;
         $form = new ListingForm($this->getServiceLocator()->get('entity-manager'), $listingContent);
@@ -195,7 +195,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
             if(!$listing) return $this->redirWrongParameter();
 
         }else{
-            $listing = $this->getServiceLocator()->get('listing-entity');
+            $listing = new Entity\Listing();
         }
 
         if(!empty($data['content'])){
@@ -214,7 +214,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         $languages = $languagesService->getActiveLanguages();
 
         //add empty language content to the collection, so that input fields are created
-        $this->addEmptyContent($listing, $languages);
+        $this->addEmptyContent($listing);
 
         $listingContent = $action == 'edit' ? $listing->getContent() : null;
         $form = new ListingForm($this->getServiceLocator()->get('entity-manager'), $listingContent);
@@ -286,42 +286,26 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         return $returnError($this->translator->translate('Please check the form for errors'));
     }
 
-    protected function addEmptyContent(Entity\Listing $listing, \Doctrine\Common\Collections\Collection $languages)
+    protected function addEmptyContent(Entity\Listing $listing)
     {
+        $languagesService = $this->getServiceLocator()->get('language');//v_todo - remove the redundant argument $languages and use this only
+
         $contentLangIDs = [];
-        $defaultContent = null;
-        $lang = $this->getServiceLocator()->get('language');
         foreach($listing->getContent() as $content){
             $contentLangIDs[] = $content->getLang()->getId();
-            if($content->getLang()->getId() == $lang->getDefaultLanguage()->getId())
-                $defaultContent = $content;
         }
 
         $metaLangIDs = [];
-        $defaultMeta = null;
         foreach($listing->getMetadata() as $metadata){
             $metaLangIDs[] = $metadata->getLang()->getId();
-            if($metadata->getLang()->getId() == $lang->getDefaultLanguage()->getId())
-                $defaultMeta = $metadata;
         }
 
-        foreach($languages as $language){
+        foreach($languagesService->getActiveLanguages() as $language){
             if(!in_array($language->getId(), $contentLangIDs)){
-                $newContent = new ListingContent($listing, $language);
-                if($defaultContent){
-                    $newContent->setAlias($defaultContent->getAlias());
-                    $newContent->setLink($defaultContent->getLink());
-                    $newContent->setTitle($defaultContent->getTitle());
-                    $newContent->setText($defaultContent->getText());
-                }
+                new ListingContent($listing, $language);
             }
             if(!in_array($language->getId(), $metaLangIDs)){
-                $newMeta = new Metadata($listing, $language);
-                if($defaultMeta){
-                    $newMeta->setMetaTitle($defaultMeta->getMetaTitle());
-                    $newMeta->setMetaDescription($defaultMeta->getMetaDescription());
-                    $newMeta->setMetaKeywords($defaultMeta->getMetaKeywords());
-                }
+                new Metadata($listing, $language);
             }
         }
     }

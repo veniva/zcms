@@ -68,7 +68,7 @@ class Metadata
     /**
      * @param mixed $lang
      */
-    public function setLang($lang)
+    public function setLang(Lang $lang)
     {
         $this->lang = $lang;
     }

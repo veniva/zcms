@@ -126,7 +126,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         return new JsonModel(array(
             'title' => $this->translator->translate(ucfirst($action).' a category'),
             'form' => $renderer->render($viewModel),
-            'parent' => $parentCategoryID,
+            'parent' => (int)$parentCategoryID,
         ));
     }
 
@@ -241,7 +241,7 @@ class CategoryController extends AbstractRestfulController implements Translator
             $this->getResponse()->setStatusCode(201);
             return new JsonModel([
                 'message' => ['type' => 'success', 'text' => $this->translator->translate('The new category was added successfully')],
-                'parent' => $data['parent'],
+                'parent' => (int)$data['parent'],
             ]);
         }
 
