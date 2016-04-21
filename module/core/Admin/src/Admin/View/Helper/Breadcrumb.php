@@ -8,30 +8,16 @@
 
 namespace Admin\View\Helper;
 
+use Application\Model\Entity\CategoryContent;
+use Application\Model\Entity\Lang;
 use Application\View\Helper\Breadcrumb as AppBreadcrumb;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class Breadcrumb extends AppBreadcrumb
 {
     protected $template = 'helper/breadcrumb_admin';
     
-    public function __construct(ServiceLocatorInterface $helperPluginManager)
+    public function __construct(CategoryContent $currentCategoryContent = null, Lang $defaultLanguage)
     {
-        parent::__construct($helperPluginManager);
-    }
-    
-    protected function getCurrentCategory()
-    {
-        $serviceManager = $this->serviceManager;
-        $entityManager = $serviceManager->get('entity-manager');
-        $categoryContentEntity = $serviceManager->get('category-content-entity');
-
-        $categoryContent = null;
-        $request = $this->serviceManager->get('Request');
-        $id = $request->getQuery('parent', false);
-        if($id !== false)
-            $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByCategory($id);
-        
-        return $categoryContent;
+        parent::__construct($currentCategoryContent, $defaultLanguage);
     }
 }

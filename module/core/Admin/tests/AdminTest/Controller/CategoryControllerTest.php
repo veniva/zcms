@@ -9,6 +9,7 @@
 namespace AdminTest\Controller;
 
 use Admin\Form\Category as CategoryForm;
+use Admin\View\Helper\Breadcrumb;
 use Application\Model\Entity\Category;
 use Application\Model\Entity\Lang;
 use ApplicationTest\AuthorizationTrait;
@@ -418,10 +419,13 @@ class CategoryControllerTest extends AbstractHttpControllerTestCase
      */
     public function testBreadcrumb($greatChild)
     {
-        $this->mockLogin();
-        $this->dispatch('/admin/category', null, ['parent' => $greatChild->getId()]);
-        $content = json_decode($this->getResponse()->getContent());
-        $this->assertInternalType('array', explode('&gt', $content->breadcrumb));
+        $defaultLanguage = $this->entityManager->getRepository(get_class(new Lang()))->findOneBy(['status' => 2]);
+
+        $breadcrumb = new Breadcrumb($greatChild->getContent()[0], $defaultLanguage);
+        $bc = $breadcrumb->build();
+        
+        $this->assertInternalType('array', $bc);
+        $this->assertEquals(3, count($bc));
     }
 
     /**

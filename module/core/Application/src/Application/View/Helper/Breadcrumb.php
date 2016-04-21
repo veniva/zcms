@@ -9,6 +9,7 @@
 namespace Application\View\Helper;
 
 use Application\Model\Entity\CategoryContent;
+use Application\Model\Entity\Lang;
 use Doctrine\Common\Collections\Collection;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -17,23 +18,22 @@ use Zend\View\Model\ViewModel;
 
 class Breadcrumb extends AbstractHelper
 {
-    /** @var  ServiceLocatorInterface */
-    protected $serviceManager;
     protected $template = 'helper/breadcrumb';
-    /** @var  RouteMatch */
-    protected $routeMatch;
+
+    /** @var  CategoryContent */
+    protected $currentCategoryContent;
+    /** @var Lang  */
+    protected $defaultLanguage;
 
     /**
      * Breadcrumb constructor.
-     * @param ServiceLocatorInterface $helperPluginManager NOTE: This argument is of type
-     * Zend\view\HelperPluginManager which is injected by the factory
+     * @param CategoryContent|null $currentCategoryContent
+     * @param Lang $defaultLanguage
      */
-    public function __construct(ServiceLocatorInterface $helperPluginManager)
+    public function __construct(CategoryContent $currentCategoryContent = null, Lang $defaultLanguage)
     {
-        $this->serviceManager = $helperPluginManager->getServiceLocator();
-        $request = $this->serviceManager->get('Request');
-        $route = $this->serviceManager->get('Router');
-        $this->routeMatch = $route->match($request);
+        $this->currentCategoryContent = $currentCategoryContent;
+        $this->defaultLanguage = $defaultLanguage;
     }
 
     /**
@@ -55,9 +55,8 @@ class Breadcrumb extends AbstractHelper
 
     public function build(&$title = null)
     {
-        $serviceManager = $this->serviceManager;
-        $defaultLangId = $serviceManager->get('language')->getDefaultLanguage()->getId();
-        $categoryContent = $this->getCurrentCategory();
+        $defaultLangId = $this->defaultLanguage->getId();
+        $categoryContent = $this->currentCategoryContent;
         if(!$categoryContent) return [];
 
         $parentCategories = $categoryContent->getCategory()->getParents();
@@ -102,19 +101,5 @@ class Breadcrumb extends AbstractHelper
             }
         }
         return $parentsArranged;
-    }
-
-    protected function getCurrentCategory()
-    {
-        $serviceManager = $this->serviceManager;
-        $entityManager = $serviceManager->get('entity-manager');
-        $categoryContentEntity = $serviceManager->get('category-content-entity');
-
-        $categoryContent = null;
-        $alias = $this->routeMatch->getParam('alias', false);
-        if($alias !== false)
-            $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByAlias(urldecode($alias));
-
-        return $categoryContent;
     }
 }

@@ -23,6 +23,18 @@ class Breadcrumb implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $helperPluginManager)
     {
-        return new \Admin\View\Helper\Breadcrumb($helperPluginManager);
+        $serviceManager = $helperPluginManager->getServiceLocator();
+        $request = $serviceManager->get('Request');
+
+        $entityManager = $serviceManager->get('entity-manager');
+        $categoryContentEntity = $serviceManager->get('category-content-entity');
+
+        $categoryContent = null;
+        $id = $request->getQuery('parent', false);
+        if($id !== false)
+            $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByCategory($id);
+
+        $defaultLang = $serviceManager->get('language')->getDefaultLanguage();
+        return new \Admin\View\Helper\Breadcrumb($categoryContent, $defaultLang);
     }
 }
