@@ -45,19 +45,18 @@ class PageController extends AbstractActionController
             $this->getResponse()->setStatusCode(404);
             return [];
         }
-        $metaData = $listing->getSingleMetadata($currentLanguageId);
-        if(!$metaData) $metaData = $listing->getSingleMetadata($currentLanguageId);
+        $listingContent = $listing->getSingleListingContent($currentLanguageId);
 
         $this->layout()->setVariables([
-            'meta_title' => $metaData ? $metaData->getMetaTitle() : null,
-            'meta_description' => $metaData ? $metaData->getMetaDescription() : null,
-            'meta_keywords' => $metaData ? $metaData->getMetaKeywords() : null,
+            'meta_title' => $listingContent ? $listingContent->getMetaTitle() : null,
+            'meta_description' => $listingContent ? $listingContent->getMetaDescription() : null,
+            'meta_keywords' => $listingContent ? $listingContent->getMetaKeywords() : null,
         ]);
         $listingImage = $listing->getListingImage();
 
         return new ViewModel([
             'listing' => $listing,
-            'content' => $listing->getSingleListingContent($currentLanguageId),
+            'content' => $listingContent,
             'thumbnail' => $listingImage ? $listingImage->getImageName() : null
         ]);
     }

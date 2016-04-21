@@ -25,12 +25,6 @@ class Listing
     protected $content;
 
     /**
-     * A collection of metadata entities in different languages
-     * @OneToMany(targetEntity="Metadata", mappedBy="listing", cascade={"remove", "persist"})
-     */
-    protected $metadata;
-
-    /**
      * @OneToMany(targetEntity="ListingImage", mappedBy="listing", cascade={"remove", "persist"})
      */
     protected $listingImages;
@@ -43,7 +37,6 @@ class Listing
     public function __construct()
     {
         $this->content = new ArrayCollection();
-        $this->metadata = new ArrayCollection();
         $this->listingImages = new ArrayCollection();
         $this->categories = new ArrayCollection();
     }
@@ -94,36 +87,6 @@ class Listing
     public function addContent(ListingContent $content)
     {
         $this->content[] = $content;
-    }
-
-    public function getMetadata()
-    {
-        return $this->metadata;
-    }
-
-    /**
-     * @param null|int $langId If null, then an entity of the default language is returned
-     * @return Metadata|null
-     */
-    public function getSingleMetadata($langId = null)
-    {
-        //return a content in concrete language only if desired
-        if($langId){
-            foreach($this->metadata as $metadata){
-                if($metadata->getLang()->getId() == $langId){
-                    return $metadata;//return single entity
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param Metadata $metadata
-     */
-    public function addMetadata(Metadata $metadata)
-    {
-        $this->metadata[] = $metadata;
     }
 
     /**

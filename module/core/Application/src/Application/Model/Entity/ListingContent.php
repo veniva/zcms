@@ -38,6 +38,21 @@ class ListingContent
      */
     protected $text;
 
+    /**
+     * @Column(type="string", name="meta_title", length=255, nullable=true)
+     */
+    protected $metaTitle = null;
+
+    /**
+     * @Column(type="text", name="meta_description", length=255, nullable=true)
+     */
+    protected $metaDescription = null;
+
+    /**
+     * @Column(type="string", name="meta_keywords", nullable=true)
+     */
+    protected $metaKeywords = null;
+
     public function __construct(Listing $listing = null, Lang $lang = null)
     {
         if($listing)
@@ -138,5 +153,53 @@ class ListingContent
     public function setLang(Lang $lang)
     {
         $this->lang = $lang;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMetaTitle()
+    {
+        return $this->metaTitle;
+    }
+
+    /**
+     * @param string $metaTitle
+     */
+    public function setMetaTitle($metaTitle)
+    {
+        $this->metaTitle = $metaTitle;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMetaDescription()
+    {
+        return $this->metaDescription;
+    }
+
+    /**
+     * @param string $metaDescription
+     */
+    public function setMetaDescription($metaDescription)
+    {
+        $this->metaDescription = $metaDescription;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMetaKeywords()
+    {
+        return $this->metaKeywords;
+    }
+
+    /**
+     * @param string $metaKeywords
+     */
+    public function setMetaKeywords($metaKeywords)
+    {
+        $this->metaKeywords = $metaKeywords;
     }
 }

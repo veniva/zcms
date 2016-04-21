@@ -11,7 +11,6 @@ namespace Admin\Controller;
 use Admin\Form\Listing as ListingForm;
 use Application\Model\Entity\ListingContent;
 use Application\Model\Entity\ListingImage;
-use Application\Model\Entity\Metadata;
 use Application\Model\Entity;
 use Application\Stdlib\Strings;
 use Symfony\Component\Filesystem\Filesystem;
@@ -288,24 +287,16 @@ class ListingController extends AbstractRestfulController implements TranslatorA
 
     protected function addEmptyContent(Entity\Listing $listing)
     {
-        $languagesService = $this->getServiceLocator()->get('language');//v_todo - remove the redundant argument $languages and use this only
+        $languagesService = $this->getServiceLocator()->get('language');
 
         $contentLangIDs = [];
         foreach($listing->getContent() as $content){
             $contentLangIDs[] = $content->getLang()->getId();
         }
 
-        $metaLangIDs = [];
-        foreach($listing->getMetadata() as $metadata){
-            $metaLangIDs[] = $metadata->getLang()->getId();
-        }
-
         foreach($languagesService->getActiveLanguages() as $language){
             if(!in_array($language->getId(), $contentLangIDs)){
                 new ListingContent($listing, $language);
-            }
-            if(!in_array($language->getId(), $metaLangIDs)){
-                new Metadata($listing, $language);
             }
         }
     }

@@ -59,20 +59,24 @@ CREATE TABLE IF NOT EXISTS `listings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-CREATE TABLE IF NOT EXISTS `listings_content` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `listing_id` int(10) unsigned DEFAULT NULL,
-  `lang_id` int(10) unsigned DEFAULT NULL,
-  `alias` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `link` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `text` longtext COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_834C219D4619D1A` (`listing_id`),
-  KEY `IDX_834C219B213FA4` (`lang_id`),
-  CONSTRAINT `FK_834C219B213FA4` FOREIGN KEY (`lang_id`) REFERENCES `lang` (`id`),
-  CONSTRAINT `FK_834C219D4619D1A` FOREIGN KEY (`listing_id`) REFERENCES `listings` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE `listings_content` (
+  `listing_id` INT(10) UNSIGNED NOT NULL,
+  `lang_id` INT(10) UNSIGNED NOT NULL,
+  `alias` VARCHAR(255) NOT NULL,
+  `link` VARCHAR(255) NOT NULL,
+  `title` VARCHAR(255) NULL DEFAULT NULL,
+  `text` TEXT NULL,
+  `meta_title` VARCHAR(128) NULL DEFAULT NULL,
+  `meta_description` TINYTEXT NULL,
+  `meta_keywords` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`listing_id`, `lang_id`),
+  INDEX `FK_listings_content_lang` (`lang_id`),
+  INDEX `FK_listings_content_listings` (`listing_id`),
+  CONSTRAINT `FK_listings_content_lang` FOREIGN KEY (`lang_id`) REFERENCES `lang` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `FK_listings_content_listings` FOREIGN KEY (`listing_id`) REFERENCES `listings` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+  COLLATE='utf8_general_ci'
+  ENGINE=InnoDB;
 
 
 CREATE TABLE IF NOT EXISTS `listing_category` (
@@ -94,21 +98,6 @@ CREATE TABLE IF NOT EXISTS `listing_images` (
   KEY `IDX_4E79FB9D4619D1A` (`listing_id`),
   CONSTRAINT `FK_4E79FB9D4619D1A` FOREIGN KEY (`listing_id`) REFERENCES `listings` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-CREATE TABLE IF NOT EXISTS `metadata` (
-  `listing_id` int(10) unsigned NOT NULL,
-  `lang_id` int(10) unsigned NOT NULL,
-  `meta_title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `meta_description` tinytext COLLATE utf8_unicode_ci,
-  `meta_keywords` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`listing_id`,`lang_id`),
-  KEY `IDX_4F143414D4619D1A` (`listing_id`),
-  KEY `IDX_4F143414B213FA4` (`lang_id`),
-  CONSTRAINT `FK_4F143414B213FA4` FOREIGN KEY (`lang_id`) REFERENCES `lang` (`id`),
-  CONSTRAINT `FK_4F143414D4619D1A` FOREIGN KEY (`listing_id`) REFERENCES `listings` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
 CREATE TABLE IF NOT EXISTS `password_resets` (
   `email` VARCHAR(255) NOT NULL COLLATE 'utf8_unicode_ci',

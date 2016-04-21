@@ -160,7 +160,6 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
         $this->getRequest()->getPost()->fromArray([
             'sort' => 0,
             'content' => [],
-            'metadata' => [],
             'category' => null,
             'listing_csrf' => $form->get('listing_csrf')->getValue()
         ]);
@@ -385,7 +384,6 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
         $form = new ListingForm($this->entityManager);
         $postParams = [
             'sort' => 0,
-            'metadata' => [],
             'category' => $categoryID,
             'listing_csrf' => $form->get('listing_csrf')->getValue()
         ];

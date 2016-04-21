@@ -9,6 +9,7 @@
 namespace Admin\Form;
 
 use Application\Model\Entity\ListingContent;
+use Zend\Filter\ToNull;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 use Zend\Hydrator\ClassMethods;
@@ -18,6 +19,8 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
     protected $aliasMaxLength = 255;
     protected $titleMaxLength = 255;
     protected $linkMaxLength = 20;
+    protected $metaDescriptionMaxLength = 255;
+    protected $metaKeywordsMaxLength = 255;
 
     public function __construct($name = 'content', array $options = [])
     {
@@ -63,6 +66,36 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
             ),
             'attributes' => array(
                 'class' => 'summernote'
+            ),
+        ));
+
+        $this->add(array(
+            'name' => 'metaTitle',
+            'options' => array(
+                'label' => 'Meta title',
+            ),
+            'attributes' => array(
+                'maxlength' => $this->titleMaxLength,
+            ),
+        ));
+
+        $this->add(array(
+            'name' => 'metaDescription',
+            'options' => array(
+                'label' => 'Meta description',
+            ),
+            'attributes' => array(
+                'maxlength' => $this->metaDescriptionMaxLength,
+            ),
+        ));
+
+        $this->add(array(
+            'name' => 'metaKeywords',
+            'options' => array(
+                'label' => 'Meta keywords',
+            ),
+            'attributes' => array(
+                'maxlength' => $this->metaKeywordsMaxLength,
             ),
         ));
     }
@@ -130,6 +163,69 @@ class ListingContentFieldset extends Fieldset implements InputFilterProviderInte
                 ),
                 'validators' => array(
                     array('name' => 'NotEmpty'),
+                ),
+            ),
+            'metaTitle' => array(
+                'required' => false,
+                'filters' => array(
+                    array('name' =>  'StringTrim'),
+                    array('name' =>  'StripTags'),
+                    array(
+                        'name' => 'ToNull',
+                        'options' => array(
+                            'type' => ToNull::TYPE_STRING
+                        ),
+                    ),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'max' => $this->titleMaxLength
+                        ),
+                    ),
+                ),
+            ),
+            'metaDescription' => array(
+                'required' => false,
+                'filters' => array(
+                    array('name' =>  'StringTrim'),
+                    array('name' =>  'StripTags'),
+                    array(
+                        'name' => 'ToNull',
+                        'options' => array(
+                            'type' => ToNull::TYPE_STRING
+                        ),
+                    ),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'max' => $this->metaDescriptionMaxLength
+                        ),
+                    ),
+                ),
+            ),
+            'metaKeywords' => array(
+                'required' => false,
+                'filters' => array(
+                    array('name' =>  'StringTrim'),
+                    array('name' =>  'StripTags'),
+                    array(
+                        'name' => 'ToNull',
+                        'options' => array(
+                            'type' => ToNull::TYPE_STRING
+                        ),
+                    ),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'max' => $this->metaKeywordsMaxLength
+                        ),
+                    ),
                 ),
             ),
         );

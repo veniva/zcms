@@ -28,11 +28,13 @@ $this->form->setAttribute('action', '#'.$this->action.($this->action == 'edit' ?
             <?php foreach($this->form->getFieldsets()['content']->getFieldsets() as $fieldset): ?>
                 <div id="tabs-1-<?=$fieldset->getObject()->getLang()->getId()?>">
                     <?php foreach($fieldset->getElements() as $element): ?>
+                        <?php if(!strpos($element->getName(), 'meta')): ?>
                         <div class="form-group">
                             <label><?=$this->translate($element->getLabel())?>:</label>
                             <?=$this->formElement($element)?>
                             <div class="form-error"><?=$this->formElementErrors($element)?></div>
                         </div>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </div>
             <?php endforeach; ?>
@@ -78,14 +80,16 @@ $this->form->setAttribute('action', '#'.$this->action.($this->action == 'edit' ?
                     </li>
                 <?php endforeach; ?>
             </ul>
-            <?php foreach($this->form->getFieldsets()['metadata']->getFieldsets() as $fieldset): ?>
+            <?php foreach($this->form->getFieldsets()['content']->getFieldsets() as $fieldset): ?>
                 <div id="tabs-2-<?=$fieldset->getObject()->getLang()->getId()?>">
                     <?php foreach($fieldset->getElements() as $element): ?>
+                        <?php if(strpos($element->getName(), 'meta')): ?>
                         <div class="form-group">
                             <label><?=$this->translate($element->getLabel())?>:</label>
                             <?=$this->formElement($element)?>
                             <div class="form-error"><?=$this->formElementErrors($element)?></div>
                         </div>
+                    <?php endif;?>
                     <?php endforeach; ?>
                 </div>
             <?php endforeach; ?>

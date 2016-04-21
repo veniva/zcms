@@ -62,16 +62,6 @@ class Listing extends Form
         ));
 
         $this->add(array(
-            'type' => 'Zend\Form\Element\Collection',
-            'name' => 'metadata',
-            'options' => array(
-                'target_element' => array(
-                    'type' => 'Admin\Form\MetadataFieldset'
-                ),
-            ),
-        ));
-
-        $this->add(array(
             'name' => 'category',//v_todo - create multiple parent categories support
             'type' => 'Select',
             'options' => array(
