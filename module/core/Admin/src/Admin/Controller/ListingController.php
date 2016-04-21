@@ -303,7 +303,9 @@ class ListingController extends AbstractRestfulController implements TranslatorA
 
     protected function removeListingImage(Entity\ListingImage $listingImage, $listingsDir, $listingId)
     {
-        unlink($listingsDir.$listingId.'/'.$listingImage->getImageName());
+        $fileName = $listingsDir.$listingId.'/'.$listingImage->getImageName();
+        if(file_exists($fileName))
+            unlink($fileName);
         $this->getServiceLocator()->get('entity-manager')->remove($listingImage);
         $fileSystem = $this->getServiceLocator()->get('stdlib-file-system');
         if($fileSystem->isDirEmpty($listingsDir.$listingId)){
