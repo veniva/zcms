@@ -6,13 +6,12 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Admin\CategoryTree;
+namespace Admin\Service;
 
 use Application\Model\Entity\Category;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Form\Element\Select;
 
-class CategoryTree extends Select
+class CategoryTree
 {
     /**
      * @var array Categories as detailed array
@@ -34,15 +33,13 @@ class CategoryTree extends Select
      */
     protected $serviceManager;
 
-    public function __construct($name = null, $options = [], ServiceLocatorInterface $serviceManager, $parentId = null)
+    public function __construct(ServiceLocatorInterface $serviceManager, $parentId = null)
     {
         $this->serviceManager = $serviceManager;
         $entityManager = $serviceManager->get('entity-manager');
         $this->categoryRepo = $entityManager->getRepository(get_class(new Category()));
 
         $this->setCategories($parentId);
-
-        parent::__construct($name, $options);
     }
 
     /**

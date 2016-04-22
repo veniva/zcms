@@ -15,6 +15,6 @@ class CategoryTree implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceManager)
     {
-        return new \Admin\CategoryTree\CategoryTree('filter_category', [], $serviceManager);
+        return new \Admin\Service\CategoryTree($serviceManager);
     }
 }
