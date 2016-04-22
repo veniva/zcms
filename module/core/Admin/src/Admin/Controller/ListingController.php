@@ -33,18 +33,28 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         $this->setServiceLocator($serviceLocator);
     }
 
+    /**
+     * Initially loaded to display the list page's template
+     * @return ViewModel
+     */
     public function listAction()
     {
         $categoryTree = $this->getServiceLocator()->get('category-tree');
         $selectCategoryElement = new Select('filter_category');
         $selectCategoryElement->setAttribute('id', 'filter_category');
+        $selectCategoryElement->setEmptyOption($this->translator->translate('All categories'));
+        $selectCategoryElement->setValueOptions($categoryTree->getSelectOptions());
+
         return new ViewModel([
             'selectCategory' => $selectCategoryElement,
-            'categories' => $categoryTree->getCategories(),
             'locale' => $this->translator->getLocale()
         ]);
     }
 
+    /**
+     * Called asynchronously
+     * @return JsonModel
+     */
     public function getList()
     {
         $parentCategory = $this->params()->fromQuery('filter', '0');
@@ -126,9 +136,9 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         $form->bind($listing);
         if($action == 'edit'){
             if(isset($listing->getCategories()[0]))
-                $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($listing->getCategories()[0]->getId());//v_todo - rework this to use \Admin\Form\View\Helper\SelectCategory
+                $form->get('category')->setValueOptions($categoryTree->getSelectOptions())->setValue($listing->getCategories()[0]->getId());
         }else{
-            $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions())->setValue($parentFilter);
+            $form->get('category')->setValueOptions($categoryTree->getSelectOptions())->setValue($parentFilter);
         }
 
         return $this->renderData($form, $listing, $action, $languages);
@@ -218,7 +228,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         $listingContent = $action == 'edit' ? $listing->getContent() : null;
         $form = new ListingForm($this->getServiceLocator()->get('entity-manager'), $listingContent);
         $form->bind($listing);
-        $form->get('category')->setValueOptions($categoryTree->getCategoriesAsOptions());
+        $form->get('category')->setValueOptions($categoryTree->getSelectOptions());
 
         $returnError = function($message) use($form, $listing, $action, $languages){
             $message = ['type' => 'error', 'text' => $message, 'no_redir' => 1];

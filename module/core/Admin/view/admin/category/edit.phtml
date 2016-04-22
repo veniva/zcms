@@ -34,7 +34,7 @@ $this->form->setAttribute('action', '#'.$this->action.($this->action == 'edit' ?
     <tr>
         <td><?=$this->translate('Parent category')?>:</td>
         <td>
-            <?=$this->formSelectCategory($this->form->get('parent'), $this->categoryOptions, $this->parentCategoryID)?>
+            <?=$this->formSelect($this->form->get('parent'))?>
             <div class="form-error">
                 <?=$this->formElementErrors($this->form->get('parent'))?>
             </div>

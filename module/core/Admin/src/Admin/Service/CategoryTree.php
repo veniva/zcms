@@ -41,6 +41,11 @@ class CategoryTree
 
         $this->setCategories($parentId);
     }
+    
+    public function getCategories()
+    {
+        return $this->categories;
+    }
 
     /**
      * Form hierarchical category tree walking all the categories recursively
@@ -49,7 +54,7 @@ class CategoryTree
      * @param int $level What should be the hyphenated indentation
      * @return void
      */
-    protected function setCategories($parentId = null, $level = 0)
+    public function setCategories($parentId = null, $level = 0)
     {
         $languageService = $this->serviceManager->get('language');
         $defaultLangID = $languageService->getDefaultLanguage()->getId();
@@ -72,16 +77,16 @@ class CategoryTree
         }
     }
 
-    public function getCategories()
-    {
-        return $this->categories;
-    }
-
     /**
-     * @return array Categories array handy for setting form select options [id] => intent+title
+     * @param Category|null $category
+     * @return array
      */
-    public function getCategoriesAsOptions()
+    public function getSelectOptions(Category $category = null)
     {
+        if($category && $category->getId()){//if the category is not new category
+            return $this->getAllButChildren($category);
+        }
+        
         return $this->categoriesAsOptions;
     }
 
@@ -90,7 +95,7 @@ class CategoryTree
      * @param Category $category
      * @return array Categories array handy for setting form select options [id] => intent+title
      */
-    public function getAllButChildren(Category $category)
+    protected function getAllButChildren(Category $category)
     {
         $childIds = [];
         if(!empty($category->getId())){
@@ -101,19 +106,11 @@ class CategoryTree
         }
 
         $allButOwnCategs = [];
-        foreach($this->getCategories() as $categs){
-            if($categs['id'] != $category->getId() && !in_array($categs['id'], $childIds)){
-                $allButOwnCategs[$categs['id']] = $this->categories[$categs['id']];
+        foreach($this->categoriesAsOptions as $id => $categs){
+            if($id != $category->getId() && !in_array($id, $childIds)){
+                $allButOwnCategs[$id] = $this->categoriesAsOptions[$id];
             }
         }
         return $allButOwnCategs;
-    }
-
-    /**
-     * Re-sets the whole category tree on demand
-     */
-    public function reSetCategories()
-    {
-        $this->setCategories();
     }
 }

@@ -18,7 +18,7 @@ class AdminTest extends AbstractHttpControllerTestCase
     public function testCategoryTree()
     {
         $categoryTree = new \Admin\Service\CategoryTree($this->getApplicationServiceLocator());
-        $categories = $categoryTree->getCategories();
+        $categories = $categoryTree->getSelectOptions();
         $this->assertInternalType('array', $categories);
     }
 

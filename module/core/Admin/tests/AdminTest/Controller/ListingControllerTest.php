@@ -176,7 +176,7 @@ class ListingControllerTest extends AbstractHttpControllerTestCase
     {
         $this->fillRequiredData();
         $categoryTree = $this->controller->getServiceLocator()->get('category-tree');
-        $categoryTree->reSetCategories();//re-fill in the category select form element options to prevent notInArray validation error
+        $categoryTree->setCategories();//re-fill in the category select form element options to prevent notInArray validation error
 
         $this->getRequest()->setMethod(Request::METHOD_POST);
         //get the first category available in the table

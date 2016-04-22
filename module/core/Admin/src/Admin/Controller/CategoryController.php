@@ -96,8 +96,11 @@ class CategoryController extends AbstractRestfulController implements Translator
         $this->addEmptyContent($category);
         $listingContent = !$isNew ? $category->getContent() : null;
         $form = new CategoryForm($entityManager, $listingContent);
-        $categories = $this->getServiceLocator()->get('category-tree')->getAllButChildren($category);
-        $serviceLocator->get('ViewRenderer')->formSelectCategory($form->get('parent'), $categories);
+        $categoryTree = $this->getServiceLocator()->get('category-tree');
+        $category2 = !$isNew ? $category : null;
+        $parentElement = $form->get('parent');
+        $parentElement->setEmptyOption($this->translator->translate('Top'));
+        $parentElement->setValueOptions($categoryTree->getSelectOptions($category2));
 
         $form->bind($category);
         return true;
@@ -105,22 +108,22 @@ class CategoryController extends AbstractRestfulController implements Translator
 
     /**
      * Helps to render the category form for add/edit actions
-     * @param $category
-     * @param $form
+     * @param Category $category
+     * @param CategoryForm $form
      * @param $parentCategoryID
      * @return JsonModel
      */
-    protected function renderCategData($category, $form, $parentCategoryID)
+    protected function renderCategData(Category $category, CategoryForm $form, $parentCategoryID)
     {
         $action = $category->getId() ? 'edit' : 'add';
         $categoryTree = $this->getServiceLocator()->get('category-tree');
+        $form->get('parent')->setValueOptions($categoryTree->getSelectOptions($category));
+        $form->get('parent')->setValue($parentCategoryID);
 
         $viewModel = new ViewModel([
             'action' => $action,
             'id' => $category->getId(),
             'form' => $form,
-            'categoryOptions' => $categoryTree->getAllButChildren($category),
-            'parentCategoryID' => $parentCategoryID
         ]);
         $viewModel->setTemplate('admin/category/edit');
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
