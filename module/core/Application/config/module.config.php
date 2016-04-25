@@ -17,6 +17,7 @@ return array(
                     'defaults' => array(
                         'controller' => 'Application\Controller\Index',
                         'action'     => 'index',
+                        'page_cache' => false,
                     ),
                 ),
                 'may_terminate' => true,
@@ -54,6 +55,7 @@ return array(
                         'controller' => 'Application\Controller\Category',
                         'action' => 'show',
                         'alias' => 'home',
+                        'page_cache' => false,
                     ),
                 ),
             ),
@@ -68,6 +70,7 @@ return array(
                     'defaults' => array(
                         'controller' => 'Application\Controller\Page',
                         'action' => 'show',
+                        'action_cache' => false
                     ),
                 ),
             ),
@@ -86,6 +89,7 @@ return array(
             'validator-messages' => 'Application\Service\Factory\ValidatorMessages',
             'language' => 'Application\Service\Factory\Language',
             'auth-adapter' => 'Application\Service\Factory\AuthenticationAdapterFactory',
+            'text-cache' => 'Zend\Cache\Service\StorageCacheFactory'
         ),
         'invokables' => array(
             'misc' => 'Application\Service\Invokable\Misc',
