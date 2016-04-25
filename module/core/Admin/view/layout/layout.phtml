@@ -81,35 +81,33 @@ $auth = new \Zend\Authentication\AuthenticationService();
                 </li>
             </ul>
         </div>
-        <div class="mbody">
-            <div class="content">
-                <div class="messages">
-                    <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
-                        //check for error messages
-                        $plugin = $this->flashMessenger()->getPluginFlashMessenger();
-                        if($plugin->getCurrentErrorMessages()){
-                            echo $this->flashMessenger()->renderCurrent($namespace, array('alert', 'alert-dismissible', 'alert-danger'));
-                            $plugin->clearCurrentMessages('error');
-                        }
-                        $style = $namespace != 'error' ? array('alert', 'alert-dismissible', 'alert-'.$namespace) :
-                            array('alert', 'alert-dismissible', 'alert-danger');
-                        echo $this->flashMessenger()->render($namespace, $style);
-                    endforeach; ?>
-                </div>
-                <div class="messages" data-bind="visible: messages().length > 0">
-                    <div data-bind="foreach: messages">
-                        <div data-bind="attr: {class: 'alert alert-dismissible alert-' + (type == 'error' ? 'danger' : type) + ' fade in' }">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <span data-bind="text: message"></span>
-                        </div>
+        <div class="container">
+            <div class="messages">
+                <?php foreach (array('error', 'success', 'info', 'default') as $namespace):
+                    //check for error messages
+                    $plugin = $this->flashMessenger()->getPluginFlashMessenger();
+                    if($plugin->getCurrentErrorMessages()){
+                        echo $this->flashMessenger()->renderCurrent($namespace, array('alert', 'alert-dismissible', 'alert-danger'));
+                        $plugin->clearCurrentMessages('error');
+                    }
+                    $style = $namespace != 'error' ? array('alert', 'alert-dismissible', 'alert-'.$namespace) :
+                        array('alert', 'alert-dismissible', 'alert-danger');
+                    echo $this->flashMessenger()->render($namespace, $style);
+                endforeach; ?>
+            </div>
+            <div class="messages" data-bind="visible: messages().length > 0">
+                <div data-bind="foreach: messages">
+                    <div data-bind="attr: {class: 'alert alert-dismissible alert-' + (type == 'error' ? 'danger' : type) + ' fade in' }">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <span data-bind="text: message"></span>
                     </div>
                 </div>
-                <div class="container">
-                    <?=$this->content?>
-                </div>
             </div>
-            <div class="clearfix"></div>
+            <div class="panel panel-default">
+                <?=$this->content?>
+            </div>
         </div>
+        <div class="clearfix"></div>
         <div class="clearfix"></div>
         <footer class="footer">
             &copy; <?=date('Y')?> <a href="https://github.com/veniva/zcms">ZCMS - A light weight CMS</a>, released under the <a target="_blank" href="http://www.gnu.org/licenses/gpl-3.0.en.html">GNU/GPL 3.0 licence</a>

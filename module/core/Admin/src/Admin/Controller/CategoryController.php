@@ -177,6 +177,7 @@ class CategoryController extends AbstractRestfulController implements Translator
 
         $form->setData($data);
         if($form->isValid()){
+            //v_todo - delete cache file in data/cache if cache enabled in module Application/config/module.config.php
             $entityManager->persist($category);
             $entityManager->flush();
 
@@ -290,6 +291,7 @@ class CategoryController extends AbstractRestfulController implements Translator
 
         $entityManager->remove($category);//contained listings are cascade removed from the ORM!!
         $entityManager->flush();
+        //v_todo - delete cache file in data/cache if cache enabled in module Application/config/module.config.php
 
         return new JsonModel([
             'message' => ['type' => 'success', 'text' => $this->translator->translate('The category and all the listings in it were removed successfully')],

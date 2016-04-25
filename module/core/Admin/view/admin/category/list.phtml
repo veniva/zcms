@@ -1,10 +1,10 @@
-<div class="header_cont">
+<div class="panel-heading">
     <div class="title" data-bind="text: title"></div>
     <div data-bind="visible: action() == 'list'" style="float:right;">
         <a type="button" href="#add" class="btn btn-primary btn-xs"><?=$this->translate('New')?></a>
     </div>
 </div>
-<div class="body_cont">
+<div class="panel-body">
     <!-- list action -->
     <div data-bind="visible: action() == 'list'">
         <div class="bcrumb lui-padding-5">

@@ -26,11 +26,28 @@ button{
 }
 
 #main{
-    width:900px;
     margin-left:auto;
     margin-right:auto;
     background:white;
     border:1px solid #E1E1E1;
+}
+
+@media (min-width: 768px) {
+    .container {
+        width: 750px;
+    }
+    #main{
+        width:750px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        width: 970px;
+    }
+    #main{
+        width:970px;
+    }
 }
 
 .header{
@@ -59,6 +76,7 @@ button{
     background: #373737;
     border-top:1px solid grey;
     color:#fff;
+    margin-bottom: 20px;
 }
 
 #menu ul{
@@ -156,29 +174,11 @@ footer.footer a:hover{
 
 .content{
     float:left;
-    width:100%; /*necessary for the dojo editor to fill the screen */
-}
-
-.container{
-    padding: 0;
     width:100%;
-    border-radius:5px;
-    border:1px solid #E1E1E1;
 }
 
-.header_cont{
-    background: #F3F3F3;
-    height:38px;
-    padding:7px 10px;
-}
-
-.header_cont div.title{
-    float:left;
-    margin-top: 4px;
-}
-
-.body_cont{
-    padding:10px;
+div.title{
+    display: inline-block;
 }
 
 div.icons{

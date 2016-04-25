@@ -248,7 +248,7 @@ class Module
     {
         $match = $event->getRouteMatch();
         if(!$match) {
-            return;
+            return false;
         }
 
         if($match->getParam('page_cache')) {
@@ -265,6 +265,7 @@ class Module
                 return $response;
             }
         }
+        return false;
     }
 
     public function savePageCache(MvcEvent $event)

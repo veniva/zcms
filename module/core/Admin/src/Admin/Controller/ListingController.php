@@ -180,6 +180,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
     public function update($id, $data)
     {
         return $this->handleCreateUpdate($data, $id);
+        //v_todo - delete cache file in data/cache if cache enabled in module Application/config/module.config.php
     }
 
     public function create($data)
@@ -355,6 +356,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
             }
 
             $entityManager->remove($listing);
+            //v_todo - delete cache file in data/cache if cache enabled in module Application/config/module.config.php
         }
         $entityManager->flush();
         return $this->redirToList('The pages have been deleted successfully');

@@ -1,11 +1,11 @@
-<div class="header_cont">
+<div class="panel-heading">
     <div class="title" data-bind="text: title()"></div>
     <div data-bind="visible: action() == 'list'" style="float:right;">
         <a type="button" href="#add" class="btn btn-primary btn-xs"><?=$this->translate('New')?></a>
         <button type="button" id="del_button" class="btn btn-primary btn-xs"><?=$this->translate('Delete')?></button>
     </div>
 </div>
-<div class="body_cont">
+<div class="panel-body">
     <div data-bind="visible: action() == 'list'">
         <div class="filter">
             <label for="filter_category">Filter: </label>
