@@ -39,8 +39,9 @@ class Module
         $eventManager = $e->getApplication()->getEventManager();
         $serviceManager = $e->getApplication()->getServiceManager();
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setRouteMatch'), -1);
-        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'accessControl'), -2);
-        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'globalLayoutVars'), -3);
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'setLanguages'), -2);
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'accessControl'), -3);
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'globalLayoutVars'), -4);
         $eventManager->attach(MvcEvent::EVENT_BOOTSTRAP, array($this, 'bootstrapSession'), 100);
         //use the error template of the currently used module
         $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function(MvcEvent $event)use($serviceManager) {
@@ -63,7 +64,6 @@ class Module
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);
 
-        Misc::setStaticServiceLocator($serviceManager);
         AbstractValidator::setDefaultTranslator(new \Zend\Mvc\I18n\Translator($serviceManager->get('translator')));
 
         $moduleRouteListener = new ModuleRouteListener();
@@ -134,7 +134,6 @@ class Module
         }
     }
 
-    //@deprecated v_todo - schedule for removal
     public function setRouteMatch(MvcEvent $e)
     {
         $routeMatch = $e->getRouteMatch();
@@ -143,9 +142,7 @@ class Module
             $e->setRouteMatch($routeMatch);
             $routeMatch = $e->getRouteMatch();
         }
-        Misc::setStaticRoute($routeMatch);
         $this->routeMatch = $routeMatch;
-        $this->setLanguages($e, $this->routeMatch);
     }
 
     public function accessControl(MvcEvent $e)
@@ -186,30 +183,25 @@ class Module
             $acl->addResource($resource);
         }
 
-//        try{
-            if($acl->isAllowed($userRole, $resource, $action)){
-                return;
-            }
-//        }
-//        catch(AclException $ex){
-//            //v_todo - log this in the error log
-//        }
+        if($acl->isAllowed($userRole, $resource, $action)){
+            return;
+        }
+
         $lang = $routeMatch->getParam('lang');
         $e->getResponse()->setStatusCode(403);
-        $e->setRouteMatch(new RouteMatch(array('admin/default')));
-        $routeMatch = $e->getRouteMatch();
-        $routeMatch->setParam('controller', 'Admin\Controller\Log');//v_todo - redirect to Action prohibited location instead
+        $routeMatch = new RouteMatch(array('admin/default'));
+        $e->setRouteMatch($routeMatch);
+
+        $routeMatch->setParam('controller', 'Admin\Controller\Log');
         $routeMatch->setParam('action', 'in');
         if($lang)
             $routeMatch->setParam('lang', $lang);
     }
 
     /**
-     * @deprecated v_todo - schedule for removal
      * @param MvcEvent $e
-     * @param RouteMatch $routeMatch
      */
-    public function setLanguages(MvcEvent $e, RouteMatch $routeMatch)
+    public function setLanguages(MvcEvent $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
         $languageService = $serviceManager->get('language');
@@ -218,8 +210,8 @@ class Module
         $languageIso = $defaultLanguage->getIsoCode();
 
         //set the translator's locale - the "locale" is the name of the translation files located in "languages"
-        $translator = $serviceManager->get('translator');
         $locale = ($languageIso != 'en') ? $languageIso.'_'.strtoupper($languageIso) : 'en_US';
+        $translator = $serviceManager->get('translator');
         $translator->setLocale($locale);
         $serviceManager->get('ViewHelperManager')->get('translate')->setTranslator($translator);
     }

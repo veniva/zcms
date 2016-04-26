@@ -10,7 +10,7 @@ namespace Application\Controller;
 
 
 use Application\Form\Contact;
-use Application\Service\Invokable\Misc;
+use Application\Model\Entity\User;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mail;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
@@ -32,7 +32,9 @@ class CustomPageController extends AbstractActionController
     
     public function contactAction()
     {
-        $adminEmail = Misc::getAdminEmail();
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $superAdmin = $entityManager->getRepository(get_class(new User()))->findOneByRole(User::USER_SUPER_ADMIN);
+
         $request = $this->getRequest();
         $publicHtml = $this->getServiceLocator()->get('config')['public-path'];
         $form = new Contact($request->getBaseUrl().'/core/img/captcha/', $publicHtml);
@@ -42,7 +44,7 @@ class CustomPageController extends AbstractActionController
             if($form->isValid()){
                 $message = new Mail\Message();
                 $message->setFrom($form->get('email')->getValue())
-                        ->setTo($adminEmail)
+                        ->setTo($superAdmin->getEmail())
                         ->setSubject('Website Inquiry')
                         ->setBody($form->get('inquiry')->getValue());
 
@@ -55,7 +57,7 @@ class CustomPageController extends AbstractActionController
         }
 
         return array(
-            'formActive' => $adminEmail ? true : false,
+            'formActive' => $superAdmin->getEmail() ? true : false,
             'contact_form' => $form
         );
     }

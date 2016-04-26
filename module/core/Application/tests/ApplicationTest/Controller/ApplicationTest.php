@@ -36,7 +36,7 @@ class ApplicationTest extends AbstractHttpControllerTestCase
     public function testServices()
     {
         $this->dispatch('/');
-        $serviceManager = Invokable\Misc::getStaticServiceLocator();
+        $serviceManager = $this->serviceManager;
 
         $acl = $serviceManager->get('acl');
         $this->assertType($acl, '\Zend\Permissions\Acl\Acl');
