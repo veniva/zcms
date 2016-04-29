@@ -15,7 +15,8 @@ return array(
                 'options' => array(
                     'route'    => '/',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Index',
                         'action'     => 'index',
                         'page_cache' => false,
                     ),
@@ -31,18 +32,10 @@ return array(
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'lang'       => '[a-zA-Z]{2}',
                             ),
-                            'defaults' => array(
-                                '__NAMESPACE__' => 'Application\Controller'
-                            ),
                         ),
                     ),
                 ),
             ),
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
-            //http://framework.zend.com/manual/current/en/modules/zend.mvc.routing.html
             'category' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
@@ -52,7 +45,8 @@ return array(
                         'lang'     => '[a-zA-Z]{2}',
                     ),
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Category',
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Category',
                         'action' => 'show',
                         'alias' => 'home',
                         'page_cache' => false,
@@ -68,7 +62,8 @@ return array(
                         'lang'     => '[a-zA-Z]{2}',
                     ),
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Page',
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Page',
                         'action' => 'show',
                         'action_cache' => false
                     ),
@@ -151,9 +146,10 @@ return array(
         'exception_template'       => 'error/index',
         'template_map' => array(
             'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
-            'layout/blank'           => __DIR__ . '/../view/layout/blank.phtml',
+            'layout/blank'            => __DIR__ . '/../view/layout/blank.phtml',
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
+            'error/403'               => __DIR__ . '/../view/error/403.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
             'helper/breadcrumb'       => __DIR__ . '/../view/helper/breadcrumb.phtml',
         ),
@@ -199,9 +195,7 @@ return array(
                 'admin' => 'admin'
             )
         ),
-        'modules' => array(
-            'Admin'
-        ),
+        'modules' => array(),
     ),
     'view_helper_config' => array(
         'flashmessenger' => array(

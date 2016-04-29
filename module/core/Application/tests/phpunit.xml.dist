@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./Bootstrap.php" colors="true" convertWarningsToExceptions="false">
+    <testsuites>
+        <testsuite name="Application Test Suite">
+            <directory>./ApplicationTest</directory>
+        </testsuite>
+    </testsuites>
+    <testsuites>
+        <testsuite name="Administration Test Suite">
+            <directory>./../../Admin/tests/AdminTest</directory>
+        </testsuite>
+        <testsuite name="MainMenu Test Suite">
+            <directory>./../../MainMenu/tests/MainMenuTest</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

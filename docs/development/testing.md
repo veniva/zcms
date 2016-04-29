@@ -5,6 +5,10 @@
 
 ZCSM includes comprehensive unit tests based on the Zend framework's testing API using PHPUnit. It requires that a testing database is set in order to run the unit tests.
 
+## Setting up configurations ##
+
+Copy `module/core/Application/tests/phpunit.xml.dist` into `module/core/Application/tests/phpunit.xml`. In this file you can add more test suites in the future.
+
 ## Preparing the testing database ##
 
 The configuration of the tests is located in `/module/core/Application/tests/config` folder. There you have to copy 

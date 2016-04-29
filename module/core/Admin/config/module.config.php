@@ -6,7 +6,6 @@
  * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-use Admin\Controller;
 return array(
     'router' => array(
         'routes' => array(
@@ -126,6 +125,14 @@ return array(
         ),
         'deny' => array(
             array('admin', 'administrators', null),
+        ),
+        'modules' => array(
+            'Admin'
+        ),
+        'admin_login' => array(
+            'route' => 'admin/default',
+            'controller' => 'Admin\Controller\Log',
+            'action' => 'in',
         ),
     ),
 );

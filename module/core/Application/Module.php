@@ -9,8 +9,8 @@
 
 namespace Application;
 
-use Application\Service\Invokable\Misc;
 use Zend\Db\TableGateway\Feature\GlobalAdapterFeature;
+use Zend\EventManager\EventManager;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -60,6 +60,17 @@ class Module
             }
 
         }, -200);
+
+        $eventManager->getSharedManager()->attach('custom', '403', function(MvcEvent $event) use($eventManager){
+            $viewModel = new ViewModel();
+            $viewModel->setTemplate('error/403');
+            $appViewModel = $event->getViewModel();
+            $appViewModel->setTemplate('layout/layout');
+            $appViewModel->addChild($viewModel, 'content');
+            $eventManager->attach(MvcEvent::EVENT_DISPATCH, function(MvcEvent $event) {
+                $event->stopPropagation(true);
+            }, 100);
+        });
 
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);
@@ -189,13 +200,29 @@ class Module
 
         $lang = $routeMatch->getParam('lang');
         $e->getResponse()->setStatusCode(403);
-        $routeMatch = new RouteMatch(array('admin/default'));
-        $e->setRouteMatch($routeMatch);
 
-        $routeMatch->setParam('controller', 'Admin\Controller\Log');
-        $routeMatch->setParam('action', 'in');
+        //by our custom convention, it is prepended by the module name
+        $login = isset($config['acl'][strtolower($moduleNamespace).'_login']) ? $config['acl'][strtolower($moduleNamespace).'_login'] : null;
+        if(!isset($login['route'])){
+            $eventManager = new EventManager('custom');
+            $eventManager->trigger('403', $e);
+            return;
+        }
+
+        //set login route
+        $newRoute = new RouteMatch(array($login['route']));
+        $e->setRouteMatch($newRoute);
+
+        //set login controller
+        if(isset($login['controller']))
+            $newRoute->setParam('controller', $login['controller']);
+
+        //set login action
+        if(isset($login['action']))
+            $newRoute->setParam('action', $login['action']);
+
         if($lang)
-            $routeMatch->setParam('lang', $lang);
+            $newRoute->setParam('lang', $lang);
     }
 
     /**
