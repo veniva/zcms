@@ -5,6 +5,6 @@
 return array(
     'bcrypt' => array(
         'salt' => '758675869586',
-        'cost' => 16
+        'cost' => 7
     )
 );

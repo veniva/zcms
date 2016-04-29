@@ -168,7 +168,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         if($form->isValid($action, $currentUserName, $currentEmail, $editOwn)){
             //security check - is the new role equal or less privileged to the editing user
             $newRole = $form->getData()->getRole();
-            if(!$loggedInUser->canEdit($newRole))
+            if(!$loggedInUser->canEdit($newRole))//this protection is redundant as there will be notFoundInTheHaystack validation error
                 return $this->redirToList('You have no right to assign this user role', 'error');
 
             if($editOwn && isset($data['role']))

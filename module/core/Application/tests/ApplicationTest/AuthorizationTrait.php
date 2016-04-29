@@ -32,5 +32,7 @@ trait AuthorizationTrait
 
         $serviceLocator->setAllowOverride(true);
         $serviceLocator->setService('auth', $authService);
+        
+        return $user;
     }
 }

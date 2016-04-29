@@ -9,7 +9,6 @@ use Zend\Permissions\Acl\Acl as AccessControlList;
 
 class Acl implements FactoryInterface
 {
-
     /**
      * Create service
      *

@@ -148,7 +148,55 @@ class UserControllerTest extends AbstractHttpControllerTestCase
         $this->assertControllerName('Admin\Controller\Log');
     }
 
+    public function testGuestAccessDenied()
+    {
+        try{
+            $this->mockLogin(null, UserEntity::USER_GUEST);
+            $this->dispatch('/admin/user');
+        }catch(\Exception $e){
+            echo __FILE__.':'.__LINE__.' - Exception with message: '."\n";
+            var_dump($e->getMessage());
+        }
+        $this->assertNotEquals(200, $this->getResponseStatusCode());
+    }
+
+    public function testAdminCannotAddSuperAdmin()
+    {
+        try{
+            $user = $this->mockLogin(null, UserEntity::USER_ADMIN);
+            $this->dispatch('/admin/user', Request::METHOD_POST, $this->prepareAddUser($user));
+        }catch(\Exception $e){
+            echo __FILE__.':'.__LINE__.' - Exception with message: '."\n";
+            var_dump($e->getMessage());
+        }
+        $this->assertNotEquals(201, $this->getResponseStatusCode());
+    }
+
     //endregion
+
+    public function testSuperAdminAccessAllowed()
+    {
+        try{
+            $this->mockLogin();
+            $this->dispatch('/admin/user');
+        }catch(\Exception $e){
+            echo __FILE__.':'.__LINE__.' - Exception with message: '."\n";
+            var_dump($e->getMessage());
+        }
+        $this->assertEquals(200, $this->getResponseStatusCode());
+    }
+
+    public function testAdminAccessAllowed()
+    {
+        try{
+            $this->mockLogin();
+            $this->dispatch('/admin/user');
+        }catch(\Exception $e){
+            echo __FILE__.':'.__LINE__.' - Exception with message: '."\n";
+            var_dump($e->getMessage());
+        }
+        $this->assertEquals(200, $this->getResponseStatusCode());
+    }
 
     /**
      * Adds a user entry in the `users` DB table
@@ -344,11 +392,11 @@ class UserControllerTest extends AbstractHttpControllerTestCase
     /**
      * Prepares the user's post data and returns it as an array. Sets the request method to POST.
      * @param UserEntity $loggedUser
-     * @param string $userRole The user role (1 - admin ... 4 - guest)
+     * @param int $userRole The user role (1 - admin ... 4 - guest)
      * @param string $uname The user name to assigned
      * @return array The prepared post data.
      */
-    protected function prepareAddUser($loggedUser, $userRole = '1', $uname = 'adminito')
+    protected function prepareAddUser($loggedUser, $userRole = UserEntity::USER_SUPER_ADMIN, $uname = 'adminito')
     {
         $serviceManager = $this->controller->getServiceLocator();
 

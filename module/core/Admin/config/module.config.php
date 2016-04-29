@@ -115,17 +115,13 @@ return array(
     'acl' => array(
         'resource' => array(
             'log' => null,
-            'administrators' => null,
-            'index' => null,
         ),
         'allow' => array(
             array('guest', 'log', array('in', 'forgotten', 'initial', 'reset')),
             array('admin', null, null),
             array('super-admin', null, null),
         ),
-        'deny' => array(
-            array('admin', 'administrators', null),
-        ),
+        'deny' => array(),
         'modules' => array(
             'Admin'
         ),
