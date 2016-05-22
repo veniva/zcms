@@ -9,7 +9,6 @@ echo $this->doctype(); ?>
     <?=$this->headMeta()
         ->appendName('description', $this->meta_description ?: $this->translate('A CMS based on ZendFramework'))
         ->appendName('keywords', $this->meta_keywords ?: $this->translate('ZCMS, CMS, content management system'))."\n"?>
-<!--<link rel="stylesheet" href="../../../../public/css/bootstrap.min.css" />--><!--V_TODO - remove--><!--V_TODO - remove--><!--V_TODO - remove-->
     <?=$this->headLink()
         ->prependStylesheet($this->corePath() .'/css/style.css')
         ->prependStylesheet($this->corePath() .'/css/bootstrap-theme.min.css')

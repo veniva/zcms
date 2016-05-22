@@ -11,8 +11,6 @@ namespace Application\View\Helper;
 use Application\Model\Entity\CategoryContent;
 use Application\Model\Entity\Lang;
 use Doctrine\Common\Collections\Collection;
-use Zend\Mvc\Router\Http\RouteMatch;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Model\ViewModel;
 

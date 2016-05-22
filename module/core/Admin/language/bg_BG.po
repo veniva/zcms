@@ -274,7 +274,7 @@ msgstr "Стойността трябва да е по-голяма от %min% �
 
 # Zend\Validator\StringLength
 msgid "The input is more than %max% characters long"
-msgstr "Стойността трябва да е не надвишава %max% символа"
+msgstr "Текста не трябва да надвишава %max% символа"
 
 # Admin\Validator\Password
 msgid "There must be at least one lower case letter"
