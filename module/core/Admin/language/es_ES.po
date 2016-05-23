@@ -357,6 +357,9 @@ msgstr "Añadir usuario"
 msgid "Add"
 msgstr "Añadir"
 
+msgid "Close"
+msgstr "Cerrar"
+
 # Admin\Validator\Base64String
 msgid "The file is more than %max%%measure% long"
 msgstr "El archivo es mas grande de los permitidos %max%%measure%"

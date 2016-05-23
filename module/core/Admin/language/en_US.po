@@ -359,6 +359,9 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+msgid "Close"
+msgstr ""
+
 # Admin\Validator\Base64String
 msgid "The file is more than %max%%measure% long"
 msgstr ""

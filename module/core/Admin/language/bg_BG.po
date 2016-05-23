@@ -360,6 +360,9 @@ msgstr "Добавяне на потребител"
 msgid "Add"
 msgstr "Добави"
 
+msgid "Close"
+msgstr "Затвори"
+
 # Admin\Validator\Base64String
 msgid "The file is more than %max%%measure% long"
 msgstr "Файлът е по-голям от позволените %max%%measure%"
