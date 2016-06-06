@@ -174,7 +174,7 @@ msgid "Submit"
 msgstr "Изпрати"
 
 msgid "Cancel"
-msgstr "Откажи"
+msgstr "Отмяна"
 
 msgid "Logged as"
 msgstr "Потребител"

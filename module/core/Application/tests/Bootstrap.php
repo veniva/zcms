@@ -34,21 +34,11 @@ class Bootstrap
 
         static::initAutoloader();
 
-        // use ModuleManager to load this module and it's dependencies
-        $config = array(
-            'module_listener_options' => array(
-                'module_paths' => $zf2ModulePaths,
-                'config_glob_paths' => array(
-                    dirname(dirname(dirname(dirname(__DIR__)))).'/config/autoload/{,*.}{global,local}.php',
-                    __DIR__.'/config/{,*.}{global,local}.php',
-                ),
-            ),
-
-            'modules' => array(
-                'Application',
-                'MainMenu',
-                'Admin',
-            )
+        $config = require __DIR__.'/config/application.config.php';
+        $config['module_listener_options']['module_paths'] = $zf2ModulePaths;
+        $config['module_listener_options']['config_glob_paths'] = array(
+            dirname(dirname(dirname(dirname(__DIR__)))).'/config/autoload/{,*.}{global,local}.php',
+            __DIR__.'/config/{,*.}{global,local}.php',
         );
 
         $serviceManager = new ServiceManager(new ServiceManagerConfig());
