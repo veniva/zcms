@@ -186,18 +186,6 @@ class UserControllerTest extends AbstractHttpControllerTestCase
         $this->assertEquals(200, $this->getResponseStatusCode());
     }
 
-    public function testAdminAccessAllowed()
-    {
-        try{
-            $this->mockLogin();
-            $this->dispatch('/admin/user');
-        }catch(\Exception $e){
-            echo __FILE__.':'.__LINE__.' - Exception with message: '."\n";
-            var_dump($e->getMessage());
-        }
-        $this->assertEquals(200, $this->getResponseStatusCode());
-    }
-
     /**
      * Adds a user entry in the `users` DB table
      */

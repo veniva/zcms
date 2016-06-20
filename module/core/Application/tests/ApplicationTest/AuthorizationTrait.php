@@ -21,7 +21,7 @@ trait AuthorizationTrait
         $user->setUname('Tester');
         $user->setRole($role);
 
-        $authService = $this->getMock('Zend\Authentication\AuthenticationService');
+        $authService = $this->getMockBuilder('Zend\Authentication\AuthenticationService')->getMock();
         $authService->expects($this->any())
             ->method('getIdentity')
             ->will($this->returnValue($user));
