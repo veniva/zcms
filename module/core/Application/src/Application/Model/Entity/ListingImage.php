@@ -14,6 +14,7 @@ class ListingImage
 
     /**
      * @ManyToOne(targetEntity="Listing", inversedBy="listingImages")
+     * @JoinColumn(nullable=false)
      */
     protected $listing;
 
