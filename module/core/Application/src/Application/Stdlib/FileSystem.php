@@ -69,4 +69,9 @@ class FileSystem
             return self::ERR_WRONG_FILE_TYPE;
         }
     }
+
+    public static function getFileExtension($fileName)
+    {
+        return substr(strrchr($fileName, '.'), 1);
+    }
 }
