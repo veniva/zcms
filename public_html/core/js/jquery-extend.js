@@ -38,6 +38,7 @@ jQuery.fn.showMask = function(speed){
     var mask = document.createElement('div');
     mask.className = "modalOverlay ui-widget-overlay ui-helper-hidden";
     mask.style.position = 'fixed';
+    mask.style.zIndex = 1002;
     this.append(mask);
     $(mask).fadeIn(speed || 400);
 };
