@@ -37,10 +37,10 @@ rest.addRoutes(function(sammyApp){
     });
 });
 
-viewModel.fileData.subscribe(function(newValue){
-    if(newValue.file()){
+viewModel.fileData().base64String.subscribe(function(base64String){
+    if(base64String){
         var listingImage = {
-            base64: viewModel.fileData().base64String,
+            base64: base64String,
             name: viewModel.fileData().file().name
         };
         rest.putEditParams.listing_image = listingImage;
