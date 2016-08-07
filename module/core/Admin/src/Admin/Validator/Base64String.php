@@ -36,7 +36,7 @@ class Base64String extends AbstractValidator
 
     protected $options = [
         'max'      => null,    // Maximum length in Kb, null if there is no length limitation
-        'measure' => 'K', // K by default
+        'measure' => 'K', // K by default. Possible values - K, MB
     ];
 
     /**
@@ -56,8 +56,15 @@ class Base64String extends AbstractValidator
             $this->error(self::INVALID);
             return false;
         }
-
-        $size = ((strlen($value) * 3) / 4) / 1024;//base 64 encoded is about 33% bigger then the original
+        $bytes = ((strlen($value) * 3) / 4);//base 64 encoded is about 33% bigger then the original
+        switch($this->options['measure']){
+            case 'MB':
+                $divisor = 1048576;
+                break;
+            default:
+                $divisor = 1024;
+        }
+        $size = $bytes / $divisor;//size in K or in MB
         if($size > $this->options['max']){
             $this->error(self::TOO_LONG);
             return false;
