@@ -131,6 +131,7 @@ jQuery.fn.showCenteredMessage = function(text, cssClass, button, speed){
 // add new options with default values
 $.ui.dialog.prototype.options.clickOut = true;
 $.ui.dialog.prototype.options.responsive = true;
+$.ui.dialog.prototype.options.noScroll = false;
 $.ui.dialog.prototype.options.scaleH = 0.8;
 $.ui.dialog.prototype.options.scaleW = 0.8;
 $.ui.dialog.prototype.options.showTitleBar = true;
@@ -180,6 +181,10 @@ $.ui.dialog.prototype.open = function () {
         // add webkit scrolling to all dialogs for touch devices
         if (isTouch) {
             elem.css("-webkit-overflow-scrolling", "touch");
+        }
+
+        if(self.options.noScroll){
+            elem.css('overflow', 'hidden');
         }
     };
 
