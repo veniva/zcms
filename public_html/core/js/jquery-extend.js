@@ -185,7 +185,7 @@ $.ui.dialog.prototype.open = function () {
 
         if(self.options.noScroll){
             elem.css('overflow', 'hidden');
-            var noScrollHeight = setHeight+40;
+            var noScrollHeight = setHeight+50;
             elem.dialog("option", "height", noScrollHeight).parent().css("max-height", noScrollHeight);
         }
     };
