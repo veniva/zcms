@@ -240,7 +240,7 @@ class LogController extends AbstractActionController implements TranslatorAwareI
                 $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
                 $entityManager->getRepository($passwordResetClassName)->deleteAllForEmail($email);
                 $entityManager->flush();
-                $this->flashMessenger()->addSuccessMessage('The password has been changed successfully.');
+                $this->flashMessenger()->addSuccessMessage($this->getTranslator()->translate('The password has been changed successfully.'));
                 $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
             }
         }

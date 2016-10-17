@@ -25,7 +25,7 @@ class User implements PasswordAwareInterface
     /**
      * @Column(type="string", nullable=false)
      */
-    protected $uname;
+    protected $uname;//v_todo - remove this field (also from the User form class)
 
     /**
      * @Column(type="string", nullable=false)

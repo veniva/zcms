@@ -32,7 +32,7 @@ class User extends Form
      * @param UserEntity $loggedInUser
      * @param array $entityManager
      */
-    public function __construct($loggedInUser, $entityManager)
+    public function __construct($loggedInUser, $entityManager)//v_todo - replace $loggedInUser with new User (see usage)
     {
         $this->loggedInUser = $loggedInUser;
         $this->entityManager = $entityManager;

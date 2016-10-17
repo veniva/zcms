@@ -8,7 +8,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.9\n"
 "Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: bg_BG\n"
@@ -370,3 +370,10 @@ msgstr "Файлът е по-голям от позволените %max%%measur
 # Admin\Validator\Extension
 msgid "File is of incorrect type. Allowed are: %extensions%"
 msgstr "Файлит е от грешен тип. Позволените са: %extensions%"
+
+# Admin\Validator\Password
+msgid "The \"Verify Password\" field must match the \"Password\" field"
+msgstr "Повторената парола не съвпада"
+
+msgid "The password has been changed successfully."
+msgstr "Паролата беше успешно променена."

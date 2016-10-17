@@ -8,7 +8,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.9\n"
 "Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: es_ES\n"
@@ -367,3 +367,10 @@ msgstr "El archivo es mas grande de los permitidos %max%%measure%"
 # Admin\Validator\Extension
 msgid "File is of incorrect type. Allowed are: %extensions%"
 msgstr "El archivo es de tipo no acceptable. Los permitidos son: %extensions%"
+
+# Admin\Validator\Password
+msgid "The \"Verify Password\" field must match the \"Password\" field"
+msgstr "La contraseña repetida no coresponde"
+
+msgid "The password has been changed successfully."
+msgstr "La contraseña fue cambiada con exito."
