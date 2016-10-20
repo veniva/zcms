@@ -142,10 +142,10 @@ class Module
 
     /**
      * Extract the Module name from the namespace
-     * @param \Zend\Mvc\Router\Http\RouteMatch $routeMatch
+     * @param RouteMatch $routeMatch
      * @return string
      */
-    private function getModuleName(\Zend\Mvc\Router\Http\RouteMatch $routeMatch)
+    private function getModuleName(RouteMatch $routeMatch)
     {
         return strtolower(strstr($routeMatch->getParam('__NAMESPACE__'), '\\', true));
     }
