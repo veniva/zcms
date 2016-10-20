@@ -43,23 +43,10 @@ class Module
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'accessControl'), -3);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'globalLayoutVars'), -4);
         $eventManager->attach(MvcEvent::EVENT_BOOTSTRAP, array($this, 'bootstrapSession'), 100);
-        //use the error template of the currently used module
-        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function(MvcEvent $event)use($serviceManager) {
-            if($route = $event->getRouteMatch()){
-                if($event->getRouteMatch()->getParam('controller') == 'Admin\Controller\Log'){//show simple layout with this particular controller
-                    $event->getViewModel()->setTemplate('layout/blank');
-                }else{
-                    $moduleName = strtolower(strstr($route->getParam('__NAMESPACE__'), '\\', true));
-                    $layoutName = $moduleName == 'application' ? 'layout' : $moduleName;
-                    if(isset($serviceManager->get('config')['view_manager']['template_map'][$layoutName.'/layout'])){
-                        $event->getViewModel()->setTemplate($layoutName.'/layout');
-                    }
-                }
-            }else{//show blank error page
-                $event->getViewModel()->setTemplate('layout/blank');
-            }
 
-        }, -200);
+        //use the error template of the currently used module
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'controllerNotFound'), -200);
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'actionNotFound'), -201);
 
         $eventManager->getSharedManager()->attach('custom', '403', function(MvcEvent $event) use($eventManager){
             $viewModel = new ViewModel();
@@ -96,6 +83,93 @@ class Module
             $eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this,'getActionCache'), 2);
             $eventManager->attach(MvcEvent::EVENT_RENDER, array($this,'saveActionCache'), 0);
         }
+    }
+
+    /**
+     * Set the layout for cases where controller is not matched
+     * @param MvcEvent $event
+     */
+    public function controllerNotFound(MvcEvent $event)
+    {
+        if($route = $event->getRouteMatch()){
+            if($event->getRouteMatch()->getParam('controller') == 'Admin\Controller\Log'){//show simple layout with this particular controller
+                $event->getViewModel()->setTemplate('layout/blank');
+            }else{
+                $this->setLayoutTemplate($event);
+            }
+        }else{//show blank error page
+            $event->getViewModel()->setTemplate('layout/blank');
+        }
+        $this->setModule404Template($event);
+    }
+
+    /**
+     * Set the layout used when controller is found but the action is not found
+     * @param MvcEvent $event
+     */
+    public function actionNotFound(MvcEvent $event)
+    {
+        $routeMatch = $event->getRouteMatch();
+        $controller = $routeMatch->getParam('controller');
+        $action = $routeMatch->getParam('action');
+        if($controller && $action == 'not-found'){
+            $this->setLayoutTemplate($event);
+            //set the "content" child template to be {module_name}/404
+            $this->setModule404Template($event);
+        }
+    }
+
+    /**
+     * Set Module layout template to {module_name}/layout
+     * @param MvcEvent $event
+     * @return bool
+     */
+    private function setLayoutTemplate(MvcEvent $event)
+    {
+        $routeMatch = $event->getRouteMatch();
+        if(!$routeMatch) return false;
+
+        $serviceManager = $event->getApplication()->getServiceManager();
+
+        $moduleName = $this->getModuleName($routeMatch);
+        $layoutName = $moduleName == 'application' ? 'layout' : $moduleName;
+        if(isset($serviceManager->get('config')['view_manager']['template_map'][$layoutName.'/layout'])){
+            $event->getViewModel()->setTemplate($layoutName.'/layout');
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Extract the Module name from the namespace
+     * @param \Zend\Mvc\Router\Http\RouteMatch $routeMatch
+     * @return string
+     */
+    private function getModuleName(\Zend\Mvc\Router\Http\RouteMatch $routeMatch)
+    {
+        return strtolower(strstr($routeMatch->getParam('__NAMESPACE__'), '\\', true));
+    }
+
+    /**
+     * Either sets the {module_name}/404 template, or leave the error/404 template
+     * @param MvcEvent $event
+     * @return bool
+     */
+    private function setModule404Template(MvcEvent $event)
+    {
+        if(!$event->getRouteMatch())
+            return false;
+
+        $serviceManager = $event->getApplication()->getServiceManager();
+        $contentView = new ViewModel();
+        $moduleName = $this->getModuleName($event->getRouteMatch());
+        $template = $moduleName.'/404';
+        if(isset($serviceManager->get('config')['view_manager']['template_map'][$template])){
+            $contentView->setTemplate($template);
+            $event->getViewModel()->addChild($contentView, 'content');
+            return true;
+        }
+        return false;
     }
 
     public function getConfig()
