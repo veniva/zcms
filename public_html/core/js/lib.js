@@ -28,6 +28,13 @@ var lib = {
             self.removeOverlay();
         });
     },
+    ajax: function(){
+        this.overlay();
+        var self = this;
+        $.ajax.apply(this, arguments).always(function(){
+            self.removeOverlay();
+        });
+    },
     showMessages: function(){
         viewModel.messages(viewModel.flashMessages());
     }
