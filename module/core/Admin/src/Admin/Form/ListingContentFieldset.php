@@ -8,7 +8,7 @@
 
 namespace Admin\Form;
 
-use Application\Model\Entity\ListingContent;
+use Logic\Core\Model\Entity\ListingContent;
 use Zend\Filter\ToNull;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;

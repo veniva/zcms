@@ -12,11 +12,11 @@ ini_set('xdebug.var_display_max_data', -1);
 
 use Admin\Form\Listing as ListingForm;
 use Application\Model\Entity;
-use Application\Model\Entity\Category;
-use Application\Model\Entity\CategoryContent;
-use Application\Model\Entity\Lang;
-use Application\Model\Entity\Listing;
-use Application\Model\Entity\ListingContent;
+use Logic\Core\Model\Entity\Category;
+use Logic\Core\Model\Entity\CategoryContent;
+use Logic\Core\Model\Entity\Lang;
+use Logic\Core\Model\Entity\Listing;
+use Logic\Core\Model\Entity\ListingContent;
 use Application\Stdlib\Strings;
 use ApplicationTest\AuthorizationTrait;
 use ApplicationTest\Bootstrap;

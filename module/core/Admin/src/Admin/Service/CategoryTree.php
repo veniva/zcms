@@ -8,7 +8,7 @@
 
 namespace Admin\Service;
 
-use Application\Model\Entity\Category;
+use Logic\Core\Model\Entity\Category;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class CategoryTree
@@ -24,7 +24,7 @@ class CategoryTree
     protected $categoriesAsOptions = array();
 
     /**
-     * @var \Application\Model\CategoryRepository
+     * @var \Logic\Core\Model\CategoryRepository
      */
     protected $categoryRepo;
 

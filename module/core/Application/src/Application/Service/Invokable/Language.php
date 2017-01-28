@@ -42,7 +42,7 @@ class Language
     }
 
     /**
-     * @return \Application\Model\Entity\Lang
+     * @return \Logic\Core\Model\Entity\Lang
      */
     public function getDefaultLanguage()
     {

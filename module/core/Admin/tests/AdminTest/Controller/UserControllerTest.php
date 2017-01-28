@@ -10,7 +10,7 @@ namespace AdminTest\Controller;
 
 use Admin\Controller\UserController;
 use Admin\Form\User;
-use Application\Model\Entity\User as UserEntity;
+use Logic\Core\Model\Entity\User as UserEntity;
 use ApplicationTest\AuthorizationTrait;
 use ApplicationTest\Bootstrap;
 use Zend\Mvc\Router\Http\TreeRouteStack as HttpRouter;

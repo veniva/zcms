@@ -9,8 +9,8 @@
 namespace Admin\Controller;
 
 use Admin\Form\Listing as ListingForm;
-use Application\Model\Entity\ListingContent;
-use Application\Model\Entity\ListingImage;
+use Logic\Core\Model\Entity\ListingContent;
+use Logic\Core\Model\Entity\ListingImage;
 use Application\Model\Entity;
 use Application\Stdlib\Strings;
 use Symfony\Component\Filesystem\Filesystem;
@@ -111,7 +111,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
         if($action == 'add'){
             //check if there is at least one category available
-            $categoryEntity = new Entity\Category();
+            $categoryEntity = new \Logic\Core\Model\Entity\Category();
             $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAll();
             if(!$categoryNumber)
                 return $this->redirToList('You must create at least one category in order to add pages', 'error');
@@ -193,7 +193,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
         if(!$id){
             //check if there is at least one category available
-            $categoryEntity = new Entity\Category();
+            $categoryEntity = new \Logic\Core\Model\Entity\Category();
             $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAll();
             if(!$categoryNumber)
                 return $this->redirToList('You must create at least one category in order to add pages', 'error');
@@ -205,7 +205,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
             if(!$listing) return $this->redirWrongParameter();
 
         }else{
-            $listing = new Entity\Listing();
+            $listing = new \Logic\Core\Model\Entity\Listing();
         }
 
         if(!empty($data['content'])){
@@ -296,7 +296,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         return $returnError($this->translator->translate('Please check the form for errors'));
     }
 
-    protected function addEmptyContent(Entity\Listing $listing)
+    protected function addEmptyContent(\Logic\Core\Model\Entity\Listing $listing)
     {
         $languagesService = $this->getServiceLocator()->get('language');
 
@@ -312,7 +312,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         }
     }
 
-    protected function removeListingImage(Entity\ListingImage $listingImage, $listingsDir, $listingId)
+    protected function removeListingImage(\Logic\Core\Model\Entity\ListingImage $listingImage, $listingsDir, $listingId)
     {
         $fileName = $listingsDir.$listingId.'/'.$listingImage->getImageName();
         if(file_exists($fileName))

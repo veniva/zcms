@@ -1,9 +1,9 @@
 <?php
 
-namespace Application\Model\Entity;
+namespace Logic\Core\Model\Entity;
 
 /**
- * @Entity(repositoryClass="\Application\Model\PasswordResetsRepository") @Table(name="password_resets")
+ * @Entity(repositoryClass="\Logic\Core\Model\PasswordResetsRepository") @Table(name="password_resets")
  */
 class PasswordResets
 {

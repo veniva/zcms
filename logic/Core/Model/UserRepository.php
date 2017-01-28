@@ -6,9 +6,9 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Application\Model;
+namespace Logic\Core\Model;
 
-use Application\Model\Entity\User;
+use Logic\Core\Model\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Paginator\Paginator;

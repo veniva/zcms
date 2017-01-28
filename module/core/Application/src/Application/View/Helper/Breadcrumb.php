@@ -8,8 +8,8 @@
 
 namespace Application\View\Helper;
 
-use Application\Model\Entity\CategoryContent;
-use Application\Model\Entity\Lang;
+use Logic\Core\Model\Entity\CategoryContent;
+use Logic\Core\Model\Entity\Lang;
 use Doctrine\Common\Collections\Collection;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Model\ViewModel;

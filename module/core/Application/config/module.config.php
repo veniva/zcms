@@ -88,12 +88,12 @@ return array(
         ),
         'invokables' => array(
             'misc' => 'Application\Service\Invokable\Misc',
-            'listing-entity' => 'Application\Model\Entity\Listing',
-            'listing-content-entity' => 'Application\Model\Entity\ListingContent',
-            'category-entity' => 'Application\Model\Entity\Category',
-            'category-content-entity' => 'Application\Model\Entity\CategoryContent',
-            'user-entity' => 'Application\Model\Entity\User',
-            'lang-entity' => 'Application\Model\Entity\Lang',
+            'listing-entity' => 'Logic\Core\Model\Entity\Listing',
+            'listing-content-entity' => 'Logic\Core\Model\Entity\ListingContent',
+            'category-entity' => 'Logic\Core\Model\Entity\Category',
+            'category-content-entity' => 'Logic\Core\Model\Entity\CategoryContent',
+            'user-entity' => 'Logic\Core\Model\Entity\User',
+            'lang-entity' => 'Logic\Core\Model\Entity\Lang',
             'stdlib-file-system' => 'Application\Stdlib\FileSystem',
             'stdlib-strings' => 'Application\Stdlib\Strings',
         ),
@@ -167,7 +167,7 @@ return array(
     ),
     'doctrine' => array(
         'entity_path' => array(
-            __DIR__.'/../src/Application/Model/Entity'
+            dirname(__DIR__, 3).'/logic/Core/Model/Entity',
         ),
         'initializers' => array(
             'Application\Service\Initializer\Password'

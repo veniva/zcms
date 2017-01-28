@@ -1,10 +1,10 @@
 <?php
-namespace Application\Model\Entity;
+namespace Logic\Core\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @Entity(repositoryClass="\Application\Model\CategoryRepository") @Table(name="categories")
+ * @Entity(repositoryClass="\Logic\Core\Model\CategoryRepository") @Table(name="categories")
  */
 class Category
 {

@@ -9,8 +9,9 @@
 namespace Application\Controller;
 
 
-use Application\Form\Contact;
-use Application\Model\Entity\User;
+use Logic\Core\Adapters\Zend\Http\Request;
+use Logic\Core\ContactPage;
+use Logic\Core\Form\Contact;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mail;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
@@ -32,32 +33,20 @@ class CustomPageController extends AbstractActionController
     
     public function contactAction()
     {
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $superAdmin = $entityManager->getRepository(get_class(new User()))->findOneByRole(User::USER_SUPER_ADMIN);
-
         $request = $this->getRequest();
         $publicHtml = $this->getServiceLocator()->get('config')['public-path'];
         $form = new Contact($request->getBaseUrl().'/core/img/captcha/', $publicHtml);
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
 
-        if($request->isPost()){
-            $form->setData($request->getPost());
-            if($form->isValid()){
-                $message = new Mail\Message();
-                $message->setFrom($form->get('email')->getValue())
-                        ->setTo($superAdmin->getEmail())
-                        ->setSubject('Website Inquiry')
-                        ->setBody($form->get('inquiry')->getValue());
-
-                $transport = new Mail\Transport\Sendmail();
-                $transport->send($message);
-
-                $this->flashMessenger()->addSuccessMessage("The message has been successfully sent. We'll review it and will answer shortly");
-                $this->redir()->toRoute('home/default', array('controller' => 'customPage', 'action' => 'contact'));
-            }
+        $contactPageLogic = new ContactPage($entityManager, $form, new Request($request));
+        $data = $contactPageLogic->process();
+        if($data['form_sent']){
+            $this->flashMessenger()->addSuccessMessage($data['success_message']);
+            return $this->redir()->toRoute('home/default', array('controller' => 'customPage', 'action' => 'contact'));
         }
 
         return array(
-            'formActive' => $superAdmin->getEmail() ? true : false,
+            'formActive' => $data['form_active'],
             'contact_form' => $form
         );
     }

@@ -3,7 +3,7 @@
 namespace Application\Service\Factory;
 
 
-use Application\Model\Entity\Lang;
+use Logic\Core\Model\Entity\Lang;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Doctrine\Common\Collections\Criteria;

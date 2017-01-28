@@ -11,9 +11,9 @@ namespace AdminTest\Controller;
 
 use Admin\Controller\LogController;
 use Admin\Form\User;
-use Application\Model\Entity\CategoryContent;
-use Application\Model\Entity\Lang;
-use Application\Model\Entity\ListingContent;
+use Logic\Core\Model\Entity\CategoryContent;
+use Logic\Core\Model\Entity\Lang;
+use Logic\Core\Model\Entity\ListingContent;
 use ApplicationTest\AuthorizationTrait;
 use ApplicationTest\Bootstrap;
 use Doctrine\ORM\EntityManager;
@@ -104,7 +104,7 @@ class LogControllerTest extends AbstractHttpControllerTestCase
     protected function removeUsers()
     {
         //truncate table users
-        $qb = $this->entityManager->getRepository(get_class(new \Application\Model\Entity\User()))->createQueryBuilder('u');
+        $qb = $this->entityManager->getRepository(get_class(new \Logic\Core\Model\Entity\User()))->createQueryBuilder('u');
         $qb->delete()->getQuery()->execute();
     }
 

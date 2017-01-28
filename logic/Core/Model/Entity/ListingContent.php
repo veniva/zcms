@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Model\Entity;
+namespace Logic\Core\Model\Entity;
 
 /**
  * @Entity @Table(name="listings_content")

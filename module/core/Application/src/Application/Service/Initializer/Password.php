@@ -3,7 +3,7 @@
 namespace Application\Service\Initializer;
 
 
-use Application\Model\PasswordAwareInterface;
+use Logic\Core\Model\PasswordAwareInterface;
 use Zend\ServiceManager\InitializerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

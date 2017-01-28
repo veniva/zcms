@@ -6,7 +6,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Application\Model;
+namespace Logic\Core\Model;
 
 
 use Zend\Crypt\Password\PasswordInterface;

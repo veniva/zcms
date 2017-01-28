@@ -1,11 +1,11 @@
 <?php
 
-namespace Application\Model\Entity;
+namespace Logic\Core\Model\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @Entity(repositoryClass="\Application\Model\ListingRepository") @Table(name="listings")
+ * @Entity(repositoryClass="\Logic\Core\Model\ListingRepository") @Table(name="listings")
  */
 class Listing
 {

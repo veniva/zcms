@@ -8,7 +8,7 @@
 
 namespace Admin\Form;
 
-use Application\Model\Entity\User as UserEntity;
+use Logic\Core\Model\Entity\User as UserEntity;
 use Application\Validator\Doctrine\NoRecordExists;
 use Zend\Form\Form;
 use Zend\Hydrator\ClassMethods;

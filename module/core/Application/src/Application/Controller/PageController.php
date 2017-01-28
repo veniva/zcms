@@ -8,6 +8,8 @@
 
 namespace Application\Controller;
 
+use Logic\Core\Interfaces\ErrorCodes;
+use Logic\Core\Page;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -31,31 +33,23 @@ class PageController extends AbstractActionController
     {
         $params = $this->params();
         $alias = $params->fromRoute('alias', null);
-        $languageService = $this->getServiceLocator()->get('language');
-        $currentLanguageId = $languageService->getCurrentLanguage()->getId();
-        if(!$alias || !$currentLanguageId){
+        $pageLogic = new Page($this->serviceLocator->get('entity-manager'), $this->getServiceLocator()->get('language'));
+        $data = $pageLogic->getShowData($alias);
+        if($data['error'] === ErrorCodes::PAGE_NOT_FOUND){
             $this->getResponse()->setStatusCode(404);
             return [];
         }
-        $listingEntity = $this->serviceLocator->get('listing-entity');
-        $entityManager = $this->serviceLocator->get('entity-manager');
 
-        $listing = $entityManager->getRepository(get_class($listingEntity))->getListingByAliasAndLang(urldecode($alias), $currentLanguageId);
-        if(!$listing){
-            $this->getResponse()->setStatusCode(404);
-            return [];
-        }
-        $listingContent = $listing->getSingleListingContent($currentLanguageId);
-
+        $listingContent = $data['listing_content'];
+        $listingImage = $data['listing_image'];
         $this->layout()->setVariables([
             'meta_title' => $listingContent ? $listingContent->getMetaTitle() : null,
             'meta_description' => $listingContent ? $listingContent->getMetaDescription() : null,
             'meta_keywords' => $listingContent ? $listingContent->getMetaKeywords() : null,
         ]);
-        $listingImage = $listing->getListingImage();
 
         return new ViewModel([
-            'listing' => $listing,
+            'listing' => $data['listing'],
             'content' => $listingContent,
             'thumbnail' => $listingImage ? $listingImage->getImageName() : null
         ]);

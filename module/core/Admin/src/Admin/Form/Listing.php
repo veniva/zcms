@@ -37,7 +37,7 @@ class Listing extends Form
         $this->listingContentCollection = $listingContentCollection;
 
         $this->setHydrator(new ClassMethods(false))
-            ->setObject(new Entity\Listing());
+            ->setObject(new \Logic\Core\Model\Entity\Listing());
 
         $this->add(array(
             'name' => 'sort',
@@ -126,7 +126,7 @@ class Listing extends Form
     {
         //region attach NoRecordExists filter to the field alias to ensure uniqueness
         $listingContent = $this->listingContentCollection;
-        $listingContentClassName = isset($listingContent[0]) ? get_class($listingContent[0]) : get_class(new Entity\ListingContent());
+        $listingContentClassName = isset($listingContent[0]) ? get_class($listingContent[0]) : get_class(new \Logic\Core\Model\Entity\ListingContent());
         //check if the 'alias' field is unique in the database
         $validatorOptions = [
             'entityClass' => $listingContentClassName,

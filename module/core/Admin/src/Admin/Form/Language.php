@@ -8,7 +8,7 @@
 
 namespace Admin\Form;
 
-use Application\Model\Entity\Lang;
+use Logic\Core\Model\Entity\Lang;
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Hydrator\ClassMethods;

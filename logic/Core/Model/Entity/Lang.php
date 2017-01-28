@@ -1,10 +1,10 @@
 <?php
 
-namespace Application\Model\Entity;
+namespace Logic\Core\Model\Entity;
 
 /**
  * Class Lang
- * @Entity(repositoryClass="\Application\Model\LangRepository") @Table(name="lang")
+ * @Entity(repositoryClass="\Logic\Core\Model\LangRepository") @Table(name="lang")
  */
 class Lang
 {
@@ -33,11 +33,13 @@ class Lang
     protected $status = self::STATUS_ACTIVE;
 
     /**
+     * v_todo - remove
      * @OneToMany(targetEntity="CategoryContent", mappedBy="lang", cascade={"remove"})
      */
     protected $categoryContent;
 
     /**
+     * v_todo - remove
      * @OneToMany(targetEntity="ListingContent", mappedBy="lang", cascade={"remove"})
      */
     protected $listingContent;

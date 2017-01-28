@@ -6,11 +6,10 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Application\Model;
+namespace Logic\Core\Model;
 
 
-use Application\Model\Entity\Category;
-use Doctrine\Common\Collections\ArrayCollection;
+use Logic\Core\Model\Entity\Category;
 use Doctrine\ORM;
 use Doctrine\ORM\QueryBuilder;
 use Zend\Paginator\Paginator;

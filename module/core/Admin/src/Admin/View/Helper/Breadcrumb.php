@@ -8,8 +8,8 @@
 
 namespace Admin\View\Helper;
 
-use Application\Model\Entity\CategoryContent;
-use Application\Model\Entity\Lang;
+use Logic\Core\Model\Entity\CategoryContent;
+use Logic\Core\Model\Entity\Lang;
 use Application\View\Helper\Breadcrumb as AppBreadcrumb;
 
 class Breadcrumb extends AppBreadcrumb

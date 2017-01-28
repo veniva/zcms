@@ -1,5 +1,5 @@
 <?php
-namespace Application\Model\Entity;
+namespace Logic\Core\Model\Entity;
 
 /**
  * Class CategoryContent

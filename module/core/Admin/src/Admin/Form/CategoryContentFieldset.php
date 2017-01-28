@@ -8,7 +8,7 @@
 
 namespace Admin\Form;
 
-use Application\Model\Entity\CategoryContent;
+use Logic\Core\Model\Entity\CategoryContent;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 use Zend\Hydrator\ClassMethods as ClassMethodsHydrator;

@@ -9,9 +9,9 @@
 namespace Admin\Controller;
 
 use Admin\Form\Language;
-use Application\Model\Entity\Lang;
-use Application\Model\Entity\PasswordResets;
-use Application\Model\Entity\User;
+use Logic\Core\Model\Entity\Lang;
+use Logic\Core\Model\Entity\PasswordResets;
+use Logic\Core\Model\Entity\User;
 use Zend\Form\Element;
 use Zend\Form\Form;
 use Zend\I18n\Translator\TranslatorAwareInterface;

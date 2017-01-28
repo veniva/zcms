@@ -10,8 +10,8 @@ namespace AdminTest\Controller;
 
 use Admin\Form\Category as CategoryForm;
 use Admin\View\Helper\Breadcrumb;
-use Application\Model\Entity\Category;
-use Application\Model\Entity\Lang;
+use Logic\Core\Model\Entity\Category;
+use Logic\Core\Model\Entity\Lang;
 use ApplicationTest\AuthorizationTrait;
 use ApplicationTest\Bootstrap;
 use Doctrine\ORM\EntityManager;

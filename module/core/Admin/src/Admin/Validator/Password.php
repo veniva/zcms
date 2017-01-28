@@ -8,7 +8,7 @@
 
 namespace Admin\Validator;
 
-use Application\Model\Entity\User;
+use Logic\Core\Model\Entity\User;
 use Zend\Validator\StringLength;
 use Zend\Validator\Exception;
 

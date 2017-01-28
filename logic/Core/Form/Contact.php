@@ -6,14 +6,13 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Application\Form;
+namespace Logic\Core\Form;
 
 
 use Zend\Captcha\Image;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilterInterface;
 
 class Contact extends Form
 {

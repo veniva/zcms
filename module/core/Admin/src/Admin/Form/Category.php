@@ -8,8 +8,8 @@
 
 namespace Admin\Form;
 
-use Application\Model\Entity\Category as CategoryEntity;
-use Application\Model\Entity\CategoryContent;
+use Logic\Core\Model\Entity\Category as CategoryEntity;
+use Logic\Core\Model\Entity\CategoryContent;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use Zend\Form\Form;

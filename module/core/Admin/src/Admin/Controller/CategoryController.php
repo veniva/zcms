@@ -9,9 +9,9 @@
 namespace Admin\Controller;
 
 use Admin\Form\Category as CategoryForm;
-use Application\Model\Entity\Category;
-use Application\Model\Entity\CategoryContent;
-use Application\Model\Entity\Lang;
+use Logic\Core\Model\Entity\Category;
+use Logic\Core\Model\Entity\CategoryContent;
+use Logic\Core\Model\Entity\Lang;
 use Application\Stdlib\Strings;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Filesystem\Filesystem;

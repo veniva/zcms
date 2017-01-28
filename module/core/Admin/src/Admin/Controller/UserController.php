@@ -8,7 +8,7 @@
 
 namespace Admin\Controller;
 
-use Application\Model\Entity\User;
+use Logic\Core\Model\Entity\User;
 use Zend\Authentication\AuthenticationService;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;

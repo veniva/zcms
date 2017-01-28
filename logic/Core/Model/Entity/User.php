@@ -1,12 +1,14 @@
 <?php
 
-namespace Application\Model\Entity;
-use Application\Model\PasswordAwareInterface;
+namespace Logic\Core\Model\Entity;
+
+
+use Logic\Core\Model\PasswordAwareInterface;
 use Zend\Crypt\Password\PasswordInterface;
 
 /**
  * Class User
- * @Entity(repositoryClass="\Application\Model\UserRepository") @Table(name="users")
+ * @Entity(repositoryClass="\Logic\Core\Model\UserRepository") @Table(name="users")
  */
 class User implements PasswordAwareInterface
 {
