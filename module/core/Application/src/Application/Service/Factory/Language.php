@@ -18,7 +18,7 @@ class Language implements FactoryInterface
 
         $criteria = new Criteria();
         $criteria->where($criteria->expr()->gt('status', 0))->orderBy(['status' => Criteria::DESC]);
-        $language = new \Application\Service\Invokable\Language();
+        $language = new \Logic\Core\Services\Language();
         $languageClassName = get_class($languageEntity);
 
         $activeLanguages = $entityManager->getRepository($languageClassName)->matching($criteria);

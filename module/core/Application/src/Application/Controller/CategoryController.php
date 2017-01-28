@@ -9,7 +9,7 @@
 namespace Application\Controller;
 
 
-use Application\Service\Invokable\Misc;
+use Logic\Core\Category;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -37,28 +37,23 @@ class CategoryController extends AbstractActionController
             return;
         }
 
-        $entityManager = $this->serviceLocator->get('entity-manager');
-        $languageService = $this->getServiceLocator()->get('language');
-        $currentLanguageId = $languageService->getCurrentLanguage()->getId();
-        $categoryEntity = $this->serviceLocator->get('category-entity');
+        $categoryLogic = new Category($this->serviceLocator->get('entity-manager'), $this->getServiceLocator()->get('language'));
+        $data = $categoryLogic->process($alias);
 
-        $category = $entityManager->getRepository(get_class($categoryEntity))->getCategoryByAliasAndLang(urldecode($alias), $currentLanguageId);
-        if(!$category){
+        if($data['error']){
             $this->getResponse()->setStatusCode(404);
             return [];
         }
-        $categoryContent = $category->getSingleCategoryContent($currentLanguageId);
+
         $this->layout()->setVariables([
-            'meta_title' => $categoryContent->getTitle()
+            'meta_title' => $data['category_content']->getTitle()
         ]);
 
-        $subCategories = $entityManager->getRepository(get_class($categoryEntity))->findByParent($category);
-
         return new ViewModel([
-            'category' => $category,
-            'category_content' => $categoryContent,
-            'sub_categories' => $subCategories,
-            'langID' => $currentLanguageId
+            'category' => $data['category'],
+            'category_content' => $data['category_content'],
+            'sub_categories' => $data['sub_categories'],
+            'langID' => $data['lang_id']
         ]);
     }
 }

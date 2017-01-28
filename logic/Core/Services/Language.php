@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Service\Invokable;
+namespace Logic\Core\Services;
 
 
 class Language

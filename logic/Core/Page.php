@@ -3,7 +3,7 @@
 namespace Logic\Core;
 
 use Logic\Core\Model\Entity\Listing;
-use Application\Service\Invokable\Language;
+use Logic\Core\Services\Language;
 use Logic\Core\Interfaces\ErrorCodes;
 use Doctrine\ORM\EntityManager;
 
