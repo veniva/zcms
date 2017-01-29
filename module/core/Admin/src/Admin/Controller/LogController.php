@@ -9,6 +9,8 @@
 namespace Admin\Controller;
 
 use Admin\Form\Language;
+use Logic\Core\Adapters\Zend\Http\Request;
+use Logic\Core\Admin\Login;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
@@ -45,60 +47,32 @@ class LogController extends AbstractActionController implements TranslatorAwareI
 
     public function inAction()
     {
-        //check for the existence of any users, and if none, it means it is a new installation, then redirect to user registration
         $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $countAdministrators = $entityManager->getRepository(get_class(new User()))->countAdminUsers();
-        if(!$countAdministrators){
-            $this->flashMessenger()->addInfoMessage('Here you can create the first user for the system');
-            return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'initial']);
-        }
-        $uname = new Element\Text('uname');
-        $uname->setLabel('User name');
-        $uname->setAttribute('required', 'required');
+        $auth = $this->getServiceLocator()->get('auth');
+        $login = new Login($entityManager, new Request($this->getRequest()));
+        $data = $login->in($auth);
 
-        $password = new Element\Password('password');
-        $password->setLabel('Password');
-        $password->setAttribute('required', 'required');
+        if($data['request'] === 'any'){
+            if($data['error'] === true){
+                $this->flashMessenger()->addInfoMessage($this->translator->translate($data['message']));
+                return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'initial']);
 
-        $form = new Form('login');
-        $form->add($uname)->add($password);
+            }
 
-        $unameInput = new Input('uname');
-        $unameInput->getFilterChain()->attachByName('StringTrim');
+        }else if($data['request'] === 'post'){
+            if($data['error'] === true){
+                $this->flashMessenger()->addErrorMessage($this->translator->translate($data['message']));
+                $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
 
-        $passwordInput = new Input('password');
-
-        $inputFilter = new InputFilter();
-        $inputFilter->add($unameInput)->add($passwordInput);
-
-        $form->setInputFilter($inputFilter);
-
-        $request = $this->getRequest();
-        if($request->isPost()){
-            $form->setData($request->getPost());
-            if($form->isValid()){
-                $uname = $form->get('uname')->getValue();
-                $password = $form->get('password')->getValue();
-
-                $auth = $this->getServiceLocator()->get('auth');
-                $authAdapter = $auth->getAdapter();
-                $authAdapter->setIdentity($uname);
-                $authAdapter->setCredential($password);
-
-                $result = $auth->authenticate();
-                $user = $result->getIdentity();
-                if($result->isValid()){
-                    $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate("Welcome %s. You have been logged in successfully"), $user->getUname()));
-                    return $this->redir()->toRoute('admin/default', array('controller' => 'index'));
-
-                }else{
-                    $this->flashMessenger()->addErrorMessage($this->translator->translate('Wrong details'));
-                    $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
-                }
+            }else{
+                $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate($data['message']), $data['user']->getUname()));
+                return $this->redir()->toRoute('admin/default', array('controller' => 'index'));
             }
         }
 
-        return array('form' => $form);
+        return [
+            'form' => $data['form']
+        ];
     }
 
     public function outAction()
