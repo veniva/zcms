@@ -26,17 +26,75 @@ class Login
         $this->request = $request;
     }
 
-    public function in(AuthenticationService $auth):array
+    public function inHttp(AuthenticationService $auth):array
+    {
+        if(!$this->request->isPost()){
+            return $this->inGet();
+
+        }else{
+            return $this->inPost($this->request->getPost(), $auth);
+        }
+    }
+
+    public function inGet():array
     {
         $countAdministrators = $this->em->getRepository(User::class)->countAdminUsers();
         if(!$countAdministrators){//check for the existence of any users, and if none, it means it is a new installation, then redirect to user registration
             return[
-                'request' => 'any',
                 'error' => true,
                 'message' => 'Here you can create the first user for the system'
             ];
         }
 
+        $form = $this->loginForm();
+        return [
+            'error' => false,
+            'form' => $form
+        ];
+    }
+
+    /**
+     * @param array $data The post data
+     * @param AuthenticationService $auth
+     * @return array
+     */
+    public function inPost(array $data, AuthenticationService $auth):array
+    {
+        $form = $this->loginForm();
+        $form->setData($data);
+        
+        if($form->isValid()){
+            $uname = $form->get('uname')->getValue();
+            $password = $form->get('password')->getValue();
+
+            $authAdapter = $auth->getAdapter();
+            $authAdapter->setIdentity($uname);
+            $authAdapter->setCredential($password);
+
+            $result = $auth->authenticate();
+            if($result->isValid()){
+                $user = $result->getIdentity();
+                return [
+                    'error' => false,
+                    'user' => $user,
+                    'message' => "Welcome %s. You have been logged in successfully",
+                    'form' => $form
+                ];
+            }
+        }
+
+        return [
+            'error' => true,
+            'message' => 'Wrong details',
+            'form' => $form,
+        ];
+    }
+
+    /**
+     * @return Form
+     */
+    protected function loginForm()
+    {
         $uname = new Element\Text('uname');
         $uname->setLabel('User name');
         $uname->setAttribute('required', 'required');
@@ -58,42 +116,11 @@ class Login
 
         $form->setInputFilter($inputFilter);
 
-        $request = $this->request;
-        if($request->isPost()){
-            $form->setData($request->getPost());
-            if($form->isValid()){
-                $uname = $form->get('uname')->getValue();
-                $password = $form->get('password')->getValue();
-
-                $authAdapter = $auth->getAdapter();
-                $authAdapter->setIdentity($uname);
-                $authAdapter->setCredential($password);
-
-                $result = $auth->authenticate();
-                $user = $result->getIdentity();
-                if($result->isValid()){
-                    return [
-                        'user' => $user,
-                        'request' => 'post',
-                        'error' => false,
-                        'message' => "Welcome %s. You have been logged in successfully",
-                        'form' => $form
-                    ];
-                }else{
-                    return [
-                        'request' => 'post',
-                        'error' => true,
-                        'message' => 'Wrong details',
-                        'form' => $form,
-                    ];
-                }
-            }
-        }
-
-        return [
-            'request' => 'any',
-            'error' => false,
-            'form' => $form
-        ];
+        return $form;
+    }
+    
+    public function out(AuthenticationService $auth)
+    {
+        $auth->clearIdentity();
     }
 }

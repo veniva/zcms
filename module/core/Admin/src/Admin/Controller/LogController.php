@@ -49,17 +49,17 @@ class LogController extends AbstractActionController implements TranslatorAwareI
     {
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $auth = $this->getServiceLocator()->get('auth');
-        $login = new Login($entityManager, new Request($this->getRequest()));
-        $data = $login->in($auth);
+        $request = $this->getRequest();
+        $login = new Login($entityManager, new Request($request));
+        $data = $login->inHttp($auth);
 
-        if($data['request'] === 'any'){
-            if($data['error'] === true){
-                $this->flashMessenger()->addInfoMessage($this->translator->translate($data['message']));
-                return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'initial']);
+        if($request->isGet() && $data['error'] === true){
+            $this->flashMessenger()->addInfoMessage($this->translator->translate($data['message']));
+            return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'initial']);
 
-            }
-
-        }else if($data['request'] === 'post'){
+        }
+        
+        if($request->isPost()){
             if($data['error'] === true){
                 $this->flashMessenger()->addErrorMessage($this->translator->translate($data['message']));
                 $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
@@ -78,7 +78,8 @@ class LogController extends AbstractActionController implements TranslatorAwareI
     public function outAction()
     {
         $auth = $this->getServiceLocator()->get('auth');
-        $auth->clearIdentity();
+        $login = new Login($this->getServiceLocator()->get('entity-manager'), new Request($this->getRequest()));
+        $login->out($auth);
         $this->flashMessenger()->addSuccessMessage($this->translator->translate('You have been logged out successfully'));
         return $this->redir()->toRoute('admin/default');
     }
