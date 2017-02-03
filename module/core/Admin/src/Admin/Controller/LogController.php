@@ -10,7 +10,7 @@ namespace Admin\Controller;
 
 use Admin\Form\Language;
 use Logic\Core\Adapters\Zend\Http\Request;
-use Logic\Core\Admin\Login;
+use Logic\Core\Admin;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
@@ -50,16 +50,17 @@ class LogController extends AbstractActionController implements TranslatorAwareI
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $auth = $this->getServiceLocator()->get('auth');
         $request = $this->getRequest();
-        $login = new Login($entityManager, new Request($request));
-        $data = $login->inHttp($auth);
+        $lRequest = new Request($request);
 
-        if($request->isGet() && $data['error'] === true){
-            $this->flashMessenger()->addInfoMessage($this->translator->translate($data['message']));
-            return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'initial']);
-
-        }
-        
-        if($request->isPost()){
+        if(!$lRequest->isPost()){
+            $data = Admin\Login::inGet($entityManager);
+            if($data['error']){
+                $this->flashMessenger()->addInfoMessage($this->translator->translate($data['message']));
+                return $this->redir()->toRoute('admin/default', ['controller' => 'log', 'action' => 'initial']);
+            }
+            
+        }else{
+            $data = Admin\Login::inPost($lRequest->getPost(), $auth);
             if($data['error'] === true){
                 $this->flashMessenger()->addErrorMessage($this->translator->translate($data['message']));
                 $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
@@ -78,8 +79,7 @@ class LogController extends AbstractActionController implements TranslatorAwareI
     public function outAction()
     {
         $auth = $this->getServiceLocator()->get('auth');
-        $login = new Login($this->getServiceLocator()->get('entity-manager'), new Request($this->getRequest()));
-        $login->out($auth);
+        Admin\Logout::logout($auth);
         $this->flashMessenger()->addSuccessMessage($this->translator->translate('You have been logged out successfully'));
         return $this->redir()->toRoute('admin/default');
     }

@@ -4,7 +4,6 @@ namespace Logic\Core\Admin;
 
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\Http\IRequest;
 use Logic\Core\Model\Entity\User;
 use Zend\Authentication\AuthenticationService;
 use Zend\Form\Element;
@@ -14,31 +13,9 @@ use Zend\InputFilter\InputFilter;
 
 class Login
 {
-    /** @var  EntityManager */
-    protected $em;
-
-    /** @var  IRequest */
-    protected $request;
-
-    public function __construct(EntityManager $em, IRequest $request)
+    public static function inGet(EntityManager $em):array
     {
-        $this->em = $em;
-        $this->request = $request;
-    }
-
-    public function inHttp(AuthenticationService $auth):array
-    {
-        if(!$this->request->isPost()){
-            return $this->inGet();
-
-        }else{
-            return $this->inPost($this->request->getPost(), $auth);
-        }
-    }
-
-    public function inGet():array
-    {
-        $countAdministrators = $this->em->getRepository(User::class)->countAdminUsers();
+        $countAdministrators = $em->getRepository(User::class)->countAdminUsers();
         if(!$countAdministrators){//check for the existence of any users, and if none, it means it is a new installation, then redirect to user registration
             return[
                 'error' => true,
@@ -46,7 +23,7 @@ class Login
             ];
         }
 
-        $form = $this->loginForm();
+        $form = self::loginForm();
         return [
             'error' => false,
             'form' => $form
@@ -58,9 +35,9 @@ class Login
      * @param AuthenticationService $auth
      * @return array
      */
-    public function inPost(array $data, AuthenticationService $auth):array
+    public static function inPost(array $data, AuthenticationService $auth):array
     {
-        $form = $this->loginForm();
+        $form = self::loginForm();
         $form->setData($data);
         
         if($form->isValid()){
@@ -93,7 +70,7 @@ class Login
     /**
      * @return Form
      */
-    protected function loginForm()
+    protected static function loginForm()
     {
         $uname = new Element\Text('uname');
         $uname->setLabel('User name');
@@ -117,10 +94,5 @@ class Login
         $form->setInputFilter($inputFilter);
 
         return $form;
-    }
-    
-    public function out(AuthenticationService $auth)
-    {
-        $auth->clearIdentity();
     }
 }
