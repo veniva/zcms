@@ -17,7 +17,7 @@ use Logic\Core\Model\Entity\CategoryContent;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Model\Entity\Listing;
 use Logic\Core\Model\Entity\ListingContent;
-use Application\Stdlib\Strings;
+use Logic\Core\Stdlib\Strings;
 use ApplicationTest\AuthorizationTrait;
 use ApplicationTest\Bootstrap;
 use Doctrine\ORM\EntityManager;

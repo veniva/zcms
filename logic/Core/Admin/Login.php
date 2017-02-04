@@ -3,7 +3,7 @@
 namespace Logic\Core\Admin;
 
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Logic\Core\Model\Entity\User;
 use Zend\Authentication\AuthenticationService;
 use Zend\Form\Element;
@@ -13,7 +13,7 @@ use Zend\InputFilter\InputFilter;
 
 class Login
 {
-    public static function inGet(EntityManager $em):array
+    public static function inGet(EntityManagerInterface $em):array
     {
         $countAdministrators = $em->getRepository(User::class)->countAdminUsers();
         if(!$countAdministrators){//check for the existence of any users, and if none, it means it is a new installation, then redirect to user registration

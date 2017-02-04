@@ -6,12 +6,12 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Application\Stdlib;
+namespace Logic\Core\Stdlib;
 
 
 class Strings
 {
-    public function randomString($length = null) {
+    public static function randomString($length = null) {
         if($length && !is_numeric($length))
             throw new \InvalidArgumentException('The supplied argument is not valid');
 
@@ -22,7 +22,7 @@ class Strings
         else{
             $str = '';
             foreach(range(1, $length) as $letter){
-                $str .= $this->randomString();
+                $str .= self::randomString();
             }
             return $str;
         }

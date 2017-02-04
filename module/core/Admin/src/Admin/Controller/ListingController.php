@@ -12,7 +12,7 @@ use Admin\Form\Listing as ListingForm;
 use Logic\Core\Model\Entity\ListingContent;
 use Logic\Core\Model\Entity\ListingImage;
 use Application\Model\Entity;
-use Application\Stdlib\Strings;
+use Logic\Core\Stdlib\Strings;
 use Symfony\Component\Filesystem\Filesystem;
 use Zend\Form\Element\Select;
 use Zend\I18n\Translator\TranslatorAwareInterface;

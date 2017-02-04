@@ -7,6 +7,10 @@ use Doctrine\ORM\EntityRepository;
 
 class PasswordResetsRepository extends EntityRepository
 {
+    /**
+     * Deletes entries older than 24 hours
+     * @return mixed
+     */
     public function deleteOldRequests()
     {
         $qb = $this->createQueryBuilder('pr');

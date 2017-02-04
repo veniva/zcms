@@ -12,7 +12,7 @@ use Admin\Form\Category as CategoryForm;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\CategoryContent;
 use Logic\Core\Model\Entity\Lang;
-use Application\Stdlib\Strings;
+use Logic\Core\Stdlib\Strings;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Filesystem\Filesystem;
 use Zend\I18n\Translator\TranslatorAwareInterface;

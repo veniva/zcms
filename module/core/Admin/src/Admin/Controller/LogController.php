@@ -11,15 +11,15 @@ namespace Admin\Controller;
 use Admin\Form\Language;
 use Logic\Core\Adapters\Zend\Http\Request;
 use Logic\Core\Admin;
+use Logic\Core\Admin\Authenticate\RestorePassword;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
+use Logic\Core\Stdlib\Strings;
 use Zend\Form\Element;
 use Zend\Form\Form;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
-use Zend\InputFilter\Input;
-use Zend\InputFilter\InputFilter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -86,80 +86,49 @@ class LogController extends AbstractActionController implements TranslatorAwareI
 
     public function forgottenAction()
     {
-        $email = new Element\Email('email');
-        $email->setLabel('Registered email');
-        $email->setAttribute('required', 'required');
-
-        $form = new Form('password_forgotten');
-        $form->add($email);
-
-        $emailInput = new Input();
-        $emailInput->getFilterChain()->attachByName('StringTrim');
-        $emailInput->getValidatorChain()->attachByName('EmailAddress');
-
-        $inputFilter = new InputFilter();
-        $inputFilter->add($emailInput);
-
-        $request = $this->getRequest();
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $request = new Request($this->getRequest());
         if($request->isPost()){
-            $form->setData($request->getPost());
-            if($form->isValid()){
-                $email = $form->get('email')->getValue();//get the filtered value
 
-                //Check if the email is present in the DB
-                $entityManager = $this->getServiceLocator()->get('entity-manager');
-                $userEntity = $this->getServiceLocator()->get('user-entity');
-                $user = $entityManager->getRepository(get_class($userEntity))->findOneByEmail($email);
-                if(!$user){
-                    $this->flashMessenger()->addErrorMessage($this->translator->translate("The email entered is not present in our database"));
-                    return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
-                }else{
-                    //Check if the user is administrator
-                    $accessControlList = $this->getServiceLocator()->get('acl');
-                    $allowed = $accessControlList->isAllowed($user->getRoleName(), 'index');
-                    if(!$allowed){
-                        $this->flashMessenger()->addErrorMessage(sprintf($this->translator->translate("The user with email %s does not have administrative privileges"), $email));
-                        return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
+            $result = RestorePassword::postAction($request->getPost(), $entityManager);
 
-                    }else{
-                        //generate token and send a link to the email
-                        $stdStrings = $this->getServiceLocator()->get('stdlib-strings');
-                        $token = $stdStrings->randomString(10);
-
-                        $passwordResetsEntity = new PasswordResets($email, $token);
-
-                        //use this request to also delete password requests older than 24 hours
-                        $entityManager->getRepository(get_class($passwordResetsEntity))->deleteOldRequests();
-
-                        $entityManager->persist($passwordResetsEntity);
-                        $entityManager->flush();
-
-                        $uri = $this->getRequest()->getUri();
-                        $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
-                        $basePath = $renderer->basePath('/admin/log/reset');
-                        $baseUrl = sprintf('%s://%s', $uri->getScheme(), $uri->getHost());
-                        $link = $baseUrl . $basePath. '?email=' . urlencode($email) . '&token=' . $token;
-
-                        //send email with the generated password
-                        $config = $this->getServiceLocator()->get('config');
-
-                        $message = new Mail\Message();
-                        $message->setFrom($config['other']['no-reply'])
-                            ->setTo($email)
-                            ->setSubject('New password')
-                            ->setBody(sprintf($this->translator->translate("Dear user,%sFollowing the new password request, here is a link for you to visit in order to create a new password:%s%s"), "\n\n", "\n\n", $link));
-
-                        $transport = new Mail\Transport\Sendmail();
-                        $transport->send($message);
-
-                        $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate("A link was generated and sent to %s"), $email));
-                        return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
-                    }
-                }
-
+            if($result['status'] == RestorePassword::ERR_NOT_FOUND){
+                $this->flashMessenger()->addErrorMessage($this->translator->translate($result['message']));
+                return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
+                
             }
+            else if($result['status'] == RestorePassword::ERR_INVALID_FORM){
+                return array('form' => $result['form']);
+            }
+            else if($result['status'] == RestorePassword::ERR_NOT_ALLOWED){
+                $this->flashMessenger()->addErrorMessage(sprintf($this->translator->translate($result['message']), $result['email']));
+                return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
+            }
+            
+            //generate email data
+            $token = Strings::randomString(10);
+            $uri = $this->getRequest()->getUri();
+            $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
+            $basePath = $renderer->basePath('/admin/log/reset');
+            $baseUrl = sprintf('%s://%s', $uri->getScheme(), $uri->getHost());
+            $link = $baseUrl . $basePath. '?email=' . urlencode($result['email']) . '&token=' . $token;
+            $message = sprintf($this->translator->translate("Dear user,%sFollowing the new password request, here is a link for you to visit in order to create a new password:%s%s"), "\n\n", "\n\n", $link);
+            
+            $config = $this->getServiceLocator()->get('config');
+            $data = [
+                'email' => $result['email'],
+                'token' => $token,
+                'no-reply' => $config['other']['no-reply'],
+                'message' => $message
+            ];
+
+            $result = RestorePassword::persistAndSendEmail($entityManager, $this->getServiceLocator()->get('send-mail'), $data);
+
+            $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate($result['message']), $result['email']));
+            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
         }
 
+        $form = Admin\Authenticate\RestorePassword::getAction();
         return array('form' => $form);
     }
 
