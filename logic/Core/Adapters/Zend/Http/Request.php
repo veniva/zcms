@@ -16,13 +16,29 @@ class Request implements IRequest
         $this->request = $request;
     }
 
-    function isPost(): bool
+    public function isPost(): bool
     {
         return $this->request->isPost();
     }
 
-    function getPost(string $name = null, $default = null): array
+    public function getPost(string $name = null, $default = null): array
     {
         return iterator_to_array($this->request->getPost($name, $default));
+    }
+
+    /**
+     * @param string|null $name
+     * @param null $default
+     * @return array|string
+     */
+    public function getQuery(string $name = null, $default = null)
+    {
+        if($name === null){
+            return iterator_to_array($this->request->getQuery());
+        }else{
+            return (string) $this->request->getQuery($name, $default);
+        }
+        
+        
     }
 }

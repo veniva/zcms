@@ -8,7 +8,7 @@
 
 namespace Application\Controller;
 
-use Logic\Core\Interfaces\ErrorCodes;
+use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Page;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
@@ -35,7 +35,7 @@ class PageController extends AbstractActionController
         $alias = $params->fromRoute('alias', null);
         $pageLogic = new Page($this->serviceLocator->get('entity-manager'), $this->getServiceLocator()->get('language'));
         $data = $pageLogic->getShowData($alias);
-        if($data['error'] === ErrorCodes::PAGE_NOT_FOUND){
+        if($data['error'] === StatusCodes::PAGE_NOT_FOUND){
             $this->getResponse()->setStatusCode(404);
             return [];
         }

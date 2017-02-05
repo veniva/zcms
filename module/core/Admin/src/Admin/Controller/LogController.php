@@ -11,13 +11,9 @@ namespace Admin\Controller;
 use Admin\Form\Language;
 use Logic\Core\Adapters\Zend\Http\Request;
 use Logic\Core\Admin;
-use Logic\Core\Admin\Authenticate\RestorePassword;
 use Logic\Core\Model\Entity\Lang;
-use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
-use Logic\Core\Stdlib\Strings;
 use Zend\Form\Element;
-use Zend\Form\Form;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -82,116 +78,6 @@ class LogController extends AbstractActionController implements TranslatorAwareI
         Admin\Logout::logout($auth);
         $this->flashMessenger()->addSuccessMessage($this->translator->translate('You have been logged out successfully'));
         return $this->redir()->toRoute('admin/default');
-    }
-
-    public function forgottenAction()
-    {
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $request = new Request($this->getRequest());
-        if($request->isPost()){
-
-            $result = RestorePassword::postAction($request->getPost(), $entityManager);
-
-            if($result['status'] == RestorePassword::ERR_NOT_FOUND){
-                $this->flashMessenger()->addErrorMessage($this->translator->translate($result['message']));
-                return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
-                
-            }
-            else if($result['status'] == RestorePassword::ERR_INVALID_FORM){
-                return array('form' => $result['form']);
-            }
-            else if($result['status'] == RestorePassword::ERR_NOT_ALLOWED){
-                $this->flashMessenger()->addErrorMessage(sprintf($this->translator->translate($result['message']), $result['email']));
-                return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
-            }
-            
-            //generate email data
-            $token = Strings::randomString(10);
-            $uri = $this->getRequest()->getUri();
-            $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
-            $basePath = $renderer->basePath('/admin/log/reset');
-            $baseUrl = sprintf('%s://%s', $uri->getScheme(), $uri->getHost());
-            $link = $baseUrl . $basePath. '?email=' . urlencode($result['email']) . '&token=' . $token;
-            $message = sprintf($this->translator->translate("Dear user,%sFollowing the new password request, here is a link for you to visit in order to create a new password:%s%s"), "\n\n", "\n\n", $link);
-            
-            $config = $this->getServiceLocator()->get('config');
-            $data = [
-                'email' => $result['email'],
-                'token' => $token,
-                'no-reply' => $config['other']['no-reply'],
-                'message' => $message
-            ];
-
-            $result = RestorePassword::persistAndSendEmail($entityManager, $this->getServiceLocator()->get('send-mail'), $data);
-
-            $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate($result['message']), $result['email']));
-            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
-        }
-
-        $form = RestorePassword::getAction();
-        return array('form' => $form);
-    }
-
-    public function resetAction()
-    {
-        $request = $this->getRequest();
-        $email = urldecode($request->getQuery()->email);
-        $token = $request->getQuery()->token;
-        if(empty($email) || empty($token)){
-            $this->flashMessenger()->addErrorMessage($this->translator->translate('The link you\'re using is broken'));
-            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
-        }
-        $sl = $this->getServiceLocator();
-        $entityManager = $sl->get('entity-manager');
-        //check if the token is valid
-        $passwordResetClassName = get_class(new PasswordResets(null,null));
-        $resetPassword = $entityManager->find($passwordResetClassName, ['email' => $email, 'token' => $token]);
-        if(!$resetPassword){
-            $this->flashMessenger()->addErrorMessage($this->translator->translate('The link you\'re using is out of date or corrupted, please create another password request'));
-            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
-        }
-        $createdAt = $resetPassword->getCreatedAt();
-        $date = new \DateTime();
-        $date->sub(new \DateInterval('PT24H'));
-        if($date > $createdAt){
-            $this->flashMessenger()->addErrorMessage($this->translator->translate('The link you\'re using is out of date, please create another password request'));
-            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
-        }
-        $userClassEntity = $sl->get('user-entity');
-        $user = $entityManager->getRepository(get_class($userClassEntity))->findOneByEmail('ven.iv@gmx.com');
-        if(!$user){
-            $this->flashMessenger()->addErrorMessage($this->translator->translate('There is no user with email: '.$email.'. You have probably changed the email recently.'));
-            return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'forgotten'));
-        }
-
-        $form = new Form('reset_password');
-        $form->add(array(
-            'type' => 'Admin\Form\UserPassword',
-            'name' => 'password_fields'
-        ));
-        $form->add(array(
-            'name' => 'submit',
-            'type' => 'Zend\Form\Element\Submit',
-            'attributes' => array(
-                'value' => 'Edit'
-            ),
-        ));
-        $form->getInputFilter()->get('password_fields')->get('password_repeat')->setRequired(true);
-
-        if($request->isPost()){
-            $form->setData($request->getPost());
-            if($form->isValid()){
-                $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
-                $entityManager->getRepository($passwordResetClassName)->deleteAllForEmail($email);
-                $entityManager->flush();
-                $this->flashMessenger()->addSuccessMessage($this->getTranslator()->translate('The password has been changed successfully.'));
-                $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
-            }
-        }
-
-        return [
-            'form' => $form
-        ];
     }
 
     public function initialAction()
