@@ -96,7 +96,6 @@ return array(
             'user-entity' => 'Logic\Core\Model\Entity\User',
             'lang-entity' => 'Logic\Core\Model\Entity\Lang',
             'stdlib-file-system' => 'Application\Stdlib\FileSystem',
-            'stdlib-strings' => 'Application\Stdlib\Strings',
         ),
         'initializers' => array(
             'Application\Service\Initializer\Password',

@@ -128,7 +128,7 @@ class LogController extends AbstractActionController implements TranslatorAwareI
             return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
         }
 
-        $form = Admin\Authenticate\RestorePassword::getAction();
+        $form = RestorePassword::getAction();
         return array('form' => $form);
     }
 

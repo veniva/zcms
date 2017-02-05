@@ -85,6 +85,7 @@ return array(
             'Admin\Controller\Log' => 'Admin\Controller\Factory\LogControllerFactory',
             'Admin\Controller\Language' => 'Admin\Controller\Factory\LanguageControllerFactory',
             'Admin\Controller\User' => 'Admin\Controller\Factory\UserControllerFactory',
+            'Admin\Controller\RestorePassword' => 'Admin\Controller\Factory\RestorePasswordFactory',
         ),
     ),
     'view_manager' => array(
@@ -115,9 +116,10 @@ return array(
     'acl' => array(
         'resource' => array(
             'log' => null,
+            'restorepassword' => null,
         ),
         'allow' => array(
-            array('guest', 'log', array('in', 'forgotten', 'initial', 'reset')),
+            array('guest', array('log', 'restorepassword'), array('in', 'forgotten', 'initial', 'reset')),
             array('admin', null, null),
             array('super-admin', null, null),
         ),

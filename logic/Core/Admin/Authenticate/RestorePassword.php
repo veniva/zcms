@@ -3,6 +3,7 @@
 namespace Logic\Core\Admin\Authenticate;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Logic\Core\Admin\Interfaces\Authenticate\IRestorePassword;
 use Logic\Core\Interfaces\ISendMail;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
@@ -11,18 +12,18 @@ use Zend\InputFilter;
 use Logic\Core\Stdlib;
 use Zend\Mail;
 
-class RestorePassword
+class RestorePassword implements IRestorePassword
 {
     const ERR_NOT_FOUND = 1;
     const ERR_INVALID_FORM = 2;
     const ERR_NOT_ALLOWED = 3;
 
-    public static function getAction() :Form\Form
+    public function getAction() :Form\Form
     {
         return self::form();
     }
     
-    public static function postAction(array $data, EntityManagerInterface $em) :array
+    public function postAction(array $data, EntityManagerInterface $em) :array
     {
         $form = self::form();
         $form->setData($data);
@@ -64,14 +65,14 @@ class RestorePassword
      * @param array $data keys are [email, token, no-reply, message]
      * @return array
      */
-    public static function persistAndSendEmail(EntityManagerInterface $em, ISendMail $sendMail, array $data)
+    public function persistAndSendEmail(EntityManagerInterface $em, ISendMail $sendMail, array $data)
     {
         $passwordResetsEntity = new PasswordResets($data['email'], $data['token']);
         $em->getRepository(PasswordResets::class)->deleteOldRequests();
         $em->persist($passwordResetsEntity);
         $em->flush();
 
-        $sendMail->send($data['no-reply'], $data['email'], $data['message']);
+//        $sendMail->send($data['no-reply'], $data['email'], $data['message']);
 
         return [
             'status' => 0,
@@ -80,7 +81,7 @@ class RestorePassword
         ];
     }
     
-    protected static function form() :Form\Form
+    public function form() :Form\Form
     {
         $email = new Form\Element\Email('email');
         $email->setLabel('Registered email');

@@ -53,7 +53,7 @@ endforeach; ?>
         <div class="form-group">
             <div class="col-md-8 col-md-offset-4">
                 <input class="btn btn-default" type="submit" name="submit" value="<?=$this->translate('Enter')?>" />
-                <a class="btn btn-link forgotten_link" href="<?=$this->langUrl('admin/default', ['controller' => 'log', 'action' => 'forgotten'])?>"><?=$this->translate('Password forgotten')?></a>
+                <a class="btn btn-link forgotten_link" href="<?=$this->langUrl('admin/default', ['controller' => 'restorepassword', 'action' => 'forgotten'])?>"><?=$this->translate('Password forgotten')?></a>
             </div>
         </div>
         <?=$this->form()->closeTag()?>
