@@ -28,17 +28,15 @@ class ResetPasswordController extends AbstractActionController implements Transl
 
     public function resetAction()
     {
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $iRequest = new Request($this->getRequest());
         if($this->getRequest()->isPost()){
-            $result = $this->resetPassword->resetPost($iRequest, $entityManager);
+            $result = $this->resetPassword->resetPost();
             if($result['status'] === StatusCodes::SUCCESS){
                 $this->flashMessenger()->addSuccessMessage($this->getTranslator()->translate($result['message']));
                 return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
             }
 
         }else{
-            $result = $this->resetPassword->resetGet($iRequest, $entityManager);
+            $result = $this->resetPassword->resetGet();
         }
 
         if(($result['status'] !== StatusCodes::SUCCESS) && ($result['status'] !== ResetPassword::ERR_INVALID_FORM)) {

@@ -19,9 +19,21 @@ class ResetPassword implements IResetPassword
     const ERR_UNEXISTING_USER = 4;
     const ERR_INVALID_FORM = 5;
     
-    public function resetGet(IRequest $request, EntityManagerInterface $em): array
+    /** @var  IRequest */
+    protected $request;
+    
+    /** @var  EntityManagerInterface */
+    protected $em;
+    
+    public function __construct(IRequest $request, EntityManagerInterface $em)
     {
-        $protect = $this->protect($request, $em);
+        $this->request = $request;
+        $this->em = $em;
+    }
+
+    public function resetGet(): array
+    {
+        $protect = $this->protect();
         if($protect['status'] !== StatusCodes::SUCCESS){
             return $protect;
         }
@@ -32,20 +44,20 @@ class ResetPassword implements IResetPassword
         ];
     }
     
-    public function resetPost(IRequest $request, EntityManagerInterface $em): array
+    public function resetPost(): array
     {
-        $protect = $this->protect($request, $em);
+        $protect = $this->protect();
         if($protect['status'] !== StatusCodes::SUCCESS){
             return $protect;
         }
         $user = $protect['user'];
         
         $form = $this->form();
-        $form->setData($request->getPost());
+        $form->setData($this->request->getPost());
         if($form->isValid()){
             $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
-            $em->getRepository(PasswordResets::class)->deleteAllForEmail($user->getEmail());
-            $em->flush();
+            $this->em->getRepository(PasswordResets::class)->deleteAllForEmail($user->getEmail());
+            $this->em->flush();
             
             return [
                 'status' => StatusCodes::SUCCESS,
@@ -78,10 +90,10 @@ class ResetPassword implements IResetPassword
         return $form;
     }
     
-    protected function protect(IRequest $request, EntityManagerInterface $em): array
+    protected function protect(): array
     {
-        $email = urldecode($request->getQuery('email'));
-        $token = $request->getQuery('token');
+        $email = urldecode($this->request->getQuery('email'));
+        $token = $this->request->getQuery('token');
         if(empty($email) || empty($token)){
             return [
                 'status' => self::ERR_BROKEN_LINK,
@@ -89,7 +101,7 @@ class ResetPassword implements IResetPassword
             ];
         }
 
-        $resetPassword = $em->find(PasswordResets::class, ['email' => $email, 'token' => $token]);
+        $resetPassword = $this->em->find(PasswordResets::class, ['email' => $email, 'token' => $token]);
         if(!$resetPassword){
             return [
                 'status' => self::ERR_PASSWORD_REQUEST_NOT_FOUND,
@@ -107,7 +119,7 @@ class ResetPassword implements IResetPassword
             ];
         }
 
-        $user = $em->getRepository(User::class)->findOneByEmail($email);
+        $user = $this->em->getRepository(User::class)->findOneByEmail($email);
         if(!$user){
             return [
                 'status' => self::ERR_UNEXISTING_USER,
