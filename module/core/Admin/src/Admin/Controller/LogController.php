@@ -73,7 +73,7 @@ class LogController extends AbstractActionController implements TranslatorAwareI
     public function outAction()
     {
         $auth = $this->getServiceLocator()->get('auth');
-        Admin\Logout::logout($auth);
+        Admin\Authenticate\Logout::logout($auth);
         $this->flashMessenger()->addSuccessMessage($this->translator->translate('You have been logged out successfully'));
         return $this->redir()->toRoute('admin/default');
     }
