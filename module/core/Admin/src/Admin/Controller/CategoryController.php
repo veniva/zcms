@@ -9,6 +9,7 @@
 namespace Admin\Controller;
 
 use Admin\Form\Category as CategoryForm;
+use Logic\Core\Admin\Category as CategoryLogic;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\CategoryContent;
 use Logic\Core\Model\Entity\Lang;
@@ -46,33 +47,24 @@ class CategoryController extends AbstractRestfulController implements Translator
 
     public function getList()
     {
-        $parent = $this->params()->fromQuery('parent', 0);
-        $page = $this->params()->fromQuery('page', 1);
+        $parent = (int)$this->params()->fromQuery('parent', 0);
+        $page = (int)$this->params()->fromQuery('page', 1);
         $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $categoryEntity = $this->getServiceLocator()->get('category-entity');
-        $categoryRepository = $entityManager->getRepository(get_class($categoryEntity));
-
-        $categoriesPaginated = $categoryRepository->getPaginatedCategories($parent);
-        $categoriesPaginated->setCurrentPageNumber($page);
         $languageService = $this->getServiceLocator()->get('language');
-        $defaultLangId = $languageService->getDefaultLanguage()->getId();
+        $categoryLogic = new CategoryLogic();
+        $logicData = $categoryLogic->getList($entityManager, $languageService, $parent, $page);
 
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
-        $paginator = $renderer->paginationControl($categoriesPaginated, 'Sliding', 'paginator/sliding_category_ajax', ['id' => $parent]);
+        $paginator = $renderer->paginationControl(
+            $logicData['categories_paginated'],
+            'Sliding',
+            'paginator/sliding_category_ajax',
+            ['id' => $parent]
+        );
 
-        $categories = [];
-        $i = 0;
-        foreach($categoriesPaginated as $category){
-            $categories[$i]['id'] = $category->getId();
-            $content = $category->getSingleCategoryContent($defaultLangId);
-            $categories[$i]['title'] = $content ? $category->getSingleCategoryContent($defaultLangId)->getTitle() : '';
-            $categories[$i]['children_count'] = $categoryRepository->countChildren($category);
-            $categories[$i]['sort'] = $category->getSort();
-            $i++;
-        }
         return new JsonModel([
             'title' => $this->translator->translate('Categories'),
-            'lists' => $categories,
+            'lists' => $logicData['categories'],
             'paginator' => $paginator,
             'breadcrumb' => $renderer->admin_breadcrumb(),
             'parent' => $parent,
