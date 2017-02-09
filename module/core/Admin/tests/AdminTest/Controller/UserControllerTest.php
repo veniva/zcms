@@ -9,7 +9,7 @@
 namespace AdminTest\Controller;
 
 use Admin\Controller\UserController;
-use Admin\Form\User;
+use Logic\Core\Admin\Form\User;
 use Logic\Core\Model\Entity\User as UserEntity;
 use ApplicationTest\AuthorizationTrait;
 use ApplicationTest\Bootstrap;

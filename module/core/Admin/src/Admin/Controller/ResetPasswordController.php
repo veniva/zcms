@@ -3,7 +3,6 @@
 namespace Admin\Controller;
 
 
-use Logic\Core\Adapters\Zend\Http\Request;
 use Logic\Core\Admin\Authenticate\ResetPassword;
 use Logic\Core\Admin\Interfaces\Authenticate\IResetPassword;
 use Logic\Core\Interfaces\StatusCodes;

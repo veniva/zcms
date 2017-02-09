@@ -8,26 +8,25 @@
 
 namespace Admin\Form;
 
+
+use Doctrine\ORM\EntityManagerInterface;
 use Logic\Core\Model\Entity\Lang;
 use Zend\Form\Form;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Hydrator\ClassMethods;
 
 class Language extends Form
 {
     const NAME_MAX_LENGTH = 15;
 
-    public function __construct(ServiceLocatorInterface $serviceManager)
+    public function __construct(EntityManagerInterface $em, array $flagCodeOptions)
     {
         parent::__construct('language');
         $lang = new Lang();
         $this->setObject($lang)->
             setHydrator(new ClassMethods(false));
 
-        $fm = $serviceManager->get('flag-codes');
         //check if there is any languages in the DB, and if there are none, then require that this first entry be with status "default"
-        $entityManager = $serviceManager->get('entity-manager');
-        $langCount = $entityManager->getRepository(get_class($lang))->countLanguages();
+        $langCount = $em->getRepository(get_class($lang))->countLanguages();
         $statusOptions = $langCount ? $lang->getStatusOptions() : [Lang::STATUS_DEFAULT => Lang::getStatusOptions()[Lang::STATUS_DEFAULT]];
 
         $this->add(array(
@@ -46,7 +45,7 @@ class Language extends Form
             'options' => array(
                 'label' => 'ISO code',
                 'empty_option' => 'Select',
-                'value_options' => $fm->getFlagCodeOptions()
+                'value_options' => $flagCodeOptions
             ),
             'attributes' => array(
                 'id' => 'flags_select'

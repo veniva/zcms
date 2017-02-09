@@ -1,6 +1,6 @@
 <?php
 
-namespace Logic\Core\Admin;
+namespace Logic\Core\Admin\Authenticate;
 
 
 use Doctrine\ORM\EntityManagerInterface;

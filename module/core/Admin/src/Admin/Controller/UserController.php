@@ -8,8 +8,9 @@
 
 namespace Admin\Controller;
 
+
+use Logic\Core\Admin\Form\User as UserForm;
 use Logic\Core\Model\Entity\User;
-use Zend\Authentication\AuthenticationService;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractRestfulController;
@@ -108,13 +109,13 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         }
 
         $action = $id ? 'edit' : 'add';
-        $form = new \Admin\Form\User($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
+        $form = new UserForm($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
         $form->bind($user);
 
         return $this->renderData($action, $form, $editOwn, $user);
     }
 
-    protected function renderData($action, \Admin\Form\User $form, $editOwn, User $user)
+    protected function renderData($action, UserForm $form, $editOwn, User $user)
     {
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
         $viewModel = new ViewModel([
@@ -160,7 +161,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
 
         $currentUserName = $user->getUname();
         $currentEmail = $user->getEmail();
-        $form = new \Admin\Form\User($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
+        $form = new UserForm($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
         $form->bind($user);
 
         $form->setData($data);

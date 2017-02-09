@@ -6,8 +6,9 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Admin\Form;
+namespace Logic\Core\Admin\Form;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Logic\Core\Model\Entity\User as UserEntity;
 use Application\Validator\Doctrine\NoRecordExists;
 use Zend\Form\Form;
@@ -18,7 +19,7 @@ class User extends Form
     protected $nameMaxLength = 15;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
 
@@ -30,7 +31,7 @@ class User extends Form
     /**
      * User constructor.
      * @param UserEntity $loggedInUser
-     * @param array $entityManager
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct($loggedInUser, $entityManager)//v_todo - replace $loggedInUser with new User (see usage)
     {
@@ -39,7 +40,7 @@ class User extends Form
 
         parent::__construct('user');
         $this->setObject($loggedInUser)->
-        setHydrator(new ClassMethods(false));
+            setHydrator(new ClassMethods(false));
 
         $this->add(array(
             'name' => 'uname',

@@ -87,6 +87,7 @@ return array(
             'Admin\Controller\User' => 'Admin\Controller\Factory\UserControllerFactory',
             'Admin\Controller\RestorePassword' => 'Admin\Controller\Factory\RestorePasswordFactory',
             'Admin\Controller\ResetPassword' => 'Admin\Controller\Factory\ResetPasswordFactory',
+            'Admin\Controller\Register' => 'Admin\Controller\Factory\RegisterControllerFactory',
         ),
     ),
     'view_manager' => array(
@@ -119,9 +120,11 @@ return array(
             'log' => null,
             'restorepassword' => null,
             'resetpassword' => null,
+            'register' => null,
         ),
         'allow' => array(
-            array('guest', array('log', 'restorepassword', 'resetpassword'), array('in', 'forgotten', 'initial', 'reset')),
+            array('guest', array('log', 'restorepassword', 'resetpassword', 'register'), 
+                array('in', 'forgotten', 'initial', 'reset', 'register')),
             array('admin', null, null),
             array('super-admin', null, null),
         ),

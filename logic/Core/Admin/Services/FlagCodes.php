@@ -6,21 +6,16 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Admin\Service;
+namespace Logic\Core\Admin\Services;
 
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class FlagCodes
 {
-    use ServiceLocatorAwareTrait;
-
     protected $flagsDir;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(string $publicPath)
     {
-        $this->setServiceLocator($serviceLocator);
-        $this->flagsDir = $this->getServiceLocator()->get('config')['public-path'].'img/flags';
+        $this->flagsDir = $publicPath.'img/flags';
     }
 
     public function getFlagCodeOptions()

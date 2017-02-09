@@ -10,7 +10,7 @@ namespace AdminTest\Controller;
 
 
 use Admin\Controller\LogController;
-use Admin\Form\User;
+use Logic\Core\Admin\Form\User;
 use Logic\Core\Model\Entity\CategoryContent;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Model\Entity\ListingContent;
