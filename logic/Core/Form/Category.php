@@ -6,7 +6,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Admin\Form;
+namespace Logic\Core\Form;
 
 use Logic\Core\Model\Entity\Category as CategoryEntity;
 use Logic\Core\Model\Entity\CategoryContent;
@@ -99,7 +99,7 @@ class Category extends Form
     public function isValid()
     {
         $contentCollection = $this->contentCollection;
-        $contentClassName = get_class(new CategoryContent());
+        $contentClassName = CategoryContent::class;
 
         //check if the 'title' field is unique in the database
         $validatorOptions = [

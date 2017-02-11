@@ -8,7 +8,7 @@
 
 namespace Admin\Controller;
 
-use Admin\Form\Category as CategoryForm;
+use Logic\Core\Form\Category as CategoryForm;
 use Logic\Core\Admin\Category as CategoryLogic;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\CategoryContent;

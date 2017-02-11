@@ -8,7 +8,7 @@
 
 namespace AdminTest\Controller;
 
-use Admin\Form\Category as CategoryForm;
+use Logic\Core\Form\Category as CategoryForm;
 use Admin\View\Helper\Breadcrumb;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Lang;
