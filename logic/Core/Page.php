@@ -23,11 +23,13 @@ class Page
     public function getShowData(string $alias) :array
     {
         $currentLanguageId = $this->language->getCurrentLanguage()->getId();
-        $listing = $this->em->getRepository(Listing::class)->getListingByAliasAndLang(urldecode($alias), $currentLanguageId);
         if(!$alias || !$currentLanguageId){
-            return StatusCodes::PAGE_NOT_FOUND;
+            return [
+                'error' => StatusCodes::PAGE_NOT_FOUND
+            ];
         }
         
+        $listing = $this->em->getRepository(Listing::class)->getListingByAliasAndLang(urldecode($alias), $currentLanguageId);
         if(!$listing){
             return ['error' => StatusCodes::PAGE_NOT_FOUND];
         }
