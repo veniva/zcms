@@ -11,10 +11,9 @@ namespace Logic\Core\Form;
 
 use Zend\Captcha\Image;
 use Zend\Form\Form;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilterProviderInterface;
 
-class Contact extends Form
+class Contact extends Form  implements InputFilterProviderInterface
 {
     public function __construct($urlCaptcha, $publicHtml = null)
     {
@@ -79,15 +78,17 @@ class Contact extends Form
             ),
         ));
     }
-
-    public function getInputFilter()
+    
+    /**
+    * Should return an array specification compatible with
+    * {@link Zend\InputFilter\Factory::createInputFilter()}.
+    *
+    * @return array
+    */
+    public function getInputFilterSpecification()
     {
-        parent::getInputFilter();
-        if(!$this->filter){
-            $inputFilter = new InputFilter();
-            $inputFactory = new InputFactory();
-
-            $inputFilter->add($inputFactory->createInput(array(
+        return [
+            [
                 'name'       => 'name',
                 'filters'    => array(
                     array('name' => 'StripTags'),
@@ -99,15 +100,14 @@ class Contact extends Form
                         'options' => array('messages' => array('isEmpty' => '"Name" is required'))
                     )
                 )
-            )));
-
-            $inputFilter->add($inputFactory->createInput(array(
+            ],
+            [
                 'name'       => 'email',
                 'filters'    => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim')
                 ),
-                'validators' => array(
+                'validators' => array(//v_todo - this doesn't work correctly
                     array(
                         'name'    => 'EmailAddress',
                         'options' => array('messages' => array('emailAddressInvalidFormat' => 'Email format is not valid'))
@@ -117,9 +117,8 @@ class Contact extends Form
                         'options' => array('messages' => array('isEmpty' => '"Email" is required'))
                     )
                 )
-            )));
-
-            $inputFilter->add($inputFactory->createInput(array(
+            ],
+            [
                 'name'       => 'inquiry',
                 'filters'    => array(
                     array('name' => 'StripTags'),
@@ -131,11 +130,7 @@ class Contact extends Form
                         'options' => array('messages' => array('isEmpty' => '"Question" is required'))
                     )
                 )
-            )));
-
-            $this->filter = $inputFilter;
-        }
-
-        return $this->filter;
+            ]
+        ];
     }
 }

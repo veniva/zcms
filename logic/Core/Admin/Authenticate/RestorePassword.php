@@ -4,7 +4,7 @@ namespace Logic\Core\Admin\Authenticate;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Logic\Core\Admin\Interfaces\Authenticate\IRestorePassword;
-use Logic\Core\Interfaces\ISendMail;
+use Logic\Core\Adapters\Interfaces\ISendMail;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
 use Zend\Form;
@@ -72,7 +72,7 @@ class RestorePassword implements IRestorePassword
         $em->persist($passwordResetsEntity);
         $em->flush();
 
-//        $sendMail->send($data['no-reply'], $data['email'], $data['message']);
+        $sendMail->send($data['no-reply'], $data['email'], $data['subject'], $data['message']);
 
         return [
             'status' => 0,

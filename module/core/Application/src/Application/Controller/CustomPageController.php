@@ -9,17 +9,22 @@
 namespace Application\Controller;
 
 
-use Logic\Core\Adapters\Zend\Http\Request;
+use Logic\Core\Adapters\Zend\Http\Request as LogicRequest;
+use Logic\Core\Adapters\Zend\SendMail;
+use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\ContactPage;
 use Logic\Core\Form\Contact;
+use Logic\Core\Interfaces\StatusCodes;
+use Zend\I18n\Translator\TranslatorAwareInterface;
+use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mail;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class CustomPageController extends AbstractActionController
+class CustomPageController extends AbstractActionController implements TranslatorAwareInterface
 {
-    use ServiceLocatorAwareTrait;
+    use ServiceLocatorAwareTrait, TranslatorAwareTrait;
 
     /**
      * @var ServiceLocatorInterface
@@ -37,16 +42,23 @@ class CustomPageController extends AbstractActionController
         $publicHtml = $this->getServiceLocator()->get('config')['public-path'];
         $form = new Contact($request->getBaseUrl().'/core/img/captcha/', $publicHtml);
         $entityManager = $this->getServiceLocator()->get('entity-manager');
+        $logicRequest = new LogicRequest($request);
+        $contactPageLogic = new ContactPage($entityManager, $form, new SendMail());
 
-        $contactPageLogic = new ContactPage($entityManager, $form, new Request($request));
-        $data = $contactPageLogic->process();
-        if($data['form_sent']){
-            $this->flashMessenger()->addSuccessMessage($data['success_message']);
-            return $this->redir()->toRoute('home/default', array('controller' => 'customPage', 'action' => 'contact'));
+        if($request->isPost()){
+            $data = $contactPageLogic->processForm(new Translator($this->translator), $logicRequest->getPost());
+
+            if($data['status'] == StatusCodes::SUCCESS){
+                $this->flashMessenger()->addSuccessMessage($this->translator->translate($data['success_message']));
+                return $this->redir()->toRoute('home/default', array('controller' => 'customPage', 'action' => 'contact'));
+            }
+
+        }else{
+            $data = $contactPageLogic->showPage();
         }
 
         return array(
-            'formActive' => $data['form_active'],
+            'formActive' => $data['status'] == ContactPage::ERR_NO_ADMIN ? false : true,
             'contact_form' => $form
         );
     }

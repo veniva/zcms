@@ -5,7 +5,7 @@ namespace Logic\Core\Admin\Interfaces\Authenticate;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Zend\Form;
-use Logic\Core\Interfaces\ISendMail;
+use Logic\Core\Adapters\Interfaces\ISendMail;
 
 interface IRestorePassword
 {

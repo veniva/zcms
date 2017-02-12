@@ -2,6 +2,7 @@
 
 namespace Admin\Controller;
 
+use Logic\Core\Adapters\Zend\SendMail;
 use Logic\Core\Admin\Authenticate\RestorePassword;
 use Logic\Core\Adapters\Zend\Http\Request;
 use Logic\Core\Admin\Interfaces\Authenticate\IRestorePassword;
@@ -60,10 +61,11 @@ class RestorePasswordController extends AbstractActionController implements Tran
                 'email' => $result['email'],
                 'token' => $token,
                 'no-reply' => $config['other']['no-reply'],
-                'message' => $message
+                'message' => $message,
+                'subject' => 'New password'
             ];
 
-            $result = $this->restorePassword->persistAndSendEmail($entityManager, $this->getServiceLocator()->get('send-mail'), $data);
+            $result = $this->restorePassword->persistAndSendEmail($entityManager, new SendMail(), $data);
 
             $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate($result['message']), $result['email']));
             return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));

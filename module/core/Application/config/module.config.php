@@ -85,7 +85,6 @@ return array(
             'language' => 'Application\Service\Factory\Language',
             'auth-adapter' => 'Application\Service\Factory\AuthenticationAdapterFactory',
             'text-cache' => 'Zend\Cache\Service\StorageCacheFactory',
-            'send-mail' => 'Application\Service\Factory\SendMailFactory',
         ),
         'invokables' => array(
             'misc' => 'Application\Service\Invokable\Misc',
