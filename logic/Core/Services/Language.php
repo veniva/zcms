@@ -3,6 +3,8 @@
 namespace Logic\Core\Services;
 
 
+use Logic\Core\Model\Entity\Lang;
+
 class Language
 {
     protected $activeLanguages;
@@ -12,7 +14,7 @@ class Language
     /**
      * @return mixed
      */
-    public function getCurrentLanguage()
+    public function getCurrentLanguage(): Lang
     {
         return $this->currentLanguage;
     }
@@ -20,7 +22,7 @@ class Language
     /**
      * @param mixed $currentLanguage
      */
-    public function setCurrentLanguage($currentLanguage)
+    public function setCurrentLanguage(Lang $currentLanguage)
     {
         $this->currentLanguage = $currentLanguage;
     }

@@ -4,11 +4,15 @@ namespace Logic\Core;
 
 
 use Doctrine\ORM\EntityManager;
+use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category as CategoryEntity;
 use Logic\Core\Services\Language;
 
 class Category
 {
+    const ERR_NO_CATEGORY = 'categ.none';
+    const ERR_NO_ALIAS = 'categ.no-alias';
+    
     /** @var  EntityManager */
     protected $em;
     
@@ -23,19 +27,26 @@ class Category
     
     public function process(string $alias):array
     {
+        if(!$alias){
+            return [
+                'status' => self::ERR_NO_ALIAS
+            ];
+        }
+        
         $currentLanguageId = $this->language->getCurrentLanguage()->getId();
-        $category = $this->em->getRepository(CategoryEntity::class)->getCategoryByAliasAndLang(urldecode($alias), $currentLanguageId);
+        $categoryRepo = $this->em->getRepository(CategoryEntity::class);
+        $category = $categoryRepo->getCategoryByAliasAndLang(urldecode($alias), $currentLanguageId);
         if(!$category){
             return [
-                'error' => true,
+                'status' => self::ERR_NO_CATEGORY,
             ];
         }
 
         $categoryContent = $category->getSingleCategoryContent($currentLanguageId);
-        $subCategories = $this->em->getRepository(CategoryEntity::class)->findByParent($category);
+        $subCategories = $categoryRepo->findByParent($category);
         
         return [
-            'error' => false,
+            'status' => StatusCodes::SUCCESS,
             'category' => $category,
             'category_content' => $categoryContent,
             'sub_categories' => $subCategories,

@@ -10,6 +10,7 @@ namespace Application\Controller;
 
 
 use Logic\Core\Category;
+use Logic\Core\Interfaces\StatusCodes;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -32,15 +33,11 @@ class CategoryController extends AbstractActionController
     public function showAction()
     {
         $alias = $this->params()->fromRoute('alias');
-        if(!$alias){
-            $this->getResponse()->setStatusCode(404);
-            return;
-        }
 
         $categoryLogic = new Category($this->serviceLocator->get('entity-manager'), $this->getServiceLocator()->get('language'));
         $data = $categoryLogic->process($alias);
 
-        if($data['error']){
+        if($data['status'] !== StatusCodes::SUCCESS){
             $this->getResponse()->setStatusCode(404);
             return [];
         }
