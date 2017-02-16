@@ -10,6 +10,7 @@ namespace Admin\Controller;
 
 
 use Logic\Core\Adapters\Zend\Http\Request;
+use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin;
 use Logic\Core\Interfaces\StatusCodes;
 use Zend\Form\Element;
@@ -47,7 +48,7 @@ class LogController extends AbstractActionController implements TranslatorAwareI
         $request = $this->getRequest();
         $lRequest = new Request($request);
 
-        $logic = new Admin\Authenticate\Login($this->translator);
+        $logic = new Admin\Authenticate\Login(new Translator($this->translator));
         
         if(!$lRequest->isPost()){
             $data = $logic->inGet($entityManager);
