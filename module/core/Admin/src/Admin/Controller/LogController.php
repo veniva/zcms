@@ -11,6 +11,7 @@ namespace Admin\Controller;
 
 use Logic\Core\Adapters\Zend\Http\Request;
 use Logic\Core\Admin;
+use Logic\Core\Interfaces\StatusCodes;
 use Zend\Form\Element;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
@@ -46,21 +47,23 @@ class LogController extends AbstractActionController implements TranslatorAwareI
         $request = $this->getRequest();
         $lRequest = new Request($request);
 
+        $logic = new Admin\Authenticate\Login($this->translator);
+        
         if(!$lRequest->isPost()){
-            $data = Admin\Authenticate\Login::inGet($entityManager);
-            if($data['error']){
-                $this->flashMessenger()->addInfoMessage($this->translator->translate($data['message']));
+            $data = $logic->inGet($entityManager);
+            if($data['status'] !== StatusCodes::SUCCESS){
+                $this->flashMessenger()->addInfoMessage($data['message']);
                 return $this->redir()->toRoute('admin/default', ['controller' => 'register', 'action' => 'register']);
             }
             
         }else{
-            $data = Admin\Authenticate\Login::inPost($lRequest->getPost(), $auth);
-            if($data['error'] === true){
-                $this->flashMessenger()->addErrorMessage($this->translator->translate($data['message']));
-                $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
+            $data = $logic->inPost($auth, $logic::loginForm(), $lRequest->getPost());
+            if($data['status'] !== StatusCodes::SUCCESS){
+                $this->flashMessenger()->addErrorMessage($data['message']);
+                return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
 
             }else{
-                $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate($data['message']), $data['user']->getUname()));
+                $this->flashMessenger()->addSuccessMessage(sprintf($data['message']), $data['user']->getUname());
                 return $this->redir()->toRoute('admin/default', array('controller' => 'index'));
             }
         }

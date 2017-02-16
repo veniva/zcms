@@ -1,9 +1,4 @@
 <?php
-/**
- * User: ventsi
- * Date: 12.2.2017 г.
- * Time: 15:51 ч.
- */
 
 namespace Logic\Core\Adapters\Zend;
 
