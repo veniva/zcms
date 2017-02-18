@@ -8,7 +8,7 @@
 
 namespace Admin\Controller;
 
-use Admin\Form\Language as LanguageForm;
+use Logic\Core\Form\Language as LanguageForm;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Lang;
 use Zend\I18n\Translator\TranslatorAwareInterface;

@@ -8,7 +8,7 @@
 
 namespace Logic\Core\Admin\Form;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
 use Logic\Core\Model\Entity\User as UserEntity;
 use Application\Validator\Doctrine\NoRecordExists;
 use Zend\Form\Form;
@@ -19,7 +19,7 @@ class User extends Form
     protected $nameMaxLength = 15;
 
     /**
-     * @var EntityManagerInterface
+     * @var EntityManager
      */
     protected $entityManager;
 
@@ -31,9 +31,9 @@ class User extends Form
     /**
      * User constructor.
      * @param UserEntity $loggedInUser
-     * @param EntityManagerInterface $entityManager
+     * @param EntityManager $entityManager
      */
-    public function __construct($loggedInUser, $entityManager)//v_todo - replace $loggedInUser with new User (see usage)
+    public function __construct(UserEntity $loggedInUser, EntityManager $entityManager)//v_todo - replace $loggedInUser with new User (see usage)
     {
         $this->loggedInUser = $loggedInUser;
         $this->entityManager = $entityManager;
@@ -70,7 +70,7 @@ class User extends Form
         ));
 
         $this->add(array(
-            'type' => 'Admin\Form\UserPassword',
+            'type' => 'Logic\Core\Admin\Form\UserPassword',
             'name' => 'password_fields'
         ));
 
@@ -103,7 +103,7 @@ class User extends Form
                     ),
                 ),
                 array(
-                    'name' => 'Application\Validator\i18n\Alnum'
+                    'name' => 'Logic\Core\Validator\i18n\Alnum'
                 )
             ),
         ), 'uname');

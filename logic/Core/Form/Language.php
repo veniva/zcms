@@ -6,7 +6,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Admin\Form;
+namespace Logic\Core\Form;
 
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -86,6 +86,13 @@ class Language extends Form
                 )
             ),
         ), 'name');
+
+        $inputFilter->add([
+            'filters' => [
+                ['name' => 'StripTags'],
+                ['name' => 'StringTrim'],
+            ]
+        ], 'isoCode');
 
     }
 

@@ -2,7 +2,7 @@
 
 namespace AdminTest;
 
-use Admin\Validator\Password;
+use Logic\Core\Validator\Password;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class AdminTest extends AbstractHttpControllerTestCase

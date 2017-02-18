@@ -4,12 +4,10 @@ namespace Logic\Core\Admin\Authenticate;
 
 
 use Doctrine\ORM\EntityManagerInterface;
-use Logic\Core\Adapters\Interfaces\Http\IRequest;
-use Logic\Core\Admin\Form\User as UserForm;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Model\Entity\User;
-use Admin\Form\Language;
+use Logic\Core\Admin\Form\Register as RegisterForm;
 
 class Register
 {
@@ -22,14 +20,14 @@ class Register
     /** @var User */
     protected $user;
 
-    /** @var  array */
-    protected $flagCodeOptions;
+    /** @var RegisterForm */
+    protected $registerForm;
     
-    public function __construct(EntityManagerInterface $em, User $user, IRequest $request, array $flagCodeOptions)
+    public function __construct(EntityManagerInterface $em, User $user, RegisterForm $registerForm)
     {
         $this->em = $em;
         $this->user = $user;
-        $this->flagCodeOptions = $flagCodeOptions;
+        $this->registerForm = $registerForm;
     }
     
     public function getAction()
@@ -43,11 +41,11 @@ class Register
 
         return [
             'status' => StatusCodes::SUCCESS,
-            'form' => $this->form(),
+            'form' => $this->registerForm,
         ];
     }
 
-    public function postAction(IRequest $request)
+    public function postAction(array $data)
     {
         //check if user already exists
         if($this->hasUsers()){
@@ -57,13 +55,12 @@ class Register
         }
         
         $user = $this->user;
-        $form = $this->form();
-        $form->setData($request->getPost());
-        $form->getInputFilter()->get('role')->setRequired(false);
+        $form = $this->registerForm;
+        $form->setData($data);
+        $form->isValid();
         if($form->isValid()){
-            $newPassword = $form->getInputFilter()->get('password_fields')->get('password')->getValue();
-            if($newPassword)
-                $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
+            $password = $form->getInputFilter()->get('password_fields')->get('password')->getValue();
+            $user->setUpass($password);
             $user->setRegDate();
             $user->setRole(User::USER_SUPER_ADMIN);
             $this->em->persist($user);
@@ -87,25 +84,6 @@ class Register
             'status' => self::ERR_INVALID_FORM,
             'form' => $form
         ];
-    }
-    
-    protected function form()
-    {
-        $form = new UserForm($this->user, $this->em);
-        $form->get('submit')->setValue('Submit');
-
-        //add language name + select flag
-        $languageForm = new Language($this->em, $this->flagCodeOptions);
-        $form->add($languageForm->get('isoCode'));
-        $languageName = $languageForm->get('name');
-        $languageName->setName('language_name');
-        $form->add($languageName);
-        $form->getInputFilter()->add($languageForm->getInputFilter()->get('isoCode'));
-        $languageNameInputFilter = $languageForm->getInputFilter()->get('name');
-        $languageNameInputFilter->setName($languageName->getName());
-        $form->getInputFilter()->add($languageNameInputFilter);
-        
-        return $form;
     }
 
     protected function hasUsers(): bool

@@ -6,7 +6,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Admin\Form;
+namespace Logic\Core\Admin\Form;
 
 
 use Zend\Form\Fieldset;
@@ -51,7 +51,7 @@ class UserPassword extends Fieldset implements InputFilterProviderInterface
                 ),
                 'validators' => array(
                     array(
-                        'name' => 'Admin\Validator\Password',
+                        'name' => 'Logic\Core\Validator\Password',
                     )
                 ),
             ),

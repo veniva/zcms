@@ -276,15 +276,15 @@ msgstr "Стойността трябва да е по-голяма от %min% �
 msgid "The input is more than %max% characters long"
 msgstr "Текста не трябва да надвишава %max% символа"
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "There must be at least one lower case letter"
 msgstr "Паролата трябва да съдържа поне една малка буква"
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "There must be at least one upper case letter"
 msgstr "Паролата трябва да съдържа поне една главна буква"
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "There must be at least one number"
 msgstr "Паролата трябва да съдържа поне една цифра"
 
@@ -375,7 +375,7 @@ msgstr "Файлът е по-голям от позволените %max%%measur
 msgid "File is of incorrect type. Allowed are: %extensions%"
 msgstr "Файлит е от грешен тип. Позволените са: %extensions%"
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "The \"Verify Password\" field must match the \"Password\" field"
 msgstr "Повторената парола не съвпада"
 

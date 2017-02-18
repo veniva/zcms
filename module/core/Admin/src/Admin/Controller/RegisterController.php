@@ -3,7 +3,9 @@
 namespace Admin\Controller;
 
 
+use Doctrine\ORM\EntityManager;
 use Logic\Core\Interfaces\StatusCodes;
+use Logic\Core\Model\Entity\User;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -11,6 +13,7 @@ use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Logic\Core\Admin;
 use Logic\Core\Adapters\Zend\Http\Request;
+use Logic\Core\Admin\Form\Register as RegisterForm;
 
 class RegisterController extends AbstractActionController implements TranslatorAwareInterface
 {
@@ -24,14 +27,16 @@ class RegisterController extends AbstractActionController implements TranslatorA
     public function registerAction()
     {
         $serviceLocator = $this->getServiceLocator();
+        /** @var EntityManager $entityManager */
         $entityManager = $serviceLocator->get('entity-manager');
+        /** @var User $user */
         $user = $serviceLocator->get('user-entity');
         $flagCodes = $serviceLocator->get('flag-codes')->getFlagCodeOptions();
-        $register = new Admin\Authenticate\Register($entityManager, $user, new Request($this->getRequest()), $flagCodes);
+        $register = new Admin\Authenticate\Register($entityManager, $user, new RegisterForm($user, $entityManager, $flagCodes));
 
-        $request = $this->getRequest();
+        $request = new Request($this->getRequest());
         if($request->isPost()){
-            $result = $register->postAction(new Request($this->getRequest()));
+            $result = $register->postAction($request->getPost());
             if($result['status'] == StatusCodes::SUCCESS){
                 $langCode = $result['lang_iso'];
                 $locale = $locale = ($langCode != 'en') ? $langCode.'_'.strtoupper($langCode) : 'en_US';

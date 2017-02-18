@@ -8,7 +8,7 @@
 
 namespace AdminTest\Controller;
 
-use Admin\Form\Language;
+use Logic\Core\Form\Language;
 use Logic\Core\Model\Entity\Lang;
 use ApplicationTest\Bootstrap;
 use Zend\Mvc\Router\Http\TreeRouteStack as HttpRouter;

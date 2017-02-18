@@ -273,15 +273,15 @@ msgstr "El campo tiene menos de %min% caracteres"
 msgid "The input is more than %max% characters long"
 msgstr "El campo tiene mas de %max% caracteres"
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "There must be at least one lower case letter"
 msgstr "La contraseña tiene que contener porlomenos una letra minúscula"
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "There must be at least one upper case letter"
 msgstr "La contraseña tiene que contener porlomenos una letra mayúscula"
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "There must be at least one number"
 msgstr "La contraseña tiene que contener porlomenos un dìgito"
 
@@ -372,7 +372,7 @@ msgstr "El archivo es mas grande de los permitidos %max%%measure%"
 msgid "File is of incorrect type. Allowed are: %extensions%"
 msgstr "El archivo es de tipo no acceptable. Los permitidos son: %extensions%"
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "The \"Verify Password\" field must match the \"Password\" field"
 msgstr "La contraseña repetida no coresponde"
 

@@ -75,7 +75,7 @@ class ResetPassword implements IResetPassword
     {
         $form = new Form('reset_password');
         $form->add(array(
-            'type' => 'Admin\Form\UserPassword',
+            'type' => 'Logic\Core\Admin\Form\UserPassword',
             'name' => 'password_fields'
         ));
         $form->add(array(

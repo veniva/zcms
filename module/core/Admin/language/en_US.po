@@ -275,15 +275,15 @@ msgstr ""
 msgid "The input is more than %max% characters long"
 msgstr ""
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "There must be at least one lower case letter"
 msgstr ""
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "There must be at least one upper case letter"
 msgstr ""
 
-# Admin\Validator\Password
+# Logic\Core\Validator\Password
 msgid "There must be at least one number"
 msgstr ""
 
