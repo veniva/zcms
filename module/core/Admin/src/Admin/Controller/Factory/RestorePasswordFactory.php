@@ -4,7 +4,6 @@ namespace Admin\Controller\Factory;
 
 
 use Admin\Controller\RestorePasswordController;
-use Logic\Core\Admin\Authenticate\RestorePassword;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -19,6 +18,6 @@ class RestorePasswordFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new RestorePasswordController($serviceLocator, new RestorePassword());
+        return new RestorePasswordController($serviceLocator);
     }
 }

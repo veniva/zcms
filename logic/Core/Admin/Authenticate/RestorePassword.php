@@ -2,9 +2,13 @@
 
 namespace Logic\Core\Admin\Authenticate;
 
+
 use Doctrine\ORM\EntityManagerInterface;
+use Logic\Core\Adapters\Interfaces\ITranslator;
+use Logic\Core\Admin\Form\RestorePasswordForm;
 use Logic\Core\Admin\Interfaces\Authenticate\IRestorePassword;
 use Logic\Core\Adapters\Interfaces\ISendMail;
+use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
 use Zend\Form;
@@ -14,18 +18,28 @@ use Zend\Mail;
 
 class RestorePassword implements IRestorePassword
 {
-    const ERR_NOT_FOUND = 1;
-    const ERR_INVALID_FORM = 2;
-    const ERR_NOT_ALLOWED = 3;
+    const ERR_NOT_FOUND = 'restore.not-found';
+    const ERR_NOT_ALLOWED = 'restore.not-allowed';
+    const ERR_SEND_MAIL = 'restore.mail-not-sent';
+
+    protected $form;
+    /** @var ITranslator  */
+    protected $translator;
+
+    public function __construct(RestorePasswordForm $form, ITranslator $translator)
+    {
+        $this->form = $form;
+        $this->translator = $translator;
+    }
 
     public function getAction() :Form\Form
     {
-        return self::form();
+        return $this->form;
     }
     
     public function postAction(array $data, EntityManagerInterface $em) :array
     {
-        $form = self::form();
+        $form = $this->form;
         $form->setData($data);
         if($form->isValid()){
             $email = $form->get('email')->getValue();//get the filtered value
@@ -35,7 +49,7 @@ class RestorePassword implements IRestorePassword
             if(!$user){
                 return [
                     'status' => self::ERR_NOT_FOUND,
-                    'message' => 'The email entered is not present in our database'
+                    'message' => $this->translator->translate('The email entered is not present in our database')
                 ];
             }
 
@@ -43,18 +57,18 @@ class RestorePassword implements IRestorePassword
             if(!$allowed){
                 return [
                     'status' => self::ERR_NOT_ALLOWED,
-                    'message' => 'The user with email %s does not have administrative privileges',
+                    'message' => $this->translator->translate('The user with email %s does not have administrative privileges'),
                     'email' => $email
                 ];
             }
             
             return [
-                'status' => 0,
+                'status' => StatusCodes::SUCCESS,
                 'email' => $email
             ];
         }
         return [
-            'status' => self::ERR_INVALID_FORM,
+            'status' => StatusCodes::ERR_INVALID_FORM,
             'form' => $form
         ];
     }
@@ -71,12 +85,19 @@ class RestorePassword implements IRestorePassword
         $em->getRepository(PasswordResets::class)->deleteOldRequests();
         $em->persist($passwordResetsEntity);
         $em->flush();
-
-        $sendMail->send($data['no-reply'], $data['email'], $data['subject'], $data['message']);
+        
+        try{
+            $sendMail->send($data['no-reply'], $data['email'], $data['subject'], $data['message']);
+        }catch(\Exception $ex){
+            return [
+                'status' => self::ERR_SEND_MAIL,
+                'message' => $this->translator->translate('Error sending the email message. Please try again')
+            ];
+        }
 
         return [
-            'status' => 0,
-            'message' => 'A link was generated and sent to %s',
+            'status' => StatusCodes::SUCCESS,
+            'message' => $this->translator->translate('A link was generated and sent to %s'),
             'email' => $data['email']
         ];
     }

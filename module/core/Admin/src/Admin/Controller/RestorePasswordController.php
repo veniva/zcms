@@ -2,10 +2,14 @@
 
 namespace Admin\Controller;
 
+
 use Logic\Core\Adapters\Zend\SendMail;
+use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin\Authenticate\RestorePassword;
+use Logic\Core\Admin\Form\RestorePasswordForm;
 use Logic\Core\Adapters\Zend\Http\Request;
 use Logic\Core\Admin\Interfaces\Authenticate\IRestorePassword;
+use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Stdlib\Strings;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
@@ -20,30 +24,30 @@ class RestorePasswordController extends AbstractActionController implements Tran
     /** @var RestorePassword  */
     protected $restorePassword;
     
-    public function __construct(ServiceLocatorInterface $serviceLocator, IRestorePassword $restorePassword)
+    public function __construct(ServiceLocatorInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
-        $this->restorePassword = $restorePassword;
     }
 
     public function forgottenAction()
     {
+        $restorePassword = new RestorePassword(new RestorePasswordForm(), new Translator($this->translator));
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $request = new Request($this->getRequest());
         if($request->isPost()){
 
-            $result = $this->restorePassword->postAction($request->getPost(), $entityManager);
+            $result = $restorePassword->postAction($request->getPost(), $entityManager);
 
             if($result['status'] == RestorePassword::ERR_NOT_FOUND){
-                $this->flashMessenger()->addErrorMessage($this->translator->translate($result['message']));
+                $this->flashMessenger()->addErrorMessage($result['message']);
                 return $this->redir()->toRoute('admin/default', array('controller' => 'restorepassword', 'action' => 'forgotten'));
 
             }
-            else if($result['status'] == RestorePassword::ERR_INVALID_FORM){
+            else if($result['status'] == StatusCodes::ERR_INVALID_FORM){
                 return array('form' => $result['form']);
             }
             else if($result['status'] == RestorePassword::ERR_NOT_ALLOWED){
-                $this->flashMessenger()->addErrorMessage(sprintf($this->translator->translate($result['message']), $result['email']));
+                $this->flashMessenger()->addErrorMessage(sprintf($result['message']), $result['email']);
                 return $this->redir()->toRoute('admin/default', array('controller' => 'restorepassword', 'action' => 'forgotten'));
             }
 
@@ -66,12 +70,16 @@ class RestorePasswordController extends AbstractActionController implements Tran
             ];
 
             $result = $this->restorePassword->persistAndSendEmail($entityManager, new SendMail(), $data);
-
-            $this->flashMessenger()->addSuccessMessage(sprintf($this->translator->translate($result['message']), $result['email']));
+            if($result['status'] === RestorePassword::ERR_SEND_MAIL){
+                $this->flashMessenger()->addErrorMessage($result['message']);
+                return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
+            }
+            
+            $this->flashMessenger()->addSuccessMessage(sprintf($result['message']), $result['email']);
             return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
         }
 
-        $form = $this->restorePassword->getAction();
+        $form = $restorePassword->getAction();
         return array('form' => $form);
     }
 }
