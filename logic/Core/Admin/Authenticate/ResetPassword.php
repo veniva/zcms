@@ -4,31 +4,42 @@ namespace Logic\Core\Admin\Authenticate;
 
 
 use Doctrine\ORM\EntityManagerInterface;
-use Logic\Core\Adapters\Interfaces\Http\IRequest;
-use Logic\Core\Admin\Interfaces\Authenticate\IResetPassword;
+use Logic\Core\Adapters\Interfaces\ITranslator;
+use Logic\Core\Admin\Form\ResetPassword as ResetPasswordForm;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
-use Zend\Form\Form;
 
-class ResetPassword implements IResetPassword
+class ResetPassword
 {
-    const ERR_BROKEN_LINK = 1;
-    const ERR_PASSWORD_REQUEST_NOT_FOUND = 2;
-    const ERR_LINK_TOO_OLD = 3;
-    const ERR_UNEXISTING_USER = 4;
-    const ERR_INVALID_FORM = 5;
-    
-    /** @var  IRequest */
-    protected $request;
+    const ERR_BROKEN_LINK = 'reset.broken_link';
+    const ERR_PASSWORD_REQUEST_NOT_FOUND = 'reset.pass_not_found';
+    const ERR_LINK_TOO_OLD = 'reset.too_old';
+    const ERR_UNEXISTING_USER = 'reset.no_user';
+
+    protected $email;
+    protected $token;
     
     /** @var  EntityManagerInterface */
     protected $em;
+    /** @var ResetPasswordForm */
+    protected $form;
+    /** @var ITranslator */
+    protected $translator;
     
-    public function __construct(IRequest $request, EntityManagerInterface $em)
+    public function __construct(
+        EntityManagerInterface $em, 
+        ResetPasswordForm $form, 
+        ITranslator $translator,
+        string $email = null, 
+        string $token = null
+    )
     {
-        $this->request = $request;
         $this->em = $em;
+        $this->email = $email;
+        $this->token = $token;
+        $this->form = $form;
+        $this->translator = $translator;
     }
 
     public function resetGet(): array
@@ -40,20 +51,19 @@ class ResetPassword implements IResetPassword
         
         return [
             'status' => StatusCodes::SUCCESS,
-            'form' => $this->form()
+            'form' => $this->form
         ];
     }
     
-    public function resetPost(): array
+    public function resetPost(array $data): array
     {
         $protect = $this->protect();
         if($protect['status'] !== StatusCodes::SUCCESS){
             return $protect;
         }
         $user = $protect['user'];
-        
-        $form = $this->form();
-        $form->setData($this->request->getPost());
+        $form = $this->form;
+        $form->setData($data);
         if($form->isValid()){
             $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
             $this->em->getRepository(PasswordResets::class)->deleteAllForEmail($user->getEmail());
@@ -61,43 +71,24 @@ class ResetPassword implements IResetPassword
             
             return [
                 'status' => StatusCodes::SUCCESS,
-                'message' => 'The password has been changed successfully.'
+                'message' => $this->translator->translate('The password has been changed successfully.')
             ];
         }
         
         return [
-            'status' => self::ERR_INVALID_FORM,
+            'status' => StatusCodes::ERR_INVALID_FORM,
             'form' => $form
         ];
     }
     
-    public function form(): Form
-    {
-        $form = new Form('reset_password');
-        $form->add(array(
-            'type' => 'Logic\Core\Admin\Form\UserPassword',
-            'name' => 'password_fields'
-        ));
-        $form->add(array(
-            'name' => 'submit',
-            'type' => 'Zend\Form\Element\Submit',
-            'attributes' => array(
-                'value' => 'Edit'
-            ),
-        ));
-        $form->getInputFilter()->get('password_fields')->get('password_repeat')->setRequired(true);
-        
-        return $form;
-    }
-    
     protected function protect(): array
     {
-        $email = urldecode($this->request->getQuery('email'));
-        $token = $this->request->getQuery('token');
+        $email = urldecode($this->email);
+        $token = $this->token;
         if(empty($email) || empty($token)){
             return [
                 'status' => self::ERR_BROKEN_LINK,
-                'message' => 'The link you\'re using is broken'
+                'message' => $this->translator->translate('The link you\'re using is broken')
             ];
         }
 
@@ -105,7 +96,7 @@ class ResetPassword implements IResetPassword
         if(!$resetPassword){
             return [
                 'status' => self::ERR_PASSWORD_REQUEST_NOT_FOUND,
-                'message' => 'The link you\'re using is corrupted, please create another password request'
+                'message' => $this->translator->translate('The link you\'re using is corrupted, please create another password request')
             ];
         }
 
@@ -115,7 +106,7 @@ class ResetPassword implements IResetPassword
         if($date > $createdAt){
             return [
                 'status' => self::ERR_LINK_TOO_OLD,
-                'message' => 'The link you\'re using is out of date, please create another password request'
+                'message' => $this->translator->translate('The link you\'re using is out of date, please create another password request')
             ];
         }
 
@@ -123,7 +114,7 @@ class ResetPassword implements IResetPassword
         if(!$user){
             return [
                 'status' => self::ERR_UNEXISTING_USER,
-                'message' => 'There is no user with email: '.$email.'. You have probably changed the email recently.'
+                'message' => $this->translator->translate('There is no user with email: '.$email.'. You have probably changed the email recently.')
             ];
         }
         
