@@ -64,7 +64,7 @@ class LogController extends AbstractActionController implements TranslatorAwareI
                 return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
 
             }else{
-                $this->flashMessenger()->addSuccessMessage(sprintf($data['message']), $data['user']->getUname());
+                $this->flashMessenger()->addSuccessMessage(sprintf($data['message'], $data['user']->getUname()));
                 return $this->redir()->toRoute('admin/default', array('controller' => 'index'));
             }
         }
