@@ -300,7 +300,7 @@ msgstr "Стойността на полетата не съвпада"
 msgid "The input may contain only latin characters and numbers"
 msgstr "Полето може да съдържа само латински букви и цифри"
 
-# Application\Validator\Doctrine\NoRecordExists
+# Logic\Core\Validator\Doctrine\NoRecordExists
 msgid "Another record already contains %value%"
 msgstr "Вече има запис със същата стойност."
 

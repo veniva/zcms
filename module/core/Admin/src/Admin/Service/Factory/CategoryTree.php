@@ -10,11 +10,15 @@ namespace Admin\Service\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Logic\Core\Model\Entity\Category;
 
 class CategoryTree implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceManager)
     {
-        return new \Admin\Service\CategoryTree($serviceManager);
+        $languageService = $serviceManager->get('language');
+        $entityManager = $serviceManager->get('entity-manager');
+        $categoryRepository = $entityManager->getRepository(Category::class);
+        return new \Logic\Core\Services\CategoryTree($languageService, $categoryRepository);
     }
 }

@@ -6,11 +6,12 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Admin\Service;
+namespace Logic\Core\Services;
 
+use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
+//V_TODO - incorporate this to be part of the CategoryRepository as it's a model and not service
 class CategoryTree
 {
     /**
@@ -24,20 +25,19 @@ class CategoryTree
     protected $categoriesAsOptions = array();
 
     /**
-     * @var \Logic\Core\Model\CategoryRepository
+     * @var CategoryRepository
      */
-    protected $categoryRepo;
+    protected $categoryRepository;
 
     /**
-     * @var ServiceLocatorInterface
+     * @var Language
      */
-    protected $serviceManager;
+    protected $languageService;
 
-    public function __construct(ServiceLocatorInterface $serviceManager, $parentId = null)
+    public function __construct(Language $languageService, CategoryRepository $categoryRepository, $parentId = null)
     {
-        $this->serviceManager = $serviceManager;
-        $entityManager = $serviceManager->get('entity-manager');
-        $this->categoryRepo = $entityManager->getRepository(get_class(new Category()));
+        $this->languageService = $languageService;
+        $this->categoryRepository = $categoryRepository;
 
         $this->setCategories($parentId);
     }
@@ -56,9 +56,9 @@ class CategoryTree
      */
     public function setCategories($parentId = null, $level = 0)
     {
-        $languageService = $this->serviceManager->get('language');
+        $languageService = $this->languageService;
         $defaultLangID = $languageService->getDefaultLanguage()->getId();
-        $childrenCategories = $this->categoryRepo->getCategoriesByParent($parentId);
+        $childrenCategories = $this->categoryRepository->getCategoriesByParent($parentId);
         foreach($childrenCategories as $category){
             $indent = '';
             foreach(range(0, $level) as $in){
@@ -99,7 +99,7 @@ class CategoryTree
     {
         $childIds = [];
         if(!empty($category->getId())){
-            $categoryChildren = $this->categoryRepo->getChildren($category);
+            $categoryChildren = $this->categoryRepository->getChildren($category);
             foreach($categoryChildren as $child){
                 $childIds[] = $child->getId();
             }

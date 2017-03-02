@@ -8,11 +8,17 @@
 
 namespace Admin\Controller;
 
+use Doctrine\ORM\EntityManager;
+use Logic\Core\Adapters\Zend\Translator;
+use Logic\Core\Admin\Category\CategoryUpdate;
+use Logic\Core\Admin\Category\Helpers;
 use Logic\Core\Form\Category as CategoryForm;
-use Logic\Core\Admin\Category as CategoryLogic;
+use Logic\Core\Admin\Category\CategoryList as CategoryLogic;
+use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\CategoryContent;
 use Logic\Core\Model\Entity\Lang;
+use Logic\Core\Services\Language;
 use Logic\Core\Stdlib\Strings;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Filesystem\Filesystem;
@@ -24,6 +30,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\ArrayUtils;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Logic\Core\Services\CategoryTree;
 
 class CategoryController extends AbstractRestfulController implements TranslatorAwareInterface
 {
@@ -129,57 +136,47 @@ class CategoryController extends AbstractRestfulController implements Translator
 
     public function get($id)
     {
-        $category = $this->getServiceLocator()->get('entity-manager')->find(get_class(new Category),$id);
-        if(!$category){
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->getServiceLocator()->get('entity-manager');
+        /** @var CategoryTree $categoryTree */
+        $categoryTree = $this->getServiceLocator()->get('category-tree');
+        $logic = new CategoryUpdate($entityManager, new Translator($this->getTranslator()), $categoryTree);
+        $result = $logic->get($id);
+
+        if($result['status'] !== StatusCodes::SUCCESS){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $this->translator->translate('Wrong category ID')],
+                'message' => ['type' => 'error', 'text' => $result['message']],
                 'parent' => 0,
             ]);
         }
-        $this->prepareFormAndLanguage($category, $form);
 
-        return $this->renderCategData($category, $form, (int)$category->getParent());
+        return $this->renderCategData($result['category'], $result['form'], (int)$result['category']->getParent());
     }
 
     public function update($id, $data)
     {
+        /** @var EntityManager $entityManager */
         $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $categoryClass = get_class(new Category);
-        $category = $entityManager->find($categoryClass,$id);
-        if(!$category){
+        /** @var CategoryTree $categoryTree */
+        $categoryTree = $this->getServiceLocator()->get('category-tree');
+        $logic = new CategoryUpdate($entityManager, new Translator($this->getTranslator()), $categoryTree);
+        $result = $logic->update($id, $data);
+
+        if($result['status'] === CategoryUpdate::ERR_CATEGORY_NOT_FOUND){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $this->translator->translate('Wrong category ID')],
+                'message' => ['type' => 'error', 'text' => $result['message']],
                 'parent' => 0,
             ]);
         }
-        $this->prepareFormAndLanguage($category, $form);
 
-        $this->setParents($category, $data['parent']);
-        $children = $entityManager->getRepository($categoryClass)->getChildren($category);
-        foreach($children as $childEntity){
-            $this->setParents($childEntity, $category->getId());
-            $entityManager->persist($childEntity);
-        }
-
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-
-        foreach($data['content'] as &$content){
-            $content['alias'] = Strings::alias($content['title']);
-        }
-
-        $form->setData($data);
-        if($form->isValid()){
-            //v_todo - delete cache file in data/cache if cache enabled in module Application/config/module.config.php
-            $entityManager->persist($category);
-            $entityManager->flush();
-
+        if($result['status'] === StatusCodes::SUCCESS){
             return new JsonModel([
-                'message' => ['type' => 'success', 'text' => $this->translator->translate('The category has been edited successfully')],
-                'parent' => (int)$category->getParent(),
+                'message' => ['type' => 'success', 'text' => $result['message']],
+                'parent' => $result['parent'],
             ]);
         }
 
-        return $this->renderCategData($category, $form, (int)$category->getParent());
+        return $this->renderCategData($result['category'], $result['form'], (int)$result['category']->getParent());
     }
 
     protected function setParents(Category $category, $parentCategoryID)
@@ -232,7 +229,8 @@ class CategoryController extends AbstractRestfulController implements Translator
             $content['alias'] = Strings::alias($content['title']);
         }
         $form->setData($data);
-        if($form->isValid()){
+        $em = $this->getServiceLocator()->get('entity-manager');
+        if($form->isFormValid($em)){
             $entityManager = $this->getServiceLocator()->get('entity-manager');
             $entityManager->persist($category);
             $entityManager->flush();

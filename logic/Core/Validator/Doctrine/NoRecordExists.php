@@ -1,8 +1,9 @@
 <?php
 
-namespace Application\Validator\Doctrine;
+namespace Logic\Core\Validator\Doctrine;
 
 
+use Logic\Core\Validator\Doctrine\AbstractValidator;
 use Zend\Validator\Exception;
 use Doctrine\ORM\EntityManager;
 

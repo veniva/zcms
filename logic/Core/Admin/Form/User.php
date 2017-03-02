@@ -10,7 +10,7 @@ namespace Logic\Core\Admin\Form;
 
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Model\Entity\User as UserEntity;
-use Application\Validator\Doctrine\NoRecordExists;
+use Logic\Core\Validator\Doctrine\NoRecordExists;
 use Zend\Form\Form;
 use Zend\Hydrator\ClassMethods;
 

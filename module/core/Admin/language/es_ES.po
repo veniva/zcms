@@ -297,7 +297,7 @@ msgstr "Los campos deben coincidir"
 msgid "The input may contain only latin characters and numbers"
 msgstr "El campo puede contener solamente letras latinas y numeros, sin caracteres especiales"
 
-# Application\Validator\Doctrine\NoRecordExists
+# Logic\Core\Validator\Doctrine\NoRecordExists
 msgid "Another record already contains %value%"
 msgstr "Ya exeste un record con èste valor."
 

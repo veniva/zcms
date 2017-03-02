@@ -141,7 +141,7 @@ class Listing extends Form
                 break;
             }
         }
-        $validator = new \Application\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);
+        $validator = new \Logic\Core\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);
         $this->getInputFilter()->get('content')->getInputFilter()->get('alias')->getValidatorChain()->attach($validator);
         //endregion
 

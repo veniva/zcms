@@ -8,6 +8,7 @@
 
 namespace Logic\Core\Form;
 
+use Logic\Core\Validator\Doctrine\NoRecordExists;
 use Logic\Core\Model\Entity\Category as CategoryEntity;
 use Logic\Core\Model\Entity\CategoryContent;
 use Doctrine\Common\Collections\Collection;
@@ -27,10 +28,8 @@ class Category extends Form
      */
     protected $contentCollection;
 
-    public function __construct(EntityManager $entityManager, $contentCollection = null)
+    public function __construct()
     {
-        $this->entityManager = $entityManager;
-        $this->contentCollection = $contentCollection;
 
         parent::__construct('category');
         $this->setHydrator(new ClassMethods())
@@ -41,7 +40,7 @@ class Category extends Form
             'name' => 'content',
             'options' => array(
                 'target_element' => array(
-                    'type' => 'Admin\Form\CategoryContentFieldset',
+                    'type' => 'Logic\Core\Admin\Form\CategoryContentFieldset',
                 ),
             ),
         ));
@@ -96,9 +95,8 @@ class Category extends Form
         ), 'parent');
     }
 
-    public function isValid()
+    public function isFormValid(EntityManager $entityManager, $contentCollection = null)
     {
-        $contentCollection = $this->contentCollection;
         $contentClassName = CategoryContent::class;
 
         //check if the 'title' field is unique in the database
@@ -114,7 +112,7 @@ class Category extends Form
                 break;
             }
         }
-        $validator = new \Application\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);
+        $validator = new NoRecordExists($entityManager, $validatorOptions);
         $this->getInputFilter()->get('content')->getInputFilter()->get('title')->getValidatorChain()->attach($validator);
 
         return parent::isValid();

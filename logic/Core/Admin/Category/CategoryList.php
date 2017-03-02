@@ -1,13 +1,13 @@
 <?php
 
-namespace Logic\Core\Admin;
+namespace Logic\Core\Admin\Category;
 
 
 use Doctrine\ORM\EntityManagerInterface;
 use Logic\Core\Model\Entity\Category as CategoryEntity;
 use Logic\Core\Services\Language;
 
-class Category
+class CategoryList
 {
     public function getList(EntityManagerInterface $em, Language $languageService, int $parent, int $page)
     {

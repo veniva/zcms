@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Validator\Doctrine;
+namespace Logic\Core\Validator\Doctrine;
 
 
 use Doctrine\ORM\EntityManager;

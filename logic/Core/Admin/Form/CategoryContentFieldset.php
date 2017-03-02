@@ -6,7 +6,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Admin\Form;
+namespace Logic\Core\Admin\Form;
 
 use Logic\Core\Model\Entity\CategoryContent;
 use Zend\Form\Fieldset;

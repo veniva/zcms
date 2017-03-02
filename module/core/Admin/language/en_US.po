@@ -295,7 +295,7 @@ msgstr ""
 msgid "The input may contain only latin characters and numbers"
 msgstr ""
 
-# Application\Validator\Doctrine\NoRecordExists
+# Logic\Core\Validator\Doctrine\NoRecordExists
 msgid "Another record already contains %value%"
 msgstr ""
 
