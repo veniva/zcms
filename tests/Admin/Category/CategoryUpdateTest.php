@@ -11,7 +11,6 @@ namespace Tests\Admin\Category;
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Interfaces\ITranslator;
 use Logic\Core\Admin\Category\CategoryUpdate;
-use Logic\Core\Admin\Category\Helpers;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category;
@@ -39,6 +38,7 @@ class CategoryUpdateTest extends TestCase
         $this->trStb->method('translate')->willReturnArgument(0);
 
         $this->langServiceStb = $this->createMock(Language::class);
+        $this->langServiceStb->method('getActiveLanguages')->willReturn([]);
 
         $this->categoryTreeStb = $this->createMock(CategoryTree::class);
         $this->categoryTreeStb->method('getSelectOptions')->willReturn([]);
@@ -48,13 +48,14 @@ class CategoryUpdateTest extends TestCase
 
         $this->ctgUpdStb = $this->createMock(CategoryUpdate::class);
         $this->categoryUpdate = new CategoryUpdate($this->emStb, $this->trStb, $this->categoryTreeStb);
+        $this->categoryUpdate->getHelpers()->setLanguageService($this->langServiceStb);
 
         parent::__construct($name, $data, $dataName);
     }
 
     public function testPrepareForm()
     {
-        $form = $this->categoryUpdate->prepareFormWithLanguage(new CategoryEntity(), 'Top');
+        $form = $this->categoryUpdate->getHelpers()->prepareFormWithLanguage(new CategoryEntity(), 'Top');
         $parentElement = $form->get('parent');
         $emptyOption = $parentElement->getEmptyOption();
 

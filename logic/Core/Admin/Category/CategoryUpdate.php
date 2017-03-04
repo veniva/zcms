@@ -12,7 +12,6 @@ use Logic\Core\Stdlib\Strings;
 use Logic\Core\Form\Category as CategoryForm;
 use Logic\Core\Services\Language;
 use Logic\Core\Services\CategoryTree;
-use Logic\Core\Model\Entity\CategoryContent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Logic\Core\Model\CategoryRepository;
 
@@ -35,33 +34,17 @@ class CategoryUpdate
     /** @var CategoryForm */
     protected $categoryForm;
 
-    public function __construct(EntityManager $entityManager, ITranslator $translator, CategoryTree $categoryTree)
+    /** @var CategoryHelpers */
+    protected $helpers;
+
+    public function __construct(EntityManager $entityManager, ITranslator $translator, CategoryTree $categoryTree, Language $language = null)
     {
         $this->translator = $translator;
         $this->entityManager = $entityManager;
         $this->categoryTree = $categoryTree;
-        $this->languageService = new Language();
+        $this->languageService = $language ? $language : new Language();
         $this->categoryForm = new CategoryForm();
-    }
-
-    /**
-     * @param Language $languageService
-     * @return self
-     */
-    public function setLanguageService(Language $languageService)
-    {
-        $this->languageService = $languageService;
-        return $this;
-    }
-
-    /**
-     * @param CategoryForm $categoryForm
-     * @return CategoryUpdate
-     */
-    public function setCategoryForm($categoryForm)
-    {
-        $this->categoryForm = $categoryForm;
-        return $this;
+        $this->helpers = new CategoryHelpers($categoryTree, $this->languageService);
     }
 
     /**
@@ -86,7 +69,7 @@ class CategoryUpdate
             ];
         }
         
-        $form = $this->prepareFormWithLanguage($category, $this->translator->translate('Top'));
+        $form = $this->helpers->prepareFormWithLanguage($category, $this->translator->translate('Top'));
         
         return [
             'status' => StatusCodes::SUCCESS,
@@ -112,7 +95,7 @@ class CategoryUpdate
             ];
         }
 
-        $form = $this->prepareFormWithLanguage($category, $this->translator->translate('Top'));
+        $form = $this->helpers->prepareFormWithLanguage($category, $this->translator->translate('Top'));
         $categoryRepository = $this->entityManager->getRepository(Category::class);
         $this->setParents($category, $categoryRepository, $data['parent']);
 
@@ -145,42 +128,6 @@ class CategoryUpdate
         ];
     }
 
-    /**
-     * @param CategoryEntity $category
-     * @param $topName
-     * @param bool $isNew
-     * @return CategoryForm
-     */
-    public function prepareFormWithLanguage(CategoryEntity $category, $topName, $isNew = false)
-    {
-        //add empty language content to the collection, so that input fields are created
-        $this->addEmptyContent($category);
-        $form = $this->categoryForm;
-        $form->bind($category);
-        $category2 = !$isNew ? $category : null;
-
-        $parentElement = $form->get('parent');
-        $parentElement->setEmptyOption($topName);
-        $parentElement->setValueOptions($this->categoryTree->getSelectOptions($category2));
-
-        return $form;
-    }
-
-    protected function addEmptyContent(CategoryEntity $category)
-    {
-        $contentIDs = [];
-        foreach($category->getContent() as $content){
-            $contentIDs[] = $content->getLang()->getId();
-        }
-
-        $languages = $this->languageService->getActiveLanguages();
-        foreach((array)$languages as $language){
-            if(!in_array($language->getId(), $contentIDs)){
-                new CategoryContent($category, $language);
-            }
-        }
-    }
-
     public function setParents(CategoryEntity $category, CategoryRepository $categoryRepository, $parentCategoryID)
     {
         $relatedParentCategories = new ArrayCollection();
@@ -192,5 +139,44 @@ class CategoryUpdate
             }
         }
         $category->setParents($relatedParentCategories);
+    }
+
+    /**
+     * @return CategoryHelpers
+     */
+    public function getHelpers()
+    {
+        return $this->helpers;
+    }
+
+    /**
+     * @param CategoryHelpers $helpers
+     * @return CategoryCreate
+     */
+    public function setHelpers(CategoryHelpers $helpers)
+    {
+        $this->helpers = $helpers;
+        return $this;
+    }
+
+    /**
+     * @param Language $languageService
+     * @return self
+     */
+    public function setLanguageService(Language $languageService)
+    {
+        $this->languageService = $languageService;
+        return $this;
+    }
+
+    /**
+     * @param CategoryForm $categoryForm
+     * @return CategoryUpdate
+     */
+    public function setCategoryForm($categoryForm)
+    {
+        $this->categoryForm = $categoryForm;
+        $this->helpers->setCategoryForm($categoryForm);
+        return $this;
     }
 }

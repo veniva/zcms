@@ -1,10 +1,6 @@
 <?php
-/**
- * User: ventsi
- * Date: 2.3.2017 г.
- * Time: 21:28 ч.
- */
 namespace Tests\Admin\Category;
+
 
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Interfaces\ITranslator;

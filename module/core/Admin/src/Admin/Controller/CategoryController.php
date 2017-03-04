@@ -10,8 +10,8 @@ namespace Admin\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Zend\Translator;
+use Logic\Core\Admin\Category\CategoryCreate;
 use Logic\Core\Admin\Category\CategoryUpdate;
-use Logic\Core\Admin\Category\Helpers;
 use Logic\Core\Form\Category as CategoryForm;
 use Logic\Core\Admin\Category\CategoryList as CategoryLogic;
 use Logic\Core\Interfaces\StatusCodes;
@@ -140,7 +140,10 @@ class CategoryController extends AbstractRestfulController implements Translator
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         /** @var CategoryTree $categoryTree */
         $categoryTree = $this->getServiceLocator()->get('category-tree');
-        $logic = new CategoryUpdate($entityManager, new Translator($this->getTranslator()), $categoryTree);
+        /** @var Language $languagesService */
+        $languagesService = $this->getServiceLocator()->get('language');
+        
+        $logic = new CategoryUpdate($entityManager, new Translator($this->getTranslator()), $categoryTree, $languagesService);
         $result = $logic->get($id);
 
         if($result['status'] !== StatusCodes::SUCCESS){
@@ -159,7 +162,10 @@ class CategoryController extends AbstractRestfulController implements Translator
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         /** @var CategoryTree $categoryTree */
         $categoryTree = $this->getServiceLocator()->get('category-tree');
-        $logic = new CategoryUpdate($entityManager, new Translator($this->getTranslator()), $categoryTree);
+        /** @var Language $languagesService */
+        $languagesService = $this->getServiceLocator()->get('language');
+
+        $logic = new CategoryUpdate($entityManager, new Translator($this->getTranslator()), $categoryTree, $languagesService);
         $result = $logic->update($id, $data);
 
         if($result['status'] === CategoryUpdate::ERR_CATEGORY_NOT_FOUND){
@@ -194,21 +200,41 @@ class CategoryController extends AbstractRestfulController implements Translator
         $category->setParents($relatedParentCategories);
     }
 
+    /**
+     * Show the Add Category form
+     * @return JsonModel
+     */
     public function addJsonAction()
     {
         $parentCategoryID = $this->params()->fromQuery('parent', null);
-        //check if there is an existing language before entering new category
-        $langs = $this->getServiceLocator()->get('entity-manager')->getRepository(get_class(new Lang()))->countLanguages();
-        if(!$langs){
+
+        /** @var EntityManager $em */
+        $em = $this->getServiceLocator()->get('entity-manager');
+        /** @var CategoryTree $catTree */
+        $catTree = $this->getServiceLocator()->get('category-tree');
+        /** @var Language $languagesService */
+        $languagesService = $this->getServiceLocator()->get('language');
+
+        $logic = new CategoryCreate($em, new Translator($this->getTranslator()), $catTree, $languagesService);
+
+        $result = $logic->showForm((int)$parentCategoryID);
+
+        if($result['status'] === StatusCodes::ERR_INVALID_PARAM){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $this->translator->translate('You must insert at least one language in order to add categories')],
+                'message' => ['type' => 'error', 'text' => $result['message']],
                 'parent' => $parentCategoryID
             ]);
         }
-        $category = new Category();
-        $this->prepareFormAndLanguage($category, $form, true);
 
-        return $this->renderCategData($category, $form, $parentCategoryID);
+        //check if there is an existing language before entering new category
+        if($result['status'] === CategoryCreate::ERR_NO_LANG){
+            return new JsonModel([
+                'message' => ['type' => 'error', 'text' => $result['message']],
+                'parent' => $parentCategoryID
+            ]);
+        }
+
+        return $this->renderCategData($result['category'], $result['form'], $parentCategoryID);
     }
 
     public function create($data)
