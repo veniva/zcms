@@ -5,6 +5,7 @@ namespace Logic\Core\Admin\Category;
 
 use Logic\Core\Adapters\Interfaces\ITranslator;
 use Doctrine\ORM\EntityManager;
+use Logic\Core\BaseLogic;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Form\Category as CategoryForm;
 use Logic\Core\Model\Entity\Category;
@@ -12,7 +13,7 @@ use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Services\Language;
 use Logic\Core\Services\CategoryTree;
 
-class CategoryCreate
+class CategoryCreate extends BaseLogic
 {
     const ERR_NO_LANG = 'c-cat.no-lang';
     
@@ -42,34 +43,26 @@ class CategoryCreate
         $this->languageService = $language ? $language : new Language();
         $this->categoryForm = new CategoryForm();
         $this->helpers = new CategoryHelpers($categoryTree);
+
+        parent::__construct($translator);
     }
     
     public function showForm(int $parentId)
     {
         if($parentId < 0){
-            return [
-                'status' => StatusCodes::ERR_INVALID_PARAM,
-                'message' => $this->translator->translate('Invalid parameter provided')
-            ];
+            return $this->response(StatusCodes::ERR_INVALID_PARAM, 'Invalid parameter provided');
         }
         
         $languagesNumber = $this->entityManager->getRepository(Lang::class)->countLanguages();
         if(!$languagesNumber){
-            return [
-                'status' => self::ERR_NO_LANG,
-                'message' => $this->translator->translate('You must insert at least one language in order to add categories')
-            ];
+            return $this->response(self::ERR_NO_LANG, 'You must insert at least one language in order to add categories');
         }
         
         $categoryEntity = new Category();
         $this->helpers->setLanguageService($this->languageService);
         $form = $this->helpers->prepareFormWithLanguage($categoryEntity, $this->translator->translate('Top'), true);
         
-        return [
-            'status' => StatusCodes::SUCCESS,
-            'form' => $form,
-            'category' => $categoryEntity
-        ];
+        return $this->response(StatusCodes::SUCCESS, null, ['form' => $form, 'category' => $categoryEntity]);
     }
 
     /**

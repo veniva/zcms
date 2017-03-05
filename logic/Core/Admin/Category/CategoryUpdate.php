@@ -5,6 +5,7 @@ namespace Logic\Core\Admin\Category;
 
 use Logic\Core\Adapters\Interfaces\ITranslator;
 use Doctrine\ORM\EntityManager;
+use Logic\Core\BaseLogic;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category as CategoryEntity;
 use Logic\Core\Model\Entity\Category;
@@ -15,7 +16,7 @@ use Logic\Core\Services\CategoryTree;
 use Doctrine\Common\Collections\ArrayCollection;
 use Logic\Core\Model\CategoryRepository;
 
-class CategoryUpdate
+class CategoryUpdate extends BaseLogic
 {
     const ERR_CATEGORY_NOT_FOUND = 'u-cat.categ-not-found';
     
@@ -45,6 +46,8 @@ class CategoryUpdate
         $this->languageService = $language ? $language : new Language();
         $this->categoryForm = new CategoryForm();
         $this->helpers = new CategoryHelpers($categoryTree, $this->languageService);
+
+        parent::__construct($translator);
     }
 
     /**
@@ -55,27 +58,18 @@ class CategoryUpdate
     public function get($id)
     {
         if(!$id){
-            return [
-                'status' => StatusCodes::ERR_INVALID_PARAM,
-                'message' => $this->translator->translate('Wrong category ID')
-            ];
+            return $this->response(StatusCodes::ERR_INVALID_PARAM, 'Wrong category ID');
         }
+
         /** @var Category $category */
         $category = $this->entityManager->find(CategoryEntity::class, $id);
         if(!$category){
-            return [
-                'status' => self::ERR_CATEGORY_NOT_FOUND,
-                'message' => $this->translator->translate('Wrong category ID')
-            ];
+            return $this->response(self::ERR_CATEGORY_NOT_FOUND, 'Wrong category ID');
         }
         
         $form = $this->helpers->prepareFormWithLanguage($category, $this->translator->translate('Top'));
         
-        return [
-            'status' => StatusCodes::SUCCESS,
-            'form' => $form,
-            'category' => $category
-        ];
+        return $this->response(StatusCodes::SUCCESS, null, ['form' => $form, 'category' => $category]);
     }
 
     /**
@@ -89,10 +83,7 @@ class CategoryUpdate
         /** @var Category $category */
         $category = $this->entityManager->find(Category::class, $id);
         if(!$category){
-            return [
-                'status' => self::ERR_CATEGORY_NOT_FOUND,
-                'message' => $this->translator->translate('Wrong category ID provided')
-            ];
+            return $this->response(self::ERR_CATEGORY_NOT_FOUND, 'Wrong category ID provided');
         }
 
         $form = $this->helpers->prepareFormWithLanguage($category, $this->translator->translate('Top'));
@@ -114,18 +105,10 @@ class CategoryUpdate
             $this->entityManager->persist($category);
             $this->entityManager->flush();
 
-            return [
-                'status' => StatusCodes::SUCCESS,
-                'message' => $this->translator->translate('The category has been edited successfully'),
-                'parent' => (int)$category->getParent(),
-            ];
+            return $this->response(StatusCodes::SUCCESS, 'The category has been edited successfully', ['parent' => (int)$category->getParent()]);
         }
         
-        return [
-            'status' => StatusCodes::ERR_INVALID_FORM,
-            'form' => $form,
-            'category' => $category
-        ];
+        return $this->response(StatusCodes::ERR_INVALID_FORM, null, ['form' => $form, 'category' => $category]);
     }
 
     public function setParents(CategoryEntity $category, CategoryRepository $categoryRepository, $parentCategoryID)

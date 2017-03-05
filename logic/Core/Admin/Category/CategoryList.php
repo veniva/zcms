@@ -4,10 +4,12 @@ namespace Logic\Core\Admin\Category;
 
 
 use Doctrine\ORM\EntityManagerInterface;
+use Logic\Core\BaseLogic;
+use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category as CategoryEntity;
 use Logic\Core\Services\Language;
 
-class CategoryList
+class CategoryList extends BaseLogic
 {
     public function getList(EntityManagerInterface $em, Language $languageService, int $parent, int $page)
     {
@@ -27,9 +29,9 @@ class CategoryList
             $i++;
         }
         
-        return [
+        return $this->response(StatusCodes::SUCCESS, null, [
             'categories' => $categories,
             'categories_paginated' => $categoriesPaginated
-        ];
+        ]);
     }
 }
