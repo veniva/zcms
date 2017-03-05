@@ -1,9 +1,4 @@
 <?php
-/**
- * User: ventsi
- * Date: 25.2.2017 г.
- * Time: 21:19 ч.
- */
 
 namespace Tests\Admin\Category;
 
@@ -90,11 +85,23 @@ class CategoryUpdateTest extends TestCase
         $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
     }
     //</editor-fold>
-    
+
+    public function testUpdateInvalidParam()
+    {
+        $result = $this->categoryUpdate->update(1, []);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
+
+        $result = $this->categoryUpdate->update(1, ['parent']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
+
+        $result = $this->categoryUpdate->update(1, ['content']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
+    }
+
     public function testUpdateCategError()
     {
         $this->emStb->method('find')->willReturn(null);
-        $result = $this->categoryUpdate->update(1, []);
+        $result = $this->categoryUpdate->update(1, ['parent' => true, 'content' => true]);
 
         $this->assertEquals(CategoryUpdate::ERR_CATEGORY_NOT_FOUND, $result['status']);
         $this->assertArrayHasKey('message', $result);
@@ -143,10 +150,4 @@ class CategoryUpdateTest extends TestCase
         $this->emStb->method('find')->willReturn($categStb);
         $this->emStb->method('getRepository')->willReturn($ctgRepoStb);
     }
-}
-
-class CtgUStb
-{
-    function getChildren(){}
-    function findOneById(){}
 }

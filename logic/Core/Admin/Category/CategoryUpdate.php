@@ -7,13 +7,12 @@ use Logic\Core\Adapters\Interfaces\ITranslator;
 use Doctrine\ORM\EntityManager;
 use Logic\Core\BaseLogic;
 use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Model\Entity\Category as CategoryEntity;
+use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Stdlib\Strings;
 use Logic\Core\Form\Category as CategoryForm;
 use Logic\Core\Services\Language;
 use Logic\Core\Services\CategoryTree;
-use Doctrine\Common\Collections\ArrayCollection;
 use Logic\Core\Model\CategoryRepository;
 
 class CategoryUpdate extends BaseLogic
@@ -62,7 +61,7 @@ class CategoryUpdate extends BaseLogic
         }
 
         /** @var Category $category */
-        $category = $this->entityManager->find(CategoryEntity::class, $id);
+        $category = $this->entityManager->find(Category::class, $id);
         if(!$category){
             return $this->response(self::ERR_CATEGORY_NOT_FOUND, 'Wrong category ID');
         }
@@ -80,6 +79,10 @@ class CategoryUpdate extends BaseLogic
      */
     public function update(int $id, $data)
     {
+        if(!isset($data['parent']) || !isset($data['content'])){
+            return $this->response(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
+        }
+        
         /** @var Category $category */
         $category = $this->entityManager->find(Category::class, $id);
         if(!$category){
@@ -87,12 +90,13 @@ class CategoryUpdate extends BaseLogic
         }
 
         $form = $this->helpers->prepareFormWithLanguage($category, $this->translator->translate('Top'));
+        /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $this->entityManager->getRepository(Category::class);
-        $this->setParents($category, $categoryRepository, $data['parent']);
+        $this->helpers->setParents($category, $categoryRepository, $data['parent']);
 
         $children = $categoryRepository->getChildren($category);
         foreach($children as $childEntity){
-            $this->setParents($childEntity, $categoryRepository, $category->getId());
+            $this->helpers->setParents($childEntity, $categoryRepository, $category->getId());
             $this->entityManager->persist($childEntity);
         }
 
@@ -109,19 +113,6 @@ class CategoryUpdate extends BaseLogic
         }
         
         return $this->response(StatusCodes::ERR_INVALID_FORM, null, ['form' => $form, 'category' => $category]);
-    }
-
-    public function setParents(CategoryEntity $category, CategoryRepository $categoryRepository, $parentCategoryID)
-    {
-        $relatedParentCategories = new ArrayCollection();
-        if($parentCategoryID){
-            $parentCategory = $categoryRepository->findOneById($parentCategoryID);
-            if($parentCategory instanceof CategoryEntity){
-                $relatedParentCategories = new ArrayCollection($parentCategory->getParents()->toArray());
-                $relatedParentCategories->add($parentCategory);
-            }
-        }
-        $category->setParents($relatedParentCategories);
     }
 
     /**

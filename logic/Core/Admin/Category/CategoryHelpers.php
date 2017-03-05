@@ -3,8 +3,11 @@
 namespace Logic\Core\Admin\Category;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category as CategoryEntity;
 use Logic\Core\Form\Category as CategoryForm;
+use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\CategoryContent;
 use Logic\Core\Services\CategoryTree;
 use Logic\Core\Services\Language;
@@ -25,26 +28,6 @@ class CategoryHelpers
         $this->categoryForm = new CategoryForm();
         $this->languageService = $language ? $language : new Language();
         $this->categoryTree = $categoryTree;
-    }
-
-    /**
-     * @param Language $languageService
-     * @return self
-     */
-    public function setLanguageService(Language $languageService)
-    {
-        $this->languageService = $languageService;
-        return $this;
-    }
-
-    /**
-     * @param CategoryForm $categoryForm
-     * @return CategoryUpdate
-     */
-    public function setCategoryForm($categoryForm)
-    {
-        $this->categoryForm = $categoryForm;
-        return $this;
     }
     
     /**
@@ -83,5 +66,38 @@ class CategoryHelpers
                 }
             }
         }
+    }
+
+    public function setParents(Category $category, CategoryRepository $categoryRepository, $parentCategoryID)
+    {
+        $relatedParentCategories = new ArrayCollection();
+        if($parentCategoryID){
+            $parentCategory = $categoryRepository->findOneById($parentCategoryID);
+            if($parentCategory instanceof CategoryEntity){
+                $relatedParentCategories = new ArrayCollection($parentCategory->getParents()->toArray());
+                $relatedParentCategories->add($parentCategory);
+            }
+        }
+        $category->setParents($relatedParentCategories);
+    }
+
+    /**
+     * @param Language $languageService
+     * @return self
+     */
+    public function setLanguageService(Language $languageService)
+    {
+        $this->languageService = $languageService;
+        return $this;
+    }
+
+    /**
+     * @param CategoryForm $categoryForm
+     * @return CategoryUpdate
+     */
+    public function setCategoryForm($categoryForm)
+    {
+        $this->categoryForm = $categoryForm;
+        return $this;
     }
 }

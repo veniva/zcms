@@ -8,10 +8,13 @@ use Doctrine\ORM\EntityManager;
 use Logic\Core\BaseLogic;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Form\Category as CategoryForm;
+use Logic\Core\Interfaces\StatusMessages;
+use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Services\Language;
 use Logic\Core\Services\CategoryTree;
+use Logic\Core\Stdlib\Strings;
 
 class CategoryCreate extends BaseLogic
 {
@@ -42,7 +45,7 @@ class CategoryCreate extends BaseLogic
         $this->categoryTree = $categoryTree;
         $this->languageService = $language ? $language : new Language();
         $this->categoryForm = new CategoryForm();
-        $this->helpers = new CategoryHelpers($categoryTree);
+        $this->helpers = new CategoryHelpers($categoryTree, $this->languageService);
 
         parent::__construct($translator);
     }
@@ -50,12 +53,12 @@ class CategoryCreate extends BaseLogic
     public function showForm(int $parentId)
     {
         if($parentId < 0){
-            return $this->response(StatusCodes::ERR_INVALID_PARAM, 'Invalid parameter provided');
+            return $this->response(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
         }
         
         $languagesNumber = $this->entityManager->getRepository(Lang::class)->countLanguages();
         if(!$languagesNumber){
-            return $this->response(self::ERR_NO_LANG, 'You must insert at least one language in order to add categories');
+            return $this->noLanguageResponse();
         }
         
         $categoryEntity = new Category();
@@ -63,6 +66,48 @@ class CategoryCreate extends BaseLogic
         $form = $this->helpers->prepareFormWithLanguage($categoryEntity, $this->translator->translate('Top'), true);
         
         return $this->response(StatusCodes::SUCCESS, null, ['form' => $form, 'category' => $categoryEntity]);
+    }
+
+    public function create($data)
+    {
+        if(!isset($data['parent']) || !isset($data['content'])){
+            return $this->response(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
+        }
+        
+        $languagesNumber = $this->entityManager->getRepository(Lang::class)->countLanguages();
+        if(!$languagesNumber){
+            return $this->noLanguageResponse();
+        }
+
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = $this->entityManager->getRepository(Category::class);
+        $category = new Category();
+        $this->helpers->setParents($category, $categoryRepository, $data['parent']);
+        
+        $form = $this->helpers->prepareFormWithLanguage($category, $this->translator->translate('Top'), true);
+
+        foreach($data['content'] as &$content){
+            $content['alias'] = Strings::alias($content['title']);
+        }
+        $form->setData($data);
+
+        $entityManager = $this->entityManager;
+        if($form->isFormValid($entityManager)){
+            $entityManager->persist($category);
+            $entityManager->flush();
+            
+            return $this->response(StatusCodes::SUCCESS, 'The new category was added successfully');
+        }
+        
+        return $this->response(StatusCodes::ERR_INVALID_FORM, StatusMessages::ERR_INVALID_FORM_MSG, [
+            'category' => $category,
+            'form' => $form
+        ]);
+    }
+
+    protected function noLanguageResponse()
+    {
+        return $this->response(self::ERR_NO_LANG, 'You must insert at least one language in order to add categories');
     }
 
     /**

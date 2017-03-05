@@ -239,35 +239,31 @@ class CategoryController extends AbstractRestfulController implements Translator
 
     public function create($data)
     {
-        $langs = $this->getServiceLocator()->get('entity-manager')->getRepository(get_class(new Lang()))->countLanguages();
-        if(!$langs){
+        /** @var EntityManager $em */
+        $em = $this->getServiceLocator()->get('entity-manager');
+        /** @var CategoryTree $categoryTree */
+        $categoryTree = $this->getServiceLocator()->get('category-tree');
+        /** @var Language $languagesService */
+        $languagesService = $this->getServiceLocator()->get('language');
+
+        $logic = new CategoryCreate($em, new Translator($this->getTranslator()), $categoryTree, $languagesService);
+        $result = $logic->create($data);
+
+        if($result['status'] === StatusCodes::ERR_INVALID_PARAM || $result['status'] === CategoryCreate::ERR_NO_LANG){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $this->translator->translate('You must insert at least one language in order to add categories')],
+                'message' => ['type' => 'error', 'text' => $result['message']],
                 'parent' => $data['parent']
             ]);
         }
-        $category = new Category();
-        $this->setParents($category, $data['parent']);
 
-        $this->prepareFormAndLanguage($category, $form, true);
-
-        foreach($data['content'] as &$content){
-            $content['alias'] = Strings::alias($content['title']);
-        }
-        $form->setData($data);
-        $em = $this->getServiceLocator()->get('entity-manager');
-        if($form->isFormValid($em)){
-            $entityManager = $this->getServiceLocator()->get('entity-manager');
-            $entityManager->persist($category);
-            $entityManager->flush();
-            $this->getResponse()->setStatusCode(201);
+        if($result['status'] === StatusCodes::SUCCESS){
             return new JsonModel([
-                'message' => ['type' => 'success', 'text' => $this->translator->translate('The new category was added successfully')],
+                'message' => ['type' => 'success', 'text' => $result['message']],
                 'parent' => (int)$data['parent'],
             ]);
         }
 
-        return $this->renderCategData($category, $form, $data['parent']);
+        return $this->renderCategData($result['category'], $result['form'], $data['parent']);
     }
 
     protected function addEmptyContent(Category $category)
