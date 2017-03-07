@@ -35,15 +35,9 @@ class CategoryController extends AbstractRestfulController implements Translator
 {
     use TranslatorAwareTrait, ServiceLocatorAwareTrait;
 
-    /**
-     * @var Filesystem
-     */
-    protected $fileSystem;
-
-    public function __construct(ServiceLocatorInterface $serviceLocator, Filesystem $filesystem)
+    public function __construct(ServiceLocatorInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
-        $this->fileSystem = $filesystem;
     }
 
     public function listAction()
@@ -75,33 +69,6 @@ class CategoryController extends AbstractRestfulController implements Translator
             'breadcrumb' => $renderer->admin_breadcrumb(),
             'parent' => $parent,
         ]);
-    }
-
-    /**
-     * Adds empty content in various languages to the category entity if necessary
-     * Instantiates the forms and binds it to the data
-     * @param Category $category
-     * @param null &$form Referenced
-     * @param bool $isNew
-     * @return bool|JsonModel
-     */
-    protected function prepareFormAndLanguage($category, &$form, $isNew = false)
-    {
-        $serviceLocator = $this->getServiceLocator();
-        $entityManager = $serviceLocator->get('entity-manager');
-
-        //add empty language content to the collection, so that input fields are created
-        $this->addEmptyContent($category);
-        $listingContent = !$isNew ? $category->getContent() : null;
-        $form = new CategoryForm($entityManager, $listingContent);
-        $categoryTree = $this->getServiceLocator()->get('category-tree');
-        $category2 = !$isNew ? $category : null;
-        $parentElement = $form->get('parent');
-        $parentElement->setEmptyOption($this->translator->translate('Top'));
-        $parentElement->setValueOptions($categoryTree->getSelectOptions($category2));
-
-        $form->bind($category);
-        return true;
     }
 
     /**
@@ -184,21 +151,6 @@ class CategoryController extends AbstractRestfulController implements Translator
         return $this->renderCategData($result['category'], $result['form'], (int)$result['category']->getParent());
     }
 
-    protected function setParents(Category $category, $parentCategoryID)
-    {
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $categoryRepository = $entityManager->getRepository(get_class($category));
-        $relatedParentCategories = new ArrayCollection();
-        if($parentCategoryID){
-            $parentCategory = $categoryRepository->findOneById($parentCategoryID);
-            if($parentCategory instanceof Category){
-                $relatedParentCategories = new ArrayCollection($parentCategory->getParents()->toArray());
-                $relatedParentCategories->add($parentCategory);
-            }
-        }
-        $category->setParents($relatedParentCategories);
-    }
-
     /**
      * Show the Add Category form
      * @return JsonModel
@@ -265,22 +217,6 @@ class CategoryController extends AbstractRestfulController implements Translator
         return $this->renderCategData($result['category'], $result['form'], $data['parent']);
     }
 
-    protected function addEmptyContent(Category $category)
-    {
-        $contentIDs = [];
-        $languagesService = $this->getServiceLocator()->get('language');
-        foreach($category->getContent() as $content){
-            $contentIDs[] = $content->getLang()->getId();
-        }
-
-        $languages = $languagesService->getActiveLanguages();
-        foreach($languages as $language){
-            if(!in_array($language->getId(), $contentIDs)){
-                new CategoryContent($category, $language);
-            }
-        }
-    }
-
     public function delete($id)
     {
         $serviceLocator = $this->getServiceLocator();
@@ -303,18 +239,5 @@ class CategoryController extends AbstractRestfulController implements Translator
             'message' => ['type' => 'success', 'text' => $result['message']],
             'parent' => $result['parent'],
         ]);
-    }
-
-    protected function deleteListingImages($category, Filesystem $fileSystem, $path)
-    {
-        $em = $this->getServiceLocator()->get('entity-manager');
-        //dept-first recursion
-        foreach($em->getRepository(get_class($category))->getChildren($category) as $subCategory){
-            $this->deleteListingImages($subCategory, $fileSystem, $path);
-        }
-
-        foreach($category->getListings() as $listing){
-            $fileSystem->remove($path.$listing->getId());
-        }
     }
 }

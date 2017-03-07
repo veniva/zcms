@@ -25,6 +25,6 @@ class CategoryControllerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new CategoryController($serviceLocator, new Filesystem());
+        return new CategoryController($serviceLocator);
     }
 }
