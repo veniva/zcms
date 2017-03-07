@@ -11,15 +11,14 @@ namespace Admin\Controller;
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin\Category\CategoryCreate;
+use Logic\Core\Admin\Category\CategoryDelete;
 use Logic\Core\Admin\Category\CategoryUpdate;
 use Logic\Core\Form\Category as CategoryForm;
 use Logic\Core\Admin\Category\CategoryList as CategoryLogic;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\CategoryContent;
-use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Services\Language;
-use Logic\Core\Stdlib\Strings;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Filesystem\Filesystem;
 use Zend\I18n\Translator\TranslatorAwareInterface;
@@ -285,29 +284,24 @@ class CategoryController extends AbstractRestfulController implements Translator
     public function delete($id)
     {
         $serviceLocator = $this->getServiceLocator();
+        /** @var EntityManager $entityManager */
         $entityManager = $serviceLocator->get('entity-manager');
+        $imgDir = $this->getServiceLocator()->get('config')['listing']['img-core-dir'];
+        //v_todo - delete cache file in data/cache if cache enabled in module Application/config/module.config.php
 
-        $category = $entityManager->find(get_class(new Category), (int)$id);
-        if(!$category){
+        $logic = new CategoryDelete($entityManager, new Translator($this->getTranslator()));
+        $result = $logic->delete($id, $imgDir);
+        
+        if($result['status'] !== StatusCodes::SUCCESS){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $this->translator->translate('Category not found')],
+                'message' => ['type' => 'error', 'text' => $result['message']],
                 'parent' => 0
             ]);
         }
-
-        //region Remove pages' images
-        $imgDir = $this->getServiceLocator()->get('config')['listing']['img-core-dir'];
-        $fileSystem = $this->fileSystem;
-        $this->deleteListingImages($category, $fileSystem, $imgDir);
-        //endregion
-
-        $entityManager->remove($category);//contained listings are cascade removed from the ORM!!
-        $entityManager->flush();
-        //v_todo - delete cache file in data/cache if cache enabled in module Application/config/module.config.php
-
+        
         return new JsonModel([
-            'message' => ['type' => 'success', 'text' => $this->translator->translate('The category and all the listings in it were removed successfully')],
-            'parent' => (int)$category->getParent(),
+            'message' => ['type' => 'success', 'text' => $result['message']],
+            'parent' => $result['parent'],
         ]);
     }
 
