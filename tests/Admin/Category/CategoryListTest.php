@@ -36,12 +36,10 @@ class CategoryListTest extends TestCase
         $langEntStb->method('getId')->willReturn(1);
 
         $categoryLogic = new CategoryList();
-        $list = $categoryLogic->getList($emStb, $lngStb, 1, 1);
+        $result = $categoryLogic->getList($emStb, $lngStb, 1, 1);
 
-        $this->assertArrayHasKey('categories', $list);
-        $this->assertArrayHasKey('categories_paginated', $list);
-        $this->assertTrue(is_array($list['categories']));
-        $this->assertTrue(is_object($list['categories_paginated']));
+        $this->assertTrue(is_array($result->categories));
+        $this->assertTrue(is_object($result->categories_paginated));
     }
 }
 

@@ -65,7 +65,7 @@ class CategoryUpdateTest extends TestCase
         $logic = $this->categoryUpdate;
         $result = $logic->get(1);
 
-        $this->assertEquals(CategoryUpdate::ERR_CATEGORY_NOT_FOUND, $result['status']);
+        $this->assertEquals(CategoryUpdate::ERR_CATEGORY_NOT_FOUND, $result->status);
     }
 
     public function testGetIdError()
@@ -73,7 +73,7 @@ class CategoryUpdateTest extends TestCase
         $logic = $this->categoryUpdate;
         $result = $logic->get(0);
 
-        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
     }
 
     public function testGetSuccess()
@@ -82,20 +82,20 @@ class CategoryUpdateTest extends TestCase
         $logic = $this->categoryUpdate;
         $result = $logic->get(1);
 
-        $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
     }
     //</editor-fold>
 
     public function testUpdateInvalidParam()
     {
         $result = $this->categoryUpdate->update(1, []);
-        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
 
         $result = $this->categoryUpdate->update(1, ['parent']);
-        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
 
         $result = $this->categoryUpdate->update(1, ['content']);
-        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
     }
 
     public function testUpdateCategError()
@@ -103,8 +103,8 @@ class CategoryUpdateTest extends TestCase
         $this->emStb->method('find')->willReturn(null);
         $result = $this->categoryUpdate->update(1, ['parent' => true, 'content' => true]);
 
-        $this->assertEquals(CategoryUpdate::ERR_CATEGORY_NOT_FOUND, $result['status']);
-        $this->assertArrayHasKey('message', $result);
+        $this->assertEquals(CategoryUpdate::ERR_CATEGORY_NOT_FOUND, $result->status);
+        $this->assertTrue(is_string($result->message));
     }
     
     public function testUpdateInvalidForm()
@@ -117,9 +117,9 @@ class CategoryUpdateTest extends TestCase
             'parent' => true,
             'content' => []
         ]);
-        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result['status']);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('category', $result);
+        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result->status);
+        $this->assertTrue($result->has('form'));
+        $this->assertTrue($result->has('category'));
     }
 
     public function testUpdateSuccess()
@@ -134,9 +134,9 @@ class CategoryUpdateTest extends TestCase
             'content' => []
         ]);
 
-        $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
-        $this->assertArrayHasKey('message', $result);
-        $this->assertArrayHasKey('parent', $result);
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
+        $this->assertTrue(is_string($result->message));
+        $this->assertTrue($result->has('parent'));
     }
 
     private function prepare()

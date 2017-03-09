@@ -9,6 +9,7 @@ use Logic\Core\BaseLogic;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Category;
+use Logic\Core\Result;
 use Logic\Core\Stdlib\Strings;
 use Logic\Core\Form\Category as CategoryForm;
 use Logic\Core\Services\Language;
@@ -54,21 +55,21 @@ class CategoryUpdate extends BaseLogic
      * @param integer $id The category ID
      * @return array
      */
-    public function get($id)
+    public function get($id): Result
     {
         if(!$id){
-            return $this->response(StatusCodes::ERR_INVALID_PARAM, 'Wrong category ID');
+            return $this->result(StatusCodes::ERR_INVALID_PARAM, 'Wrong category ID');
         }
 
         /** @var Category $category */
         $category = $this->entityManager->find(Category::class, $id);
         if(!$category){
-            return $this->response(self::ERR_CATEGORY_NOT_FOUND, 'Wrong category ID');
+            return $this->result(self::ERR_CATEGORY_NOT_FOUND, 'Wrong category ID');
         }
         
         $form = $this->helpers->prepareFormWithLanguage($category, $this->translator->translate('Top'));
         
-        return $this->response(StatusCodes::SUCCESS, null, ['form' => $form, 'category' => $category]);
+        return $this->result(StatusCodes::SUCCESS, null, ['form' => $form, 'category' => $category]);
     }
 
     /**
@@ -77,16 +78,16 @@ class CategoryUpdate extends BaseLogic
      * @param array $data
      * @return array
      */
-    public function update(int $id, $data)
+    public function update(int $id, $data): Result
     {
         if(!isset($data['parent']) || !isset($data['content'])){
-            return $this->response(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
+            return $this->result(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
         }
         
         /** @var Category $category */
         $category = $this->entityManager->find(Category::class, $id);
         if(!$category){
-            return $this->response(self::ERR_CATEGORY_NOT_FOUND, 'Wrong category ID provided');
+            return $this->result(self::ERR_CATEGORY_NOT_FOUND, 'Wrong category ID provided');
         }
 
         $form = $this->helpers->prepareFormWithLanguage($category, $this->translator->translate('Top'));
@@ -109,10 +110,10 @@ class CategoryUpdate extends BaseLogic
             $this->entityManager->persist($category);
             $this->entityManager->flush();
 
-            return $this->response(StatusCodes::SUCCESS, 'The category has been edited successfully', ['parent' => (int)$category->getParent()]);
+            return $this->result(StatusCodes::SUCCESS, 'The category has been edited successfully', ['parent' => (int)$category->getParent()]);
         }
         
-        return $this->response(StatusCodes::ERR_INVALID_FORM, null, ['form' => $form, 'category' => $category]);
+        return $this->result(StatusCodes::ERR_INVALID_FORM, null, ['form' => $form, 'category' => $category]);
     }
 
     /**

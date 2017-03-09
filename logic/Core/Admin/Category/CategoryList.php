@@ -7,11 +7,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Logic\Core\BaseLogic;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category as CategoryEntity;
+use Logic\Core\Result;
 use Logic\Core\Services\Language;
 
 class CategoryList extends BaseLogic
 {
-    public function getList(EntityManagerInterface $em, Language $languageService, int $parent, int $page)
+    public function getList(EntityManagerInterface $em, Language $languageService, int $parent, int $page): Result
     {
         $categoryRepository = $em->getRepository(CategoryEntity::class);
         $categoriesPaginated = $categoryRepository->getPaginatedCategories($parent);
@@ -29,7 +30,7 @@ class CategoryList extends BaseLogic
             $i++;
         }
         
-        return $this->response(StatusCodes::SUCCESS, null, [
+        return $this->result(StatusCodes::SUCCESS, null, [
             'categories' => $categories,
             'categories_paginated' => $categoriesPaginated
         ]);

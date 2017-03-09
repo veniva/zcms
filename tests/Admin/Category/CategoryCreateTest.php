@@ -43,8 +43,8 @@ class CategoryCreateTest extends TestCase
     {
         $result = $this->categoryCreate->showForm(-1);
 
-        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
-        $this->assertArrayHasKey('message', $result);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
+        $this->assertTrue(is_string($result->message));
     }
 
     public function testShowNoLanguages()
@@ -53,8 +53,8 @@ class CategoryCreateTest extends TestCase
         $this->emStb->method('getRepository')->willReturn(new CatCreateStb);
         $result = $this->categoryCreate->showForm(1);
 
-        $this->assertEquals(CategoryCreate::ERR_NO_LANG, $result['status']);
-        $this->assertArrayHasKey('message', $result);
+        $this->assertEquals(CategoryCreate::ERR_NO_LANG, $result->status);
+        $this->assertTrue(is_string($result->message));
     }
 
     public function testShowSuccess()
@@ -68,23 +68,21 @@ class CategoryCreateTest extends TestCase
 
         $result = $this->categoryCreate->showForm(1);
 
-        $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('category', $result);
-        $this->assertTrue($result['form'] instanceof CategoryForm);
-        $this->assertTrue($result['category'] instanceof Category);
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
+        $this->assertTrue($result->form instanceof CategoryForm);
+        $this->assertTrue($result->category instanceof Category);
     }
 
     public function testCategoryCreateInvalidParam()
     {
         $result = $this->categoryCreate->create([]);
-        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
 
         $result = $this->categoryCreate->create(['parent']);
-        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
 
         $result = $this->categoryCreate->create(['content']);
-        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result['status']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
     }
 
     public function testCategoryCreateNoLanguage()
@@ -95,8 +93,8 @@ class CategoryCreateTest extends TestCase
             'content' => true
         ]);
 
-        $this->assertEquals(CategoryCreate::ERR_NO_LANG, $result['status']);
-        $this->assertArrayHasKey('message', $result);
+        $this->assertEquals(CategoryCreate::ERR_NO_LANG, $result->status);
+        $this->assertTrue(is_string($result->message));
     }
 
     public function testCategoryCreateInvalidForm()
@@ -109,9 +107,9 @@ class CategoryCreateTest extends TestCase
             'content' => []
         ]);
 
-        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result['status']);
-        $this->assertArrayHasKey('category', $result);
-        $this->assertArrayHasKey('form', $result);
+        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result->status);
+        $this->assertTrue($result->has('category'));
+        $this->assertTrue($result->has('form'));
     }
 
     public function testCategoryCreateSuccess()
@@ -123,8 +121,8 @@ class CategoryCreateTest extends TestCase
             'parent' => true,
             'content' => []
         ]);
-        $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
-        $this->assertArrayHasKey('message', $result);
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
+        $this->assertTrue(is_string($result->message));
     }
 
     protected function prepare()

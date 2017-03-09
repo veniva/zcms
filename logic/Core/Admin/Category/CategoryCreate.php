@@ -12,6 +12,7 @@ use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Lang;
+use Logic\Core\Result;
 use Logic\Core\Services\Language;
 use Logic\Core\Services\CategoryTree;
 use Logic\Core\Stdlib\Strings;
@@ -50,10 +51,10 @@ class CategoryCreate extends BaseLogic
         parent::__construct($translator);
     }
     
-    public function showForm(int $parentId)
+    public function showForm(int $parentId): Result
     {
         if($parentId < 0){
-            return $this->response(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
+            return $this->result(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
         }
         
         $languagesNumber = $this->entityManager->getRepository(Lang::class)->countLanguages();
@@ -65,13 +66,13 @@ class CategoryCreate extends BaseLogic
         $this->helpers->setLanguageService($this->languageService);
         $form = $this->helpers->prepareFormWithLanguage($categoryEntity, $this->translator->translate('Top'), true);
         
-        return $this->response(StatusCodes::SUCCESS, null, ['form' => $form, 'category' => $categoryEntity]);
+        return $this->result(StatusCodes::SUCCESS, null, ['form' => $form, 'category' => $categoryEntity]);
     }
 
-    public function create($data)
+    public function create($data): Result
     {
         if(!isset($data['parent']) || !isset($data['content'])){
-            return $this->response(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
+            return $this->result(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
         }
         
         $languagesNumber = $this->entityManager->getRepository(Lang::class)->countLanguages();
@@ -96,18 +97,18 @@ class CategoryCreate extends BaseLogic
             $entityManager->persist($category);
             $entityManager->flush();
             
-            return $this->response(StatusCodes::SUCCESS, 'The new category was added successfully');
+            return $this->result(StatusCodes::SUCCESS, 'The new category was added successfully');
         }
         
-        return $this->response(StatusCodes::ERR_INVALID_FORM, StatusMessages::ERR_INVALID_FORM_MSG, [
+        return $this->result(StatusCodes::ERR_INVALID_FORM, StatusMessages::ERR_INVALID_FORM_MSG, [
             'category' => $category,
             'form' => $form
         ]);
     }
 
-    protected function noLanguageResponse()
+    protected function noLanguageResponse():Result
     {
-        return $this->response(self::ERR_NO_LANG, 'You must insert at least one language in order to add categories');
+        return $this->result(self::ERR_NO_LANG, 'You must insert at least one language in order to add categories');
     }
 
     /**

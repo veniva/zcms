@@ -8,6 +8,7 @@
 
 namespace Admin\Controller;
 
+
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin\Category\CategoryCreate;
@@ -17,10 +18,7 @@ use Logic\Core\Form\Category as CategoryForm;
 use Logic\Core\Admin\Category\CategoryList as CategoryLogic;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category;
-use Logic\Core\Model\Entity\CategoryContent;
 use Logic\Core\Services\Language;
-use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Filesystem\Filesystem;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractRestfulController;
@@ -52,11 +50,11 @@ class CategoryController extends AbstractRestfulController implements Translator
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $languageService = $this->getServiceLocator()->get('language');
         $categoryLogic = new CategoryLogic();
-        $logicData = $categoryLogic->getList($entityManager, $languageService, $parent, $page);
+        $result = $categoryLogic->getList($entityManager, $languageService, $parent, $page);
 
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
         $paginator = $renderer->paginationControl(
-            $logicData['categories_paginated'],
+            $result->get('categories_paginated'),
             'Sliding',
             'paginator/sliding_category_ajax',
             ['id' => $parent]
@@ -64,7 +62,7 @@ class CategoryController extends AbstractRestfulController implements Translator
 
         return new JsonModel([
             'title' => $this->translator->translate('Categories'),
-            'lists' => $logicData['categories'],
+            'lists' => $result->categories,
             'paginator' => $paginator,
             'breadcrumb' => $renderer->admin_breadcrumb(),
             'parent' => $parent,
@@ -112,14 +110,14 @@ class CategoryController extends AbstractRestfulController implements Translator
         $logic = new CategoryUpdate($entityManager, new Translator($this->getTranslator()), $categoryTree, $languagesService);
         $result = $logic->get($id);
 
-        if($result['status'] !== StatusCodes::SUCCESS){
+        if($result->status !== StatusCodes::SUCCESS){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $result['message']],
+                'message' => ['type' => 'error', 'text' => $result->message],
                 'parent' => 0,
             ]);
         }
-
-        return $this->renderCategData($result['category'], $result['form'], (int)$result['category']->getParent());
+        $category = $result->get('category');
+        return $this->renderCategData($category, $result->get('form'), (int)$category->getParent());
     }
 
     public function update($id, $data)
@@ -134,21 +132,21 @@ class CategoryController extends AbstractRestfulController implements Translator
         $logic = new CategoryUpdate($entityManager, new Translator($this->getTranslator()), $categoryTree, $languagesService);
         $result = $logic->update($id, $data);
 
-        if($result['status'] === CategoryUpdate::ERR_CATEGORY_NOT_FOUND){
+        if($result->status === CategoryUpdate::ERR_CATEGORY_NOT_FOUND){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $result['message']],
+                'message' => ['type' => 'error', 'text' => $result->message],
                 'parent' => 0,
             ]);
         }
 
-        if($result['status'] === StatusCodes::SUCCESS){
+        if($result->status === StatusCodes::SUCCESS){
             return new JsonModel([
-                'message' => ['type' => 'success', 'text' => $result['message']],
-                'parent' => $result['parent'],
+                'message' => ['type' => 'success', 'text' => $result->message],
+                'parent' => $result->get('parent'),
             ]);
         }
-
-        return $this->renderCategData($result['category'], $result['form'], (int)$result['category']->getParent());
+        $category = $result->get('category');
+        return $this->renderCategData($category, $result->get('form'), (int)$category->getParent());
     }
 
     /**
@@ -170,22 +168,22 @@ class CategoryController extends AbstractRestfulController implements Translator
 
         $result = $logic->showForm((int)$parentCategoryID);
 
-        if($result['status'] === StatusCodes::ERR_INVALID_PARAM){
+        if($result->status === StatusCodes::ERR_INVALID_PARAM){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $result['message']],
+                'message' => ['type' => 'error', 'text' => $result->message],
                 'parent' => $parentCategoryID
             ]);
         }
 
         //check if there is an existing language before entering new category
-        if($result['status'] === CategoryCreate::ERR_NO_LANG){
+        if($result->status === CategoryCreate::ERR_NO_LANG){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $result['message']],
+                'message' => ['type' => 'error', 'text' => $result->message],
                 'parent' => $parentCategoryID
             ]);
         }
 
-        return $this->renderCategData($result['category'], $result['form'], $parentCategoryID);
+        return $this->renderCategData($result->get('category'), $result->get('form'), $parentCategoryID);
     }
 
     public function create($data)
@@ -200,21 +198,21 @@ class CategoryController extends AbstractRestfulController implements Translator
         $logic = new CategoryCreate($em, new Translator($this->getTranslator()), $categoryTree, $languagesService);
         $result = $logic->create($data);
 
-        if($result['status'] === StatusCodes::ERR_INVALID_PARAM || $result['status'] === CategoryCreate::ERR_NO_LANG){
+        if($result->status === StatusCodes::ERR_INVALID_PARAM || $result->status === CategoryCreate::ERR_NO_LANG){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $result['message']],
+                'message' => ['type' => 'error', 'text' => $result->message],
                 'parent' => $data['parent']
             ]);
         }
 
-        if($result['status'] === StatusCodes::SUCCESS){
+        if($result->status === StatusCodes::SUCCESS){
             return new JsonModel([
-                'message' => ['type' => 'success', 'text' => $result['message']],
+                'message' => ['type' => 'success', 'text' => $result->message],
                 'parent' => (int)$data['parent'],
             ]);
         }
 
-        return $this->renderCategData($result['category'], $result['form'], $data['parent']);
+        return $this->renderCategData($result->category, $result->form, $data->parent);
     }
 
     public function delete($id)
@@ -228,16 +226,16 @@ class CategoryController extends AbstractRestfulController implements Translator
         $logic = new CategoryDelete($entityManager, new Translator($this->getTranslator()));
         $result = $logic->delete($id, $imgDir);
         
-        if($result['status'] !== StatusCodes::SUCCESS){
+        if($result->status !== StatusCodes::SUCCESS){
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $result['message']],
+                'message' => ['type' => 'error', 'text' => $result->message],
                 'parent' => 0
             ]);
         }
         
         return new JsonModel([
-            'message' => ['type' => 'success', 'text' => $result['message']],
-            'parent' => $result['parent'],
+            'message' => ['type' => 'success', 'text' => $result->message],
+            'parent' => $result->parent,
         ]);
     }
 }

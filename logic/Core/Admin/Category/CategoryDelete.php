@@ -10,6 +10,7 @@ use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category;
+use Logic\Core\Result;
 use Symfony\Component\Filesystem\Filesystem;
 
 class CategoryDelete extends BaseLogic
@@ -34,25 +35,27 @@ class CategoryDelete extends BaseLogic
         $this->filesystem = $fileSystem ? $fileSystem : new Filesystem();
     }
     
-    public function delete(int $id, string $imgDir)
+    public function delete(int $id, string $imgDir):Result
     {
         if($id < 1){
-            return $this->response(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
+            return $this->result(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
         }
         
         /** @var Category | null $category */
         $category = $this->em->find(Category::class, $id);
         if(!$category){
-            return $this->response(self::ERR_CATEG_NOT_FOUND, 'Category not found');
+            return $this->result(self::ERR_CATEG_NOT_FOUND, 'Category not found');
         }
         
         $this->deleteListingImages($category, $imgDir);
+        
+        //V_TODO - delete all the children in table categories
         
         $this->em->remove($category);
         $this->em->flush();
         
         $successMessage = 'The category and all the listings in it were removed successfully';
-        return $this->response(StatusCodes::SUCCESS, $successMessage, [
+        return $this->result(StatusCodes::SUCCESS, $successMessage, [
             'parent' => (int)$category->getParent()
         ]);
     }

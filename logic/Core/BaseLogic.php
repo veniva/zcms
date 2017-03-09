@@ -7,16 +7,16 @@ use Logic\Core\Adapters\Interfaces\ITranslator;
 
 class BaseLogic
 {
-    /** @var Response */
-    protected $response;
+    /** @var Result */
+    protected $result;
     
     public function __construct(ITranslator $translator = null)
     {
-        $this->response = new Response($translator);
+        $this->result = new Result($translator);
     }
     
-    protected function response($status, string $message = null, array $array = []):array
+    protected function result($status, string $message = null, array $array = []):Result
     {
-        return $this->response->response($status, $message, $array);
+        return $this->result->set($status, $message, $array);
     }
 }
