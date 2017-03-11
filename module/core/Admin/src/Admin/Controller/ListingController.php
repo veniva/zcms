@@ -10,9 +10,11 @@ namespace Admin\Controller;
 
 
 use Admin\Form\Listing as ListingForm;
+use Doctrine\ORM\EntityManager;
+use Logic\Core\Adapters\Zend\Translator;
+use Logic\Core\Admin\Page\PageList;
 use Logic\Core\Model\Entity\ListingContent;
 use Logic\Core\Model\Entity\ListingImage;
-use Application\Model\Entity;
 use Logic\Core\Stdlib\Strings;
 use Symfony\Component\Filesystem\Filesystem;
 use Zend\Form\Element\Select;
@@ -59,39 +61,24 @@ class ListingController extends AbstractRestfulController implements TranslatorA
     public function getList()
     {
         $parentCategory = $this->params()->fromQuery('filter', '0');
-        $page = $this->params()->fromQuery('page', 1);
-        $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
-
-        $listingsPaginated = $listingRepository->getListingsPaginated($parentCategory);
-        $listingsPaginated->setCurrentPageNumber($page);
-
         $defaultLanguageID = $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId();
-        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
-        $paginator = $renderer->paginationControl($listingsPaginated, 'Sliding', 'paginator/sliding_ajax', ['id' => $parentCategory]);
+        $page = $this->params()->fromQuery('page', 1);
 
-        $i = 0;
-        $listingsData = [];
-        foreach($listingsPaginated as $listing){
-            $listingsData[$i]['id'] = $listing->getId();
-            $listingsData[$i]['sort'] = $listing->getSort();
-            $listingsData[$i]['link'] = $listing->getSingleListingContent($defaultLanguageID)->getLink();
-            $n = 0;
-            $categories = [];
-            foreach($listing->getCategories() as $category){
-                $categories[$n]['id'] = $category->getId();
-                $categories[$n]['title'] = $category->getSingleCategoryContent($defaultLanguageID)->getTitle();
-                $n++;
-            }
-            $listingsData[$i]['categories'] = $categories;
-            $i++;
-        }
+        /** @var EntityManager $em */
+        $em = $this->getServiceLocator()->get('entity-manager');
+
+        $logic = new PageList($em, new Translator($this->getTranslator()));
+        $result = $logic->showList($defaultLanguageID, $parentCategory, $page);
+
+        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
+        $paginator = $renderer->paginationControl($result->get('pages_paginated'), 'Sliding', 'paginator/sliding_ajax', ['id' => $parentCategory]);
 
         return new JsonModel([
             'title' => $this->getTranslator()->translate('Pages'),
-            'lists' => $listingsData,
+            'lists' => $result->get('pages'),
             'paginator' => $paginator,
             'parentCategory' => $parentCategory,
-            'defaultLanguageID' => $this->getServiceLocator()->get('language')->getDefaultLanguage()->getId(),
+            'defaultLanguageID' => $defaultLanguageID,
         ]);
     }
 
@@ -189,6 +176,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         return $this->handleCreateUpdate($data);
     }
 
+    //V_TODO - repair a bug when uploading image greater than the allowed
     public function handleCreateUpdate($data, $id = null){
         $action = !$id ? 'add' : 'edit';
         $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);

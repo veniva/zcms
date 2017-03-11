@@ -10,8 +10,13 @@ class BaseLogic
     /** @var Result */
     protected $result;
     
+    /** @var null|ITranslator */
+    protected $translator;
+    
     public function __construct(ITranslator $translator = null)
     {
+        $this->translator = $translator;
+        
         $this->result = new Result($translator);
     }
     

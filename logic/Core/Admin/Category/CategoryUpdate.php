@@ -20,9 +20,6 @@ class CategoryUpdate extends BaseLogic
 {
     const ERR_CATEGORY_NOT_FOUND = 'u-cat.categ-not-found';
     
-    /** @var  ITranslator */
-    protected $translator;
-    
     /** @var EntityManager */
     protected $entityManager;
 
@@ -40,7 +37,6 @@ class CategoryUpdate extends BaseLogic
 
     public function __construct(EntityManager $entityManager, ITranslator $translator, CategoryTree $categoryTree, Language $language = null)
     {
-        $this->translator = $translator;
         $this->entityManager = $entityManager;
         $this->categoryTree = $categoryTree;
         $this->languageService = $language ? $language : new Language();
