@@ -53,7 +53,7 @@ class CategoryUpdate extends BaseLogic
     /**
      * Show the category form
      * @param integer $id The category ID
-     * @return array
+     * @return Result
      */
     public function get($id): Result
     {
@@ -76,11 +76,11 @@ class CategoryUpdate extends BaseLogic
      * Handle the update of the category
      * @param integer $id
      * @param array $data
-     * @return array
+     * @return Result
      */
     public function update(int $id, $data): Result
     {
-        if(!isset($data['parent']) || !isset($data['content'])){
+        if(!isset($data['parent_id']) || !isset($data['content'])){
             return $this->result(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
         }
         
@@ -91,15 +91,19 @@ class CategoryUpdate extends BaseLogic
         }
 
         $form = $this->helpers->prepareFormWithLanguage($category, $this->translator->translate('Top'));
+
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $this->entityManager->getRepository(Category::class);
-        $this->helpers->setParents($category, $categoryRepository, $data['parent']);
+        $parentCategory = $categoryRepository->find($data['parent_id']);
+        $this->helpers->setParents($category, $parentCategory);
 
         $children = $categoryRepository->getChildren($category);
         foreach($children as $childEntity){
-            $this->helpers->setParents($childEntity, $categoryRepository, $category->getId());
+            $this->helpers->setParents($childEntity, $category);
             $this->entityManager->persist($childEntity);
         }
+
+        $data['parent'] = $parentCategory;
 
         foreach($data['content'] as &$content){
             $content['alias'] = Strings::alias($content['title']);
@@ -110,7 +114,9 @@ class CategoryUpdate extends BaseLogic
             $this->entityManager->persist($category);
             $this->entityManager->flush();
 
-            return $this->result(StatusCodes::SUCCESS, 'The category has been edited successfully', ['parent' => (int)$category->getParent()]);
+            return $this->result(StatusCodes::SUCCESS, 'The category has been edited successfully', [
+                'parent' => (int)$category->getParentId()
+            ]);
         }
         
         return $this->result(StatusCodes::ERR_INVALID_FORM, null, ['form' => $form, 'category' => $category]);

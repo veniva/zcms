@@ -89,7 +89,7 @@ class CategoryCreateTest extends TestCase
     {
         $this->emStb->method('getRepository')->willReturn(new CatCreateStb);
         $result = $this->categoryCreate->create([
-            'parent' => true,
+            'parent_id' => true,
             'content' => true
         ]);
 
@@ -103,7 +103,7 @@ class CategoryCreateTest extends TestCase
         $this->formStb->method('isFormValid')->willReturn(false);
 
         $result = $this->categoryCreate->create([
-            'parent' => true,
+            'parent_id' => true,
             'content' => []
         ]);
 
@@ -118,7 +118,7 @@ class CategoryCreateTest extends TestCase
         $this->formStb->method('isFormValid')->willReturn(true);
 
         $result = $this->categoryCreate->create([
-            'parent' => true,
+            'parent_id' => true,
             'content' => []
         ]);
         $this->assertEquals(StatusCodes::SUCCESS, $result->status);

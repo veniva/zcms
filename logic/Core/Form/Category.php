@@ -58,7 +58,7 @@ class Category extends Form
         ));
 
         $this->add(array(
-            'name' => 'parent',
+            'name' => 'parent_id',
             'type' => 'Select',
             'options' => array(
                 'label' => 'Category'
@@ -92,7 +92,7 @@ class Category extends Form
             'filters' => array(
                 array('name' => 'ToNull')
             ),
-        ), 'parent');
+        ), 'parent_id');
     }
 
     public function isFormValid(EntityManager $entityManager, $contentCollection = null)

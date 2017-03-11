@@ -28,7 +28,15 @@ class Category
     protected $parents;
 
     /**
-     * @Column(type="integer", name="parent_id", options={"unsigned": true}, nullable=true)
+     * @OneToMany(targetEntity="Category", mappedBy="parent", cascade={"remove", "persist"})
+     */
+    protected $children;
+
+    /**
+     * http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-self-referencing
+     * Many categories have one category - adjacency approach
+     * @ManyToOne(targetEntity="Category", inversedBy="children")
+     * @JoinColumn(name="parent_id", referencedColumnName="id")
      */
     protected $parent = null;
 
@@ -68,7 +76,7 @@ class Category
     }
 
     /**
-     * @return int
+     * @return null|Category
      */
     public function getParent()
     {
@@ -76,11 +84,16 @@ class Category
     }
 
     /**
-     * @param int $parentId
+     * @param Category $category
      */
-    public function setParent($parentId)
+    public function setParent(Category $category)
     {
-        $this->parent = $parentId;
+        $this->parent = $category;
+    }
+
+    public function getParentId()
+    {
+        return $this->getParent() ? $this->getParent()->getId() : null;
     }
 
     public function getContent()

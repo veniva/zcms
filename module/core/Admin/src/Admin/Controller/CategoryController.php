@@ -73,15 +73,15 @@ class CategoryController extends AbstractRestfulController implements Translator
      * Helps to render the category form for add/edit actions
      * @param Category $category
      * @param CategoryForm $form
-     * @param $parentCategoryID
      * @return JsonModel
      */
-    protected function renderCategData(Category $category, CategoryForm $form, $parentCategoryID)
+    protected function renderCategData(Category $category, CategoryForm $form)
     {
         $action = $category->getId() ? 'edit' : 'add';
+        $parentId = (int)$category->getParentId();
         $categoryTree = $this->getServiceLocator()->get('category-tree');
-        $form->get('parent')->setValueOptions($categoryTree->getSelectOptions($category));
-        $form->get('parent')->setValue($parentCategoryID);
+        $form->get('parent_id')->setValueOptions($categoryTree->getSelectOptions($category));
+        $form->get('parent_id')->setValue($parentId);
 
         $viewModel = new ViewModel([
             'action' => $action,
@@ -94,7 +94,7 @@ class CategoryController extends AbstractRestfulController implements Translator
         return new JsonModel(array(
             'title' => $this->translator->translate(ucfirst($action).' a category'),
             'form' => $renderer->render($viewModel),
-            'parent' => (int)$parentCategoryID,
+            'parent' => $parentId,
         ));
     }
 
@@ -117,7 +117,7 @@ class CategoryController extends AbstractRestfulController implements Translator
             ]);
         }
         $category = $result->get('category');
-        return $this->renderCategData($category, $result->get('form'), (int)$category->getParent());
+        return $this->renderCategData($category, $result->get('form'));
     }
 
     public function update($id, $data)
@@ -132,7 +132,8 @@ class CategoryController extends AbstractRestfulController implements Translator
         $logic = new CategoryUpdate($entityManager, new Translator($this->getTranslator()), $categoryTree, $languagesService);
         $result = $logic->update($id, $data);
 
-        if($result->status === CategoryUpdate::ERR_CATEGORY_NOT_FOUND){
+        if($result->status === CategoryUpdate::ERR_CATEGORY_NOT_FOUND
+            || $result->status === StatusCodes::ERR_INVALID_PARAM){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $result->message],
                 'parent' => 0,
@@ -146,7 +147,7 @@ class CategoryController extends AbstractRestfulController implements Translator
             ]);
         }
         $category = $result->get('category');
-        return $this->renderCategData($category, $result->get('form'), (int)$category->getParent());
+        return $this->renderCategData($category, $result->get('form'));
     }
 
     /**
@@ -183,7 +184,7 @@ class CategoryController extends AbstractRestfulController implements Translator
             ]);
         }
 
-        return $this->renderCategData($result->get('category'), $result->get('form'), $parentCategoryID);
+        return $this->renderCategData($result->get('category'), $result->get('form'));
     }
 
     public function create($data)
@@ -201,18 +202,18 @@ class CategoryController extends AbstractRestfulController implements Translator
         if($result->status === StatusCodes::ERR_INVALID_PARAM || $result->status === CategoryCreate::ERR_NO_LANG){
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $result->message],
-                'parent' => $data['parent']
+                'parent' => $data['parent_id']
             ]);
         }
 
         if($result->status === StatusCodes::SUCCESS){
             return new JsonModel([
                 'message' => ['type' => 'success', 'text' => $result->message],
-                'parent' => (int)$data['parent'],
+                'parent' => (int)$data['parent_id'],
             ]);
         }
 
-        return $this->renderCategData($result->category, $result->form, $data->parent);
+        return $this->renderCategData($result->category, $result->form);
     }
 
     public function delete($id)

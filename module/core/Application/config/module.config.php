@@ -166,7 +166,7 @@ return array(
     ),
     'doctrine' => array(
         'entity_path' => array(
-            dirname(__DIR__, 3).'/logic/Core/Model/Entity',
+            dirname(__DIR__, 4).'/logic/Core/Model/Entity',
         ),
         'initializers' => array(
             'Application\Service\Initializer\Password'

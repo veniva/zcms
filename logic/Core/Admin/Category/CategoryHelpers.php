@@ -44,7 +44,7 @@ class CategoryHelpers
         $form->bind($category);
         $category2 = !$isNew ? $category : null;
 
-        $parentElement = $form->get('parent');
+        $parentElement = $form->get('parent_id');
         $parentElement->setEmptyOption($topName);
         $parentElement->setValueOptions($this->categoryTree->getSelectOptions($category2));
 
@@ -68,12 +68,12 @@ class CategoryHelpers
         }
     }
 
-    public function setParents(Category $category, CategoryRepository $categoryRepository, $parentCategoryID)
+    public function setParents(Category $category, Category $parentCategory = null)
     {
         $relatedParentCategories = new ArrayCollection();
-        if($parentCategoryID){
-            $parentCategory = $categoryRepository->findOneById($parentCategoryID);
+        if($parentCategory){
             if($parentCategory instanceof CategoryEntity){
+                $category->setParent($parentCategory);
                 $relatedParentCategories = new ArrayCollection($parentCategory->getParents()->toArray());
                 $relatedParentCategories->add($parentCategory);
             }

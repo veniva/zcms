@@ -51,7 +51,7 @@ class CategoryUpdateTest extends TestCase
     public function testPrepareForm()
     {
         $form = $this->categoryUpdate->getHelpers()->prepareFormWithLanguage(new CategoryEntity(), 'Top');
-        $parentElement = $form->get('parent');
+        $parentElement = $form->get('parent_id');
         $emptyOption = $parentElement->getEmptyOption();
 
         $this->assertTrue($form instanceof CategoryForm);
@@ -101,7 +101,7 @@ class CategoryUpdateTest extends TestCase
     public function testUpdateCategError()
     {
         $this->emStb->method('find')->willReturn(null);
-        $result = $this->categoryUpdate->update(1, ['parent' => true, 'content' => true]);
+        $result = $this->categoryUpdate->update(1, ['parent_id' => true, 'content' => true]);
 
         $this->assertEquals(CategoryUpdate::ERR_CATEGORY_NOT_FOUND, $result->status);
         $this->assertTrue(is_string($result->message));
@@ -114,7 +114,7 @@ class CategoryUpdateTest extends TestCase
         $this->formStb->method('isFormValid')->willReturn(false);
 
         $result = $this->categoryUpdate->update(1, [
-            'parent' => true,
+            'parent_id' => true,
             'content' => []
         ]);
         $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result->status);
@@ -130,7 +130,7 @@ class CategoryUpdateTest extends TestCase
         $this->formStb->method('get')->willReturn($elemStb);
         $this->categoryUpdate->setCategoryForm($this->formStb);
         $result = $this->categoryUpdate->update(1, [
-            'parent' => true,
+            'parent_id' => true,
             'content' => []
         ]);
 

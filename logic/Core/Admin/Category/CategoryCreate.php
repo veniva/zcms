@@ -71,7 +71,7 @@ class CategoryCreate extends BaseLogic
 
     public function create($data): Result
     {
-        if(!isset($data['parent']) || !isset($data['content'])){
+        if(!isset($data['parent_id']) || !isset($data['content'])){
             return $this->result(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
         }
         
@@ -83,7 +83,10 @@ class CategoryCreate extends BaseLogic
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $this->entityManager->getRepository(Category::class);
         $category = new Category();
-        $this->helpers->setParents($category, $categoryRepository, $data['parent']);
+        $parentCategory = $categoryRepository->find($data['parent_id']);
+        $this->helpers->setParents($category, $parentCategory);
+
+        $data['parent'] = $parentCategory;
         
         $form = $this->helpers->prepareFormWithLanguage($category, $this->translator->translate('Top'), true);
 

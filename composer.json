@@ -17,5 +17,10 @@
     "symfony/filesystem": "~2.8"
   },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Logic\\": "logic"
+    }
+  }
 }
