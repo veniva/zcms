@@ -6,7 +6,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Admin\Validator;
+namespace Logic\Core\Validator;
 
 
 use Zend\Validator\AbstractValidator;

@@ -364,11 +364,11 @@ msgstr "Añadir"
 msgid "Close"
 msgstr "Cerrar"
 
-# Admin\Validator\Base64String
+# Logic\Core\Validator\Base64String
 msgid "The file is more than %max%%measure% long"
 msgstr "El archivo es mas grande de los permitidos %max%%measure%"
 
-# Admin\Validator\Extension
+# Logic\Core\Validator\Extension
 msgid "File is of incorrect type. Allowed are: %extensions%"
 msgstr "El archivo es de tipo no acceptable. Los permitidos son: %extensions%"
 

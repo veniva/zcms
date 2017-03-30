@@ -6,7 +6,7 @@
  * Time: 11:40
  */
 
-namespace Admin\Validator;
+namespace Logic\Core\Validator;
 
 
 use Zend\Validator\AbstractValidator;

@@ -8,15 +8,15 @@
 
 namespace Admin\Controller;
 
-
-use Admin\Form\Listing as ListingForm;
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Zend\Translator;
+use Logic\Core\Admin\Page\PageCreate;
+use Logic\Core\Admin\Page\PageDelete;
 use Logic\Core\Admin\Page\PageList;
-use Logic\Core\Model\Entity\ListingContent;
-use Logic\Core\Model\Entity\ListingImage;
-use Logic\Core\Stdlib\Strings;
-use Symfony\Component\Filesystem\Filesystem;
+use Logic\Core\Admin\Page\PageUpdate;
+use Logic\Core\Interfaces\StatusCodes;
+use Logic\Core\Services\CategoryTree;
+use Logic\Core\Services\Language;
 use Zend\Form\Element\Select;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
@@ -84,52 +84,49 @@ class ListingController extends AbstractRestfulController implements TranslatorA
 
     public function get($id)
     {
-        return $this->addEditListing($id);
+        $parentFilter = $this->params()->fromQuery('filter', 0);
+        /** @var EntityManager $em */
+        $em = null;
+        /** @var CategoryTree $ct */
+        $ct = null;
+        /** @var Language $language */
+        $language = null;
+        $this->dp($em, $ct, $language);
+        
+        $logic = new PageUpdate(new Translator($this->getTranslator()), $em, $ct, $language);
+        $result = $logic->showForm($id, $parentFilter);
+
+        return $this->renderData($result->get('form'), $result->get('page'), 'edit', $result->get('active_languages'));
     }
 
     public function addJsonAction()
     {
-        return $this->addEditListing();
+        $parentFilter = $this->params()->fromQuery('filter', 0);
+        /** @var EntityManager $em */
+        $em = null;
+        /** @var CategoryTree $ct */
+        $ct = null;
+        /** @var Language $language */
+        $language = null;
+        $this->dp($em, $ct, $language);
+
+        $logic = new PageCreate(new Translator($this->getTranslator()), $em, $ct, $language);
+        $result = $logic->showForm($parentFilter);
+
+        if($result->status === PageCreate::ERR_NO_CATEGORY)
+            return $this->redirectToList(PageCreate::ERR_NO_CATEGORY_MSG, 'error');
+
+        return $this->renderData($result->get('form'), $result->get('page'), 'add', $result->get('active_languages'));
     }
 
-    protected function addEditListing($id = null)
+    private function dp(EntityManager &$em = null, CategoryTree &$ct = null, Language &$language = null)
     {
-        $action = $id ? 'edit' : 'add';
-        $parentFilter = $this->params()->fromQuery('filter', 0);
-        $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
-        if($action == 'add'){
-            //check if there is at least one category available
-            $categoryEntity = new \Logic\Core\Model\Entity\Category();
-            $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAll();
-            if(!$categoryNumber)
-                return $this->redirToList('You must create at least one category in order to add pages', 'error');
-        }
-
-        $languagesService = $this->getServiceLocator()->get('language');
-        $languages = $languagesService->getActiveLanguages();
-
-        if($action == 'edit'){
-            $listing = $listingRepository->findOneBy(['id' => $id]);
-            if(!$listing) return $this->redirWrongParameter();
-
-        }else{
-            $listing = $this->getServiceLocator()->get('listing-entity');
-        }
-
-        //add empty language content to the collection, so that input fields are created
-        $this->addEmptyContent($listing);
-
-        $listingContent = $action == 'edit' ? $listing->getContent() : null;
-        $form = new ListingForm($this->getServiceLocator()->get('entity-manager'), $listingContent);
-        $form->bind($listing);
-        if($action == 'edit'){
-            if(isset($listing->getCategories()[0]))
-                $form->get('category')->setValueOptions($categoryTree->getSelectOptions())->setValue($listing->getCategories()[0]->getId());
-        }else{
-            $form->get('category')->setValueOptions($categoryTree->getSelectOptions())->setValue($parentFilter);
-        }
-
-        return $this->renderData($form, $listing, $action, $languages);
+        /** @var EntityManager $em */
+        $em = $this->getServiceLocator()->get('entity-manager');
+        /** @var CategoryTree $ct */
+        $ct = $this->getServiceLocator()->get('category-tree');
+        /** @var Language $language */
+        $language = $this->getServiceLocator()->get('language');
     }
 
     protected function renderData($form, $listing, $action, $languages, $message = null)
@@ -167,138 +164,48 @@ class ListingController extends AbstractRestfulController implements TranslatorA
 
     public function update($id, $data)
     {
-        return $this->handleCreateUpdate($data, $id);
+        $imgDir = $this->getServiceLocator()->get('config')['listing']['img-core-dir'];
+        $translator = new Translator($this->getServiceLocator()->get('translator'));
+        $this->dp($em, $ct, $language);
+
+        $logic = new PageUpdate($translator, $em, $ct, $language);
+        $result = $logic->update($id, $data, $imgDir);
+
+        if($result->status === StatusCodes::ERR_INVALID_PARAM){
+            return $this->redirectToList($result->message, 'error');
+
+        }else if($result->status === StatusCodes::ERR_INVALID_FORM){
+            $message = ['type' => 'error', 'text' => $result->message, 'no_redir' => 1];
+            return $this->renderData($result->get('form'), $result->get('page'), 'edit', $language->getActiveLanguages(), $message);
+
+        }
+
+        return new JsonModel([
+            'message' => ['type' => 'success', 'text' => $result->message],
+        ]);
         //v_todo - delete cache file in data/cache if cache enabled in module Application/config/module.config.php
     }
 
     public function create($data)
     {
-        return $this->handleCreateUpdate($data);
-    }
-
-    //V_TODO - repair a bug when uploading image greater than the allowed
-    public function handleCreateUpdate($data, $id = null){
-        $action = !$id ? 'add' : 'edit';
-        $this->dependencyProvider($entityManager, $listingEntity, $categoryTree, $listingRepository);
-        if(!$id){
-            //check if there is at least one category available
-            $categoryEntity = new \Logic\Core\Model\Entity\Category();
-            $categoryNumber = $entityManager->getRepository(get_class($categoryEntity))->countAll();
-            if(!$categoryNumber)
-                return $this->redirToList('You must create at least one category in order to add pages', 'error');
-
-        }
-
-        if($action == 'edit'){
-            $listing = $listingRepository->findOneBy(['id' => $id]);
-            if(!$listing) return $this->redirWrongParameter();
-
-        }else{
-            $listing = new \Logic\Core\Model\Entity\Listing();
-        }
-
-        if(!empty($data['content'])){
-            foreach($data['content'] as &$content){
-                if(empty($content['alias'])){
-                    $content['alias'] = Strings::alias($content['title']);
-                }else{
-                    $content['alias'] = Strings::alias($content['alias']);
-                }
-            }
-        }
+        $translator = new Translator($this->getServiceLocator()->get('translator'));
+        $this->dp($em, $ct, $language);
+        $logic = new PageCreate($translator, $em, $ct, $language);
 
         $imgDir = $this->getServiceLocator()->get('config')['listing']['img-core-dir'];
+        $result = $logic->create($data, $imgDir);
 
-        $languagesService = $this->getServiceLocator()->get('language');
-        $languages = $languagesService->getActiveLanguages();
+        if($result->status === PageCreate::ERR_NO_CATEGORY){
+            return $this->redirectToList($result->message, 'error');
 
-        //add empty language content to the collection, so that input fields are created
-        $this->addEmptyContent($listing);
-
-        $listingContent = $action == 'edit' ? $listing->getContent() : null;
-        $form = new ListingForm($this->getServiceLocator()->get('entity-manager'), $listingContent);
-        $form->bind($listing);
-        $form->get('category')->setValueOptions($categoryTree->getSelectOptions());
-
-        $returnError = function($message) use($form, $listing, $action, $languages){
-            $message = ['type' => 'error', 'text' => $message, 'no_redir' => 1];
-            return $this->renderData($form, $listing, $action, $languages, $message);
-        };
-
-        $hasImage = (!empty($data['listing_image']['base64']) && !empty($data['listing_image']['name']));
-        //validate image
-        if($hasImage){
-            $messages = [];
-            $result = $form->validateBase64Image($data['listing_image']['name'], $data['listing_image']['base64'], $messages);
-            if(!$result)
-                return $returnError($this->translator->translate(implode('<br />', $messages)));//v_todo - translate
+        }else if($result->status === StatusCodes::ERR_INVALID_FORM){
+            $message = ['type' => 'error', 'text' => $result->message, 'no_redir' => 1];
+            return $this->renderData($result->get('form'), $result->get('page'), 'add', $language->getActiveLanguages(), $message);
         }
 
-        $form->setData($data);
-        if($form->isValid()){
-            $category = $entityManager->find(get_class($this->getServiceLocator()->get('category-entity')),
-                ['id' => $form->getInputFilter()->getValue('category')]);
-            $listing->setOnlyCategory($category);
-
-            $entityManager->persist($listing);
-
-            //is the image scheduled for removal
-            if($action == 'edit'){
-                if(!empty($data['image_remove']) && $listing->getListingImage()){
-                    $this->removeListingImage($listing->getListingImage(), $imgDir, $listing->getId());
-                }
-            }
-
-            //upload new image
-            $upload = false;
-            if($hasImage){
-                if($action == 'edit'){
-                    if(empty($data['image_remove']) && $listing->getListingImage()){
-                        $this->removeListingImage($listing->getListingImage(), $imgDir, $listing->getId());
-                    }
-                }
-
-                $listingImage = new ListingImage($listing);
-                $listingImage->setImageName($data['listing_image']['name']);
-                $upload = true;
-            }
-
-            $entityManager->flush();
-            if($upload){
-                $uploadDir = $imgDir.$listing->getId();
-                if(!file_exists($uploadDir) && !is_dir($uploadDir)){
-                    mkdir($uploadDir);
-                }
-                \file_put_contents($uploadDir.'/'.$data['listing_image']['name'], base64_decode($data['listing_image']['base64']));
-            }
-
-            if($this->getRequest()->isPost()){
-                $this->getResponse()->setStatusCode(201);
-            }
-
-            return new JsonModel([
-                'message' => ['type' => 'success', 'text' => $this->translator->translate(sprintf($this->translator->translate('The page has been %s successfully'),
-                    $this->translator->translate($action.'ed')))],
-            ]);
-
-        }
-        return $returnError($this->translator->translate('Please check the form for errors'));
-    }
-
-    protected function addEmptyContent(\Logic\Core\Model\Entity\Listing $listing)
-    {
-        $languagesService = $this->getServiceLocator()->get('language');
-
-        $contentLangIDs = [];
-        foreach($listing->getContent() as $content){
-            $contentLangIDs[] = $content->getLang()->getId();
-        }
-
-        foreach($languagesService->getActiveLanguages() as $language){
-            if(!in_array($language->getId(), $contentLangIDs)){
-                new ListingContent($listing, $language);
-            }
-        }
+        return new JsonModel([
+            'message' => ['type' => 'success', 'text' => $result->message]
+        ]);
     }
 
     protected function removeListingImage(\Logic\Core\Model\Entity\ListingImage $listingImage, $listingsDir, $listingId)
@@ -313,57 +220,31 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         }
     }
 
-    protected function dependencyProvider(&$entityManager, &$listingEntity, &$categoryTree, &$listingRepository)
-    {
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $listingEntity = $this->getServiceLocator()->get('listing-entity');
-        $categoryTree = $this->getServiceLocator()->get('category-tree');
-        $listingRepository = $entityManager->getRepository(get_class($listingEntity));
-    }
-
     public function deleteAjaxAction()
     {
-        $post = $this->params()->fromPost('ids', null);
-        if(!$post){
-            return $this->redirToList('You must choose at least one item to delete', 'error');
-        }
-        $listingIds = explode(',', $post);
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $listingEntity = $this->getServiceLocator()->get('listing-entity');
-
+        $ids = $this->params()->fromPost('ids', null);
         $imgDir = $this->getServiceLocator()->get('config')['listing']['img-core-dir'];
-
-        foreach($listingIds as $listingId){//v_todo - create an ORM event listener, or a tool "on demand", to delete images of listings removed on category deletion
-            $listing = $entityManager->find(get_class($listingEntity), $listingId);
-            if(!$listing){
-                return $this->redirToList('Invalid listing ID passed', 'error');
-            }
-
-            if($listing->getListingImage()){
-                $fileSystem = new Filesystem();
-                $fileSystem->remove($imgDir.$listing->getId());
-            }
-
-            $entityManager->remove($listing);
-            //v_todo - delete cache file in data/cache if cache enabled in module Application/config/module.config.php
+        
+        $this->dp($em, $ct, $language);
+        $translator = new Translator($this->getTranslator());
+        $logic = new PageDelete($translator, $em, $ct, $language);
+        
+        $result = $logic->delete($imgDir, $ids);
+        
+        if($result->status != StatusCodes::SUCCESS){
+            return $this->redirectToList($result->message, 'error');
         }
-        $entityManager->flush();
-        return $this->redirToList('The pages have been deleted successfully');
 
+        return $this->redirectToList($result->message);
     }
 
-    protected function redirWrongParameter()
-    {
-        return $this->redirToList('There was missing/wrong parameter in the request', 'error');
-    }
-
-    protected function redirToList($message = null, $messageType = 'success')
+    protected function redirectToList($message = null, $messageType = 'success')
     {
         if(!in_array($messageType, ['success', 'error', 'info']))
             throw new \InvalidArgumentException('Un-existing message type');
 
         return new JsonModel([
-            'message' => ['type' => $messageType, 'text' => $this->translator->translate($message)],
+            'message' => ['type' => $messageType, 'text' => $message],
         ]);
     }
 }

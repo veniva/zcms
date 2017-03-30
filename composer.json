@@ -22,5 +22,10 @@
     "psr-4": {
       "Logic\\": "logic"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests"
+    }
   }
 }

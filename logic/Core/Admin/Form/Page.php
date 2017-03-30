@@ -6,13 +6,16 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.en.html GNU/GPL 3.0 licence
  */
 
-namespace Admin\Form;
+namespace Logic\Core\Admin\Form;
 
-use Admin\Validator\Base64String;
-use Admin\Validator\Extension;
-use Admin\Validator\IsImage;
-use Application\Model\Entity;
+
+use Logic\Core\Validator\Base64String;
+use Logic\Core\Validator\Extension;
+use Logic\Core\Validator\IsImage;
 use Doctrine\ORM\EntityManager;
+use Logic\Core\Model\Entity\Listing;
+use Logic\Core\Model\Entity\ListingContent;
+use Logic\Core\Validator\Doctrine\NoRecordExists;
 use Zend\Form\Form;
 use Zend\Validator;
 use Zend\Hydrator\ClassMethods;
@@ -22,22 +25,17 @@ use Doctrine\Common\Collections\Collection;
  * Class Listing
  * @package Admin\Form
  */
-class Listing extends Form
+class Page extends Form
 {
     const MAX_IMAGE_SIZE = 50;//In Kb
     const ALLOWED_EXTENSIONS = 'png,jpeg,gif,jpg';
 
-    protected $entityManager;
-    protected $listingContentCollection;
-
-    public function __construct(EntityManager $entityManager, $listingContentCollection = null)
+    public function __construct()
     {
         parent::__construct('listing');
-        $this->entityManager = $entityManager;
-        $this->listingContentCollection = $listingContentCollection;
 
         $this->setHydrator(new ClassMethods(false))
-            ->setObject(new \Logic\Core\Model\Entity\Listing());
+            ->setObject(new Listing());
 
         $this->add(array(
             'name' => 'sort',
@@ -56,7 +54,7 @@ class Listing extends Form
             'name' => 'content',
             'options' => array(
                 'target_element' => array(
-                    'type' => 'Admin\Form\ListingContentFieldset'
+                    'type' => 'Logic\Core\Admin\Form\ListingContentFieldset'
                 ),
             ),
         ));
@@ -122,14 +120,11 @@ class Listing extends Form
         ), 'image_remove');
     }
 
-    public function isValid()
+    public function isFormValid(EntityManager $entityManager, $listingContent = null)
     {
-        //region attach NoRecordExists filter to the field alias to ensure uniqueness
-        $listingContent = $this->listingContentCollection;
-        $listingContentClassName = isset($listingContent[0]) ? get_class($listingContent[0]) : get_class(new \Logic\Core\Model\Entity\ListingContent());
         //check if the 'alias' field is unique in the database
         $validatorOptions = [
-            'entityClass' => $listingContentClassName,
+            'entityClass' => ListingContent::class,
             'field' => 'alias',
             'exclude' => null,
         ];
@@ -141,18 +136,21 @@ class Listing extends Form
                 break;
             }
         }
-        $validator = new \Logic\Core\Validator\Doctrine\NoRecordExists($this->entityManager, $validatorOptions);
-        $this->getInputFilter()->get('content')->getInputFilter()->get('alias')->getValidatorChain()->attach($validator);
-        //endregion
+        $validator = new NoRecordExists($entityManager, $validatorOptions);
+        $inputFilter = $this->getInputFilter();
+        $content = $inputFilter->get('content');
+        $inputFilter = $content->getInputFilter();
+        $alias = $inputFilter->get('alias');
+        $validatorChain = $alias->getValidatorChain();
+        $validatorChain->attach($validator);
 
         return parent::isValid();
     }
 
-    public function validateBase64Image($imageName, $base64String, &$messages = null)
+    public function validateBase64Image($imageName, $base64String, &$messages = [])
     {
         $validator = new Extension(['extensions' => self::ALLOWED_EXTENSIONS]);
         if(!$validator->isValid($imageName)){
-            $messages = [];
             foreach($validator->getMessages() as $message){
                 $messages[] = $message;
             }
@@ -161,7 +159,6 @@ class Listing extends Form
 
         $validator = new IsImage();
         if(!$validator->isValid(base64_decode($base64String))){
-            $messages = [];
             foreach($validator->getMessages() as $message){
                 $messages[] = $message;
             }
@@ -170,7 +167,6 @@ class Listing extends Form
 
         $validator = new Base64String(['max' => self::MAX_IMAGE_SIZE]);
         if(!$validator->isValid($base64String)){
-            $messages = [];
             foreach($validator->getMessages() as $message){
                 $messages[] = $message;
             }

@@ -85,7 +85,7 @@ class CategoryHelpers
      * @param Language $languageService
      * @return self
      */
-    public function setLanguageService(Language $languageService)
+    public function setLanguageService(Language $languageService = null)
     {
         $this->languageService = $languageService;
         return $this;

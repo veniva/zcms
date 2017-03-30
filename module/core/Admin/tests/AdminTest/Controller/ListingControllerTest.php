@@ -10,7 +10,7 @@ namespace AdminTest\Controller;
 
 ini_set('xdebug.var_display_max_data', -1);
 
-use Admin\Form\Listing as ListingForm;
+use Logic\Core\Admin\Form\Page as ListingForm;
 use Application\Model\Entity;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\CategoryContent;

@@ -9,6 +9,7 @@ use Logic\Core\BaseLogic;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Listing;
 use Logic\Core\Model\ListingRepository;
+use Logic\Core\Result;
 
 class PageList extends BaseLogic
 {
@@ -22,7 +23,7 @@ class PageList extends BaseLogic
         parent::__construct($translator);
     }
     
-    public function showList($langId, $parentId = 0, $page = 1)
+    public function showList($langId, $parentId = 0, $page = 1): Result
     {
         /** @var ListingRepository $repo */
         $repo = $this->em->getRepository(Listing::class);

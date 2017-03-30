@@ -94,7 +94,7 @@ return array(
             'category-content-entity' => 'Logic\Core\Model\Entity\CategoryContent',
             'user-entity' => 'Logic\Core\Model\Entity\User',
             'lang-entity' => 'Logic\Core\Model\Entity\Lang',
-            'stdlib-file-system' => 'Application\Stdlib\FileSystem',
+            'stdlib-file-system' => 'Logic\Core\Stdlib\FileSystem',
         ),
         'initializers' => array(
             'Application\Service\Initializer\Password',

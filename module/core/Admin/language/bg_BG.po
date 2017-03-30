@@ -367,11 +367,11 @@ msgstr "Добави"
 msgid "Close"
 msgstr "Затвори"
 
-# Admin\Validator\Base64String
+# Logic\Core\Validator\Base64String
 msgid "The file is more than %max%%measure% long"
 msgstr "Файлът е по-голям от позволените %max%%measure%"
 
-# Admin\Validator\Extension
+# Logic\Core\Validator\Extension
 msgid "File is of incorrect type. Allowed are: %extensions%"
 msgstr "Файлит е от грешен тип. Позволените са: %extensions%"
 
