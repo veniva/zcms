@@ -19,7 +19,14 @@ class PageDelete extends PageBase
         }
 
         $pageIds = explode(',', $idsToDelete);
-        if(!is_array($pageIds) || !is_numeric($pageIds[0])) {
+
+        //check for non numeric value in the array
+        $pageIds = array_map(function($n) {
+            if(!is_numeric($n)) return 'error';
+            return $n;
+        }, $pageIds);
+        
+        if(!is_array($pageIds) || in_array('error', $pageIds)) {
             return $this->result(StatusCodes::ERR_INVALID_PARAM, StatusMessages::ERR_INVALID_PARAM_MSG);
         }
 
@@ -28,7 +35,7 @@ class PageDelete extends PageBase
             $page = $this->em->find(Listing::class, $pageId);
             
             if(!$page) {
-                return $this->result(self::ERR_INVALID_ID, 'Invalid listing ID passed');
+                return $this->result(self::ERR_INVALID_ID, 'Invalid page ID passed');
             }
 
             if($page->getListingImage()){

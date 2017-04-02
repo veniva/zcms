@@ -208,18 +208,6 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         ]);
     }
 
-    protected function removeListingImage(\Logic\Core\Model\Entity\ListingImage $listingImage, $listingsDir, $listingId)
-    {
-        $fileName = $listingsDir.$listingId.'/'.$listingImage->getImageName();
-        if(file_exists($fileName))
-            unlink($fileName);
-        $this->getServiceLocator()->get('entity-manager')->remove($listingImage);
-        $fileSystem = $this->getServiceLocator()->get('stdlib-file-system');
-        if($fileSystem->isDirEmpty($listingsDir.$listingId)){
-            rmdir($listingsDir.$listingId);
-        }
-    }
-
     public function deleteAjaxAction()
     {
         $ids = $this->params()->fromPost('ids', null);
@@ -231,7 +219,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
         
         $result = $logic->delete($imgDir, $ids);
         
-        if($result->status != StatusCodes::SUCCESS){
+        if($result->status !== StatusCodes::SUCCESS){
             return $this->redirectToList($result->message, 'error');
         }
 

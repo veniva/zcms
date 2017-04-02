@@ -34,6 +34,14 @@ class PageDeleteTest extends PageBase
         $this->assertEquals(StatusMessages::ERR_INVALID_PARAM_MSG, $result->message);
     }
 
+    public function testInvalidParam2()
+    {
+        $result = $this->pageDelete->delete('', '1,3,6,a,3');
+
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
+        $this->assertEquals(StatusMessages::ERR_INVALID_PARAM_MSG, $result->message);
+    }
+
     public function testInvalidId()
     {
         $result = $this->pageDelete->delete('', '1');
