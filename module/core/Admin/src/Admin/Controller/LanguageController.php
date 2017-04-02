@@ -9,6 +9,7 @@
 namespace Admin\Controller;
 
 use Logic\Core\Adapters\Zend\Translator;
+use Logic\Core\Admin\Language\LanguageCreate;
 use Logic\Core\Admin\Language\LanguageList;
 use Logic\Core\Admin\Language\LanguageUpdate;
 use Logic\Core\Form\Language as LanguageForm;
@@ -81,35 +82,13 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function addJsonAction()
     {
-        return $this->addEditLanguage();
-    }
+        $em = $this->getServiceLocator()->get('entity-manager');
+        $flagCodes = $this->getServiceLocator()->get('flag-codes');
 
-    /**
-     * Displays the form
-     * @param $id NULL - add ELSE edit
-     * @return JsonModel
-     */
-    protected function addEditLanguage($id = null)
-    {
-        $action = $id ? 'edit' : 'add';
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        if($id){
-            $languageEntity = new Lang();
-            $language = $entityManager->find(get_class($languageEntity), $id);
-            if(!$language){
-                return new JsonModel([
-                    'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
-                ]);
-            }
-        }else{
-            $language = new Lang();
-        }
+        $logic = new LanguageCreate(new Translator($this->getTranslator()), $em, $flagCodes);
 
-        $fc = $this->getServiceLocator()->get('flag-codes');
-        $form = new LanguageForm($this->getServiceLocator()->get('entity-manager'), $fc->getFlagCodeOptions());
-        $form->bind($language);
-        return $this->renderData($action, $language, $form);
-
+        $result = $logic->showForm();
+        return $this->renderData('add', $result->get('language'), $result->get('form'));
     }
 
     protected function renderData($action, $language, $form)

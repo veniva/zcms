@@ -13,13 +13,14 @@ use Tests\Admin\AdminBase;
 class LanguageUpdateTest extends AdminBase
 {
     protected $logic;
+    protected $formStb;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
-        $this->emStb->method('getRepository')->willReturn($this->createMock(luStb::class));
-        $this->logic = new LanguageUpdate($this->transStb, $this->emStb, new FlagCodes());
+        $this->formStb = $this->createMock(Language::class);
+        $this->logic = new LanguageUpdate($this->transStb, $this->emStb, new FlagCodes(), $this->formStb);
     }
 
     public function testShowTypeError()
@@ -47,8 +48,6 @@ class LanguageUpdateTest extends AdminBase
     public function testShowSuccess()
     {
         $this->emStb->method('find')->willReturn(true);
-        $formStb = $this->createMock(Language::class);
-        $this->logic->setForm($formStb);
 
         $result = $this->logic->showForm(1);
 
@@ -58,5 +57,5 @@ class LanguageUpdateTest extends AdminBase
 
 class luStb
 {
-    function countLanguages(){}
+    function bind(){}
 }
