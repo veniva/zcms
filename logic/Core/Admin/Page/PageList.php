@@ -23,7 +23,7 @@ class PageList extends BaseLogic
         parent::__construct($translator);
     }
     
-    public function showList($langId, $parentId = 0, $page = 1): Result
+    public function showList(int $langId, int $parentId = 0, int $page = 1): Result
     {
         /** @var ListingRepository $repo */
         $repo = $this->em->getRepository(Listing::class);

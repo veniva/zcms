@@ -8,6 +8,8 @@
 
 namespace Admin\Controller;
 
+use Logic\Core\Adapters\Zend\Translator;
+use Logic\Core\Admin\Language\LanguageList;
 use Logic\Core\Form\Language as LanguageForm;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Lang;
@@ -44,28 +46,16 @@ class LanguageController extends AbstractRestfulController implements Translator
     {
         $pageNumber = $this->params()->fromQuery('page', 1);
         $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $languageRepo = $entityManager->getRepository(get_class(new Lang()));
 
-        $languagesPaginated = $languageRepo->getLanguagesPaginated();
-        $languagesPaginated->setCurrentPageNumber($pageNumber);
+        $logic = new LanguageList(new Translator($this->getTranslator()), $entityManager);
+        $result = $logic->getList($pageNumber);
 
         $renderer = $this->getServiceLocator()->get('ViewRenderer');
-        $paginator = $renderer->paginationControl($languagesPaginated, 'Sliding', 'paginator/sliding_ajax');
-
-        $i = 0;
-        $languages = [];
-        foreach($languagesPaginated as $language){
-            $languages[$i]['id'] = $language->getId();
-            $languages[$i]['isoCode'] = $language->getIsoCode();
-            $languages[$i]['isDefault'] = $language->isDefault();
-            $languages[$i]['name'] = $language->getName();
-            $languages[$i]['statusName'] = $language->getStatusName();
-            $i++;
-        }
+        $paginator = $renderer->paginationControl($result->get('langs_paginated'), 'Sliding', 'paginator/sliding_ajax');
 
         return new JsonModel([
-            'title' => $this->translator->translate('Languages'),
-            'lists' => $languages,
+            'title' => $result->get('title'),
+            'lists' => $result->get('lang_data'),
             'paginator' => $paginator
         ]);
     }

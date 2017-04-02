@@ -2,7 +2,6 @@
 
 namespace Tests\Admin\Page;
 
-
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Interfaces\ITranslator;
 use Logic\Core\Admin\Page\PageList;
@@ -11,13 +10,31 @@ use PHPUnit\Framework\TestCase;
 
 class PageListTest extends TestCase
 {
+    protected $emStb;
+    protected $transStb;
+
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        $this->emStb = $this->createMock(EntityManager::class);
+        $this->emStb->method('getRepository')->willReturn(new PltStb());
+        $this->transStb = $this->createMock(ITranslator::class);
+    }
+
+    public function testInvalidArg()
+    {
+        $pageList = new PageList($this->emStb, $this->transStb);
+
+        $this->expectException('TypeError');
+        $pageList->showList();
+    }
+
     public function testListPageSuccess()
     {
-        $emStb = $this->createMock(EntityManager::class);
-        $emStb->method('getRepository')->willReturn(new PltStb());
-        $transStb = $this->createMock(ITranslator::class);
 
-        $pageList = new PageList($emStb, $transStb);
+
+        $pageList = new PageList($this->emStb, $this->transStb);
         $result = $pageList->showList(1);
 
         $this->assertEquals(StatusCodes::SUCCESS, $result->status);
