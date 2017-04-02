@@ -13,7 +13,7 @@ class FlagCodes
 {
     protected $flagsDir;
 
-    public function __construct(string $publicPath)
+    public function __construct(string $publicPath = '')
     {
         $this->flagsDir = $publicPath.'img/flags';
     }

@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests;
+
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Lang;

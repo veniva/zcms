@@ -1,12 +1,6 @@
 <?php
-/**
- * User: ventsi
- * Date: 20.3.2017 г.
- * Time: 21:33 ч.
- */
 
 namespace Tests\Admin\Page;
-
 
 use PHPUnit\Framework\TestCase;
 use Doctrine\ORM\EntityManager;

@@ -21,13 +21,12 @@ class Language extends Form
     public function __construct(EntityManagerInterface $em, array $flagCodeOptions)
     {
         parent::__construct('language');
-        $lang = new Lang();
-        $this->setObject($lang)->
+        $this->setObject(new Lang())->
             setHydrator(new ClassMethods(false));
 
         //check if there is any languages in the DB, and if there are none, then require that this first entry be with status "default"
-        $langCount = $em->getRepository(get_class($lang))->countLanguages();
-        $statusOptions = $langCount ? $lang->getStatusOptions() : [Lang::STATUS_DEFAULT => Lang::getStatusOptions()[Lang::STATUS_DEFAULT]];
+        $langCount = $em->getRepository(Lang::class)->countLanguages();
+        $statusOptions = $langCount ? Lang::getStatusOptions() : [Lang::STATUS_DEFAULT => Lang::getStatusOptions()[Lang::STATUS_DEFAULT]];
 
         $this->add(array(
             'name' => 'name',
