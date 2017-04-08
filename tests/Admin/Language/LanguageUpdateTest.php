@@ -2,12 +2,12 @@
 
 namespace Tests\Admin\Language;
 
-
 use Logic\Core\Admin\Language\LanguageUpdate;
 use Logic\Core\Admin\Services\FlagCodes;
-use Logic\Core\Form\Language;
+use Logic\Core\Form\Language as Form;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Interfaces\StatusMessages;
+use Logic\Core\Model\Entity\Lang;
 use Tests\Admin\AdminBase;
 
 class LanguageUpdateTest extends AdminBase
@@ -19,7 +19,7 @@ class LanguageUpdateTest extends AdminBase
     {
         parent::__construct($name, $data, $dataName);
 
-        $this->formStb = $this->createMock(Language::class);
+        $this->formStb = $this->createMock(Form::class);
         $this->logic = new LanguageUpdate($this->transStb, $this->emStb, new FlagCodes(), $this->formStb);
     }
 
@@ -29,17 +29,17 @@ class LanguageUpdateTest extends AdminBase
         $this->logic->showForm();
     }
 
-    public function testInvalidParam()
+    public function testInvalidId()
     {
-        $result = $this->logic->showForm(1);
+        $result = $this->logic->checkIdIsValid(1);
 
         $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
         $this->assertEquals(StatusMessages::ERR_INVALID_PARAM_MSG, $result->message);
     }
 
-    public function testInvalidParam2()
+    public function testInvalidId2()
     {
-        $result = $this->logic->showForm(0);
+        $result = $this->logic->checkIdIsValid(0);
 
         $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
         $this->assertEquals(StatusMessages::ERR_INVALID_PARAM_MSG, $result->message);
@@ -53,9 +53,55 @@ class LanguageUpdateTest extends AdminBase
 
         $this->assertEquals(StatusCodes::SUCCESS, $result->status);
     }
+    public function testUpdateTypeException()
+    {
+        $this->expectException('TypeError');
+        $this->logic->update(1);
+    }
+    
+    public function testUpdateInvalidForm()
+    {
+        $this->emStb->method('find')->willReturn(new Lang());
+            
+        $result = $this->logic->update(1, []);
+        
+        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result->status);
+        $this->assertTrue($result->get('form') instanceof Form);
+        $this->assertTrue($result->get('language') instanceof Lang);
+    }
+
+    public function testUpdateSuccess()
+    {
+        $this->emStb->method('find')->willReturn(new Lang());
+        $this->formStb->method('isValid')->willReturn(true);
+
+        $result = $this->logic->update(1, []);
+
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
+        $this->assertTrue($result->message !== null);
+    }
+
+    public function testSwapDefaultLanguage()
+    {
+        $resultStb = $this->createMock(luStb::class);
+        $resultStb->status = StatusCodes::SUCCESS;
+        $resultStb->method('get')->willReturn(new Lang());
+
+        $helpStb = $this->createMock(luStb::class);
+        $helpStb->method('getDefaultLanguage')->willReturn($resultStb);
+
+        $this->logic->setHelpers($helpStb);
+
+        $result = $this->logic->swapDefaultLanguage();
+
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
+
+    }
 }
 
 class luStb
 {
     function bind(){}
+    function getDefaultLanguage(){}
+    function get(){}
 }

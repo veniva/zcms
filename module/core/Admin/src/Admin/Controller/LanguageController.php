@@ -16,6 +16,7 @@ use Logic\Core\Form\Language as LanguageForm;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Lang;
+use Logic\Core\Result;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractRestfulController;
@@ -28,6 +29,8 @@ class LanguageController extends AbstractRestfulController implements Translator
 {
     use TranslatorAwareTrait, ServiceLocatorAwareTrait;
 
+    const ACTION_EDIT = 'edit';
+    const ACTION_ADD = 'add';
     /**
      * @var ServiceLocatorInterface
      */
@@ -65,10 +68,8 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function get($id)
     {
-        $em = $this->getServiceLocator()->get('entity-manager');
-        $flagCodes = $this->getServiceLocator()->get('flag-codes');
-
-        $logic = new LanguageUpdate(new Translator($this->getTranslator()), $em, $flagCodes);
+        $this->dependencyProvider($em, $flagCodes, $translator);
+        $logic = new LanguageUpdate($translator, $em, $flagCodes);
 
         $result = $logic->showForm($id);
         if($result->status !== StatusCodes::SUCCESS) {
@@ -82,10 +83,8 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function addJsonAction()
     {
-        $em = $this->getServiceLocator()->get('entity-manager');
-        $flagCodes = $this->getServiceLocator()->get('flag-codes');
-
-        $logic = new LanguageCreate(new Translator($this->getTranslator()), $em, $flagCodes);
+        $this->dependencyProvider($em, $flagCodes, $translator);
+        $logic = new LanguageCreate($translator, $em, $flagCodes);
 
         $result = $logic->showForm();
         return $this->renderData('add', $result->get('language'), $result->get('form'));
@@ -112,131 +111,48 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function update($id, $data)
     {
-        return $this->handleCreateUpdate($data, $id);
+        $this->dependencyProvider($em, $flagCodes, $translator);
+        $logic = new LanguageUpdate($translator, $em, $flagCodes);
+        $result = $logic->update($id, $data);
+
+        return $this->handleResult($result, self::ACTION_EDIT);
     }
 
     public function create($data)
     {
+        $this->dependencyProvider($em, $flagCodes, $translator);
+        $logic = new LanguageCreate($translator, $em, $flagCodes);
+        $result = $logic->create($data);
+
+        return $this->handleResult($result, self::ACTION_ADD);
+    }
+
+    public function dependencyProvider(&$em, &$flagCodes, &$translator)
+    {
         $em = $this->getServiceLocator()->get('entity-manager');
         $flagCodes = $this->getServiceLocator()->get('flag-codes');
-        $logic = new LanguageCreate(new Translator($this->getTranslator()), $em, $flagCodes);
-        $result = $logic->create($data);
-        
+        $translator = new Translator($this->getTranslator());
+    }
+
+    public function handleResult(Result $result, string $action)
+    {
+        if($action !== self::ACTION_ADD && $action !== self::ACTION_EDIT) throw new \InvalidArgumentException();
+
         if($result->status !== StatusCodes::SUCCESS && $result->status !== StatusCodes::ERR_INVALID_FORM) {
             return new JsonModel([
                 'message' => ['type' => 'error', 'text' => $result->message],
             ]);
+
         } elseif ($result->status === StatusCodes::ERR_INVALID_FORM) {
-            return $this->renderData('add', $result->get('language'), $result->get('form'));
+            return $this->renderData($action, $result->get('language'), $result->get('form'));
+
         } else {
+            if($action === self::ACTION_ADD) $this->getResponse()->setStatusCode(201);
+
             return new JsonModel([
                 'message' => ['type' => 'success', 'text' => $result->message],
             ]);
         }
-    }
-
-    public function handleCreateUpdate($data, $id = null)
-    {
-        $action = $id ? 'edit' : 'add';
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        if($id){
-            $languageEntity = new Lang();
-            $language = $entityManager->find(get_class($languageEntity), $id);
-            if(!$language){
-                return new JsonModel([
-                    'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
-                ]);
-            }
-        }else{
-            $language = new Lang();
-        }
-
-        $oldDefaultLanguage = $entityManager->getRepository(get_class($language))->findOneByStatus(Lang::STATUS_DEFAULT);
-        $oldStatus = null;
-        if($language->getId()){
-            $oldStatus = $language->getStatus();
-        }
-        $form = new LanguageForm($this->getServiceLocator());
-        $form->bind($language);
-
-        if($language->isDefault()) unset($data['status']);//ensures no status can be changed if lang is default
-
-        $form->setData($data);
-        if($form->isValid($language->isDefault($oldStatus))){
-            //if this is the new default language, change the old default to status active, and populate the missing content in the new default lang
-            if(isset($data['status']) && $language->isDefault($data['status']) && $oldDefaultLanguage){
-
-                //region fill missing content in categories
-                $oldDefaultLanguageId = $oldDefaultLanguage->getId();
-                $editedLanguageId = $language->getId();//note! this is null if new language
-                $getMissingData = function($contentCollection)use($entityManager,$language,$oldDefaultLanguageId,$editedLanguageId)
-                {
-                    $defaultContent = null;
-                    $editedContent = null;
-                    foreach($contentCollection as $content){
-                        $contentLangId = $content->getLang()->getId();
-                        if($contentLangId == $oldDefaultLanguageId){
-                            $defaultContent = $content;
-                            continue;
-                        }
-                        if($editedLanguageId && $contentLangId == $editedLanguageId){//if($editedLanguageId) = do this only in case of action == edit
-                            $editedContent = $content;
-                            continue;
-                        }
-                        if($defaultContent && $editedContent) break;//job done
-                    }
-                    return [
-                        'default_content' => $defaultContent,
-                        'edited_content' => $editedContent
-                    ];
-                };
-                //parse through all the categories
-                $categories = $entityManager->getRepository(get_class(new Category()))->findByType(1);
-                foreach($categories as $category){
-                    //region copy category content
-                    $categoryContents = $getMissingData($category->getContent());
-                    if(!$categoryContents['edited_content'] && $categoryContents['default_content']){
-                        $newContent = clone $categoryContents['default_content'];
-                        $newContent->setLang($language);
-                        $category->addCategoryContent($newContent);
-                        $entityManager->persist($category);
-                    }
-                    //endregion
-
-                    //region copy listings content
-                    foreach($category->getListings() as $listing){
-                        //deal with content
-                        $listingContents = $getMissingData($listing->getContent());
-                        if(!$listingContents['edited_content'] && $listingContents['default_content']){
-                            $newListingContent = clone $listingContents['default_content'];
-                            $newListingContent->setLang($language);
-                            $listing->addContent($newListingContent);
-                            $entityManager->persist($listing);
-                        }
-                    }
-                    //endregion
-                }
-                //endregion
-
-                if($oldDefaultLanguage instanceof Lang){
-                    $oldDefaultLanguage->setStatus(Lang::STATUS_ACTIVE);
-                    $entityManager->persist($oldDefaultLanguage);
-                }
-
-            }
-
-            $entityManager->persist($language);
-            $entityManager->flush();
-
-            if($this->getRequest()->isPost()){
-                $this->getResponse()->setStatusCode(201);
-            }
-            return new JsonModel([
-                'message' => ['type' => 'success', 'text' => $this->translator->translate('The language has been '.$action.'ed successfully')],
-            ]);
-        }
-
-        return $this->renderData($action, $language, $form);
     }
 
     public function delete($id)

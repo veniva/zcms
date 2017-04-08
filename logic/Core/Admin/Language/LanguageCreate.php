@@ -7,10 +7,7 @@ use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Lang;
 
 class LanguageCreate extends LanguageBase
-{   
-    /** @var  LanguageHelpers|null */
-    private $helpers;
-
+{
     public function showForm()
     {
         $language = new Lang();
@@ -35,13 +32,13 @@ class LanguageCreate extends LanguageBase
             if ($result->status !== StatusCodes::SUCCESS) {
                 return $result;
             }
-            
             $defaultLanguage = $result->get('default_language');
+            
             $defaultLanguageId = $defaultLanguage->getId();
             $this->getHelpers()->fillDefaultContent($language, $defaultLanguageId);
             
             //if the new language is set to be the new default language, then change the current default language's status into "active"
-            if (isset($data['status']) && $language->isDefault($data['status'])) {
+            if (isset($data['status']) && Lang::isLanguageDefault($data['status'])) {
                 $defaultLanguage->setStatus(Lang::STATUS_ACTIVE);
                 $this->em->persist($defaultLanguage);
             }
@@ -57,26 +54,4 @@ class LanguageCreate extends LanguageBase
             'language' => $language
         ]);
     }
-
-    /**
-     * @return LanguageHelpers
-     */
-    public function getHelpers()
-    {
-        if(!$this->helpers){
-            $this->helpers = new LanguageHelpers($this->em, $this->translator);
-        }
-        return $this->helpers;
-    }
-
-    /**
-     * @param LanguageHelpers $helpers
-     * @return LanguageCreate
-     */
-    public function setHelpers($helpers)
-    {
-        $this->helpers = $helpers;
-        return $this;
-    }
-
 }

@@ -14,6 +14,8 @@ abstract class LanguageBase extends BaseLogic
     protected $em;
     /** @var Form */
     protected $form;
+    /** @var  LanguageHelpers|null */
+    protected $helpers;
 
     public function __construct(ITranslator $translator, EntityManager $em, FlagCodes $flagCodes, Form $form = null)
     {
@@ -38,6 +40,27 @@ abstract class LanguageBase extends BaseLogic
     public function setForm(Form $form = null)
     {
         $this->form = $form;
+        return $this;
+    }
+
+    /**
+     * @return LanguageHelpers
+     */
+    public function getHelpers()
+    {
+        if(!$this->helpers){
+            $this->helpers = new LanguageHelpers($this->em, $this->translator);
+        }
+        return $this->helpers;
+    }
+
+    /**
+     * @param LanguageHelpers $helpers
+     * @return LanguageCreate
+     */
+    public function setHelpers($helpers)
+    {
+        $this->helpers = $helpers;
         return $this;
     }
 }
