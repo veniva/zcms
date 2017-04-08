@@ -80,23 +80,6 @@ class LanguageUpdateTest extends AdminBase
         $this->assertEquals(StatusCodes::SUCCESS, $result->status);
         $this->assertTrue($result->message !== null);
     }
-
-    public function testSwapDefaultLanguage()
-    {
-        $resultStb = $this->createMock(luStb::class);
-        $resultStb->status = StatusCodes::SUCCESS;
-        $resultStb->method('get')->willReturn(new Lang());
-
-        $helpStb = $this->createMock(luStb::class);
-        $helpStb->method('getDefaultLanguage')->willReturn($resultStb);
-
-        $this->logic->setHelpers($helpStb);
-
-        $result = $this->logic->swapDefaultLanguage();
-
-        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
-
-    }
 }
 
 class luStb

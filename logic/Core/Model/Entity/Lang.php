@@ -130,8 +130,6 @@ class Lang
     }
 
     /**
-     * @deprecated - use self::isLanguageDefault() instead
-     * 
      * Check's if the current entity's status, or the one provided as a parameter is the default language status
      * @param null|int $status Status number to be checked
      * @return bool

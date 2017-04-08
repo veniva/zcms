@@ -10,6 +10,7 @@ namespace Admin\Controller;
 
 use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin\Language\LanguageCreate;
+use Logic\Core\Admin\Language\LanguageDelete;
 use Logic\Core\Admin\Language\LanguageList;
 use Logic\Core\Admin\Language\LanguageUpdate;
 use Logic\Core\Form\Language as LanguageForm;
@@ -68,7 +69,7 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function get($id)
     {
-        $this->dependencyProvider($em, $flagCodes, $translator);
+        $this->dependencyProvider($translator, $em, $flagCodes);
         $logic = new LanguageUpdate($translator, $em, $flagCodes);
 
         $result = $logic->showForm($id);
@@ -83,7 +84,7 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function addJsonAction()
     {
-        $this->dependencyProvider($em, $flagCodes, $translator);
+        $this->dependencyProvider($translator, $em, $flagCodes);
         $logic = new LanguageCreate($translator, $em, $flagCodes);
 
         $result = $logic->showForm();
@@ -111,7 +112,7 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function update($id, $data)
     {
-        $this->dependencyProvider($em, $flagCodes, $translator);
+        $this->dependencyProvider($translator, $em, $flagCodes);
         $logic = new LanguageUpdate($translator, $em, $flagCodes);
         $result = $logic->update($id, $data);
 
@@ -120,18 +121,19 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function create($data)
     {
-        $this->dependencyProvider($em, $flagCodes, $translator);
+        $this->dependencyProvider($translator, $em, $flagCodes);
         $logic = new LanguageCreate($translator, $em, $flagCodes);
         $result = $logic->create($data);
 
         return $this->handleResult($result, self::ACTION_ADD);
     }
 
-    public function dependencyProvider(&$em, &$flagCodes, &$translator)
+    public function dependencyProvider(&$translator, &$em, &$flagCodes = false)
     {
-        $em = $this->getServiceLocator()->get('entity-manager');
-        $flagCodes = $this->getServiceLocator()->get('flag-codes');
         $translator = new Translator($this->getTranslator());
+        $em = $this->getServiceLocator()->get('entity-manager');
+        if($flagCodes !== false)
+            $flagCodes = $this->getServiceLocator()->get('flag-codes');
     }
 
     public function handleResult(Result $result, string $action)
@@ -157,19 +159,18 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function delete($id)
     {
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $lang = $entityManager->find(get_class(new Lang()), $id);
-        if($lang->isDefault()){
+        $this->dependencyProvider($translator, $em);
+        $logic = new LanguageDelete($translator, $em);
+        $result = $logic->delete($id);
+
+        if ($result->status !== StatusCodes::SUCCESS) {
             return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $this->translator->translate('The default language cannot be deleted')]
+                'message' => ['type' => 'error', 'text' => $result->message]
             ]);
         }
-        if($lang instanceof Lang){
-            $entityManager->remove($lang);
-            $entityManager->flush();
-        }
+
         return new JsonModel([
-            'message' => ['type' => 'success', 'text' => $this->translator->translate('The language has been deleted successfully')]
+            'message' => ['type' => 'success', 'text' => $result->message]
         ]);
 
     }

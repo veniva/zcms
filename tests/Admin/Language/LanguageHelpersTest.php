@@ -5,7 +5,6 @@ namespace Tests\Admin\Language;
 use Doctrine\ORM\EntityRepository;
 use Logic\Core\Admin\Language\LanguageHelpers;
 use Logic\Core\Interfaces\StatusCodes;
-use MyProject\Proxies\__CG__\stdClass;
 use Tests\Admin\AdminBase;
 
 class LanguageHelpersTest extends AdminBase
