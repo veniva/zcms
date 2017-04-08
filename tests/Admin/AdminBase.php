@@ -1,9 +1,4 @@
 <?php
-/**
- * User: ventsi
- * Date: 2.4.2017 г.
- * Time: 17:04 ч.
- */
 
 namespace Tests\Admin;
 

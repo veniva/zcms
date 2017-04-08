@@ -117,7 +117,22 @@ class LanguageController extends AbstractRestfulController implements Translator
 
     public function create($data)
     {
-        return $this->handleCreateUpdate($data);
+        $em = $this->getServiceLocator()->get('entity-manager');
+        $flagCodes = $this->getServiceLocator()->get('flag-codes');
+        $logic = new LanguageCreate(new Translator($this->getTranslator()), $em, $flagCodes);
+        $result = $logic->create($data);
+        
+        if($result->status !== StatusCodes::SUCCESS && $result->status !== StatusCodes::ERR_INVALID_FORM) {
+            return new JsonModel([
+                'message' => ['type' => 'error', 'text' => $result->message],
+            ]);
+        } elseif ($result->status === StatusCodes::ERR_INVALID_FORM) {
+            return $this->renderData('add', $result->get('language'), $result->get('form'));
+        } else {
+            return new JsonModel([
+                'message' => ['type' => 'success', 'text' => $result->message],
+            ]);
+        }
     }
 
     public function handleCreateUpdate($data, $id = null)
