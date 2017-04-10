@@ -8,8 +8,9 @@
 
 namespace Admin\Controller;
 
-
+use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin\Form\User as UserForm;
+use Logic\Core\Admin\User\UserList;
 use Logic\Core\Model\Entity\User;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
@@ -42,29 +43,19 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
     {
         $pageNumber = $this->params()->fromQuery('page', 1);
         $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $userRepo = $entityManager->getRepository(get_class(new User()));
-
-        $usersPaginated = $userRepo->getUsersPaginated();
-        $usersPaginated->setCurrentPageNumber($pageNumber);
+        $translator = $this->getTranslator();
+        
+        $logic = new UserList(new Translator($translator), $entityManager);
+        $result = $logic->showList($pageNumber);
+        $usersPaginated = $result->get('users_paginated');
 
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
         $paginator = $renderer->paginationControl($usersPaginated, 'Sliding', 'paginator/sliding_ajax');
 
-        $i = 0;
-        $userData = [];
-        foreach($usersPaginated as $user){
-            $userData[$i]['id'] = $user->getId();
-            $userData[$i]['uname'] = $user->getUname();
-            $userData[$i]['email'] = $user->getEmail();
-            $userData[$i]['role'] = $user->getRoleName();
-            $userData[$i]['reg_date'] = $user->getRegDate('m-d-Y');
-            $i++;
-        }
-
         $auth = $this->getServiceLocator()->get('auth');
         return new JsonModel([
-            'title' => $this->getTranslator()->translate('Users'),
-            'lists' => $userData,
+            'title' => $result->get('title'),
+            'lists' => $result->get('user_data'),
             'paginator' => $paginator,
             'identity_id' => $auth->getIdentity()->getId()
         ]);
