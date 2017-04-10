@@ -37,7 +37,7 @@ class LanguageUpdate extends LanguageBase
         $this->form->bind($language);
         $this->form->setData($data);
 
-        if ($this->form->isValid()) {
+        if ($this->form->isValid($language->isDefault())) {
             //if the new language is set to be the new default language, then change the current default language's status into "active"
             if (isset($data['status']) && Lang::isLanguageDefault($data['status'])) {
                 $result = $this->getHelpers()->getDefaultLanguage();
