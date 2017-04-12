@@ -8,9 +8,12 @@
 
 namespace Admin\Controller;
 
+use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin\Form\User as UserForm;
 use Logic\Core\Admin\User\UserList;
+use Logic\Core\Admin\User\UserUpdate;
+use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\User;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
@@ -61,14 +64,22 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         ]);
     }
 
-    public function get($id){
-        if(empty($id)){
-            return new JsonModel([
-                'message' => ['type' => 'error', 'text' => $this->translator->translate('There was missing/wrong parameter in the request')],
-            ]);
+    public function get($id)
+    {
+        $translator = $this->getTranslator();
+        /** @var EntityManager $em */
+        $em = $this->getServiceLocator()->get('entity-manager');
+        /** @var User $loggedInUser */
+        $loggedInUser = $this->getServiceLocator()->get('current-user');
+
+        $logic = new UserUpdate(new Translator($translator), $em, $loggedInUser);
+
+        $result = $logic->showForm($id);
+        if ($result->status !== StatusCodes::SUCCESS) {
+            return $this->redirToList($result->message, 'error');
         }
 
-        return $this->addEditUser($id);
+        return $this->renderData('edit', $result->get('form'), $result->get('edit-own'), $result->get('user'));
     }
 
     public function addJsonAction()
