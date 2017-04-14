@@ -11,6 +11,7 @@ namespace Admin\Controller;
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin\Form\User as UserForm;
+use Logic\Core\Admin\User\UserCreate;
 use Logic\Core\Admin\User\UserList;
 use Logic\Core\Admin\User\UserUpdate;
 use Logic\Core\Interfaces\StatusCodes;
@@ -66,11 +67,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
 
     public function get($id)
     {
-        $translator = $this->getTranslator();
-        /** @var EntityManager $em */
-        $em = $this->getServiceLocator()->get('entity-manager');
-        /** @var User $loggedInUser */
-        $loggedInUser = $this->getServiceLocator()->get('current-user');
+        $this->dependencyProvider($translator, $em, $loggedInUser);
 
         $logic = new UserUpdate(new Translator($translator), $em, $loggedInUser);
 
@@ -84,37 +81,21 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
 
     public function addJsonAction()
     {
-        return $this->addEditUser();
+        $this->dependencyProvider($translator, $em, $loggedInUser);
+
+        $logic = new UserCreate(new Translator($translator), $em, $loggedInUser);
+        $result = $logic->showForm();
+
+        return $this->renderData('add', $result->get('form'), false, $result->get('user'));
     }
 
-    /**
-     * Displays the form
-     * @param $id NULL - add ELSE edit
-     * @return JsonModel
-     */
-    public function addEditUser($id = null)
+    protected function dependencyProvider(&$translator, &$em, &$loggedInUser)
     {
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $user = $this->getServiceLocator()->get('user-entity');//accessed it from service manager as this way the User::setPasswordAdapter() is initialized
-        if($id){
-            $user = $entityManager->find(get_class($user), $id);
-            if(!$user)
-                return $this->redirMissingUser($id);
-        }
-
+        $translator = $this->getTranslator();
+        /** @var EntityManager $em */
+        $em = $this->getServiceLocator()->get('entity-manager');
+        /** @var User $loggedInUser */
         $loggedInUser = $this->getServiceLocator()->get('current-user');
-        $editOwn = $loggedInUser->getId() == $user->getId();
-        //security check - is the edited user really having a role equal or less privileged to the editing user
-        if(!$loggedInUser->canEdit($user->getRole())){
-            $this->getResponse()->setStatusCode(403);
-            return $this->redirToList('You have no right to edit this user', 'error');
-        }
-
-        $action = $id ? 'edit' : 'add';
-        $form = new UserForm($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
-        $form->bind($user);
-
-        return $this->renderData($action, $form, $editOwn, $user);
     }
 
     protected function renderData($action, UserForm $form, $editOwn, User $user)
