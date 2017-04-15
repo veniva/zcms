@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin\Form\User as UserForm;
 use Logic\Core\Admin\User\UserCreate;
+use Logic\Core\Admin\User\UserDelete;
 use Logic\Core\Admin\User\UserList;
 use Logic\Core\Admin\User\UserUpdate;
 use Logic\Core\Interfaces\StatusCodes;
@@ -146,33 +147,22 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
             return $this->renderData('add', $result->get('form'), $result->get('edit_own'), $result->get('user'));
         }
 
+        $this->getResponse()->setStatusCode(201);
+
         return $this->redirToList($result->message);
     }
 
     public function delete($id)
     {
-        $serviceLocator = $this->getServiceLocator();
-        $entityManager = $serviceLocator->get('entity-manager');
+        $this->dependencyProvider($translator, $em, $loggedInUser);
+        $logic = new UserDelete(new Translator($translator), $em, $loggedInUser);
 
-        $user = $entityManager->find(get_class(new User), $id);
-        if(!$user instanceof User){
-            return $this->redirMissingUser($id);
-        }
-        //make sure that the user cannot delete his own profile
-        $loggedInUser = $this->getServiceLocator()->get('current-user');
-        if($loggedInUser->getId() == $user->getId()){
-            $this->redirToList('You cannot delete your own profile', 'error');
+        $result = $logic->delete($id);
+        if ($result->status !== StatusCodes::SUCCESS) {
+            return $this->redirToList($result->message, 'error');
         }
 
-        $entityManager->remove($user);//contained listings are cascade removed from the ORM!!
-        $entityManager->flush();
-
-        return $this->redirToList('The user was removed successfully');
-    }
-
-    protected function redirMissingUser($id)
-    {
-        return $this->redirToList('There is no user with id = '.$id, 'error');
+        return $this->redirToList($result->message);
     }
 
     protected function redirToList($message = null, $messageType = 'success')
