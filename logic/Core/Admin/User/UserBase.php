@@ -10,6 +10,9 @@ use Logic\Core\Admin\Form\User as UserForm;
 
 class UserBase extends BaseLogic
 {
+    const ERR_NO_RIGHT_ASSIGN_ROLE = 'uu.no_right_assign_role';
+    const ERR_NO_RIGHT_ASSIGN_ROLE_MSG = 'You have no right to assign this user role';
+    
     /** @var EntityManager */
     protected $em;
     /** @var User */

@@ -23,6 +23,7 @@ use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Zend\Crypt\Password\PasswordInterface;
 
 class UserController extends AbstractRestfulController implements TranslatorAwareInterface
 {
@@ -126,61 +127,26 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
         } elseif ($result->status === StatusCodes::ERR_INVALID_FORM) {
             return $this->renderData('edit', $result->get('form'), $result->get('edit_own'), $result->get('user'));
         }
+
         return $this->redirToList($result->message);
     }
 
     public function create($data)
     {
-        return $this->handleCreateUpdate($data);
-    }
+        $this->dependencyProvider($translator, $em, $loggedInUser);
+        $logic = new UserCreate(new Translator($translator), $em, $loggedInUser);
 
-    public function handleCreateUpdate($data, $id = null)
-    {
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $user = $this->getServiceLocator()->get('user-entity');//accessed it from service manager as this way the User::setPasswordAdapter() is initialized
-        if($id){
-            $user = $entityManager->find(get_class($user), $id);
-            if(!$user)
-                return $this->redirMissingUser($id);
+        /** @var PasswordInterface $passwordAdapter */
+        $passwordAdapter = $this->getServiceLocator()->get('password-adapter');
+        $result = $logic->create($data, $passwordAdapter);
+
+        if ($result->status !== StatusCodes::ERR_INVALID_FORM && $result->status !== StatusCodes::SUCCESS) {
+            return $this->redirToList($result->message, 'error');
+        } elseif ($result->status === StatusCodes::ERR_INVALID_FORM) {
+            return $this->renderData('add', $result->get('form'), $result->get('edit_own'), $result->get('user'));
         }
 
-        $loggedInUser = $this->getServiceLocator()->get('current-user');
-        $editOwn = $loggedInUser->getId() == $user->getId();
-        //security check - is the edited user really having a role equal or less privileged to the editing user
-        if(!$loggedInUser->canEdit($user->getRole()))
-            return $this->redirToList('You have no right to edit this user', 'error');
-
-        $currentUserName = $user->getUname();
-        $currentEmail = $user->getEmail();
-        $form = new UserForm($loggedInUser, $this->getServiceLocator()->get('entity-manager'));
-        $form->bind($user);
-
-        $form->setData($data);
-        $action = $id ? 'edit' : 'add';
-        if($form->isValid($action, $currentUserName, $currentEmail, $editOwn)){
-            //security check - is the new role equal or less privileged to the editing user
-            $newRole = $form->getData()->getRole();
-            if(!$loggedInUser->canEdit($newRole))//this protection is redundant as there will be notFoundInTheHaystack validation error
-                return $this->redirToList('You have no right to assign this user role', 'error');
-
-            if($editOwn && isset($data['role']))
-                return $this->redirToList('You have no right to assign new role to yourself', 'error');
-
-            $newPassword = $form->getInputFilter()->get('password_fields')->get('password')->getValue();
-            if($newPassword)
-                $user->setUpass($form->getInputFilter()->get('password_fields')->get('password')->getValue());
-            $user->setRegDate();
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            if($this->getRequest()->isPost()){
-                $this->getResponse()->setStatusCode(201);
-            }
-
-            return $this->redirToList('The user has been '.$action.'ed successfully');
-        }
-
-        return $this->renderData($action, $form, $editOwn, $user);
+        return $this->redirToList($result->message);
     }
 
     public function delete($id)

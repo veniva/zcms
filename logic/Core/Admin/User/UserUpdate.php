@@ -11,7 +11,6 @@ use Logic\Core\Result;
 class UserUpdate extends UserBase
 {
     const ERR_INSUFFICIENT_PRIVILEGES = 'uu.insufficient-privileges';
-    const ERR_NO_RIGHT_ASSIGN_ROLE = 'uu.no_right_assign_role';
     const ERR_SELF_NEW_ROLE = 'uu.err_self_new_role';
 
     public function showForm(int $id): Result
@@ -63,13 +62,21 @@ class UserUpdate extends UserBase
             'user' => $user
         ]);
     }
-    
+
+    /**
+     * Update user when the form is valid
+     * @param User $user
+     * @param UserForm $form
+     * @param array $data
+     * @param bool $editOwn
+     * @return Result
+     */
     public function updateUser(User $user, UserForm $form, array $data, bool $editOwn): Result
     {
         //security checks
         $newRole = $form->getData()->getRole();
         if (!$this->loggedInUser->canEdit($newRole)) {
-            return $this->result(self::ERR_NO_RIGHT_ASSIGN_ROLE, 'You have no right to assign this user role');
+            return $this->result(parent::ERR_NO_RIGHT_ASSIGN_ROLE, parent::ERR_NO_RIGHT_ASSIGN_ROLE_MSG);
         }
 
         if ($editOwn && isset($data['role'])) {

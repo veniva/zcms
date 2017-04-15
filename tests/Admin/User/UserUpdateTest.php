@@ -95,7 +95,7 @@ class UserUpdateTest extends AdminBase
         $result = $this->logic->updateUser(new User, $formStb, [], false);
 
         $this->assertEquals(UserUpdate::ERR_NO_RIGHT_ASSIGN_ROLE, $result->status);
-        $this->assertTrue(strlen($result->message) > 0);
+        $this->assertEquals(UserUpdate::ERR_NO_RIGHT_ASSIGN_ROLE_MSG, $result->message);
     }
 
     public function testCannotAssignRoleYourself()
