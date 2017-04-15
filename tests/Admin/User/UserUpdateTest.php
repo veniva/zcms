@@ -61,4 +61,80 @@ class UserUpdateTest extends AdminBase
         $this->assertTrue($result->get('user') instanceof User);
         $this->assertTrue($result->has('edit_own'));
     }
+
+    public function testUpdateReturnError()
+    {
+        $result = $this->logic->update(0, []);
+
+        $this->assertEquals(StatusCodes::ERR_INVALID_PARAM, $result->status);
+        $this->assertEquals(StatusMessages::ERR_INVALID_PARAM_MSG, $result->message);
+    }
+    
+    public function testInvalidForm()
+    {
+        $this->emStb->method('find')->willReturn(new User());
+        $this->usrStb->method('canEdit')->willreturn(true);
+
+        $result = $this->logic->update(1, []);
+
+        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result->status);
+        $this->assertTrue($result->get('form') instanceof UserForm);
+        $this->assertTrue($result->get('user') instanceof User);
+        $this->assertTrue($result->has('edit_own'));
+    }
+
+    public function testCannotAssignRoleError()
+    {
+        $stb = $this->createMock(usrUpdStb::class);
+        $this->usrStb->method('canEdit')->willreturn(false);
+
+        $formStb = $this->createMock(UserForm::class);
+        $formStb->method('isValid')->willReturn(true);
+        $formStb->method('getData')->willReturn($stb);
+
+        $result = $this->logic->updateUser(new User, $formStb, [], false);
+
+        $this->assertEquals(UserUpdate::ERR_NO_RIGHT_ASSIGN_ROLE, $result->status);
+        $this->assertTrue(strlen($result->message) > 0);
+    }
+
+    public function testCannotAssignRoleYourself()
+    {
+        $stb = $this->createMock(usrUpdStb::class);
+        $this->usrStb->method('canEdit')->willreturn(true);
+
+        $formStb = $this->createMock(UserForm::class);
+        $formStb->method('isValid')->willReturn(true);
+        $formStb->method('getData')->willReturn($stb);
+
+        $result = $this->logic->updateUser(new User, $formStb, ['role' => 1], true);
+
+        $this->assertEquals(UserUpdate::ERR_SELF_NEW_ROLE, $result->status);
+        $this->assertTrue(strlen($result->message) > 0);
+    }
+
+    public function testUpdateSuccess()
+    {
+        $stb = $this->createMock(usrUpdStb::class);
+        $stb->method('get')->willReturn($stb);
+        $this->usrStb->method('canEdit')->willreturn(true);
+
+        $formStb = $this->createMock(UserForm::class);
+        $formStb->method('isValid')->willReturn(true);
+        $formStb->method('getData')->willReturn($stb);
+        $formStb->method('getInputFilter')->willReturn($stb);
+
+        $result = $this->logic->updateUser(new User, $formStb, ['role' => 1], false);
+
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
+        $this->assertTrue(strlen($result->message) > 0);
+    }
+}
+
+class usrUpdStb
+{
+    function getRole(){}
+    function getInputFilter(){}
+    function get(){}
+    function getValue(){}
 }

@@ -68,7 +68,6 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
     public function get($id)
     {
         $this->dependencyProvider($translator, $em, $loggedInUser);
-
         $logic = new UserUpdate(new Translator($translator), $em, $loggedInUser);
 
         $result = $logic->showForm($id);
@@ -76,7 +75,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
             return $this->redirToList($result->message, 'error');
         }
 
-        return $this->renderData('edit', $result->get('form'), $result->get('edit-own'), $result->get('user'));
+        return $this->renderData('edit', $result->get('form'), $result->get('edit_own'), $result->get('user'));
     }
 
     public function addJsonAction()
@@ -118,7 +117,16 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
 
     public function update($id, $data)
     {
-        return $this->handleCreateUpdate($data, $id);
+        $this->dependencyProvider($translator, $em, $loggedInUser);
+        $logic = new UserUpdate(new Translator($translator), $em, $loggedInUser);
+
+        $result = $logic->update($id, $data);
+        if ($result->status !== StatusCodes::ERR_INVALID_FORM && $result->status !== StatusCodes::SUCCESS) {
+            return $this->redirToList($result->message, 'error');
+        } elseif ($result->status === StatusCodes::ERR_INVALID_FORM) {
+            return $this->renderData('edit', $result->get('form'), $result->get('edit_own'), $result->get('user'));
+        }
+        return $this->redirToList($result->message);
     }
 
     public function create($data)
