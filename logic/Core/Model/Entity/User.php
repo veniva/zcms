@@ -222,12 +222,12 @@ class User implements PasswordAwareInterface
 
     /**
      * Check if the editor user has editing rights on to the edited user
-     * @param int|null|bool $editedRole
+     * @param int|null $editedRole
      * @return bool
      */
     public function canEdit($editedRole)
     {
-        if(!is_numeric($editedRole) && !is_null($editedRole) && !is_bool($editedRole))
+        if(!is_numeric($editedRole) && !is_null($editedRole))
             throw new \InvalidArgumentException('Wrong argument type');
 
         $editorRole = $this->getRole();
