@@ -9,7 +9,7 @@ use Application\Stdlib;
 class CalcTest extends AbstractHttpControllerTestCase
 {
     protected $serviceManager;
-    /** @var Stdlib\Calc  */
+    /** @var \Logic\Core\Stdlib\Calc  */
     protected $calc;
     public function setUp()
     {
@@ -17,7 +17,7 @@ class CalcTest extends AbstractHttpControllerTestCase
         $this->setApplicationConfig(
             $this->serviceManager->get('ApplicationConfig')
         );
-        $this->calc = new Stdlib\Calc();
+        $this->calc = new \Logic\Core\Stdlib\Calc();
         parent::setUp();
     }
     
