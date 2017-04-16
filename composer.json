@@ -20,12 +20,12 @@
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "Logic\\": "logic"
+      "Logic\\": "logic/src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\": "tests"
+      "Tests\\": "logic/tests"
     }
   }
 }
