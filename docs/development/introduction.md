@@ -9,6 +9,7 @@
 The file structure is organized in a way that the core files of the ZCMS are isolated in separate folders so that it can be 
 easily upgraded to the latest compatible version.
 
+    logic                     #here are located the files that contain all the business logic used in the application's modules
     root/module/core          #this is the core modules folder
     root/public_html/core     #it contains the client side files like CSS and JS
 
