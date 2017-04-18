@@ -11,20 +11,20 @@ namespace Application\Controller;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Page;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 use Zend\View\Model\ViewModel;
+use Application\ServiceLocatorAwareTrait;
 
 class PageController extends AbstractActionController
 {
     use ServiceLocatorAwareTrait;
 
     /**
-     * @var ServiceLocatorInterface
+     * @var ContainerInterface
      */
     protected $serviceLocator;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
     }

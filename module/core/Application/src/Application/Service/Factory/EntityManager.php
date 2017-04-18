@@ -8,23 +8,19 @@
 
 namespace Application\Service\Factory;
 
-
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Doctrine\ORM\Events;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager as DocEManager;
 use Doctrine\Common\EventArgs;
 
 class EntityManager implements FactoryInterface
 {
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return \Doctrine\ORM\EntityManager
-     * @throws \Doctrine\ORM\ORMException
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = $serviceLocator->get('config');
+        $config = $container->get('config');
 
         //set the Doctrine configuration array
         $doctrineDbSettings = (array)$config['db'];
@@ -44,13 +40,13 @@ class EntityManager implements FactoryInterface
             $eventManager = $doctrineEntityManager->getEventManager();
 
             foreach ($config['doctrine']['initializers'] as $initializer) {
-                $eventClass = new DoctrineEvent(new $initializer(), $serviceLocator);
-                $eventManager->addEventListener(\Doctrine\ORM\Events::postLoad, $eventClass);
+                $eventClass = new DoctrineEvent(new $initializer(), $container);
+                $eventManager->addEventListener(Events::postLoad, $eventClass);
             }
         }
 
         if($doctrineDbSettings['driver'] == 'pdo_sqlite'){//it is very important to make sure foreign keys are on with SQLite
-            $query = $doctrineEntityManager->createNativeQuery("pragma foreign_keys=1", new \Doctrine\ORM\Query\ResultSetMapping());
+            $query = $doctrineEntityManager->createNativeQuery("pragma foreign_keys=1", new ResultSetMapping());
             $query->execute();
         }
 
@@ -70,6 +66,7 @@ class DoctrineEvent
     public function postLoad(EventArgs $event)
     {
         $entity = $event->getEntity();
-        $this->initializer->initialize($entity, $this->serviceLocator);
+        $obj = $this->initializer;
+        $obj($this->serviceLocator, $entity);
     }
 }

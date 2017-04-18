@@ -2,22 +2,21 @@
 
 namespace Application\Service\Factory;
 
-
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 
 class CurrentUser implements FactoryInterface
 {
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = $serviceLocator->get('config');
-        $auth = $serviceLocator->get('auth');
+        $config = $container->get('config');
+        $auth = $container->get('auth');
 
         if($auth->hasIdentity()){
             $user = $auth->getIdentity();
             if(empty($user->getRole())) $user->setRoleFromName($config['acl']['defaults']['role']['admin']);
         }else{
-            $user = $serviceLocator->get('user-entity');
+            $user = $container->get('user-entity');
             $user->setId(null);
             $user->setRoleFromName($config['acl']['defaults']['role']['guest']);
         }

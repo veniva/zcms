@@ -20,8 +20,8 @@ use Logic\Core\Model\Entity\User;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractRestfulController;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Application\ServiceLocatorAwareTrait;
+use Interop\Container\ContainerInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\Crypt\Password\PasswordInterface;
@@ -31,11 +31,11 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
     use TranslatorAwareTrait, ServiceLocatorAwareTrait;
 
     /**
-     * @var ServiceLocatorInterface
+     * @var ContainerInterface
      */
     protected $serviceLocator;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
     }
@@ -49,7 +49,7 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
     {
         $pageNumber = $this->params()->fromQuery('page', 1);
         $translator = $this->getTranslator();
-        
+
         $this->dependencyProvider($translator, $em, $loggedInUser);
         $logic = new UserList(new Translator($translator), $em, $loggedInUser);
         $result = $logic->showList($pageNumber);

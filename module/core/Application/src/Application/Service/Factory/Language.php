@@ -2,20 +2,18 @@
 
 namespace Application\Service\Factory;
 
-
 use Logic\Core\Model\Entity\Lang;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 use Doctrine\Common\Collections\Criteria;
 
 class Language implements FactoryInterface
 {
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $entityManager = $serviceLocator->get('entity-manager');
-        $languageEntity = $serviceLocator->get('lang-entity');
-
-
+        $entityManager = $container->get('entity-manager');
+        $languageEntity = $container->get('lang-entity');
+        
         $criteria = new Criteria();
         $criteria->where($criteria->expr()->gt('status', 0))->orderBy(['status' => Criteria::DESC]);
         $language = new \Logic\Core\Services\Language();
@@ -28,8 +26,8 @@ class Language implements FactoryInterface
         $defaultLanguage = $defaultLanguage ?: new Lang();
         $language->setDefaultLanguage($defaultLanguage);
 
-        $request = $serviceLocator->get('Request');
-        $router = $serviceLocator->get('Router');
+        $request = $container->get('Request');
+        $router = $container->get('Router');
         $match = $router->match($request);
         if($match){
             $matchedLangIso = $match->getParam('lang', $defaultLanguage->getIsoCode());
@@ -39,7 +37,6 @@ class Language implements FactoryInterface
 
         $currentLanguage = isset($currentLanguage) ? $currentLanguage : new Lang();
         $language->setCurrentLanguage($currentLanguage);
-
 
         return $language;
     }

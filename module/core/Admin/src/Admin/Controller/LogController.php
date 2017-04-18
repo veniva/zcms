@@ -17,8 +17,8 @@ use Zend\Form\Element;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Application\ServiceLocatorAwareTrait;
+use Interop\Container\ContainerInterface;
 use Zend\Validator;
 use Zend\Mail;
 
@@ -27,11 +27,11 @@ class LogController extends AbstractActionController implements TranslatorAwareI
     use TranslatorAwareTrait, ServiceLocatorAwareTrait;
 
     /**
-     * @var ServiceLocatorInterface
+     * @var ContainerInterface
      */
     protected $serviceLocator;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
     }

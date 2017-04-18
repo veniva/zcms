@@ -8,7 +8,6 @@
 
 namespace Admin\Controller;
 
-
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin\Category\CategoryCreate;
@@ -22,8 +21,8 @@ use Logic\Core\Services\Language;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractRestfulController;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Application\ServiceLocatorAwareTrait;
+use Interop\Container\ContainerInterface;
 use Zend\Stdlib\ArrayUtils;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -33,7 +32,7 @@ class CategoryController extends AbstractRestfulController implements Translator
 {
     use TranslatorAwareTrait, ServiceLocatorAwareTrait;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
     }

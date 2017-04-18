@@ -9,8 +9,8 @@ use Logic\Core\Model\Entity\User;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Application\ServiceLocatorAwareTrait;
+use Interop\Container\ContainerInterface;
 use Logic\Core\Admin;
 use Logic\Core\Adapters\Zend\Http\Request;
 use Logic\Core\Admin\Form\Register as RegisterForm;
@@ -19,7 +19,7 @@ class RegisterController extends AbstractActionController implements TranslatorA
 {
     use TranslatorAwareTrait, ServiceLocatorAwareTrait;
     
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
     }

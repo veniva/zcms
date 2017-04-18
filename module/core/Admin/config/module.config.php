@@ -1,16 +1,12 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
+
+use Zend\Router\Http;
+
 return array(
     'router' => array(
         'routes' => array(
             'admin' => array(
-                'type'    => 'Literal',
+                'type'    => Http\Literal::class,
                 'options' => array(
                     'route'    => '/admin',
                     'defaults' => array(
@@ -22,7 +18,7 @@ return array(
                 'may_terminate' => true,
                 'child_routes' => array(
                     'default' => array(
-                        'type' => 'Segment',
+                        'type' => Http\Segment::class,
                         'options' => array(
                             'route'    => '/[:lang/][:controller[/:action]]',
                             'constraints' => array(
@@ -38,7 +34,7 @@ return array(
                         ),
                     ),
                     'rest' => array(
-                        'type' => 'Segment',
+                        'type' => Http\Segment::class,
                         'options' => array(
                             'route'    => '[/:lang]/:controller[/:action][/:id]',
                             'constraints' => array(
@@ -85,8 +81,8 @@ return array(
             'Admin\Controller\Log' => 'Admin\Controller\Factory\LogControllerFactory',
             'Admin\Controller\Language' => 'Admin\Controller\Factory\LanguageControllerFactory',
             'Admin\Controller\User' => 'Admin\Controller\Factory\UserControllerFactory',
-            'Admin\Controller\RestorePassword' => 'Admin\Controller\Factory\RestorePasswordFactory',
-            'Admin\Controller\ResetPassword' => 'Admin\Controller\Factory\ResetPasswordFactory',
+            'Admin\Controller\Restorepassword' => 'Admin\Controller\Factory\RestorePasswordFactory',
+            'Admin\Controller\Resetpassword' => 'Admin\Controller\Factory\ResetPasswordFactory',
             'Admin\Controller\Register' => 'Admin\Controller\Factory\RegisterControllerFactory',
         ),
     ),

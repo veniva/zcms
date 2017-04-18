@@ -8,22 +8,14 @@
 
 namespace Application\Controller\Factory;
 
-
 use Application\Controller\CustomPageController;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 
 class CustomPageControllerFactory implements FactoryInterface
 {
-
-    /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new CustomPageController($serviceLocator);
+        return new CustomPageController($container);
     }
 }

@@ -2,17 +2,16 @@
 
 namespace Application\Service\Initializer;
 
-
 use Logic\Core\Model\PasswordAwareInterface;
-use Zend\ServiceManager\InitializerInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Initializer\InitializerInterface;
+use Interop\Container\ContainerInterface;
 
 class Password implements InitializerInterface
 {
-    public function initialize($instance, ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $instance)
     {
         if($instance instanceof PasswordAwareInterface){
-            $instance->setPasswordAdapter($serviceLocator->get('password-adapter'));
+            $instance->setPasswordAdapter($container->get('password-adapter'));
         }
     }
 }

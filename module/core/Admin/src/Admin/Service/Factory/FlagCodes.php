@@ -9,20 +9,14 @@
 namespace Admin\Service\Factory;
 
 use Logic\Core\Admin\Services\FlagCodes as FlagCodesService;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 
 class FlagCodes implements FactoryInterface
 {
-    /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $path = $serviceLocator->get('config')['public-path'];
+        $path = $container->get('config')['public-path'];
         return new FlagCodesService($path);
     }
 }

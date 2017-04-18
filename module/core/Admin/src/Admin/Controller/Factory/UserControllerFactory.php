@@ -8,22 +8,14 @@
 
 namespace Admin\Controller\Factory;
 
-
 use Admin\Controller\UserController;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 
 class UserControllerFactory implements FactoryInterface
 {
-
-    /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new UserController($serviceLocator);
+        return new UserController($container);
     }
 }

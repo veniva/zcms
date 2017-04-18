@@ -11,15 +11,15 @@ use Logic\Core\Admin\Form\ResetPassword as ResetPasswordForm;
 use Logic\Core\Interfaces\StatusCodes;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
+use Application\ServiceLocatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 class ResetPasswordController extends AbstractActionController implements TranslatorAwareInterface
 {
     use ServiceLocatorAwareTrait, TranslatorAwareTrait;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
     }

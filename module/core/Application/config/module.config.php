@@ -1,17 +1,12 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
+
+use Zend\Router\Http;
 
 return array(
     'router' => array(
         'routes' => array(
             'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => Http\Literal::class,
                 'options' => array(
                     'route'    => '/',
                     'defaults' => array(
@@ -24,7 +19,7 @@ return array(
                 'may_terminate' => true,
                 'child_routes' => array(
                     'default' => array(
-                        'type'    => 'Segment',
+                        'type'    => Http\Segment::class,
                         'options' => array(
                             'route'    => '[:lang/][:controller[/:action]]',
                             'constraints' => array(
@@ -37,7 +32,7 @@ return array(
                 ),
             ),
             'category' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => Http\Segment::class,
                 'options' => array(
                     'route' => '/[:lang/]category[/][:alias]',
                     'constraints' => array(
@@ -54,7 +49,7 @@ return array(
                 ),
             ),
             'page' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => Http\Segment::class,
                 'options' => array(
                     'route' => '/[:lang/]page[/][:alias]',
                     'constraints' => array(

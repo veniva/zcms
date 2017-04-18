@@ -2,24 +2,16 @@
 
 namespace Admin\Controller\Initializer;
 
-
-use Zend\ServiceManager\InitializerInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Initializer\InitializerInterface;
+use Interop\Container\ContainerInterface;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 
 class Translator implements InitializerInterface
 {
-    /**
-     * Initialize
-     *
-     * @param $instance
-     * @param ServiceLocatorInterface $controllerManager
-     * @return mixed
-     */
-    public function initialize($instance, ServiceLocatorInterface $controllerManager)
+    public function __invoke(ContainerInterface $container, $instance)
     {
         if($instance instanceof TranslatorAwareInterface){
-            $translator = $controllerManager->getServiceLocator()->get('translator');
+            $translator = $container->get('translator');
             $instance->setTranslator($translator);
         }
     }

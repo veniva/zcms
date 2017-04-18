@@ -22,8 +22,8 @@ use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Form\Element;
 use Zend\Mvc\Controller\AbstractRestfulController;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Application\ServiceLocatorAwareTrait;
+use Interop\Container\ContainerInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -31,7 +31,7 @@ class ListingController extends AbstractRestfulController implements TranslatorA
 {
     use TranslatorAwareTrait, ServiceLocatorAwareTrait;
     
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
     }

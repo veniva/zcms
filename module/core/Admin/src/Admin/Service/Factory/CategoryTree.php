@@ -8,16 +8,16 @@
 
 namespace Admin\Service\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 use Logic\Core\Model\Entity\Category;
 
 class CategoryTree implements FactoryInterface
 {
-    public function createService(ServiceLocatorInterface $serviceManager)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $languageService = $serviceManager->get('language');
-        $entityManager = $serviceManager->get('entity-manager');
+        $languageService = $container->get('language');
+        $entityManager = $container->get('entity-manager');
         $categoryRepository = $entityManager->getRepository(Category::class);
         return new \Logic\Core\Services\CategoryTree($languageService, $categoryRepository);
     }

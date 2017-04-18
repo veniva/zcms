@@ -1,22 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Ventsislav Ivanov
- * Date: 03/08/2015
- * Time: 11:43
- */
 
 namespace Application\Service\Factory;
 
 use Zend\Db\Adapter\Adapter;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 
 class DbAdapter implements FactoryInterface
 {
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = $serviceLocator->get('config');
+        $config = $container->get('config');
         return new Adapter($config['db']);
     }
 }

@@ -2,20 +2,18 @@
 
 namespace Admin\Controller;
 
-
 use Logic\Core\Adapters\Zend\SendMail;
 use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin\Authenticate\RestorePassword;
 use Logic\Core\Admin\Form\RestorePasswordForm;
 use Logic\Core\Adapters\Zend\Http\Request;
-use Logic\Core\Admin\Interfaces\Authenticate\IRestorePassword;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Stdlib\Strings;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Application\ServiceLocatorAwareTrait;
+use Interop\Container\ContainerInterface;
 
 class RestorePasswordController extends AbstractActionController implements TranslatorAwareInterface
 {
@@ -24,7 +22,7 @@ class RestorePasswordController extends AbstractActionController implements Tran
     /** @var RestorePassword  */
     protected $restorePassword;
     
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
     }

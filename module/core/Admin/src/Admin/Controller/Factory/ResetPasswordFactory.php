@@ -2,22 +2,14 @@
 
 namespace Admin\Controller\Factory;
 
-
 use Admin\Controller\ResetPasswordController;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 
 class ResetPasswordFactory implements FactoryInterface
 {
-
-    /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new ResetPasswordController($serviceLocator);
+        return new ResetPasswordController($container);
     }
 }

@@ -12,9 +12,10 @@ namespace Application;
 use Zend\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Zend\EventManager\EventManager;
 use Zend\ModuleManager\ModuleManager;
+use Zend\Mvc\I18n\Translator;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\RouteMatch;
+use Zend\Router\RouteMatch;
 use Zend\Session\Config\SessionConfig;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
@@ -24,7 +25,7 @@ use Zend\View\Model\ViewModel;
 class Module
 {
     /**
-     * @var \Zend\Mvc\Router\RouteMatch
+     * @var \Zend\Router\RouteMatch
      */
     private $routeMatch;
 
@@ -62,7 +63,7 @@ class Module
         $dbAdapter = $serviceManager->get('dbadapter');
         GlobalAdapterFeature::setStaticAdapter($dbAdapter);
 
-        AbstractValidator::setDefaultTranslator(new \Zend\Mvc\I18n\Translator($serviceManager->get('translator')));
+        AbstractValidator::setDefaultTranslator(new Translator($serviceManager->get('translator')));
 
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
@@ -414,7 +415,6 @@ class Module
         }
 
         if($match->getParam('action_cache')) {
-            $viewManager = $event->getApplication()->getServiceManager()->get('viewmanager');
 
             $result    = $event->getResult();
             if($result instanceof ViewModel) {

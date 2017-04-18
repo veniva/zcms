@@ -4,7 +4,6 @@
 //see http://framework.zend.com/manual/current/en/modules/zend.crypt.password.html#bcrypt
 return array(
     'bcrypt' => array(
-        'salt' => '758675869586',
         'cost' => 7
     )
 );

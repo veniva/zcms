@@ -2,7 +2,7 @@
 namespace AdminLanguages;
 
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\RouteMatch;
+use Zend\Router\RouteMatch;
 use Zend\View\Model\ViewModel;
 
 class Module

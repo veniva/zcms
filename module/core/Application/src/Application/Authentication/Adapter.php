@@ -3,13 +3,14 @@
 namespace Application\Authentication;
 
 
+use Application\ServiceLocatorAwareTrait;
 use Zend\Authentication\Adapter\AbstractAdapter;
 use Zend\Authentication\Result;
 use Zend\ServiceManager;
 
 class Adapter extends AbstractAdapter
 {
-    use ServiceManager\ServiceLocatorAwareTrait;
+    use ServiceLocatorAwareTrait;
     
     public function __construct(ServiceManager\ServiceLocatorInterface $serviceLocator)
     {

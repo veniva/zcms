@@ -13,16 +13,13 @@ use Logic\Core\Admin\Language\LanguageCreate;
 use Logic\Core\Admin\Language\LanguageDelete;
 use Logic\Core\Admin\Language\LanguageList;
 use Logic\Core\Admin\Language\LanguageUpdate;
-use Logic\Core\Form\Language as LanguageForm;
 use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Model\Entity\Category;
-use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Result;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractRestfulController;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Application\ServiceLocatorAwareTrait;
+use Interop\Container\ContainerInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -33,11 +30,11 @@ class LanguageController extends AbstractRestfulController implements Translator
     const ACTION_EDIT = 'edit';
     const ACTION_ADD = 'add';
     /**
-     * @var ServiceLocatorInterface
+     * @var ContainerInterface
      */
     protected $serviceLocator;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
     }

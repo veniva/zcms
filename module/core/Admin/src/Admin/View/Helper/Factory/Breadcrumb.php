@@ -8,33 +8,24 @@
 
 namespace Admin\View\Helper\Factory;
 
-
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 
 class Breadcrumb implements FactoryInterface
 {
-
-    /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $helperPluginManager
-     * @return mixed
-     */
-    public function createService(ServiceLocatorInterface $helperPluginManager)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $serviceManager = $helperPluginManager->getServiceLocator();
-        $request = $serviceManager->get('Request');
+        $request = $container->get('Request');
 
-        $entityManager = $serviceManager->get('entity-manager');
-        $categoryContentEntity = $serviceManager->get('category-content-entity');
+        $entityManager = $container->get('entity-manager');
+        $categoryContentEntity = $container->get('category-content-entity');
 
         $categoryContent = null;
         $id = $request->getQuery('parent', false);
         if($id !== false)
             $categoryContent = $entityManager->getRepository(get_class($categoryContentEntity))->findOneByCategory($id);
 
-        $defaultLang = $serviceManager->get('language')->getDefaultLanguage();
+        $defaultLang = $container->get('language')->getDefaultLanguage();
         return new \Admin\View\Helper\Breadcrumb($categoryContent, $defaultLang);
     }
 }

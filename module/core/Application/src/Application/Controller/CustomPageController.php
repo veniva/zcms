@@ -8,7 +8,6 @@
 
 namespace Application\Controller;
 
-
 use Logic\Core\Adapters\Zend\Http\Request as LogicRequest;
 use Logic\Core\Adapters\Zend\SendMail;
 use Logic\Core\Adapters\Zend\Translator;
@@ -19,19 +18,19 @@ use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mail;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
+use Application\ServiceLocatorAwareTrait;
 
 class CustomPageController extends AbstractActionController implements TranslatorAwareInterface
 {
     use ServiceLocatorAwareTrait, TranslatorAwareTrait;
 
     /**
-     * @var ServiceLocatorInterface
+     * @var ContainerInterface
      */
     protected $serviceLocator;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->setServiceLocator($serviceLocator);
     }

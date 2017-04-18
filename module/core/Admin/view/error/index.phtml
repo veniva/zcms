@@ -53,6 +53,24 @@
 </ul>
 <?php endif; ?>
 
+<?php elseif(isset($exception)): ?>
+        <hr/>
+        <h2><?php echo $this->translate('Additional information') ?>:</h2>
+        <h3><?php echo get_class($exception); ?></h3>
+        <dl>
+            <dt><?php echo $this->translate('File') ?>:</dt>
+            <dd>
+                <pre class="prettyprint linenums"><?php echo $exception->getFile() ?>:<?php echo $exception->getLine() ?></pre>
+            </dd>
+            <dt><?php echo $this->translate('Message') ?>:</dt>
+            <dd>
+                <pre class="prettyprint linenums"><?php echo $exception->getMessage() ?></pre>
+            </dd>
+            <dt><?php echo $this->translate('Stack trace') ?>:</dt>
+            <dd>
+                <pre class="prettyprint linenums"><?php echo $exception->getTraceAsString() ?></pre>
+            </dd>
+        </dl>
 <?php else: ?>
 
 <h3><?php echo $this->translate('No Exception available') ?></h3>

@@ -8,17 +8,16 @@
 
 namespace Application\Service\Factory;
 
-
 use Zend\Authentication\AuthenticationService;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 
 class Authentication implements FactoryInterface
 {
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $authentication = new AuthenticationService();
-        $adapter = $serviceLocator->get('auth-adapter');
+        $adapter = $container->get('auth-adapter');
         $authentication->setAdapter($adapter);
 
         return $authentication;
