@@ -1,6 +1,6 @@
 {
   "name": "veniva/zcms",
-  "description": "A light weight CMS based on Zend Framework 2 and Doctrine 2 ORM",
+  "description": "A light weight CMS based on Zend Framework 3 and Doctrine 2 ORM",
   "keywords": [
     "cms",
     "micro-cms",
