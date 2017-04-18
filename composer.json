@@ -1,38 +1,54 @@
 {
-    "require": {
-		"php": ">=7.0",
-        "zendframework/zend-mvc": "^3.0",
-        "zendframework/zend-i18n": "^2.7",
-        "zendframework/zend-filter": "^2.7",
-        "zendframework/zend-cache": "^2.7",
-        "zendframework/zend-db": "^2.8",
-        "zendframework/zend-session": "^2.7",
-        "zendframework/zend-permissions-acl": "^2.6",
-        "zendframework/zend-crypt": "^3.2",
-        "doctrine/orm": "~2.5",
-        "symfony/filesystem": "~2.8",
-        "zendframework/zend-authentication": "^2.5",
-        "zendframework/zend-mvc-i18n": "^1.0",
-        "zendframework/zend-form": "^2.10",
-        "zendframework/zend-captcha": "^2.7",
-        "zendframework/zend-mvc-plugin-flashmessenger": "^1.0",
-        "zendframework/zend-mail": "^2.7",
-        "zendframework/zend-paginator": "^2.7",
-        "zendframework/zend-json": "^3.0"
-    },
-    "require-dev": {
-        "zendframework/zend-component-installer": "^0.7.1"
-    },
-	"minimum-stability": "dev",
-	"prefer-stable": true,
-	"autoload": {
-	  "psr-4": {
-	    "Logic\\": "logic/src"
-	  }
-	},
-	"autoload-dev": {
-	  "psr-4": {
-		"Tests\\": "logic/tests"
-	  }
-	}
+  "name": "veniva/zcms",
+  "description": "A light weight CMS based on Zend Framework 2 and Doctrine 2 ORM",
+  "keywords": [
+    "cms",
+    "micro-cms",
+    "zend framework",
+    "doctrine"
+  ],
+  "homepage": "https://github.com/veniva/zcms",
+  "license": "GPL-3.0+",
+  "authors": [
+    {
+      "name": "Ventsislav Ivanov",
+      "homepage": "http://php-programming.net/"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "zendframework/zend-mvc": "^3.0",
+    "zendframework/zend-i18n": "^2.7",
+    "zendframework/zend-filter": "^2.7",
+    "zendframework/zend-cache": "^2.7",
+    "zendframework/zend-db": "^2.8",
+    "zendframework/zend-session": "^2.7",
+    "zendframework/zend-permissions-acl": "^2.6",
+    "zendframework/zend-crypt": "^3.2",
+    "doctrine/orm": "~2.5",
+    "symfony/filesystem": "~2.8",
+    "zendframework/zend-authentication": "^2.5",
+    "zendframework/zend-mvc-i18n": "^1.0",
+    "zendframework/zend-form": "^2.10",
+    "zendframework/zend-captcha": "^2.7",
+    "zendframework/zend-mvc-plugin-flashmessenger": "^1.0",
+    "zendframework/zend-mail": "^2.7",
+    "zendframework/zend-paginator": "^2.7",
+    "zendframework/zend-json": "^3.0"
+  },
+  "require-dev": {
+    "zendframework/zend-component-installer": "^0.7.1"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Logic\\": "logic/src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "logic/tests"
+    }
+  }
 }
