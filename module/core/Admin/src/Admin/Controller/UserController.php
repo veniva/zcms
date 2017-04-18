@@ -48,10 +48,10 @@ class UserController extends AbstractRestfulController implements TranslatorAwar
     public function getList()
     {
         $pageNumber = $this->params()->fromQuery('page', 1);
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
         $translator = $this->getTranslator();
         
-        $logic = new UserList(new Translator($translator), $entityManager);
+        $this->dependencyProvider($translator, $em, $loggedInUser);
+        $logic = new UserList(new Translator($translator), $em, $loggedInUser);
         $result = $logic->showList($pageNumber);
         $usersPaginated = $result->get('users_paginated');
 

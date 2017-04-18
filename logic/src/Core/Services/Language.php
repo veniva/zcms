@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Services;
 
-
 use Logic\Core\Model\Entity\Lang;
 
 class Language

@@ -2,9 +2,7 @@
 
 namespace Logic\Core\Admin\Category;
 
-
 use Doctrine\Common\Collections\ArrayCollection;
-use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category as CategoryEntity;
 use Logic\Core\Form\Category as CategoryForm;
 use Logic\Core\Model\Entity\Category;

@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Admin\Category;
 
-
 use Doctrine\ORM\EntityManagerInterface;
 use Logic\Core\BaseLogic;
 use Logic\Core\Interfaces\StatusCodes;

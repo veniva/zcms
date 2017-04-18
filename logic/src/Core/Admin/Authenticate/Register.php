@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Admin\Authenticate;
 
-
 use Doctrine\ORM\EntityManagerInterface;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Lang;

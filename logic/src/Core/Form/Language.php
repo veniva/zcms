@@ -8,7 +8,6 @@
 
 namespace Logic\Core\Form;
 
-
 use Doctrine\ORM\EntityManagerInterface;
 use Logic\Core\Model\Entity\Lang;
 use Zend\Form\Form;

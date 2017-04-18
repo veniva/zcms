@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Interfaces;
 
-
 interface StatusMessages
 {
     const ERR_INVALID_PARAM_MSG = 'Invalid parameter provided';

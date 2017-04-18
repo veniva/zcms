@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Model\Entity;
 
-
 use Logic\Core\Model\PasswordAwareInterface;
 use Zend\Crypt\Password\PasswordInterface;
 

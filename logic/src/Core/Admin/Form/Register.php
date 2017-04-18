@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Admin\Form;
 
-
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Model\Entity\User as UserEntity;
 use Logic\Core\Form\Language;

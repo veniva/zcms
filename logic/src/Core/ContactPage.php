@@ -2,7 +2,6 @@
 
 namespace Logic\Core;
 
-
 use Logic\Core\Adapters\Interfaces\ISendMail;
 use Logic\Core\Adapters\Interfaces\ITranslator;
 use Logic\Core\Form\Contact;

@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Admin\Form;
 
-
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
 

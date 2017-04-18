@@ -8,7 +8,6 @@
 
 namespace Logic\Core\Model;
 
-
 use Doctrine\ORM\EntityRepository;
 use Zend\Paginator\Paginator;
 

@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Model;
 
-
 use Doctrine\ORM\EntityRepository;
 
 class PasswordResetsRepository extends EntityRepository

@@ -2,7 +2,6 @@
 
 namespace Logic\Core;
 
-
 use Logic\Core\Adapters\Interfaces\ITranslator;
 
 class Result

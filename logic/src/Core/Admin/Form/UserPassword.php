@@ -8,7 +8,6 @@
 
 namespace Logic\Core\Admin\Form;
 
-
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 

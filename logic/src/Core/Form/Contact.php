@@ -8,7 +8,6 @@
 
 namespace Logic\Core\Form;
 
-
 use Zend\Captcha\Image;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;

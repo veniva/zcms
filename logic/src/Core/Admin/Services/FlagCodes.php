@@ -8,7 +8,6 @@
 
 namespace Logic\Core\Admin\Services;
 
-
 class FlagCodes
 {
     protected $flagsDir;

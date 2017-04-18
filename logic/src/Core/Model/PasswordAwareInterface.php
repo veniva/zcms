@@ -8,7 +8,6 @@
 
 namespace Logic\Core\Model;
 
-
 use Zend\Crypt\Password\PasswordInterface;
 
 interface PasswordAwareInterface

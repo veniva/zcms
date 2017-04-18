@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Admin\Page;
 
-
 use Logic\Core\Model\Entity\Listing;
 use Logic\Core\Model\Entity\ListingContent;
 use Logic\Core\Services\Language;

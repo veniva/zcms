@@ -8,7 +8,6 @@
 
 namespace Logic\Core\Validator;
 
-
 use Zend\Validator\AbstractValidator;
 use Zend\Validator\Exception;
 use Zend\Validator\Exception\InvalidArgumentException;

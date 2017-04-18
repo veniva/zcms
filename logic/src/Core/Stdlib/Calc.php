@@ -8,7 +8,6 @@
 
 namespace Logic\Core\Stdlib;
 
-
 class Calc
 {
     public static function bytesToKilobytes($bytes)

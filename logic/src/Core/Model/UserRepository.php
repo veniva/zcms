@@ -10,19 +10,20 @@ namespace Logic\Core\Model;
 
 use Logic\Core\Model\Entity\User;
 use Doctrine\ORM\EntityRepository;
-use Zend\Authentication\AuthenticationService;
 use Zend\Paginator\Paginator;
 
 class UserRepository extends EntityRepository
 {
-    public function getUsersPaginated()
+    /**
+     * @param int $userRoleId The highest user role the user has a right to edit
+     * @return Paginator
+     */
+    public function getEditableUsersPaginated(int $userRoleId)
     {
-        $auth = new AuthenticationService();
         $qb = $this->createQueryBuilder('u');
-        $qb->select('u');
-        if($auth->hasIdentity()){
-            $qb->where('u.role >='.$auth->getIdentity()->getRole());
-        }
+        $qb->select('u')
+            ->where('u.role >='.$userRoleId);
+        
         return new Paginator(new \Application\Paginator\DoctrineAdapter($qb->getQuery()));
     }
 

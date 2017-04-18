@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Admin\Category;
 
-
 use Logic\Core\Adapters\Interfaces\ITranslator;
 use Doctrine\ORM\EntityManager;
 use Logic\Core\BaseLogic;

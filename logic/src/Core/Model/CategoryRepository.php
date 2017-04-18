@@ -8,7 +8,6 @@
 
 namespace Logic\Core\Model;
 
-
 use Logic\Core\Model\Entity\Category;
 use Doctrine\ORM;
 use Doctrine\ORM\QueryBuilder;

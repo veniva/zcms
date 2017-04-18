@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Ventsislav Ivanov
- * Date: 27/02/2016
- * Time: 11:40
- */
 
 namespace Logic\Core\Validator;
-
 
 use Zend\Validator\AbstractValidator;
 use Zend\Validator\Exception;

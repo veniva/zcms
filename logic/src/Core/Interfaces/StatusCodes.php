@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Interfaces;
 
-
 interface StatusCodes
 {
     const SUCCESS = 0;

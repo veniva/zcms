@@ -2,7 +2,6 @@
 
 namespace Logic\Core\Admin\Page;
 
-
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Listing;

@@ -8,7 +8,6 @@
 
 namespace Logic\Core\Stdlib;
 
-
 class Strings
 {
     public static function randomString($length = null) {

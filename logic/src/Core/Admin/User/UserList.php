@@ -13,19 +13,22 @@ class UserList extends BaseLogic
 {
     /** @var EntityManager */
     protected $em;
+    /** @var User */
+    protected $loggedInUser;
     
-    public function __construct(ITranslator $translator, EntityManager $entityManager)
+    public function __construct(ITranslator $translator, EntityManager $entityManager,  User $loggedInUser)
     {
         parent::__construct($translator);
         
         $this->em = $entityManager;
+        $this->loggedInUser = $loggedInUser;
     }
 
     public function showList(int $pageNumber = 1)
     {
         /** @var UserRepository $usersRepo */
         $usersRepo = $this->em->getRepository(User::class);
-        $usersPaginated = $usersRepo->getUsersPaginated();
+        $usersPaginated = $usersRepo->getEditableUsersPaginated($this->loggedInUser->getId());
         $usersPaginated->setCurrentPageNumber($pageNumber);
 
         $i = 0;
