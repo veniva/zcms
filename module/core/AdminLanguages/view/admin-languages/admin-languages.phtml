@@ -7,7 +7,7 @@
             'id' => $this->id,
             'page' => $this->page,
             'lang' => $lang->getIsoCode() != $this->languages->getDefaultLanguage()->getIsoCode() ? $lang->getIsoCode() : null,//if the language is the default, then do not append with language route
-        ])?>" <?=$selected?>>
+        ], ['query' => $this->queryString])?>" <?=$selected?>>
             <?=$lang->getName()?>
         </option>
     <?php endforeach; ?>

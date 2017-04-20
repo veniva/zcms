@@ -34,7 +34,7 @@ class ResetPasswordTest extends TestCase
         $reset = new ResetPassword($this->emStb, $this->formStb, $this->transStb);
         $result = $reset->resetGet();
 
-        $this->assertEquals(ResetPassword::ERR_BROKEN_LINK, $result['status']);
+        $this->assertEquals(ResetPassword::ERR_BROKEN_LINK, $result->status);
     }
 
     public function testGetNotFound()
@@ -43,7 +43,7 @@ class ResetPasswordTest extends TestCase
         $reset = new ResetPassword($this->emStb, $this->formStb, $this->transStb, 's', 's');
         $result = $reset->resetGet();
 
-        $this->assertEquals(ResetPassword::ERR_PASSWORD_REQUEST_NOT_FOUND, $result['status']);
+        $this->assertEquals(ResetPassword::ERR_PASSWORD_REQUEST_NOT_FOUND, $result->status);
     }
 
     public function testGetTooOld()
@@ -55,7 +55,7 @@ class ResetPasswordTest extends TestCase
         $reset = new ResetPassword($this->emStb, $this->formStb, $this->transStb, 's', 's');
         $result = $reset->resetGet();
 
-        $this->assertEquals(ResetPassword::ERR_LINK_TOO_OLD, $result['status']);
+        $this->assertEquals(ResetPassword::ERR_LINK_TOO_OLD, $result->status);
     }
 
     public function testGetUnExistingUser()
@@ -70,7 +70,7 @@ class ResetPasswordTest extends TestCase
         $reset = new ResetPassword($this->emStb, $this->formStb, $this->transStb, 's', 's');
         $result = $reset->resetGet();
 
-        $this->assertEquals(ResetPassword::ERR_UNEXISTING_USER, $result['status']);
+        $this->assertEquals(ResetPassword::ERR_UNEXISTING_USER, $result->status);
     }
 
     public function testGetSuccess()
@@ -80,7 +80,7 @@ class ResetPasswordTest extends TestCase
         $reset = new ResetPassword($this->emStb, $this->formStb, $this->transStb, 's', 's');
         $result = $reset->resetGet();
 
-        $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
     }
 
     protected function repoStb()
@@ -112,7 +112,7 @@ class ResetPasswordTest extends TestCase
         $reset = new ResetPassword($this->emStb, $this->formStb, $this->transStb, 's', 's');
 
         $result = $reset->resetPost([]);
-        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result['status']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result->status);
     }
 
     public function testPostSuccess()
@@ -137,7 +137,7 @@ class ResetPasswordTest extends TestCase
         $reset = new ResetPassword($this->emStb, $this->formStb, $this->transStb, 's', 's');
 
         $result = $reset->resetPost([]);
-        $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
     }
 }
 

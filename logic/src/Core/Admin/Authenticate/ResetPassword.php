@@ -5,11 +5,13 @@ namespace Logic\Core\Admin\Authenticate;
 use Doctrine\ORM\EntityManagerInterface;
 use Logic\Core\Adapters\Interfaces\ITranslator;
 use Logic\Core\Admin\Form\ResetPassword as ResetPasswordForm;
+use Logic\Core\BaseLogic;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
+use Logic\Core\Result;
 
-class ResetPassword
+class ResetPassword extends BaseLogic
 {
     const ERR_BROKEN_LINK = 'reset.broken_link';
     const ERR_PASSWORD_REQUEST_NOT_FOUND = 'reset.pass_not_found';
@@ -34,6 +36,8 @@ class ResetPassword
         string $token = null
     )
     {
+        parent::__construct($translator);
+        
         $this->em = $em;
         $this->email = $email;
         $this->token = $token;
@@ -41,26 +45,26 @@ class ResetPassword
         $this->translator = $translator;
     }
 
-    public function resetGet(): array
+    public function resetGet(): Result
     {
         $protect = $this->protect();
-        if($protect['status'] !== StatusCodes::SUCCESS){
+        if($protect->status !== StatusCodes::SUCCESS){
             return $protect;
         }
         
-        return [
-            'status' => StatusCodes::SUCCESS,
+        return $this->result(StatusCodes::SUCCESS, null, [
             'form' => $this->form
-        ];
+        ]);
     }
     
-    public function resetPost(array $data): array
+    public function resetPost(array $data): Result
     {
         $protect = $this->protect();
-        if($protect['status'] !== StatusCodes::SUCCESS){
+        if($protect->status !== StatusCodes::SUCCESS){
             return $protect;
         }
-        $user = $protect['user'];
+        
+        $user = $protect->get('user');
         $form = $this->form;
         $form->setData($data);
         if($form->isValid()){
@@ -68,58 +72,41 @@ class ResetPassword
             $this->em->getRepository(PasswordResets::class)->deleteAllForEmail($user->getEmail());
             $this->em->flush();
             
-            return [
-                'status' => StatusCodes::SUCCESS,
-                'message' => $this->translator->translate('The password has been changed successfully.')
-            ];
+            return $this->result(StatusCodes::SUCCESS, 'The password has been changed successfully.');
         }
         
-        return [
-            'status' => StatusCodes::ERR_INVALID_FORM,
+        return $this->result(StatusCodes::ERR_INVALID_FORM, null, [
             'form' => $form
-        ];
+        ]);
     }
     
-    protected function protect(): array
+    protected function protect(): Result
     {
         $email = urldecode($this->email);
         $token = $this->token;
         if(empty($email) || empty($token)){
-            return [
-                'status' => self::ERR_BROKEN_LINK,
-                'message' => $this->translator->translate('The link you\'re using is broken')
-            ];
+            return $this->result(self::ERR_BROKEN_LINK, 'The link you\'re using is broken');
         }
 
         $resetPassword = $this->em->find(PasswordResets::class, ['email' => $email, 'token' => $token]);
         if(!$resetPassword){
-            return [
-                'status' => self::ERR_PASSWORD_REQUEST_NOT_FOUND,
-                'message' => $this->translator->translate('The link you\'re using is corrupted, please create another password request')
-            ];
+            return $this->result(self::ERR_PASSWORD_REQUEST_NOT_FOUND, 'The link you\'re using is corrupted, please create another password request');
         }
 
         $createdAt = $resetPassword->getCreatedAt();
         $date = new \DateTime();
         $date->sub(new \DateInterval('PT24H'));
         if($date > $createdAt){
-            return [
-                'status' => self::ERR_LINK_TOO_OLD,
-                'message' => $this->translator->translate('The link you\'re using is out of date, please create another password request')
-            ];
+            return $this->result(self::ERR_LINK_TOO_OLD, 'The link you\'re using is out of date, please create another password request');
         }
 
         $user = $this->em->getRepository(User::class)->findOneByEmail($email);
         if(!$user){
-            return [
-                'status' => self::ERR_UNEXISTING_USER,
-                'message' => $this->translator->translate('There is no user with email: '.$email.'. You have probably changed the email recently.')
-            ];
+            return $this->result(self::ERR_UNEXISTING_USER, 'There is no user with email: '.$email.'. You have probably changed the email recently.');
         }
         
-        return [
-            'status' => StatusCodes::SUCCESS,
+        return $this->result(StatusCodes::SUCCESS, null, [
             'user' => $user
-        ];
+        ]);
     }
 }

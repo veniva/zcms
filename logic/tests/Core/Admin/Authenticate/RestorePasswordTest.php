@@ -2,21 +2,18 @@
 
 namespace Tests\Core\Admin\Authenticate;
 
-use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Interfaces\ISendMail;
-use Logic\Core\Adapters\Interfaces\ITranslator;
 use Logic\Core\Admin\Authenticate\RestorePassword;
 use Logic\Core\Admin\Form\RestorePasswordForm;
 use Logic\Core\Interfaces\StatusCodes;
+use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\User;
 use Logic\Core\Model\PasswordResetsRepository;
-use PHPUnit\Framework\TestCase;
+use Tests\Core\Admin\AdminBase;
 
-class RestorePasswordTest extends TestCase
+class RestorePasswordTest extends AdminBase
 {
     protected $formStb;
-    protected $emStb;
-    protected $trStb;
 
     /** @var RestorePassword */
     protected $restorePassword;
@@ -26,9 +23,7 @@ class RestorePasswordTest extends TestCase
         parent::__construct($name, $data, $dataName);
 
         $this->formStb = $this->createMock(RestorePasswordForm::class);
-        $this->emStb = $this->createMock(EntityManager::class);
-        $this->trStb = $this->createMock(ITranslator::class);
-        $this->restorePassword = new RestorePassword($this->formStb, $this->trStb);
+        $this->restorePassword = new RestorePassword($this->formStb, $this->transStb);
     }
 
     protected function createSubs(&$inputStb, &$repoStb)
@@ -48,7 +43,8 @@ class RestorePasswordTest extends TestCase
         $this->formStb->method('isValid')->willReturn(false);
         $result = $this->restorePassword->postAction([], $this->emStb);
 
-        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result['status']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result->status);
+        $this->assertEquals(StatusMessages::ERR_INVALID_FORM_MSG, $result->message);
     }
 
     public function testNoEmailInDB()
@@ -59,7 +55,7 @@ class RestorePasswordTest extends TestCase
         $repoStb->method('findOneByEmail')->willReturn(null);
 
         $result = $this->restorePassword->postAction([], $this->emStb);
-        $this->assertEquals(RestorePassword::ERR_NOT_FOUND, $result['status']);
+        $this->assertEquals(RestorePassword::ERR_NOT_FOUND, $result->status);
     }
 
     public function testNoEditAllowed()
@@ -73,7 +69,7 @@ class RestorePasswordTest extends TestCase
         $repoStb->method('findOneByEmail')->willReturn($userStb);
 
         $result = $this->restorePassword->postAction([], $this->emStb);
-        $this->assertEquals(RestorePassword::ERR_NOT_ALLOWED, $result['status']);
+        $this->assertEquals(RestorePassword::ERR_NOT_ALLOWED, $result->status);
     }
 
     public function testSuccess()
@@ -87,7 +83,7 @@ class RestorePasswordTest extends TestCase
         $repoStb->method('findOneByEmail')->willReturn($userStb);
 
         $result = $this->restorePassword->postAction([], $this->emStb);
-        $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
     }
 
     public function testSendEmailFailure()
@@ -101,7 +97,7 @@ class RestorePasswordTest extends TestCase
         $this->emStb->method('getRepository')->willReturn($psStb);
 
         $result = $this->sendMail($mailStb);
-        $this->assertEquals(RestorePassword::ERR_SEND_MAIL, $result['status']);
+        $this->assertEquals(RestorePassword::ERR_SEND_MAIL, $result->status);
     }
 
     public function testSendMailSuccess()
@@ -115,9 +111,9 @@ class RestorePasswordTest extends TestCase
         $this->emStb->method('getRepository')->willReturn($psStb);
 
         $result = $this->sendMail($mailStb);
-        $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
-        $this->assertArrayHasKey('message', $result);
-        $this->assertArrayHasKey('email', $result);
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
+        $this->assertTrue(strlen($result->message) > 0);
+        $this->assertTrue($result->has('email'));
     }
 
     protected function sendMail($mailStb)

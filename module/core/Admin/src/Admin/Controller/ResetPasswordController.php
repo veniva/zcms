@@ -34,8 +34,8 @@ class ResetPasswordController extends AbstractActionController implements Transl
         $logic = new ResetPassword($em, new ResetPasswordForm(), new Translator($this->translator), $email, $token);
         if($request->isPost()){
             $result = $logic->resetPost($request->getPost());
-            if($result['status'] === StatusCodes::SUCCESS){
-                $this->flashMessenger()->addSuccessMessage($result['message']);
+            if($result->status === StatusCodes::SUCCESS){
+                $this->flashMessenger()->addSuccessMessage($result->message);
                 return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
             }
 
@@ -43,13 +43,13 @@ class ResetPasswordController extends AbstractActionController implements Transl
             $result = $logic->resetGet();
         }
 
-        if(($result['status'] !== StatusCodes::SUCCESS) && ($result['status'] !== StatusCodes::ERR_INVALID_FORM)) {
-            $this->flashMessenger()->addErrorMessage($result['message']);
+        if(($result->status !== StatusCodes::SUCCESS) && ($result->status !== StatusCodes::ERR_INVALID_FORM)) {
+            $this->flashMessenger()->addErrorMessage($result->message);
             return $this->redir()->toRoute('admin/default', array('controller' => 'restorepassword', 'action' => 'forgotten'));
         }
 
         return [
-            'form' => $result['form']
+            'form' => $result->get('form')
         ];
     }
 }

@@ -18,9 +18,6 @@ use Interop\Container\ContainerInterface;
 class RestorePasswordController extends AbstractActionController implements TranslatorAwareInterface
 {
     use TranslatorAwareTrait, ServiceLocatorAwareTrait;
-
-    /** @var RestorePassword  */
-    protected $restorePassword;
     
     public function __construct(ContainerInterface $serviceLocator)
     {
@@ -29,23 +26,23 @@ class RestorePasswordController extends AbstractActionController implements Tran
 
     public function forgottenAction()
     {
-        $restorePassword = new RestorePassword(new RestorePasswordForm(), new Translator($this->translator));
+        $restorePassword = new RestorePassword(new RestorePasswordForm(), new Translator($this->getTranslator()));
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $request = new Request($this->getRequest());
         if($request->isPost()){
 
             $result = $restorePassword->postAction($request->getPost(), $entityManager);
 
-            if($result['status'] == RestorePassword::ERR_NOT_FOUND){
-                $this->flashMessenger()->addErrorMessage($result['message']);
+            if($result->status === RestorePassword::ERR_NOT_FOUND){
+                $this->flashMessenger()->addErrorMessage($result->message);
                 return $this->redir()->toRoute('admin/default', array('controller' => 'restorepassword', 'action' => 'forgotten'));
 
             }
-            else if($result['status'] == StatusCodes::ERR_INVALID_FORM){
-                return array('form' => $result['form']);
+            else if($result->status === StatusCodes::ERR_INVALID_FORM){
+                return array('form' => $result->get('form'));
             }
-            else if($result['status'] == RestorePassword::ERR_NOT_ALLOWED){
-                $this->flashMessenger()->addErrorMessage(sprintf($result['message']), $result['email']);
+            else if($result->status === RestorePassword::ERR_NOT_ALLOWED){
+                $this->flashMessenger()->addErrorMessage(sprintf($result->message), $result->get('email'));
                 return $this->redir()->toRoute('admin/default', array('controller' => 'restorepassword', 'action' => 'forgotten'));
             }
 
@@ -53,27 +50,27 @@ class RestorePasswordController extends AbstractActionController implements Tran
             $token = Strings::randomString(10);
             $uri = $this->getRequest()->getUri();
             $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
-            $basePath = $renderer->basePath('/admin/log/reset');
+            $basePath = $renderer->basePath('/admin/resetpassword/reset');
             $baseUrl = sprintf('%s://%s', $uri->getScheme(), $uri->getHost());
-            $link = $baseUrl . $basePath. '?email=' . urlencode($result['email']) . '&token=' . $token;
+            $link = $baseUrl . $basePath. '?email=' . urlencode($result->email) . '&token=' . $token;
             $message = sprintf($this->translator->translate("Dear user,%sFollowing the new password request, here is a link for you to visit in order to create a new password:%s%s"), "\n\n", "\n\n", $link);
 
             $config = $this->getServiceLocator()->get('config');
             $data = [
-                'email' => $result['email'],
+                'email' => $result->get('email'),
                 'token' => $token,
                 'no-reply' => $config['other']['no-reply'],
                 'message' => $message,
                 'subject' => 'New password'
             ];
 
-            $result = $this->restorePassword->persistAndSendEmail($entityManager, new SendMail(), $data);
-            if($result['status'] === RestorePassword::ERR_SEND_MAIL){
-                $this->flashMessenger()->addErrorMessage($result['message']);
+            $result = $restorePassword->persistAndSendEmail($entityManager, new SendMail(), $data);
+            if($result->status === RestorePassword::ERR_SEND_MAIL){
+                $this->flashMessenger()->addErrorMessage($result->message);
                 return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
             }
             
-            $this->flashMessenger()->addSuccessMessage(sprintf($result['message']), $result['email']);
+            $this->flashMessenger()->addSuccessMessage(sprintf($result->message, $result->get('email')));
             return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
         }
 

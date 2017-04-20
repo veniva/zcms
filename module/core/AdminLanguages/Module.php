@@ -1,6 +1,7 @@
 <?php
 namespace AdminLanguages;
 
+use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\MvcEvent;
 use Zend\Router\RouteMatch;
 use Zend\View\Model\ViewModel;
@@ -20,13 +21,15 @@ class Module
         $viewArray = [
             'languages' => $serviceManager->get('language'),
         ];
-        $viewArray = array_merge($viewArray, $this->setRouteVariables($this->getRouteMatch($event)));
+        
+        $viewArray = array_merge($viewArray, $this->setRouteVariables($this->getRouteMatch($event), $event->getRequest()));
+        
         $languagesView = new ViewModel($viewArray);
         $languagesView->setTemplate('admin-languages/layout');
         $viewModel->addChild($languagesView, 'activeAdminLanguages');
     }
 
-    protected function setRouteVariables(RouteMatch $routeMatch)
+    protected function setRouteVariables(RouteMatch $routeMatch, Request $request)
     {
         $controller = $routeMatch->getParam('controller');
         $controller = strtolower(substr($controller, strrpos($controller, '\\')+1));
@@ -45,6 +48,8 @@ class Module
         $page = $routeMatch->getParam('page');
         if($page)
             $setArray['page'] = $page;
+
+        $setArray['queryString'] = $request->getQuery()->toArray();
 
         return $setArray;
     }
