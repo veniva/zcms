@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core\Admin\Page;
+namespace Logic\Tests\Core\Admin\Page;
 
 use Logic\Core\Admin\Form\Page;
 use Logic\Core\Interfaces\StatusCodes;

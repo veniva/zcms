@@ -1,12 +1,12 @@
 <?php
-namespace Tests\Core\Admin\User;
+namespace Logic\Tests\Core\Admin\User;
 
 use Logic\Core\Admin\Form\User as UserForm;
 use Logic\Core\Admin\User\UserUpdate;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\User;
-use Tests\Core\Admin\AdminBase;
+use Logic\Tests\Core\Admin\AdminBase;
 
 class UserUpdateTest extends AdminBase
 {

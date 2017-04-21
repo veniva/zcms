@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core\Admin\Authenticate;
+namespace Logic\Tests\Core\Admin\Authenticate;
 
 
 use Logic\Core\Admin\Form\ResetPassword;

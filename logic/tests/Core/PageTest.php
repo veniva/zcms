@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core;
+namespace Logic\Tests\Core;
 
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Interfaces\StatusCodes;

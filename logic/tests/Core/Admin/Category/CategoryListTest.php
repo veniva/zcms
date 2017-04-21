@@ -1,6 +1,5 @@
 <?php
-namespace Tests\Core\Admin\Category;
-
+namespace Logic\Tests\Core\Admin\Category;
 
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Adapters\Interfaces\ITranslator;

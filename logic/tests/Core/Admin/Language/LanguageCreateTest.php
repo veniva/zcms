@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core\Admin\Language;
+namespace Logic\Tests\Core\Admin\Language;
 
 use Doctrine\ORM\EntityRepository;
 use Logic\Core\Admin\Language\LanguageCreate;
@@ -10,7 +10,7 @@ use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Result;
-use Tests\Core\Admin\AdminBase;
+use Logic\Tests\Core\Admin\AdminBase;
 
 class LanguageCreateTest extends AdminBase
 {

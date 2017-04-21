@@ -1,7 +1,6 @@
 <?php
 
-namespace Tests\Core\Admin;
-
+namespace Logic\Tests\Core\Admin;
 
 use PHPUnit\Framework\TestCase;
 use Zend\Form\Form;

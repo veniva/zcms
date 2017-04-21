@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core\Admin\Authenticate;
+namespace Logic\Tests\Core\Admin\Authenticate;
 
 use Logic\Core\Adapters\Interfaces\ISendMail;
 use Logic\Core\Admin\Authenticate\RestorePassword;
@@ -9,7 +9,7 @@ use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\User;
 use Logic\Core\Model\PasswordResetsRepository;
-use Tests\Core\Admin\AdminBase;
+use Logic\Tests\Core\Admin\AdminBase;
 
 class RestorePasswordTest extends AdminBase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core\Admin\Language;
+namespace Logic\Tests\Core\Admin\Language;
 
 use Logic\Core\Admin\Language\LanguageList;
 use Logic\Core\Interfaces\StatusCodes;

@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Core\Admin\Language;
+namespace Logic\Tests\Core\Admin\Language;
 
 use Logic\Core\Admin\Language\LanguageDelete;
 use Logic\Core\Interfaces\StatusCodes;
 use Logic\Core\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Lang;
-use Tests\Core\Admin\AdminBase;
+use Logic\Tests\Core\Admin\AdminBase;
 
 class LanguageDeleteTest extends AdminBase
 {

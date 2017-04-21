@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Core\Admin\Language;
+namespace Logic\Tests\Core\Admin\Language;
 
 use Doctrine\ORM\EntityRepository;
 use Logic\Core\Admin\Language\LanguageHelpers;
 use Logic\Core\Interfaces\StatusCodes;
-use Tests\Core\Admin\AdminBase;
+use Logic\Tests\Core\Admin\AdminBase;
 
 class LanguageHelpersTest extends AdminBase
 {

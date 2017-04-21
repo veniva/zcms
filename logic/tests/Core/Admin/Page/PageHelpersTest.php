@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core\Admin\Page;
+namespace Logic\Tests\Core\Admin\Page;
 
 use Logic\Core\Admin\Page\PageHelpers;
 use Logic\Core\Model\Entity\ListingContent;

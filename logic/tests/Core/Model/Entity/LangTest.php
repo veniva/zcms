@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core\Model\Entity;
+namespace Logic\Tests\Core\Model\Entity;
 
 use Logic\Core\Model\Entity\Lang;
 use PHPUnit\Framework\TestCase;

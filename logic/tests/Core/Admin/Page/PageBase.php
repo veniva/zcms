@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core\Admin\Page;
+namespace Logic\Tests\Core\Admin\Page;
 
 use PHPUnit\Framework\TestCase;
 use Doctrine\ORM\EntityManager;

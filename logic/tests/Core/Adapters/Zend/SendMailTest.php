@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core\Adapters\Zend;
+namespace Logic\Tests\Core\Adapters\Zend;
 
 use Logic\Core\Adapters\Zend\SendMail;
 use PHPUnit\Framework\TestCase;
