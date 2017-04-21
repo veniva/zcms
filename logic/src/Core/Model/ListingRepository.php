@@ -9,6 +9,7 @@
 namespace Logic\Core\Model;
 
 use Doctrine\ORM\EntityRepository;
+use Logic\Core\Adapters\DoctrineAdapter;
 use Zend\Paginator\Paginator;
 
 class ListingRepository extends EntityRepository
@@ -23,7 +24,7 @@ class ListingRepository extends EntityRepository
             $qb->where('c.id='.$categoryId);
         $qb->orderBy('l.id');
 
-        return new Paginator(new \Application\Paginator\DoctrineAdapter($qb->getQuery()));
+        return new Paginator(new DoctrineAdapter($qb->getQuery()));
     }
 
     public function getListingByAliasAndLang($alias, $lang)

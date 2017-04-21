@@ -9,6 +9,7 @@
 namespace Logic\Core\Model;
 
 use Doctrine\ORM\EntityRepository;
+use Logic\Core\Adapters\DoctrineAdapter;
 use Zend\Paginator\Paginator;
 
 class LangRepository extends EntityRepository
@@ -24,7 +25,7 @@ class LangRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('l');
         $qb->select('l')->orderBy('l.status', 'desc')->addOrderBy('l.id');
-        return new Paginator(new \Application\Paginator\DoctrineAdapter($qb->getQuery()));
+        return new Paginator(new DoctrineAdapter($qb->getQuery()));
     }
 
     public function countLanguages()

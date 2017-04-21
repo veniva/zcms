@@ -8,6 +8,7 @@
 
 namespace Logic\Core\Model;
 
+use Logic\Core\Adapters\DoctrineAdapter;
 use Logic\Core\Model\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Zend\Paginator\Paginator;
@@ -24,7 +25,7 @@ class UserRepository extends EntityRepository
         $qb->select('u')
             ->where('u.role >='.$userRoleId);
         
-        return new Paginator(new \Application\Paginator\DoctrineAdapter($qb->getQuery()));
+        return new Paginator(new DoctrineAdapter($qb->getQuery()));
     }
 
     public function countAdminUsers()

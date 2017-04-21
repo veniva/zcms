@@ -8,6 +8,7 @@
 
 namespace Logic\Core\Model;
 
+use Logic\Core\Adapters\DoctrineAdapter;
 use Logic\Core\Model\Entity\Category;
 use Doctrine\ORM;
 use Doctrine\ORM\QueryBuilder;
@@ -100,7 +101,7 @@ TAG;
     public function getPaginatedCategories($parent = 0)
     {
         $query = $this->categoriesDQL($parent);
-        return new Paginator(new \Application\Paginator\DoctrineAdapter($query));
+        return new Paginator(new DoctrineAdapter($query));
     }
 
     protected function categoriesDQL($parent)

@@ -10,7 +10,13 @@ class Request implements IRequest
 {
     /** @var  ZendRequest */
     protected $request;
-    
+
+    /**
+     * @deprecated
+     * 
+     * Request constructor.
+     * @param ZendRequest $request
+     */
     public function __construct(ZendRequest $request)
     {
         $this->request = $request;
