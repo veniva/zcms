@@ -82,7 +82,6 @@ return array(
             'text-cache' => 'Zend\Cache\Service\StorageCacheFactory',
         ),
         'invokables' => array(
-            'misc' => 'Application\Service\Invokable\Misc',
             'listing-entity' => 'Logic\Core\Model\Entity\Listing',
             'listing-content-entity' => 'Logic\Core\Model\Entity\ListingContent',
             'category-entity' => 'Logic\Core\Model\Entity\Category',
@@ -124,7 +123,7 @@ return array(
         'factories' => array(
             'Application\Controller\Page' => 'Application\Controller\Factory\PageControllerFactory',
             'Application\Controller\Category' => 'Application\Controller\Factory\CategoryControllerFactory',
-            'Application\Controller\CustomPage' => 'Application\Controller\Factory\CustomPageControllerFactory',
+            'Application\Controller\Custompage' => 'Application\Controller\Factory\CustomPageControllerFactory',
         ),
     ),
     'controller_plugins' => array(

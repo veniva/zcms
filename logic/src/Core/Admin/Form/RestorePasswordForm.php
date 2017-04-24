@@ -17,7 +17,8 @@ class RestorePasswordForm extends Form implements InputFilterProviderInterface
                 'label' => 'Registered email'
             ],
             'attributes' => [
-                'required' => 'required'
+                'required' => 'required',
+                'type' => 'email'
             ]
         ));
     }

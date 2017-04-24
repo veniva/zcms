@@ -30,7 +30,7 @@ class RestorePassword extends BaseLogic
     public function __construct(RestorePasswordForm $form, ITranslator $translator)
     {
         parent::__construct($translator);
-        
+
         $this->form = $form;
         $this->translator = $translator;
     }
@@ -39,7 +39,7 @@ class RestorePassword extends BaseLogic
     {
         return $this->form;
     }
-    
+
     public function postAction(array $data, EntityManager $em) :Result
     {
         $form = $this->form;
@@ -53,21 +53,26 @@ class RestorePassword extends BaseLogic
                 return $this->result(self::ERR_NOT_FOUND, 'The email entered is not present in our database');
             }
 
-            $allowed = $user->getRole() <= $user::USER_ADMIN;
+            $allowed = $this->isAllowed($user);
             if(!$allowed){
                 return $this->result(self::ERR_NOT_ALLOWED, 'The user with email %s does not have administrative privileges', [
                     'email' => $email
                 ]);
             }
-            
+
             return $this->result(StatusCodes::SUCCESS, null, [
                 'email' => $email
             ]);
         }
-        
+
         return $this->result(StatusCodes::ERR_INVALID_FORM, StatusMessages::ERR_INVALID_FORM_MSG, [
             'form' => $form
         ]);
+    }
+
+    public function isAllowed(User $user): bool
+    {
+        return $user->getRole() <= $user::USER_ADMIN;
     }
 
     /**
@@ -82,7 +87,7 @@ class RestorePassword extends BaseLogic
         $em->getRepository(PasswordResets::class)->deleteOldRequests();
         $em->persist($passwordResetsEntity);
         $em->flush();
-        
+
         try{
             $sendMail->send($data['no-reply'], $data['email'], $data['subject'], $data['message']);
         }catch(\Exception $ex){
@@ -92,7 +97,7 @@ class RestorePassword extends BaseLogic
             'email' => $data['email']
         ]);
     }
-    
+
     public function form() :Form\Form
     {
         $email = new Form\Element\Email('email');
@@ -109,7 +114,7 @@ class RestorePassword extends BaseLogic
         $inputFilter = new InputFilter\InputFilter();
         $inputFilter->add($emailInput);
         $form->setInputFilter($inputFilter);
-        
+
         return $form;
     }
 }

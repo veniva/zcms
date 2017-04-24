@@ -49,7 +49,7 @@ class CustomPageController extends AbstractActionController implements Translato
 
             if($data['status'] == StatusCodes::SUCCESS){
                 $this->flashMessenger()->addSuccessMessage($this->translator->translate($data['success_message']));
-                return $this->redir()->toRoute('home/default', array('controller' => 'customPage', 'action' => 'contact'));
+                return $this->redir()->toRoute('home/default', array('controller' => 'custompage', 'action' => 'contact'));
             }
 
         }else{

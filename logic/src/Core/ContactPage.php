@@ -63,7 +63,8 @@ class ContactPage
                 $this->form->get('email')->getValue(), 
                 $superAdmin->getEmail(),
                 $translator->translate('Website Inquiry'),
-                $this->formatBody($translator, $name, $inquiry)
+                $this->formatBody($translator, $name, $inquiry),
+                ['Content-Type' => 'text/plain; charset=UTF-8']
             );
 
             return [

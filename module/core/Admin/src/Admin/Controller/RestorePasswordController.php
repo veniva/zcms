@@ -27,11 +27,10 @@ class RestorePasswordController extends AbstractActionController implements Tran
     public function forgottenAction()
     {
         $restorePassword = new RestorePassword(new RestorePasswordForm(), new Translator($this->getTranslator()));
-        $entityManager = $this->getServiceLocator()->get('entity-manager');
-        $request = new Request($this->getRequest());
+        $request = $this->getRequest();
         if($request->isPost()){
-
-            $result = $restorePassword->postAction($request->getPost(), $entityManager);
+            $entityManager = $this->getServiceLocator()->get('entity-manager');
+            $result = $restorePassword->postAction(iterator_to_array($request->getPost()), $entityManager);
 
             if($result->status === RestorePassword::ERR_NOT_FOUND){
                 $this->flashMessenger()->addErrorMessage($result->message);
@@ -42,7 +41,7 @@ class RestorePasswordController extends AbstractActionController implements Tran
                 return array('form' => $result->get('form'));
             }
             else if($result->status === RestorePassword::ERR_NOT_ALLOWED){
-                $this->flashMessenger()->addErrorMessage(sprintf($result->message), $result->get('email'));
+                $this->flashMessenger()->addErrorMessage(sprintf($result->message, $result->get('email')));
                 return $this->redir()->toRoute('admin/default', array('controller' => 'restorepassword', 'action' => 'forgotten'));
             }
 
