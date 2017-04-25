@@ -41,6 +41,9 @@ msgstr "atras"
 msgid "Reset password"
 msgstr "Recuperar contraseña"
 
+msgid "Create new password"
+msgstr "Crear nueva contraseña"
+
 msgid "Admin panel"
 msgstr "Administración"
 

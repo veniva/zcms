@@ -41,6 +41,9 @@ msgstr "Обратно към входа"
 msgid "Reset password"
 msgstr "Възстанови парола"
 
+msgid "Create new password"
+msgstr "Създайте нова парола"
+
 msgid "Admin panel"
 msgstr "Контролен панел"
 

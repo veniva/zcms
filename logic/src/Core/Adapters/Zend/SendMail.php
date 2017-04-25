@@ -39,14 +39,19 @@ class SendMail implements ISendMail
 
     public function setHeaders(array $headers)
     {
+        $messageHeaders = $this->zendMessage->getHeaders();
         if ($headers) {
-            $messageHeaders = $this->zendMessage->getHeaders();
             foreach ($headers as $header => $value) {
                 $newHeader = new GenericHeader($header, $value);
                 $messageHeaders->addHeader($newHeader);
             }
-            $this->zendMessage->setHeaders($messageHeaders);
+            
+        //add a default header
+        } else {
+            $newHeader = new GenericHeader('Content-Type', 'text/plain; charset=UTF-8');
+            $messageHeaders->addHeader($newHeader);
         }
+        $this->zendMessage->setHeaders($messageHeaders);
     }
 
     public function getHeaders()

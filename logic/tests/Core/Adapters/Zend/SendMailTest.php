@@ -12,11 +12,7 @@ class SendMailTest extends TestCase
 {
     public function testRunSendMethod()
     {
-        $zendMessageStb = $this->createMock(Message::class);
-        $zendMessageStb->method('setFrom')->willReturnSelf();
-        $zendMessageStb->method('setTo')->willReturnSelf();
-        $zendMessageStb->method('setSubject')->willReturnSelf();
-
+        $zendMessageStb = $this->getMockBuilder(Message::class)->setMethods(['send'])->getMock();
         $transportStb = $this->createMock(Transport::class);
 
         $sendMail = new SendMail();
@@ -24,13 +20,11 @@ class SendMailTest extends TestCase
         $sendMail->setSendMail($transportStb);
 
         //send message with no headers
-        $sendMail->send('', '', '', '');
+        $sendMail->send('example@example.com', 'example@example.com', 'Test', 'Test body');
         $this->assertTrue(true);
 
         //send message with headers
-        $headersStb = $this->createMock(Headers::class);
-        $zendMessageStb->method('getHeaders')->willReturn($headersStb);
-        $sendMail->send('', '', '', '', [
+        $sendMail->send('example@example.com', 'example@example.com', 'Test', 'Test body', [
             'one' => true,
             'two' => true
         ]);
@@ -47,9 +41,19 @@ class SendMailTest extends TestCase
         $sendMail = new SendMail();
         $sendMail->setHeaders($headers);
 
-        $result = $sendMail->getHeaders();
-        $this->assertTrue($result instanceof Headers);
-        $this->assertEquals('value_one', $result->get('header_one')->getFieldValue());
-        $this->assertEquals('value_two', $result->get('header_two')->getFieldValue());
+        $mailHeaders = $sendMail->getHeaders();
+        $this->assertTrue($mailHeaders instanceof Headers);
+        $this->assertEquals('value_one', $mailHeaders->get('header_one')->getFieldValue());
+        $this->assertEquals('value_two', $mailHeaders->get('header_two')->getFieldValue());
+    }
+
+    public function testDefaultHeader()
+    {
+        $sendMail = new SendMail();
+        $sendMail->setHeaders([]);
+        $mailHeaders = $sendMail->getHeaders();
+        $this->assertTrue($mailHeaders instanceof Headers);
+        $this->assertContains('charset="UTF-8"', $mailHeaders->get('Content-Type')->getFieldValue());
+        $this->assertContains('text/plain', $mailHeaders->get('Content-Type')->getFieldValue());
     }
 }
