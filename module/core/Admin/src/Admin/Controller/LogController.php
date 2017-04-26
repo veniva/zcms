@@ -8,8 +8,6 @@
 
 namespace Admin\Controller;
 
-
-use Logic\Core\Adapters\Zend\Http\Request;
 use Logic\Core\Adapters\Zend\Translator;
 use Logic\Core\Admin;
 use Logic\Core\Interfaces\StatusCodes;
@@ -46,31 +44,30 @@ class LogController extends AbstractActionController implements TranslatorAwareI
         $entityManager = $this->getServiceLocator()->get('entity-manager');
         $auth = $this->getServiceLocator()->get('auth');
         $request = $this->getRequest();
-        $lRequest = new Request($request);
 
         $logic = new Admin\Authenticate\Login(new Translator($this->translator));
         
-        if(!$lRequest->isPost()){
-            $data = $logic->inGet($entityManager);
-            if($data['status'] !== StatusCodes::SUCCESS){
-                $this->flashMessenger()->addInfoMessage($data['message']);
+        if(!$request->isPost()){
+            $result = $logic->inGet($entityManager);
+            if($result->status !== StatusCodes::SUCCESS){
+                $this->flashMessenger()->addInfoMessage($result->message);
                 return $this->redir()->toRoute('admin/default', ['controller' => 'register', 'action' => 'register']);
             }
             
         }else{
-            $data = $logic->inPost($auth, $logic::loginForm(), $lRequest->getPost());
-            if($data['status'] !== StatusCodes::SUCCESS){
-                $this->flashMessenger()->addErrorMessage($data['message']);
+            $result = $logic->inPost($auth, iterator_to_array($request->getPost()));
+            if($result->status !== StatusCodes::SUCCESS){
+                $this->flashMessenger()->addErrorMessage($result->message);
                 return $this->redir()->toRoute('admin/default', array('controller' => 'log', 'action' => 'in'));
 
             }else{
-                $this->flashMessenger()->addSuccessMessage(sprintf($data['message'], $data['user']->getUname()));
+                $this->flashMessenger()->addSuccessMessage(sprintf($result->message, $result->get('user')->getUname()));
                 return $this->redir()->toRoute('admin/default', array('controller' => 'index'));
             }
         }
 
         return [
-            'form' => $data['form']
+            'form' => $result->get('form')
         ];
     }
 

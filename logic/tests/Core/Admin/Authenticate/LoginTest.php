@@ -40,25 +40,31 @@ class LoginTest extends TestCase
     {
         $this->prepareGetStubs(0);
         $result = $this->logic->inGet($this->emStub);
-        $this->assertEquals(Login::ERR_NO_ADMIN, $result['status']);
+        $this->assertEquals(Login::ERR_NO_ADMIN, $result->status);
     }
 
     public function testGetSuccess()
     {
         $this->prepareGetStubs(1);
         $result = $this->logic->inGet($this->emStub);
-        $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
+    }
+
+    public function testGetFormMethod()
+    {
+        $form = $this->logic->getForm();
+        $this->assertTrue($form instanceof Form);
     }
 
     public function testInvalidForm()
     {
         $formStub = $this->createMock(Form::class);
         $formStub->method('isValid')->willReturn(false);
-        $authStub = $this->createMock(AuthenticationService::class);
+        
+        $this->logic->setForm($formStub);
+        $result = $this->logic->validateFrom([], $id, $pass);
 
-        $result = $this->logic->inPost($authStub, $formStub, []);
-
-        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result['status']);
+        $this->assertEquals(StatusCodes::ERR_INVALID_FORM, $result->status);
     }
 
     public function testInvalidAuth()
@@ -67,10 +73,10 @@ class LoginTest extends TestCase
         $this->preparePostStubs($authStub, $formStub, $resultStub);
         
         $resultStub->method('isValid')->willReturn(false);
+        $this->logic->setForm($formStub);
+        $result = $this->logic->inPost($authStub, []);
 
-        $result = $this->logic->inPost($authStub, $formStub, []);
-
-        $this->assertEquals(Login::ERR_WRONG_DETAILS, $result['status']);
+        $this->assertEquals(Login::ERR_WRONG_DETAILS, $result->status);
     }
 
     public function testPostSuccess()
@@ -81,9 +87,10 @@ class LoginTest extends TestCase
         $resultStub->method('isValid')->willReturn(true);
         $resultStub->method('getIdentity')->willReturn(true);
 
-        $result = $this->logic->inPost($authStub, $formStub, []);
+        $this->logic->setForm($formStub);
+        $result = $this->logic->inPost($authStub, []);
 
-        $this->assertEquals(StatusCodes::SUCCESS, $result['status']);
+        $this->assertEquals(StatusCodes::SUCCESS, $result->status);
     }
 
     protected function preparePostStubs(&$authStub, &$formStub, &$resultStub)
@@ -91,22 +98,16 @@ class LoginTest extends TestCase
         $formStub = $this->createMock(Form::class);
         $formStub->method('isValid')->willReturn(true);
 
-        $getStub = $this->createMock(Stb::class);
-        $getStub->method('getValue')->willReturn('');
-        $formStub->method('get')->willReturn($getStub);
+        $mock = $this->getMockBuilder(\stdClass::class)->setMethods([
+            'getValue', 'setIdentity', 'setCredential'
+        ])->getMock();
+        $mock->method('getValue')->willReturn('');
+        $formStub->method('get')->willReturn($mock);
 
         $authStub = $this->createMock(AuthenticationService::class);
-        $authAdapterStub = $this->createMock(Stb::class);
-        $authStub->method('getAdapter')->willReturn($authAdapterStub);
+        $authStub->method('getAdapter')->willReturn($mock);
 
         $resultStub = $this->createMock(Result::class);
         $authStub->method('authenticate')->willReturn($resultStub);
     }
-}
-
-class Stb{
-    function getValue(){}
-    function getAdapter(){}
-    function setIdentity(){}
-    function setCredential(){}
 }
