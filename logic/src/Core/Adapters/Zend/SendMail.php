@@ -49,6 +49,7 @@ class SendMail implements ISendMail
         //add a default header
         } else {
             $newHeader = new GenericHeader('Content-Type', 'text/plain; charset=UTF-8');
+            $newHeader->setEncoding('UTF-8');
             $messageHeaders->addHeader($newHeader);
         }
         $this->zendMessage->setHeaders($messageHeaders);

@@ -90,7 +90,7 @@ class ResetPassword extends BaseLogic
 
         $resetPassword = $this->em->find(PasswordResets::class, ['email' => $email, 'token' => $token]);
         if(!$resetPassword){
-            return $this->result(self::ERR_PASSWORD_REQUEST_NOT_FOUND, 'The link you\'re using is corrupted, please create another password request');
+            return $this->result(self::ERR_PASSWORD_REQUEST_NOT_FOUND, 'The link you\'re using is out of date or corrupted, please create another password request.');
         }
 
         $createdAt = $resetPassword->getCreatedAt();
