@@ -3,8 +3,8 @@
 namespace Logic\Tests\Core\Admin\Page;
 
 use Logic\Core\Admin\Page\PageDelete;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Listing;
 
 class PageDeleteTest extends PageBase

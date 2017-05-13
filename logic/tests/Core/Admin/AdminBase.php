@@ -4,7 +4,7 @@ namespace Logic\Tests\Core\Admin;
 
 use PHPUnit\Framework\TestCase;
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 
 class AdminBase extends TestCase
 {

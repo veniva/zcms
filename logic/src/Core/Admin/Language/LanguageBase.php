@@ -2,9 +2,9 @@
 
 namespace Logic\Core\Admin\Language;
 
-use Logic\Core\BaseLogic;
+use Veniva\Lbs\BaseLogic;
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 use Logic\Core\Admin\Services\FlagCodes;
 use Logic\Core\Form\Language as Form;
 

@@ -10,7 +10,7 @@ namespace Application\Controller;
 
 
 use Logic\Core\Category;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Zend\Mvc\Controller\AbstractActionController;
 use Interop\Container\ContainerInterface;
 use Zend\View\Model\ViewModel;

@@ -4,9 +4,9 @@ namespace Logic\Tests\Core\Admin\Authenticate;
 
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 use Logic\Core\Admin\Authenticate\Login;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\UserRepository;
 use PHPUnit\Framework\TestCase;
 use Zend\Authentication\AuthenticationService;

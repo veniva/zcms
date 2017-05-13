@@ -3,13 +3,13 @@
 namespace Logic\Core\Admin\Category;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
-use Logic\Core\BaseLogic;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\BaseLogic;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 use Symfony\Component\Filesystem\Filesystem;
 
 class CategoryDelete extends BaseLogic
@@ -19,7 +19,7 @@ class CategoryDelete extends BaseLogic
     /** @var EntityManager */
     protected $em;
     
-    /** @var ITranslator */
+    /** @var \Veniva\Lbs\Adapters\Interfaces\ITranslator */
     protected $translator;
 
     /** @var Filesystem */

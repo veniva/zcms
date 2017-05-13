@@ -3,11 +3,11 @@
 namespace Logic\Tests\Core;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ISendMail;
-use Logic\Core\Adapters\Interfaces\ITranslator;
-use Logic\Core\Adapters\Zend\SendMail;
+use Veniva\Lbs\Adapters\Interfaces\ISendMail;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Zend\SendMail;
 use Logic\Core\ContactPage;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\User;
 use Logic\Core\Model\UserRepository;
 use PHPUnit\Framework\TestCase;

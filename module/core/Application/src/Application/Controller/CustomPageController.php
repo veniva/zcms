@@ -8,12 +8,12 @@
 
 namespace Application\Controller;
 
-use Logic\Core\Adapters\Zend\Http\Request as LogicRequest;
-use Logic\Core\Adapters\Zend\SendMail;
-use Logic\Core\Adapters\Zend\Translator;
+use Veniva\Lbs\Adapters\Zend\Http\Request as LogicRequest;
+use Veniva\Lbs\Adapters\Zend\SendMail;
+use Veniva\Lbs\Adapters\Zend\Translator;
 use Logic\Core\ContactPage;
 use Logic\Core\Form\Contact;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractActionController;

@@ -2,8 +2,8 @@
 
 namespace Logic\Core\Admin\Language;
 
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Lang;
 
 class LanguageCreate extends LanguageBase

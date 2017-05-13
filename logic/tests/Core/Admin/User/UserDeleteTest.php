@@ -3,8 +3,8 @@
 namespace Logic\Tests\Core\Admin\User;
 
 use Logic\Core\Admin\User\UserDelete;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\User;
 use Logic\Tests\Core\Admin\AdminBase;
 

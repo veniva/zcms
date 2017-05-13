@@ -3,12 +3,12 @@
 namespace Logic\Core\Admin\Language;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
-use Logic\Core\BaseLogic;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\BaseLogic;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Lang;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 
 class LanguageHelpers extends BaseLogic
 {
@@ -66,7 +66,7 @@ class LanguageHelpers extends BaseLogic
 
     /**
      * Get the currently default language for the application
-     * @return Result
+     * @return \Veniva\Lbs\Result
      */
     public function getDefaultLanguage()
     {

@@ -4,8 +4,8 @@ namespace Admin\Controller;
 
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Zend\Http\Request;
-use Logic\Core\Adapters\Zend\Translator;
+use Veniva\Lbs\Adapters\Zend\Http\Request;
+use Veniva\Lbs\Adapters\Zend\Translator;
 use Logic\Core\Admin\Authenticate\ResetPassword;
 use Logic\Core\Admin\Form\ResetPassword as ResetPasswordForm;
 use Logic\Core\Interfaces\StatusCodes;

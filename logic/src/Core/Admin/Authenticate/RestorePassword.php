@@ -3,15 +3,15 @@
 namespace Logic\Core\Admin\Authenticate;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 use Logic\Core\Admin\Form\RestorePasswordForm;
-use Logic\Core\Adapters\Interfaces\ISendMail;
-use Logic\Core\BaseLogic;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Adapters\Interfaces\ISendMail;
+use Veniva\Lbs\BaseLogic;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 use Zend\Form;
 use Zend\InputFilter;
 use Logic\Core\Stdlib;
@@ -24,7 +24,7 @@ class RestorePassword extends BaseLogic
     const ERR_SEND_MAIL = 'restore.mail-not-sent';
 
     protected $form;
-    /** @var ITranslator  */
+    /** @var \Veniva\Lbs\Adapters\Interfaces\ITranslator  */
     protected $translator;
 
     public function __construct(RestorePasswordForm $form, ITranslator $translator)

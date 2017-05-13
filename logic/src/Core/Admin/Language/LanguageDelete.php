@@ -2,11 +2,11 @@
 
 namespace Logic\Core\Admin\Language;
 
-use Logic\Core\Adapters\Interfaces\ITranslator;
-use Logic\Core\BaseLogic;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\BaseLogic;
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Lang;
 
 class LanguageDelete extends BaseLogic

@@ -9,13 +9,13 @@
 namespace Admin\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Zend\Translator;
+use Veniva\Lbs\Adapters\Zend\Translator;
 use Logic\Core\Admin\Form\User as UserForm;
 use Logic\Core\Admin\User\UserCreate;
 use Logic\Core\Admin\User\UserDelete;
 use Logic\Core\Admin\User\UserList;
 use Logic\Core\Admin\User\UserUpdate;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\User;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;

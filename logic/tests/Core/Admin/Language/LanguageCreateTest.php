@@ -6,10 +6,10 @@ use Doctrine\ORM\EntityRepository;
 use Logic\Core\Admin\Language\LanguageCreate;
 use Logic\Core\Admin\Services\FlagCodes;
 use Logic\Core\Form\Language as Form;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Lang;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 use Logic\Tests\Core\Admin\AdminBase;
 
 class LanguageCreateTest extends AdminBase

@@ -4,7 +4,7 @@ namespace Logic\Core;
 
 use Logic\Core\Model\Entity\Listing;
 use Logic\Core\Services\Language;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Doctrine\ORM\EntityManager;
 
 class Page

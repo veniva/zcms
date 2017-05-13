@@ -2,11 +2,11 @@
 
 namespace Logic\Core\Admin\Page;
 
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Listing;
 use Logic\Core\Model\ListingRepository;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 
 class PageUpdate extends PageBase
 {
@@ -15,7 +15,7 @@ class PageUpdate extends PageBase
 
     /**
      * @param int $id
-     * @return Result
+     * @return \Veniva\Lbs\Result
      */
     public function showForm(int $id): Result
     {

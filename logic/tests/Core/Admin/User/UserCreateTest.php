@@ -4,8 +4,8 @@ namespace Logic\Tests\Core\Admin\User;
 
 use Logic\Core\Admin\Form\User as UserForm;
 use Logic\Core\Admin\User\UserCreate;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\User;
 use Logic\Tests\Core\Admin\AdminBase;
 use Zend\Crypt\Password\Bcrypt;

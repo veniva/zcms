@@ -9,7 +9,7 @@
 namespace Logic\Core\Model;
 
 use Doctrine\ORM\EntityRepository;
-use Logic\Core\Adapters\DoctrineAdapter;
+use Veniva\Lbs\Adapters\DoctrineAdapter;
 use Zend\Paginator\Paginator;
 
 class LangRepository extends EntityRepository

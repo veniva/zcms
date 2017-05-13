@@ -3,7 +3,7 @@
 namespace Logic\Tests\Core\Admin\Page;
 
 use Logic\Core\Admin\Form\Page;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Listing;
 use Logic\Core\Model\Entity\ListingImage;
 

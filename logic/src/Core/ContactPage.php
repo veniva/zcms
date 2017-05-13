@@ -2,10 +2,10 @@
 
 namespace Logic\Core;
 
-use Logic\Core\Adapters\Interfaces\ISendMail;
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ISendMail;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 use Logic\Core\Form\Contact;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Zend\Mail;//v_todo - replace with better
@@ -21,7 +21,7 @@ class ContactPage
     /** @var Contact */
     protected $form;
     
-    /** @var ISendMail */
+    /** @var \Veniva\Lbs\Adapters\Interfaces\ISendMail */
     protected $sendMail;
     
     function __construct(EntityManager $em, Contact $form, ISendMail $sendMail)

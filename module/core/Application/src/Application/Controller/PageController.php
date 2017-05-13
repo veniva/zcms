@@ -8,7 +8,7 @@
 
 namespace Application\Controller;
 
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Page;
 use Zend\Mvc\Controller\AbstractActionController;
 use Interop\Container\ContainerInterface;

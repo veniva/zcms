@@ -2,12 +2,12 @@
 
 namespace Admin\Controller;
 
-use Logic\Core\Adapters\Zend\SendMail;
-use Logic\Core\Adapters\Zend\Translator;
+use Veniva\Lbs\Adapters\Zend\SendMail;
+use Veniva\Lbs\Adapters\Zend\Translator;
 use Logic\Core\Admin\Authenticate\RestorePassword;
 use Logic\Core\Admin\Form\RestorePasswordForm;
-use Logic\Core\Adapters\Zend\Http\Request;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Adapters\Zend\Http\Request;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Stdlib\Strings;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;

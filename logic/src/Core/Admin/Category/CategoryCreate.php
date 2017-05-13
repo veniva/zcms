@@ -2,16 +2,16 @@
 
 namespace Logic\Core\Admin\Category;
 
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 use Doctrine\ORM\EntityManager;
-use Logic\Core\BaseLogic;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\BaseLogic;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Form\Category as CategoryForm;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Lang;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 use Logic\Core\Services\Language;
 use Logic\Core\Services\CategoryTree;
 use Logic\Core\Stdlib\Strings;

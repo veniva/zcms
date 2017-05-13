@@ -9,13 +9,13 @@
 namespace Admin\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Zend\Translator;
+use Veniva\Lbs\Adapters\Zend\Translator;
 use Logic\Core\Admin\Category\CategoryCreate;
 use Logic\Core\Admin\Category\CategoryDelete;
 use Logic\Core\Admin\Category\CategoryUpdate;
 use Logic\Core\Form\Category as CategoryForm;
 use Logic\Core\Admin\Category\CategoryList as CategoryLogic;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Services\Language;
 use Zend\I18n\Translator\TranslatorAwareInterface;

@@ -17,6 +17,7 @@
   ],
   "require": {
     "php": ">=7.0",
+    "veniva/lbs": "*",
     "zendframework/zend-mvc": "^3.0",
     "zendframework/zend-i18n": "^2.7",
     "zendframework/zend-filter": "^2.7",

@@ -2,7 +2,7 @@
 
 namespace Logic\Tests\Core\Adapters\Zend;
 
-use Logic\Core\Adapters\Zend\SendMail;
+use Veniva\Lbs\Adapters\Zend\SendMail;
 use PHPUnit\Framework\TestCase;
 use Zend\Mail\Headers;
 use Zend\Mail\Message;
@@ -15,7 +15,7 @@ class SendMailTest extends TestCase
         $zendMessageStb = $this->getMockBuilder(Message::class)->setMethods(['send'])->getMock();
         $transportStb = $this->createMock(Transport::class);
 
-        $sendMail = new SendMail();
+        $sendMail = new \Veniva\Lbs\Adapters\Zend\SendMail();
         $sendMail->setZendMessage($zendMessageStb);
         $sendMail->setSendMail($transportStb);
 
@@ -38,7 +38,7 @@ class SendMailTest extends TestCase
             'header_two' => 'value_two'
         );
 
-        $sendMail = new SendMail();
+        $sendMail = new \Veniva\Lbs\Adapters\Zend\SendMail();
         $sendMail->setHeaders($headers);
 
         $mailHeaders = $sendMail->getHeaders();
@@ -49,7 +49,7 @@ class SendMailTest extends TestCase
 
     public function testDefaultHeader()
     {
-        $sendMail = new SendMail();
+        $sendMail = new \Veniva\Lbs\Adapters\Zend\SendMail();
         $sendMail->setHeaders([]);
         $mailHeaders = $sendMail->getHeaders();
         $this->assertTrue($mailHeaders instanceof Headers);

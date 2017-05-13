@@ -4,10 +4,10 @@ namespace Logic\Tests\Core\Admin\Category;
 
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 use Logic\Core\Admin\Category\CategoryCreate;
 use Logic\Core\Admin\Category\CategoryHelpers;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Lang;

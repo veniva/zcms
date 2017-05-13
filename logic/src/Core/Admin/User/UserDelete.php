@@ -3,10 +3,10 @@
 namespace Logic\Core\Admin\User;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
-use Logic\Core\BaseLogic;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\BaseLogic;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\User;
 
 class UserDelete extends BaseLogic

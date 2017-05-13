@@ -6,7 +6,7 @@ use Logic\Core\Admin\Form\Page;
 use Logic\Core\Admin\Page\PageCreate;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Listing;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 
 class PageCreateTest extends PageBase
 {

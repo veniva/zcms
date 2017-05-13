@@ -9,12 +9,12 @@
 namespace Admin\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Zend\Translator;
+use Veniva\Lbs\Adapters\Zend\Translator;
 use Logic\Core\Admin\Page\PageCreate;
 use Logic\Core\Admin\Page\PageDelete;
 use Logic\Core\Admin\Page\PageList;
 use Logic\Core\Admin\Page\PageUpdate;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Services\CategoryTree;
 use Logic\Core\Services\Language;
 use Zend\Form\Element\Select;

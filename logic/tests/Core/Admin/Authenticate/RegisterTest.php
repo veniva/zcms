@@ -5,7 +5,7 @@ namespace Logic\Tests\Core\Admin\Authenticate;
 
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Admin\Authenticate\Register;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\User;
 use Logic\Core\Model\UserRepository;
 use PHPUnit\Framework\TestCase;

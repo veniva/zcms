@@ -5,8 +5,8 @@ namespace Logic\Tests\Core\Admin\Language;
 use Logic\Core\Admin\Language\LanguageUpdate;
 use Logic\Core\Admin\Services\FlagCodes;
 use Logic\Core\Form\Language as Form;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Tests\Core\Admin\AdminBase;
 

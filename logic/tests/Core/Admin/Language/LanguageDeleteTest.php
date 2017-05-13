@@ -3,8 +3,8 @@
 namespace Logic\Tests\Core\Admin\Language;
 
 use Logic\Core\Admin\Language\LanguageDelete;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Tests\Core\Admin\AdminBase;
 

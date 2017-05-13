@@ -3,9 +3,9 @@
 namespace Logic\Tests\Core\Admin\Language;
 
 use Logic\Core\Admin\Language\LanguageList;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use PHPUnit\Framework\TestCase;
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 use Doctrine\ORM\EntityManager;
 
 class LanguageListTest extends TestCase

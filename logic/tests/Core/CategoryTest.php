@@ -5,7 +5,7 @@ namespace Logic\Tests\Core;
 
 use Doctrine\ORM\EntityManager;
 use Logic\Core\Category;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\CategoryRepository;
 use Logic\Core\Model\Entity\Category as CategoryEntity;
 use Logic\Core\Model\Entity\Lang;

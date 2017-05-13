@@ -3,13 +3,13 @@
 namespace Logic\Core\Admin\Authenticate;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 use Logic\Core\Admin\Form\ResetPassword as ResetPasswordForm;
-use Logic\Core\BaseLogic;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\BaseLogic;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 
 class ResetPassword extends BaseLogic
 {
@@ -25,7 +25,7 @@ class ResetPassword extends BaseLogic
     protected $em;
     /** @var ResetPasswordForm */
     protected $form;
-    /** @var ITranslator */
+    /** @var \Veniva\Lbs\Adapters\Interfaces\ITranslator */
     protected $translator;
     
     public function __construct(

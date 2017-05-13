@@ -4,7 +4,7 @@ namespace Logic\Tests\Core\Admin\Page;
 
 use PHPUnit\Framework\TestCase;
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 use Logic\Core\Services\CategoryTree;
 use Logic\Core\Services\Language;
 

@@ -4,7 +4,7 @@ namespace Logic\Tests\Core\Admin\Language;
 
 use Doctrine\ORM\EntityRepository;
 use Logic\Core\Admin\Language\LanguageHelpers;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Tests\Core\Admin\AdminBase;
 
 class LanguageHelpersTest extends AdminBase

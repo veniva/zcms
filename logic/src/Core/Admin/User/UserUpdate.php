@@ -2,11 +2,11 @@
 
 namespace Logic\Core\Admin\User;
 
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\User;
 use Logic\Core\Admin\Form\User as UserForm;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 
 class UserUpdate extends UserBase
 {

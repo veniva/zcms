@@ -2,8 +2,8 @@
 
 namespace Logic\Core\Admin\Page;
 
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\Listing;
 use Symfony\Component\Filesystem\Filesystem;
 

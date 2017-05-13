@@ -3,9 +3,9 @@
 namespace Logic\Core\Admin\User;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\User;
 use Zend\Crypt\Password\PasswordInterface;
 use Logic\Core\Admin\Form\User as UserForm;
@@ -56,7 +56,7 @@ class UserCreate extends UserBase
      * Insert user when the form is valid
      * @param User $user
      * @param UserForm $form
-     * @return \Logic\Core\Result
+     * @return \Veniva\Lbs\Result
      */
     public function createUser(User $user, UserForm $form)
     {

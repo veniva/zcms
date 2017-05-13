@@ -8,13 +8,13 @@
 
 namespace Admin\Controller;
 
-use Logic\Core\Adapters\Zend\Translator;
+use Veniva\Lbs\Adapters\Zend\Translator;
 use Logic\Core\Admin\Language\LanguageCreate;
 use Logic\Core\Admin\Language\LanguageDelete;
 use Logic\Core\Admin\Language\LanguageList;
 use Logic\Core\Admin\Language\LanguageUpdate;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Result;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Result;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;
 use Zend\Mvc\Controller\AbstractRestfulController;

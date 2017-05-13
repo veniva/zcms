@@ -3,10 +3,10 @@
 namespace Logic\Core\Admin\Category;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Logic\Core\BaseLogic;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\BaseLogic;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category as CategoryEntity;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 use Logic\Core\Services\Language;
 
 class CategoryList extends BaseLogic

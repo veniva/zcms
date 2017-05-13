@@ -3,11 +3,11 @@
 namespace Logic\Core\Admin\Page;
 
 use Logic\Core\Admin\Form\Page;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Category;
 use Logic\Core\Model\Entity\Listing;
 use Logic\Core\Admin\Form\Page as PageForm;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 
 class PageCreate extends PageBase
 {

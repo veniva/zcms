@@ -3,12 +3,12 @@
 namespace Logic\Core\Admin\Authenticate;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Logic\Core\Adapters\Interfaces\ITranslator;
-use Logic\Core\BaseLogic;
-use Logic\Core\Interfaces\StatusCodes;
-use Logic\Core\Interfaces\StatusMessages;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\BaseLogic;
+use Veniva\Lbs\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusMessages;
 use Logic\Core\Model\Entity\User;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 use Zend\Authentication\AuthenticationService;
 use Zend\Form\Element;
 use Zend\Form\Form;
@@ -42,7 +42,7 @@ class Login extends BaseLogic
     /**
      * @param AuthenticationService $auth
      * @param array $data
-     * @return Result
+     * @return \Veniva\Lbs\Result
      */
     public function inPost(AuthenticationService $auth, array $data): Result
     {

@@ -3,10 +3,10 @@
 namespace Logic\Tests\Core\Admin\Authenticate;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
 use Logic\Core\Admin\Authenticate\ResetPassword;
 use Logic\Core\Admin\Form\ResetPassword as ResetPasswordForm;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\PasswordResets;
 use Logic\Core\Model\Entity\User;
 use PHPUnit\Framework\TestCase;

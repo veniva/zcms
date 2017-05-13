@@ -3,12 +3,12 @@
 namespace Logic\Core\Admin\Page;
 
 use Doctrine\ORM\EntityManager;
-use Logic\Core\Adapters\Interfaces\ITranslator;
-use Logic\Core\BaseLogic;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Adapters\Interfaces\ITranslator;
+use Veniva\Lbs\BaseLogic;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Listing;
 use Logic\Core\Model\ListingRepository;
-use Logic\Core\Result;
+use Veniva\Lbs\Result;
 
 class PageList extends BaseLogic
 {

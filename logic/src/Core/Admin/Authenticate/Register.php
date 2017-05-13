@@ -3,7 +3,7 @@
 namespace Logic\Core\Admin\Authenticate;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Logic\Core\Interfaces\StatusCodes;
+use Veniva\Lbs\Interfaces\StatusCodes;
 use Logic\Core\Model\Entity\Lang;
 use Logic\Core\Model\Entity\User;
 use Logic\Core\Admin\Form\Register as RegisterForm;
