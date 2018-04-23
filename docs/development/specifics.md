@@ -1,6 +1,6 @@
 **Development information specific to the project**
 
-The development of ZCMS follows the typical Zend Framework 2 project framework. Never-the-less there are some fiew differences specific to the project that are outlined below.
+The development of ZCMS follows the typical Zend Framework 3 project framework. Never-the-less there are some fiew differences specific to the project that are outlined below.
   
 In order to preserve the navigation in the currently chosen language:
 
