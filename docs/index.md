@@ -1,8 +1,8 @@
-Welcome to ZCMS - a light weight CMS based on Zend Framework 2 and Doctrine 2 ORM.
+Welcome to ZCMS - a light weight CMS based on Zend Framework 3 and Doctrine 2 ORM.
 
 ***
 
-If your preferred PHP framework is Zend Framework 2, then this is a good starting point for further web development for wide range of websites and applications - from simple to enterprise class.
+If your preferred PHP framework is Zend Framework 3, then this is a good starting point for further web development for wide range of websites and applications - from simple to enterprise class.
 
 List of features:
 
